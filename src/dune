@@ -1,0 +1,7 @@
+(library
+ (name app)
+ (modes melange)
+ (libraries bindings cma_configuration components conjugator reason-react)
+ (preprocess
+  (pps melange.ppx reason-react-ppx))
+)

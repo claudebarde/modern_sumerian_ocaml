@@ -1,0 +1,3684 @@
+{
+  "codepoints": [
+    {
+      "codepoint": "0x1203B",
+      "name": "ASH OVER ASH TUG2 OVER"
+    },
+    {
+      "codepoint": "0x1203C",
+      "name": "ASH OVER ASH OVER ASH"
+    },
+    {
+      "codepoint": "0x1203D",
+      "name": "ASH OVER ASH OVER ASH"
+    },
+    {
+      "codepoint": "0x1203E",
+      "name": "ASH2"
+    },
+    {
+      "codepoint": "0x1203F",
+      "name": "ASHGAB"
+    },
+    {
+      "codepoint": "0x12040",
+      "name": "BA"
+    },
+    {
+      "codepoint": "0x12041",
+      "name": "BAD"
+    },
+    {
+      "codepoint": "0x12042",
+      "name": "BAG3"
+    },
+    {
+      "codepoint": "0x12043",
+      "name": "BAHAR2"
+    },
+    {
+      "codepoint": "0x12044",
+      "name": "BAL"
+    },
+    {
+      "codepoint": "0x12045",
+      "name": "BAL OVER BAL"
+    },
+    {
+      "codepoint": "0x12046",
+      "name": "BALAG"
+    },
+    {
+      "codepoint": "0x12047",
+      "name": "BAR"
+    },
+    {
+      "codepoint": "0x12048",
+      "name": "BARA2"
+    },
+    {
+      "codepoint": "0x12049",
+      "name": "BI"
+    },
+    {
+      "codepoint": "0x1204A",
+      "name": "BI X A"
+    },
+    {
+      "codepoint": "0x1204B",
+      "name": "BI X GAR"
+    },
+    {
+      "codepoint": "0x1204C",
+      "name": "BI X IGI GUNU"
+    },
+    {
+      "codepoint": "0x1204D",
+      "name": "BU"
+    },
+    {
+      "codepoint": "0x1204E",
+      "name": "BU OVER BU AB"
+    },
+    {
+      "codepoint": "0x1204F",
+      "name": "BU OVER BU UN"
+    },
+    {
+      "codepoint": "0x12050",
+      "name": "BU CROSSING BU"
+    },
+    {
+      "codepoint": "0x12051",
+      "name": "BULUG"
+    },
+    {
+      "codepoint": "0x12052",
+      "name": "BULUG OVER BULUG"
+    },
+    {
+      "codepoint": "0x12053",
+      "name": "BUR"
+    },
+    {
+      "codepoint": "0x12054",
+      "name": "BUR2"
+    },
+    {
+      "codepoint": "0x12055",
+      "name": "DA"
+    },
+    {
+      "codepoint": "0x12056",
+      "name": "DAG"
+    },
+    {
+      "codepoint": "0x12057",
+      "name": "DAG KISIM5 X A PLUS"
+    },
+    {
+      "codepoint": "0x12058",
+      "name": "DAG KISIM5 X AMAR"
+    },
+    {
+      "codepoint": "0x12059",
+      "name": "DAG KISIM5 X BALAG"
+    },
+    {
+      "codepoint": "0x1205A",
+      "name": "DAG KISIM5 X BI"
+    },
+    {
+      "codepoint": "0x1205B",
+      "name": "DAG KISIM5 X GA"
+    },
+    {
+      "codepoint": "0x1205C",
+      "name": "DAG KISIM5 X GA PLUS"
+    },
+    {
+      "codepoint": "0x1205D",
+      "name": "DAG KISIM5 X GI"
+    },
+    {
+      "codepoint": "0x1205E",
+      "name": "DAG KISIM5 X GIR2"
+    },
+    {
+      "codepoint": "0x1205F",
+      "name": "DAG KISIM5 X GUD"
+    },
+    {
+      "codepoint": "0x12060",
+      "name": "DAG KISIM5 X HA"
+    },
+    {
+      "codepoint": "0x12061",
+      "name": "DAG KISIM5 X IR"
+    },
+    {
+      "codepoint": "0x12062",
+      "name": "DAG KISIM5 X IR PLUS"
+    },
+    {
+      "codepoint": "0x12063",
+      "name": "DAG KISIM5 X KAK"
+    },
+    {
+      "codepoint": "0x12064",
+      "name": "DAG KISIM5 X LA"
+    },
+    {
+      "codepoint": "0x12065",
+      "name": "DAG KISIM5 X LU"
+    },
+    {
+      "codepoint": "0x12066",
+      "name": "DAG KISIM5 X LU PLUS"
+    },
+    {
+      "codepoint": "0x12067",
+      "name": "DAG KISIM5 X LUM"
+    },
+    {
+      "codepoint": "0x12068",
+      "name": "DAG KISIM5 X NE"
+    },
+    {
+      "codepoint": "0x12069",
+      "name": "DAG KISIM5 X PAP PLUS"
+    },
+    {
+      "codepoint": "0x1206A",
+      "name": "DAG KISIM5 X SI"
+    },
+    {
+      "codepoint": "0x1206B",
+      "name": "DAG KISIM5 X TAK4"
+    },
+    {
+      "codepoint": "0x1206C",
+      "name": "DAG KISIM5 X U2 PLUS"
+    },
+    {
+      "codepoint": "0x1206D",
+      "name": "DAG KISIM5 X USH"
+    },
+    {
+      "codepoint": "0x1206E",
+      "name": "DAM"
+    },
+    {
+      "codepoint": "0x1206F",
+      "name": "DAR"
+    },
+    {
+      "codepoint": "0x12070",
+      "name": "DARA3"
+    },
+    {
+      "codepoint": "0x12071",
+      "name": "DARA4"
+    },
+    {
+      "codepoint": "0x12000",
+      "name": "A"
+    },
+    {
+      "codepoint": "0x12001",
+      "name": "A X A"
+    },
+    {
+      "codepoint": "0x12002",
+      "name": "A X BAD"
+    },
+    {
+      "codepoint": "0x12003",
+      "name": "A X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x12004",
+      "name": "A X HA"
+    },
+    {
+      "codepoint": "0x12005",
+      "name": "A X IGI"
+    },
+    {
+      "codepoint": "0x12006",
+      "name": "A X LAGAR GUNU"
+    },
+    {
+      "codepoint": "0x12007",
+      "name": "A X MUSH"
+    },
+    {
+      "codepoint": "0x12008",
+      "name": "A X SAG"
+    },
+    {
+      "codepoint": "0x12009",
+      "name": "A2"
+    },
+    {
+      "codepoint": "0x1200A",
+      "name": "AB"
+    },
+    {
+      "codepoint": "0x1200B",
+      "name": "AB X ASH2"
+    },
+    {
+      "codepoint": "0x1200C",
+      "name": "AB X DUN3 GUNU"
+    },
+    {
+      "codepoint": "0x1200D",
+      "name": "AB X GAL"
+    },
+    {
+      "codepoint": "0x1200E",
+      "name": "AB X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x1200F",
+      "name": "AB X HA"
+    },
+    {
+      "codepoint": "0x12010",
+      "name": "AB X IGI GUNU"
+    },
+    {
+      "codepoint": "0x12011",
+      "name": "AB X IMIN"
+    },
+    {
+      "codepoint": "0x12012",
+      "name": "AB X LAGAB"
+    },
+    {
+      "codepoint": "0x12013",
+      "name": "AB X SHESH"
+    },
+    {
+      "codepoint": "0x12014",
+      "name": "AB X U PLUS U PLUS U"
+    },
+    {
+      "codepoint": "0x12015",
+      "name": "AB GUNU"
+    },
+    {
+      "codepoint": "0x12016",
+      "name": "AB2"
+    },
+    {
+      "codepoint": "0x12017",
+      "name": "AB2 X BALAG"
+    },
+    {
+      "codepoint": "0x12018",
+      "name": "AB2 X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x12019",
+      "name": "AB2 X ME PLUS EN"
+    },
+    {
+      "codepoint": "0x1201A",
+      "name": "AB2 X SHA3"
+    },
+    {
+      "codepoint": "0x1201B",
+      "name": "AB2 X TAK4"
+    },
+    {
+      "codepoint": "0x1201C",
+      "name": "AD"
+    },
+    {
+      "codepoint": "0x1201D",
+      "name": "AK"
+    },
+    {
+      "codepoint": "0x1201E",
+      "name": "AK X ERIN2"
+    },
+    {
+      "codepoint": "0x1201F",
+      "name": "AK X SHITA PLUS GISH"
+    },
+    {
+      "codepoint": "0x12020",
+      "name": "AL"
+    },
+    {
+      "codepoint": "0x12021",
+      "name": "AL X AL"
+    },
+    {
+      "codepoint": "0x12022",
+      "name": "AL X DIM2"
+    },
+    {
+      "codepoint": "0x12023",
+      "name": "AL X GISH"
+    },
+    {
+      "codepoint": "0x12024",
+      "name": "AL X HA"
+    },
+    {
+      "codepoint": "0x12025",
+      "name": "AL X KAD3"
+    },
+    {
+      "codepoint": "0x12026",
+      "name": "AL X KI"
+    },
+    {
+      "codepoint": "0x12027",
+      "name": "AL X SHE"
+    },
+    {
+      "codepoint": "0x12028",
+      "name": "AL X USH"
+    },
+    {
+      "codepoint": "0x12029",
+      "name": "ALAN"
+    },
+    {
+      "codepoint": "0x1202A",
+      "name": "ALEPH"
+    },
+    {
+      "codepoint": "0x1202B",
+      "name": "AMAR"
+    },
+    {
+      "codepoint": "0x1202C",
+      "name": "AMAR X SHE"
+    },
+    {
+      "codepoint": "0x1202D",
+      "name": "AN"
+    },
+    {
+      "codepoint": "0x1202E",
+      "name": "AN OVER AN"
+    },
+    {
+      "codepoint": "0x1202F",
+      "name": "AN THREE X"
+    },
+    {
+      "codepoint": "0x12030",
+      "name": "AN PLUS NAGA OPPOSING"
+    },
+    {
+      "codepoint": "0x12031",
+      "name": "AN PLUS NAGA SQUARED"
+    },
+    {
+      "codepoint": "0x12032",
+      "name": "ANSHE"
+    },
+    {
+      "codepoint": "0x12033",
+      "name": "APIN"
+    },
+    {
+      "codepoint": "0x12034",
+      "name": "ARAD"
+    },
+    {
+      "codepoint": "0x12035",
+      "name": "ARAD X KUR"
+    },
+    {
+      "codepoint": "0x12036",
+      "name": "ARKAB"
+    },
+    {
+      "codepoint": "0x12037",
+      "name": "ASAL2"
+    },
+    {
+      "codepoint": "0x12038",
+      "name": "ASH"
+    },
+    {
+      "codepoint": "0x12039",
+      "name": "ASH ZIDA TENU"
+    },
+    {
+      "codepoint": "0x1203A",
+      "name": "ASH KABA TENU"
+    },
+    {
+      "codepoint": "0x120AD",
+      "name": "EZEN X KASKAL"
+    },
+    {
+      "codepoint": "0x120AE",
+      "name": "EZEN X KU3"
+    },
+    {
+      "codepoint": "0x120AF",
+      "name": "EZEN X LA"
+    },
+    {
+      "codepoint": "0x120B0",
+      "name": "EZEN X LAL X LAL"
+    },
+    {
+      "codepoint": "0x120B1",
+      "name": "EZEN X LI"
+    },
+    {
+      "codepoint": "0x120B2",
+      "name": "EZEN X LU"
+    },
+    {
+      "codepoint": "0x120B3",
+      "name": "EZEN X U2"
+    },
+    {
+      "codepoint": "0x120B4",
+      "name": "EZEN X UD"
+    },
+    {
+      "codepoint": "0x120B5",
+      "name": "GA"
+    },
+    {
+      "codepoint": "0x120B6",
+      "name": "GA GUNU"
+    },
+    {
+      "codepoint": "0x120B7",
+      "name": "GA2"
+    },
+    {
+      "codepoint": "0x120B8",
+      "name": "GA2 X A PLUS DA PLUS"
+    },
+    {
+      "codepoint": "0x120B9",
+      "name": "GA2 X A PLUS HA"
+    },
+    {
+      "codepoint": "0x120BA",
+      "name": "GA2 X A PLUS IGI"
+    },
+    {
+      "codepoint": "0x120BB",
+      "name": "GA2 X AB2 TENU PLUS"
+    },
+    {
+      "codepoint": "0x120BC",
+      "name": "GA2 X AN"
+    },
+    {
+      "codepoint": "0x120BD",
+      "name": "GA2 X ASH"
+    },
+    {
+      "codepoint": "0x120BE",
+      "name": "GA2 X ASH2 PLUS GAL"
+    },
+    {
+      "codepoint": "0x120BF",
+      "name": "GA2 X BAD"
+    },
+    {
+      "codepoint": "0x120C0",
+      "name": "GA2 X BAR PLUS RA"
+    },
+    {
+      "codepoint": "0x120C1",
+      "name": "GA2 X BUR"
+    },
+    {
+      "codepoint": "0x120C2",
+      "name": "GA2 X BUR PLUS RA"
+    },
+    {
+      "codepoint": "0x120C3",
+      "name": "GA2 X DA"
+    },
+    {
+      "codepoint": "0x120C4",
+      "name": "GA2 X DI"
+    },
+    {
+      "codepoint": "0x120C5",
+      "name": "GA2 X DIM X SHE"
+    },
+    {
+      "codepoint": "0x120C6",
+      "name": "GA2 X DUB"
+    },
+    {
+      "codepoint": "0x120C7",
+      "name": "GA2 X EL"
+    },
+    {
+      "codepoint": "0x120C8",
+      "name": "GA2 X EL PLUS LA"
+    },
+    {
+      "codepoint": "0x120C9",
+      "name": "GA2 X EN"
+    },
+    {
+      "codepoint": "0x120CA",
+      "name": "GA2 X EN X GAN2"
+    },
+    {
+      "codepoint": "0x120CB",
+      "name": "GA2 X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x120CC",
+      "name": "GA2 X GAR"
+    },
+    {
+      "codepoint": "0x120CD",
+      "name": "GA2 X GI"
+    },
+    {
+      "codepoint": "0x120CE",
+      "name": "GA2 X GI4"
+    },
+    {
+      "codepoint": "0x120CF",
+      "name": "GA2 X GI4 PLUS A"
+    },
+    {
+      "codepoint": "0x120D0",
+      "name": "GA2 X GIR2 PLUS SU"
+    },
+    {
+      "codepoint": "0x120D1",
+      "name": "GA2 X HA PLUS LU"
+    },
+    {
+      "codepoint": "0x120D2",
+      "name": "GA2 X HAL"
+    },
+    {
+      "codepoint": "0x120D3",
+      "name": "GA2 X HAL PLUS LA"
+    },
+    {
+      "codepoint": "0x120D4",
+      "name": "GA2 X HI PLUS LI"
+    },
+    {
+      "codepoint": "0x120D5",
+      "name": "GA2 X HUB2"
+    },
+    {
+      "codepoint": "0x120D6",
+      "name": "GA2 X IGI GUNU"
+    },
+    {
+      "codepoint": "0x120D7",
+      "name": "GA2 X ISH PLUS HU"
+    },
+    {
+      "codepoint": "0x120D8",
+      "name": "GA2 X KAK"
+    },
+    {
+      "codepoint": "0x120D9",
+      "name": "GA2 X KASKAL"
+    },
+    {
+      "codepoint": "0x120DA",
+      "name": "GA2 X KID"
+    },
+    {
+      "codepoint": "0x120DB",
+      "name": "GA2 X KID PLUS LAL"
+    },
+    {
+      "codepoint": "0x120DC",
+      "name": "GA2 X KU3 PLUS AN"
+    },
+    {
+      "codepoint": "0x120DD",
+      "name": "GA2 X LA"
+    },
+    {
+      "codepoint": "0x120DE",
+      "name": "GA2 X ME PLUS EN"
+    },
+    {
+      "codepoint": "0x120DF",
+      "name": "GA2 X MI"
+    },
+    {
+      "codepoint": "0x120E0",
+      "name": "GA2 X NUN"
+    },
+    {
+      "codepoint": "0x120E1",
+      "name": "GA2 X NUN OVER NUN"
+    },
+    {
+      "codepoint": "0x120E2",
+      "name": "GA2 X PA"
+    },
+    {
+      "codepoint": "0x120E3",
+      "name": "GA2 X SAL"
+    },
+    {
+      "codepoint": "0x120E4",
+      "name": "GA2 X SAR"
+    },
+    {
+      "codepoint": "0x12072",
+      "name": "DI"
+    },
+    {
+      "codepoint": "0x12073",
+      "name": "DIB"
+    },
+    {
+      "codepoint": "0x12074",
+      "name": "DIM"
+    },
+    {
+      "codepoint": "0x12075",
+      "name": "DIM X SHE"
+    },
+    {
+      "codepoint": "0x12076",
+      "name": "DIM2"
+    },
+    {
+      "codepoint": "0x12077",
+      "name": "DIN"
+    },
+    {
+      "codepoint": "0x12078",
+      "name": "DIN KASKAL U GUNU DISH"
+    },
+    {
+      "codepoint": "0x12079",
+      "name": "DISH"
+    },
+    {
+      "codepoint": "0x1207A",
+      "name": "DU"
+    },
+    {
+      "codepoint": "0x1207B",
+      "name": "DU OVER DU"
+    },
+    {
+      "codepoint": "0x1207C",
+      "name": "DU GUNU"
+    },
+    {
+      "codepoint": "0x1207D",
+      "name": "DU SHESHIG"
+    },
+    {
+      "codepoint": "0x1207E",
+      "name": "DUB"
+    },
+    {
+      "codepoint": "0x1207F",
+      "name": "DUB X ESH2"
+    },
+    {
+      "codepoint": "0x12080",
+      "name": "DUB2"
+    },
+    {
+      "codepoint": "0x12081",
+      "name": "DUG"
+    },
+    {
+      "codepoint": "0x12082",
+      "name": "DUGUD"
+    },
+    {
+      "codepoint": "0x12083",
+      "name": "DUH"
+    },
+    {
+      "codepoint": "0x12084",
+      "name": "DUN"
+    },
+    {
+      "codepoint": "0x12085",
+      "name": "DUN3"
+    },
+    {
+      "codepoint": "0x12086",
+      "name": "DUN3 GUNU"
+    },
+    {
+      "codepoint": "0x12087",
+      "name": "DUN3 GUNU GUNU"
+    },
+    {
+      "codepoint": "0x12088",
+      "name": "DUN4"
+    },
+    {
+      "codepoint": "0x12089",
+      "name": "DUR2"
+    },
+    {
+      "codepoint": "0x1208A",
+      "name": "E"
+    },
+    {
+      "codepoint": "0x1208B",
+      "name": "E X PAP"
+    },
+    {
+      "codepoint": "0x1208C",
+      "name": "E OVER E NUN OVER NUN"
+    },
+    {
+      "codepoint": "0x1208D",
+      "name": "E2"
+    },
+    {
+      "codepoint": "0x1208E",
+      "name": "E2 X A PLUS HA PLUS"
+    },
+    {
+      "codepoint": "0x1208F",
+      "name": "E2 X GAR"
+    },
+    {
+      "codepoint": "0x12090",
+      "name": "E2 X MI"
+    },
+    {
+      "codepoint": "0x12091",
+      "name": "E2 X SAL"
+    },
+    {
+      "codepoint": "0x12092",
+      "name": "E2 X SHE"
+    },
+    {
+      "codepoint": "0x12093",
+      "name": "E2 X U"
+    },
+    {
+      "codepoint": "0x12094",
+      "name": "EDIN"
+    },
+    {
+      "codepoint": "0x12095",
+      "name": "EGIR"
+    },
+    {
+      "codepoint": "0x12096",
+      "name": "EL"
+    },
+    {
+      "codepoint": "0x12097",
+      "name": "EN"
+    },
+    {
+      "codepoint": "0x12098",
+      "name": "EN X GAN2"
+    },
+    {
+      "codepoint": "0x12099",
+      "name": "EN X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x1209A",
+      "name": "EN X ME"
+    },
+    {
+      "codepoint": "0x1209B",
+      "name": "EN CROSSING EN"
+    },
+    {
+      "codepoint": "0x1209C",
+      "name": "EN OPPOSING EN"
+    },
+    {
+      "codepoint": "0x1209D",
+      "name": "EN SQUARED"
+    },
+    {
+      "codepoint": "0x1209E",
+      "name": "EREN"
+    },
+    {
+      "codepoint": "0x1209F",
+      "name": "ERIN2"
+    },
+    {
+      "codepoint": "0x120A0",
+      "name": "ESH2"
+    },
+    {
+      "codepoint": "0x120A1",
+      "name": "EZEN"
+    },
+    {
+      "codepoint": "0x120A2",
+      "name": "EZEN X A"
+    },
+    {
+      "codepoint": "0x120A3",
+      "name": "EZEN X A PLUS LAL"
+    },
+    {
+      "codepoint": "0x120A4",
+      "name": "EZEN X A PLUS LAL"
+    },
+    {
+      "codepoint": "0x120A5",
+      "name": "EZEN X AN"
+    },
+    {
+      "codepoint": "0x120A6",
+      "name": "EZEN X BAD"
+    },
+    {
+      "codepoint": "0x120A7",
+      "name": "EZEN X DUN3 GUNU"
+    },
+    {
+      "codepoint": "0x120A8",
+      "name": "EZEN X DUN3 GUNU"
+    },
+    {
+      "codepoint": "0x120A9",
+      "name": "EZEN X HA"
+    },
+    {
+      "codepoint": "0x120AA",
+      "name": "EZEN X HA GUNU"
+    },
+    {
+      "codepoint": "0x120AB",
+      "name": "EZEN X IGI GUNU"
+    },
+    {
+      "codepoint": "0x120AC",
+      "name": "EZEN X KASKAL"
+    },
+    {
+      "codepoint": "0x12120",
+      "name": "GUD X KUR"
+    },
+    {
+      "codepoint": "0x12121",
+      "name": "GUD OVER GUD LUGAL"
+    },
+    {
+      "codepoint": "0x12122",
+      "name": "GUL"
+    },
+    {
+      "codepoint": "0x12123",
+      "name": "GUM"
+    },
+    {
+      "codepoint": "0x12124",
+      "name": "GUM X SHE"
+    },
+    {
+      "codepoint": "0x12125",
+      "name": "GUR"
+    },
+    {
+      "codepoint": "0x12126",
+      "name": "GUR7"
+    },
+    {
+      "codepoint": "0x12127",
+      "name": "GURUN"
+    },
+    {
+      "codepoint": "0x12128",
+      "name": "GURUSH"
+    },
+    {
+      "codepoint": "0x12129",
+      "name": "HA"
+    },
+    {
+      "codepoint": "0x1212A",
+      "name": "HA TENU"
+    },
+    {
+      "codepoint": "0x1212B",
+      "name": "HA GUNU"
+    },
+    {
+      "codepoint": "0x1212C",
+      "name": "HAL"
+    },
+    {
+      "codepoint": "0x1212D",
+      "name": "HI"
+    },
+    {
+      "codepoint": "0x1212E",
+      "name": "HI X ASH"
+    },
+    {
+      "codepoint": "0x1212F",
+      "name": "HI X ASH2"
+    },
+    {
+      "codepoint": "0x12130",
+      "name": "HI X BAD"
+    },
+    {
+      "codepoint": "0x12131",
+      "name": "HI X DISH"
+    },
+    {
+      "codepoint": "0x12132",
+      "name": "HI X GAD"
+    },
+    {
+      "codepoint": "0x12133",
+      "name": "HI X KIN"
+    },
+    {
+      "codepoint": "0x12134",
+      "name": "HI X NUN"
+    },
+    {
+      "codepoint": "0x12135",
+      "name": "HI X SHE"
+    },
+    {
+      "codepoint": "0x12136",
+      "name": "HI X U"
+    },
+    {
+      "codepoint": "0x12137",
+      "name": "HU"
+    },
+    {
+      "codepoint": "0x12138",
+      "name": "HUB2"
+    },
+    {
+      "codepoint": "0x12139",
+      "name": "HUB2 X AN"
+    },
+    {
+      "codepoint": "0x1213A",
+      "name": "HUB2 X HAL"
+    },
+    {
+      "codepoint": "0x1213B",
+      "name": "HUB2 X KASKAL"
+    },
+    {
+      "codepoint": "0x1213C",
+      "name": "HUB2 X LISH"
+    },
+    {
+      "codepoint": "0x1213D",
+      "name": "HUB2 X UD"
+    },
+    {
+      "codepoint": "0x1213E",
+      "name": "HUL2"
+    },
+    {
+      "codepoint": "0x1213F",
+      "name": "I"
+    },
+    {
+      "codepoint": "0x12140",
+      "name": "I A"
+    },
+    {
+      "codepoint": "0x12141",
+      "name": "IB"
+    },
+    {
+      "codepoint": "0x12142",
+      "name": "IDIM"
+    },
+    {
+      "codepoint": "0x12143",
+      "name": "IDIM OVER IDIM BUR"
+    },
+    {
+      "codepoint": "0x12144",
+      "name": "IDIM OVER IDIM SQUARED"
+    },
+    {
+      "codepoint": "0x12145",
+      "name": "IG"
+    },
+    {
+      "codepoint": "0x12146",
+      "name": "IGI"
+    },
+    {
+      "codepoint": "0x12147",
+      "name": "IGI DIB"
+    },
+    {
+      "codepoint": "0x12148",
+      "name": "IGI RI"
+    },
+    {
+      "codepoint": "0x12149",
+      "name": "IGI OVER IGI SHIR OVER SHIR"
+    },
+    {
+      "codepoint": "0x1214A",
+      "name": "IGI GUNU"
+    },
+    {
+      "codepoint": "0x1214B",
+      "name": "IL"
+    },
+    {
+      "codepoint": "0x1214C",
+      "name": "IL X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x1214D",
+      "name": "IL2"
+    },
+    {
+      "codepoint": "0x1214E",
+      "name": "IM"
+    },
+    {
+      "codepoint": "0x1214F",
+      "name": "IM X TAK4"
+    },
+    {
+      "codepoint": "0x12150",
+      "name": "IM CROSSING IM"
+    },
+    {
+      "codepoint": "0x12151",
+      "name": "IM OPPOSING IM"
+    },
+    {
+      "codepoint": "0x12152",
+      "name": "IM SQUARED"
+    },
+    {
+      "codepoint": "0x12153",
+      "name": "IMIN"
+    },
+    {
+      "codepoint": "0x12154",
+      "name": "IN"
+    },
+    {
+      "codepoint": "0x12155",
+      "name": "IR"
+    },
+    {
+      "codepoint": "0x12156",
+      "name": "ISH"
+    },
+    {
+      "codepoint": "0x12157",
+      "name": "KA"
+    },
+    {
+      "codepoint": "0x12158",
+      "name": "KA X A"
+    },
+    {
+      "codepoint": "0x12159",
+      "name": "KA X AD"
+    },
+    {
+      "codepoint": "0x1215A",
+      "name": "KA X AD PLUS KU3"
+    },
+    {
+      "codepoint": "0x1215B",
+      "name": "KA X ASH2"
+    },
+    {
+      "codepoint": "0x1215C",
+      "name": "KA X BAD"
+    },
+    {
+      "codepoint": "0x120E5",
+      "name": "GA2 X SHE"
+    },
+    {
+      "codepoint": "0x120E6",
+      "name": "GA2 X SHE PLUS TUR"
+    },
+    {
+      "codepoint": "0x120E7",
+      "name": "GA2 X SHID"
+    },
+    {
+      "codepoint": "0x120E8",
+      "name": "GA2 X SUM"
+    },
+    {
+      "codepoint": "0x120E9",
+      "name": "GA2 X TAK4"
+    },
+    {
+      "codepoint": "0x120EA",
+      "name": "GA2 X U"
+    },
+    {
+      "codepoint": "0x120EB",
+      "name": "GA2 X UD"
+    },
+    {
+      "codepoint": "0x120EC",
+      "name": "GA2 X UD PLUS DU"
+    },
+    {
+      "codepoint": "0x120ED",
+      "name": "GA2 OVER GA2"
+    },
+    {
+      "codepoint": "0x120EE",
+      "name": "GABA"
+    },
+    {
+      "codepoint": "0x120EF",
+      "name": "GABA CROSSING GABA"
+    },
+    {
+      "codepoint": "0x120F0",
+      "name": "GAD"
+    },
+    {
+      "codepoint": "0x120F1",
+      "name": "GAD OVER GAD GAR OVER"
+    },
+    {
+      "codepoint": "0x120F2",
+      "name": "GAL"
+    },
+    {
+      "codepoint": "0x120F3",
+      "name": "GAL GAD OVER GAD GAR"
+    },
+    {
+      "codepoint": "0x120F4",
+      "name": "GALAM"
+    },
+    {
+      "codepoint": "0x120F5",
+      "name": "GAM"
+    },
+    {
+      "codepoint": "0x120F6",
+      "name": "GAN"
+    },
+    {
+      "codepoint": "0x120F7",
+      "name": "GAN2"
+    },
+    {
+      "codepoint": "0x120F8",
+      "name": "GAN2 TENU"
+    },
+    {
+      "codepoint": "0x120F9",
+      "name": "GAN2 OVER GAN2"
+    },
+    {
+      "codepoint": "0x120FA",
+      "name": "GAN2 CROSSING GAN2"
+    },
+    {
+      "codepoint": "0x120FB",
+      "name": "GAR"
+    },
+    {
+      "codepoint": "0x120FC",
+      "name": "GAR3"
+    },
+    {
+      "codepoint": "0x120FD",
+      "name": "GASHAN"
+    },
+    {
+      "codepoint": "0x120FE",
+      "name": "GESHTIN"
+    },
+    {
+      "codepoint": "0x120FF",
+      "name": "GESHTIN X KUR"
+    },
+    {
+      "codepoint": "0x12100",
+      "name": "GI"
+    },
+    {
+      "codepoint": "0x12101",
+      "name": "GI X E"
+    },
+    {
+      "codepoint": "0x12102",
+      "name": "GI X U"
+    },
+    {
+      "codepoint": "0x12103",
+      "name": "GI CROSSING GI"
+    },
+    {
+      "codepoint": "0x12104",
+      "name": "GI4"
+    },
+    {
+      "codepoint": "0x12105",
+      "name": "GI4 OVER GI4"
+    },
+    {
+      "codepoint": "0x12106",
+      "name": "GI4 CROSSING GI4"
+    },
+    {
+      "codepoint": "0x12107",
+      "name": "GIDIM"
+    },
+    {
+      "codepoint": "0x12108",
+      "name": "GIR2"
+    },
+    {
+      "codepoint": "0x12109",
+      "name": "GIR2 GUNU"
+    },
+    {
+      "codepoint": "0x1210A",
+      "name": "GIR3"
+    },
+    {
+      "codepoint": "0x1210B",
+      "name": "GIR3 X A PLUS IGI"
+    },
+    {
+      "codepoint": "0x1210C",
+      "name": "GIR3 X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x1210D",
+      "name": "GIR3 X IGI"
+    },
+    {
+      "codepoint": "0x1210E",
+      "name": "GIR3 X LU PLUS IGI"
+    },
+    {
+      "codepoint": "0x1210F",
+      "name": "GIR3 X PA"
+    },
+    {
+      "codepoint": "0x12110",
+      "name": "GISAL"
+    },
+    {
+      "codepoint": "0x12111",
+      "name": "GISH"
+    },
+    {
+      "codepoint": "0x12112",
+      "name": "GISH CROSSING GISH"
+    },
+    {
+      "codepoint": "0x12113",
+      "name": "GISH X BAD"
+    },
+    {
+      "codepoint": "0x12114",
+      "name": "GISH X TAK4"
+    },
+    {
+      "codepoint": "0x12115",
+      "name": "GISH TENU"
+    },
+    {
+      "codepoint": "0x12116",
+      "name": "GU"
+    },
+    {
+      "codepoint": "0x12117",
+      "name": "GU CROSSING GU"
+    },
+    {
+      "codepoint": "0x12118",
+      "name": "GU2"
+    },
+    {
+      "codepoint": "0x12119",
+      "name": "GU2 X KAK"
+    },
+    {
+      "codepoint": "0x1211A",
+      "name": "GU2 X KAK X IGI"
+    },
+    {
+      "codepoint": "0x1211B",
+      "name": "GU2 X NUN"
+    },
+    {
+      "codepoint": "0x1211C",
+      "name": "GU2 X SAL PLUS TUG2"
+    },
+    {
+      "codepoint": "0x1211D",
+      "name": "GU2 GUNU"
+    },
+    {
+      "codepoint": "0x1211E",
+      "name": "GUD"
+    },
+    {
+      "codepoint": "0x1211F",
+      "name": "GUD X A PLUS KUR"
+    },
+    {
+      "codepoint": "0x12199",
+      "name": "KAL CROSSING KAL"
+    },
+    {
+      "codepoint": "0x1219A",
+      "name": "KAM2"
+    },
+    {
+      "codepoint": "0x1219B",
+      "name": "KAM4"
+    },
+    {
+      "codepoint": "0x1219C",
+      "name": "KASKAL"
+    },
+    {
+      "codepoint": "0x1219D",
+      "name": "KASKAL LAGAB X U"
+    },
+    {
+      "codepoint": "0x1219E",
+      "name": "KASKAL OVER KASKAL"
+    },
+    {
+      "codepoint": "0x1219F",
+      "name": "KESH2"
+    },
+    {
+      "codepoint": "0x121A0",
+      "name": "KI"
+    },
+    {
+      "codepoint": "0x121A1",
+      "name": "KI X BAD"
+    },
+    {
+      "codepoint": "0x121A2",
+      "name": "KI X U"
+    },
+    {
+      "codepoint": "0x121A3",
+      "name": "KI X UD"
+    },
+    {
+      "codepoint": "0x121A4",
+      "name": "KID"
+    },
+    {
+      "codepoint": "0x121A5",
+      "name": "KIN"
+    },
+    {
+      "codepoint": "0x121A6",
+      "name": "KISAL"
+    },
+    {
+      "codepoint": "0x121A7",
+      "name": "KISH"
+    },
+    {
+      "codepoint": "0x121A8",
+      "name": "KISIM5"
+    },
+    {
+      "codepoint": "0x121A9",
+      "name": "KISIM5 OVER KISIM5"
+    },
+    {
+      "codepoint": "0x121AA",
+      "name": "KU"
+    },
+    {
+      "codepoint": "0x121AB",
+      "name": "KU OVER HI X ASH2 KU"
+    },
+    {
+      "codepoint": "0x121AC",
+      "name": "KU3"
+    },
+    {
+      "codepoint": "0x121AD",
+      "name": "KU4"
+    },
+    {
+      "codepoint": "0x121AE",
+      "name": "KU4 VARIANT FORM"
+    },
+    {
+      "codepoint": "0x121AF",
+      "name": "KU7"
+    },
+    {
+      "codepoint": "0x121B0",
+      "name": "KUL"
+    },
+    {
+      "codepoint": "0x121B1",
+      "name": "KUL GUNU"
+    },
+    {
+      "codepoint": "0x121B2",
+      "name": "KUN"
+    },
+    {
+      "codepoint": "0x121B3",
+      "name": "KUR"
+    },
+    {
+      "codepoint": "0x121B4",
+      "name": "KUR OPPOSING KUR"
+    },
+    {
+      "codepoint": "0x121B5",
+      "name": "KUSHU2"
+    },
+    {
+      "codepoint": "0x121B6",
+      "name": "KWU318"
+    },
+    {
+      "codepoint": "0x121B7",
+      "name": "LA"
+    },
+    {
+      "codepoint": "0x121B8",
+      "name": "LAGAB"
+    },
+    {
+      "codepoint": "0x121B9",
+      "name": "LAGAB X A"
+    },
+    {
+      "codepoint": "0x121BA",
+      "name": "LAGAB X A PLUS DA"
+    },
+    {
+      "codepoint": "0x121BB",
+      "name": "LAGAB X A PLUS GAR"
+    },
+    {
+      "codepoint": "0x121BC",
+      "name": "LAGAB X A PLUS LAL"
+    },
+    {
+      "codepoint": "0x121BD",
+      "name": "LAGAB X AL"
+    },
+    {
+      "codepoint": "0x121BE",
+      "name": "LAGAB X AN"
+    },
+    {
+      "codepoint": "0x121BF",
+      "name": "LAGAB X ASH ZIDA"
+    },
+    {
+      "codepoint": "0x121C0",
+      "name": "LAGAB X BAD"
+    },
+    {
+      "codepoint": "0x121C1",
+      "name": "LAGAB X BI"
+    },
+    {
+      "codepoint": "0x121C2",
+      "name": "LAGAB X DAR"
+    },
+    {
+      "codepoint": "0x121C3",
+      "name": "LAGAB X EN"
+    },
+    {
+      "codepoint": "0x121C4",
+      "name": "LAGAB X GA"
+    },
+    {
+      "codepoint": "0x121C5",
+      "name": "LAGAB X GAR"
+    },
+    {
+      "codepoint": "0x121C6",
+      "name": "LAGAB X GUD"
+    },
+    {
+      "codepoint": "0x121C7",
+      "name": "LAGAB X GUD PLUS"
+    },
+    {
+      "codepoint": "0x121C8",
+      "name": "LAGAB X HA"
+    },
+    {
+      "codepoint": "0x121C9",
+      "name": "LAGAB X HAL"
+    },
+    {
+      "codepoint": "0x121CA",
+      "name": "LAGAB X HI X NUN"
+    },
+    {
+      "codepoint": "0x121CB",
+      "name": "LAGAB X IGI GUNU"
+    },
+    {
+      "codepoint": "0x121CC",
+      "name": "LAGAB X IM"
+    },
+    {
+      "codepoint": "0x121CD",
+      "name": "LAGAB X IM PLUS HA"
+    },
+    {
+      "codepoint": "0x121CE",
+      "name": "LAGAB X IM PLUS LU"
+    },
+    {
+      "codepoint": "0x121CF",
+      "name": "LAGAB X KI"
+    },
+    {
+      "codepoint": "0x121D0",
+      "name": "LAGAB X KIN"
+    },
+    {
+      "codepoint": "0x1215D",
+      "name": "KA X BALAG"
+    },
+    {
+      "codepoint": "0x1215E",
+      "name": "KA X BAR"
+    },
+    {
+      "codepoint": "0x1215F",
+      "name": "KA X BI"
+    },
+    {
+      "codepoint": "0x12160",
+      "name": "KA X ERIN2"
+    },
+    {
+      "codepoint": "0x12161",
+      "name": "KA X ESH2"
+    },
+    {
+      "codepoint": "0x12162",
+      "name": "KA X GA"
+    },
+    {
+      "codepoint": "0x12163",
+      "name": "KA X GAL"
+    },
+    {
+      "codepoint": "0x12164",
+      "name": "KA X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x12165",
+      "name": "KA X GAR"
+    },
+    {
+      "codepoint": "0x12166",
+      "name": "KA X GAR PLUS SHA3"
+    },
+    {
+      "codepoint": "0x12167",
+      "name": "KA X GI"
+    },
+    {
+      "codepoint": "0x12168",
+      "name": "KA X GIR2"
+    },
+    {
+      "codepoint": "0x12169",
+      "name": "KA X GISH PLUS SAR"
+    },
+    {
+      "codepoint": "0x1216A",
+      "name": "KA X GISH CROSSING"
+    },
+    {
+      "codepoint": "0x1216B",
+      "name": "KA X GU"
+    },
+    {
+      "codepoint": "0x1216C",
+      "name": "KA X GUR7"
+    },
+    {
+      "codepoint": "0x1216D",
+      "name": "KA X IGI"
+    },
+    {
+      "codepoint": "0x1216E",
+      "name": "KA X IM"
+    },
+    {
+      "codepoint": "0x1216F",
+      "name": "KA X KAK"
+    },
+    {
+      "codepoint": "0x12170",
+      "name": "KA X KI"
+    },
+    {
+      "codepoint": "0x12171",
+      "name": "KA X KID"
+    },
+    {
+      "codepoint": "0x12172",
+      "name": "KA X LI"
+    },
+    {
+      "codepoint": "0x12173",
+      "name": "KA X LU"
+    },
+    {
+      "codepoint": "0x12174",
+      "name": "KA X ME"
+    },
+    {
+      "codepoint": "0x12175",
+      "name": "KA X ME PLUS DU"
+    },
+    {
+      "codepoint": "0x12176",
+      "name": "KA X ME PLUS GI"
+    },
+    {
+      "codepoint": "0x12177",
+      "name": "KA X ME PLUS TE"
+    },
+    {
+      "codepoint": "0x12178",
+      "name": "KA X MI"
+    },
+    {
+      "codepoint": "0x12179",
+      "name": "KA X MI PLUS NUNUZ"
+    },
+    {
+      "codepoint": "0x1217A",
+      "name": "KA X NE"
+    },
+    {
+      "codepoint": "0x1217B",
+      "name": "KA X NUN"
+    },
+    {
+      "codepoint": "0x1217C",
+      "name": "KA X PI"
+    },
+    {
+      "codepoint": "0x1217D",
+      "name": "KA X RU"
+    },
+    {
+      "codepoint": "0x1217E",
+      "name": "KA X SA"
+    },
+    {
+      "codepoint": "0x1217F",
+      "name": "KA X SAR"
+    },
+    {
+      "codepoint": "0x12180",
+      "name": "KA X SHA"
+    },
+    {
+      "codepoint": "0x12181",
+      "name": "KA X SHE"
+    },
+    {
+      "codepoint": "0x12182",
+      "name": "KA X SHID"
+    },
+    {
+      "codepoint": "0x12183",
+      "name": "KA X SHU"
+    },
+    {
+      "codepoint": "0x12184",
+      "name": "KA X SIG"
+    },
+    {
+      "codepoint": "0x12185",
+      "name": "KA X SUHUR"
+    },
+    {
+      "codepoint": "0x12186",
+      "name": "KA X TAR"
+    },
+    {
+      "codepoint": "0x12187",
+      "name": "KA X U"
+    },
+    {
+      "codepoint": "0x12188",
+      "name": "KA X U2"
+    },
+    {
+      "codepoint": "0x12189",
+      "name": "KA X UD"
+    },
+    {
+      "codepoint": "0x1218A",
+      "name": "KA X UMUM X PA"
+    },
+    {
+      "codepoint": "0x1218B",
+      "name": "KA X USH"
+    },
+    {
+      "codepoint": "0x1218C",
+      "name": "KA X ZI"
+    },
+    {
+      "codepoint": "0x1218D",
+      "name": "KA2"
+    },
+    {
+      "codepoint": "0x1218E",
+      "name": "KA2 CROSSING KA2"
+    },
+    {
+      "codepoint": "0x1218F",
+      "name": "KAB"
+    },
+    {
+      "codepoint": "0x12190",
+      "name": "KAD2"
+    },
+    {
+      "codepoint": "0x12191",
+      "name": "KAD3"
+    },
+    {
+      "codepoint": "0x12192",
+      "name": "KAD4"
+    },
+    {
+      "codepoint": "0x12193",
+      "name": "KAD5"
+    },
+    {
+      "codepoint": "0x12194",
+      "name": "KAD5 OVER KAD5"
+    },
+    {
+      "codepoint": "0x12195",
+      "name": "KAK"
+    },
+    {
+      "codepoint": "0x12196",
+      "name": "KAK X IGI GUNU"
+    },
+    {
+      "codepoint": "0x12197",
+      "name": "KAL"
+    },
+    {
+      "codepoint": "0x12198",
+      "name": "KAL X BAD"
+    },
+    {
+      "codepoint": "0x12209",
+      "name": "LU2 X LA PLUS ASH"
+    },
+    {
+      "codepoint": "0x1220A",
+      "name": "LU2 X LAGAB"
+    },
+    {
+      "codepoint": "0x1220B",
+      "name": "LU2 X ME PLUS EN"
+    },
+    {
+      "codepoint": "0x1220C",
+      "name": "LU2 X NE"
+    },
+    {
+      "codepoint": "0x1220D",
+      "name": "LU2 X NU"
+    },
+    {
+      "codepoint": "0x1220E",
+      "name": "LU2 X SI PLUS ASH"
+    },
+    {
+      "codepoint": "0x1220F",
+      "name": "LU2 X SIK2 PLUS BU"
+    },
+    {
+      "codepoint": "0x12210",
+      "name": "LU2 X TUG2"
+    },
+    {
+      "codepoint": "0x12211",
+      "name": "LU2 TENU"
+    },
+    {
+      "codepoint": "0x12212",
+      "name": "LU2 CROSSING LU2"
+    },
+    {
+      "codepoint": "0x12213",
+      "name": "LU2 OPPOSING LU2"
+    },
+    {
+      "codepoint": "0x12214",
+      "name": "LU2 SQUARED"
+    },
+    {
+      "codepoint": "0x12215",
+      "name": "LU2 SHESHIG"
+    },
+    {
+      "codepoint": "0x12216",
+      "name": "LU3"
+    },
+    {
+      "codepoint": "0x12217",
+      "name": "LUGAL"
+    },
+    {
+      "codepoint": "0x12218",
+      "name": "LUGAL OVER LUGAL"
+    },
+    {
+      "codepoint": "0x12219",
+      "name": "LUGAL OPPOSING LUGAL"
+    },
+    {
+      "codepoint": "0x1221A",
+      "name": "LUGAL SHESHIG"
+    },
+    {
+      "codepoint": "0x1221B",
+      "name": "LUH"
+    },
+    {
+      "codepoint": "0x1221C",
+      "name": "LUL"
+    },
+    {
+      "codepoint": "0x1221D",
+      "name": "LUM"
+    },
+    {
+      "codepoint": "0x1221E",
+      "name": "LUM OVER LUM"
+    },
+    {
+      "codepoint": "0x1221F",
+      "name": "LUM OVER LUM GAR OVER"
+    },
+    {
+      "codepoint": "0x12220",
+      "name": "MA"
+    },
+    {
+      "codepoint": "0x12221",
+      "name": "MA X TAK4"
+    },
+    {
+      "codepoint": "0x12222",
+      "name": "MA GUNU"
+    },
+    {
+      "codepoint": "0x12223",
+      "name": "MA2"
+    },
+    {
+      "codepoint": "0x12224",
+      "name": "MAH"
+    },
+    {
+      "codepoint": "0x12225",
+      "name": "MAR"
+    },
+    {
+      "codepoint": "0x12226",
+      "name": "MASH"
+    },
+    {
+      "codepoint": "0x12227",
+      "name": "MASH2"
+    },
+    {
+      "codepoint": "0x12228",
+      "name": "ME"
+    },
+    {
+      "codepoint": "0x12229",
+      "name": "MES"
+    },
+    {
+      "codepoint": "0x1222A",
+      "name": "MI"
+    },
+    {
+      "codepoint": "0x1222B",
+      "name": "MIN"
+    },
+    {
+      "codepoint": "0x1222C",
+      "name": "MU"
+    },
+    {
+      "codepoint": "0x1222D",
+      "name": "MU OVER MU"
+    },
+    {
+      "codepoint": "0x1222E",
+      "name": "MUG"
+    },
+    {
+      "codepoint": "0x1222F",
+      "name": "MUG GUNU"
+    },
+    {
+      "codepoint": "0x12230",
+      "name": "MUNSUB"
+    },
+    {
+      "codepoint": "0x12231",
+      "name": "MURGU2"
+    },
+    {
+      "codepoint": "0x12232",
+      "name": "MUSH"
+    },
+    {
+      "codepoint": "0x12233",
+      "name": "MUSH X A"
+    },
+    {
+      "codepoint": "0x12234",
+      "name": "MUSH X KUR"
+    },
+    {
+      "codepoint": "0x12235",
+      "name": "MUSH X ZA"
+    },
+    {
+      "codepoint": "0x12236",
+      "name": "MUSH OVER MUSH"
+    },
+    {
+      "codepoint": "0x12237",
+      "name": "MUSH OVER MUSH X A"
+    },
+    {
+      "codepoint": "0x12238",
+      "name": "MUSH CROSSING MUSH"
+    },
+    {
+      "codepoint": "0x12239",
+      "name": "MUSH3"
+    },
+    {
+      "codepoint": "0x1223A",
+      "name": "MUSH3 X A"
+    },
+    {
+      "codepoint": "0x1223B",
+      "name": "MUSH3 X A PLUS DI"
+    },
+    {
+      "codepoint": "0x1223C",
+      "name": "MUSH3 X DI"
+    },
+    {
+      "codepoint": "0x1223D",
+      "name": "MUSH3 GUNU"
+    },
+    {
+      "codepoint": "0x1223E",
+      "name": "NA"
+    },
+    {
+      "codepoint": "0x1223F",
+      "name": "NA2"
+    },
+    {
+      "codepoint": "0x12240",
+      "name": "NAGA"
+    },
+    {
+      "codepoint": "0x12241",
+      "name": "NAGA INVERTED"
+    },
+    {
+      "codepoint": "0x12242",
+      "name": "NAGA X SHU TENU"
+    },
+    {
+      "codepoint": "0x12243",
+      "name": "NAGA OPPOSING NAGA"
+    },
+    {
+      "codepoint": "0x12244",
+      "name": "NAGAR"
+    },
+    {
+      "codepoint": "0x121D1",
+      "name": "LAGAB X KU3"
+    },
+    {
+      "codepoint": "0x121D2",
+      "name": "LAGAB X KUL"
+    },
+    {
+      "codepoint": "0x121D3",
+      "name": "LAGAB X KUL PLUS HI"
+    },
+    {
+      "codepoint": "0x121D4",
+      "name": "LAGAB X LAGAB"
+    },
+    {
+      "codepoint": "0x121D5",
+      "name": "LAGAB X LISH"
+    },
+    {
+      "codepoint": "0x121D6",
+      "name": "LAGAB X LU"
+    },
+    {
+      "codepoint": "0x121D7",
+      "name": "LAGAB X LUL"
+    },
+    {
+      "codepoint": "0x121D8",
+      "name": "LAGAB X ME"
+    },
+    {
+      "codepoint": "0x121D9",
+      "name": "LAGAB X ME PLUS EN"
+    },
+    {
+      "codepoint": "0x121DA",
+      "name": "LAGAB X MUSH"
+    },
+    {
+      "codepoint": "0x121DB",
+      "name": "LAGAB X NE"
+    },
+    {
+      "codepoint": "0x121DC",
+      "name": "LAGAB X SHE PLUS SUM"
+    },
+    {
+      "codepoint": "0x121DD",
+      "name": "LAGAB X SHITA PLUS"
+    },
+    {
+      "codepoint": "0x121DE",
+      "name": "LAGAB X SHITA PLUS"
+    },
+    {
+      "codepoint": "0x121DF",
+      "name": "LAGAB X SHU2"
+    },
+    {
+      "codepoint": "0x121E0",
+      "name": "LAGAB X SHU2 PLUS"
+    },
+    {
+      "codepoint": "0x121E1",
+      "name": "LAGAB X SUM"
+    },
+    {
+      "codepoint": "0x121E2",
+      "name": "LAGAB X TAG"
+    },
+    {
+      "codepoint": "0x121E3",
+      "name": "LAGAB X TAK4"
+    },
+    {
+      "codepoint": "0x121E4",
+      "name": "LAGAB X TE PLUS A"
+    },
+    {
+      "codepoint": "0x121E5",
+      "name": "LAGAB X U"
+    },
+    {
+      "codepoint": "0x121E6",
+      "name": "LAGAB X U PLUS A"
+    },
+    {
+      "codepoint": "0x121E7",
+      "name": "LAGAB X U PLUS U"
+    },
+    {
+      "codepoint": "0x121E8",
+      "name": "LAGAB X U2 PLUS ASH"
+    },
+    {
+      "codepoint": "0x121E9",
+      "name": "LAGAB X UD"
+    },
+    {
+      "codepoint": "0x121EA",
+      "name": "LAGAB X USH"
+    },
+    {
+      "codepoint": "0x121EB",
+      "name": "LAGAB SQUARED"
+    },
+    {
+      "codepoint": "0x121EC",
+      "name": "LAGAR"
+    },
+    {
+      "codepoint": "0x121ED",
+      "name": "LAGAR X SHE"
+    },
+    {
+      "codepoint": "0x121EE",
+      "name": "LAGAR X SHE PLUS SUM"
+    },
+    {
+      "codepoint": "0x121EF",
+      "name": "LAGAR GUNU"
+    },
+    {
+      "codepoint": "0x121F0",
+      "name": "LAGAR GUNU OVER LAGAR"
+    },
+    {
+      "codepoint": "0x121F1",
+      "name": "LAHSHU"
+    },
+    {
+      "codepoint": "0x121F2",
+      "name": "LAL"
+    },
+    {
+      "codepoint": "0x121F3",
+      "name": "LAL X LAL"
+    },
+    {
+      "codepoint": "0x121F4",
+      "name": "LAM"
+    },
+    {
+      "codepoint": "0x121F5",
+      "name": "LAM X KUR"
+    },
+    {
+      "codepoint": "0x121F6",
+      "name": "LAM X KUR PLUS RU"
+    },
+    {
+      "codepoint": "0x121F7",
+      "name": "LI"
+    },
+    {
+      "codepoint": "0x121F8",
+      "name": "LIL"
+    },
+    {
+      "codepoint": "0x121F9",
+      "name": "LIMMU2"
+    },
+    {
+      "codepoint": "0x121FA",
+      "name": "LISH"
+    },
+    {
+      "codepoint": "0x121FB",
+      "name": "LU"
+    },
+    {
+      "codepoint": "0x121FC",
+      "name": "LU X BAD"
+    },
+    {
+      "codepoint": "0x121FD",
+      "name": "LU2"
+    },
+    {
+      "codepoint": "0x121FE",
+      "name": "LU2 X AL"
+    },
+    {
+      "codepoint": "0x121FF",
+      "name": "LU2 X BAD"
+    },
+    {
+      "codepoint": "0x12200",
+      "name": "LU2 X ESH2"
+    },
+    {
+      "codepoint": "0x12201",
+      "name": "LU2 X ESH2 TENU"
+    },
+    {
+      "codepoint": "0x12202",
+      "name": "LU2 X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x12203",
+      "name": "LU2 X HI X BAD"
+    },
+    {
+      "codepoint": "0x12204",
+      "name": "LU2 X IM"
+    },
+    {
+      "codepoint": "0x12205",
+      "name": "LU2 X KAD2"
+    },
+    {
+      "codepoint": "0x12206",
+      "name": "LU2 X KAD3"
+    },
+    {
+      "codepoint": "0x12207",
+      "name": "LU2 X KAD3 PLUS ASH"
+    },
+    {
+      "codepoint": "0x12208",
+      "name": "LU2 X KI"
+    },
+    {
+      "codepoint": "0x1227C",
+      "name": "PAN"
+    },
+    {
+      "codepoint": "0x1227D",
+      "name": "PAP"
+    },
+    {
+      "codepoint": "0x1227E",
+      "name": "PESH2"
+    },
+    {
+      "codepoint": "0x1227F",
+      "name": "PI"
+    },
+    {
+      "codepoint": "0x12280",
+      "name": "PI X A"
+    },
+    {
+      "codepoint": "0x12281",
+      "name": "PI X AB"
+    },
+    {
+      "codepoint": "0x12282",
+      "name": "PI X BI"
+    },
+    {
+      "codepoint": "0x12283",
+      "name": "PI X BU"
+    },
+    {
+      "codepoint": "0x12284",
+      "name": "PI X E"
+    },
+    {
+      "codepoint": "0x12285",
+      "name": "PI X I"
+    },
+    {
+      "codepoint": "0x12286",
+      "name": "PI X IB"
+    },
+    {
+      "codepoint": "0x12287",
+      "name": "PI X U"
+    },
+    {
+      "codepoint": "0x12288",
+      "name": "PI X U2"
+    },
+    {
+      "codepoint": "0x12289",
+      "name": "PI CROSSING PI"
+    },
+    {
+      "codepoint": "0x1228A",
+      "name": "PIRIG"
+    },
+    {
+      "codepoint": "0x1228B",
+      "name": "PIRIG X KAL"
+    },
+    {
+      "codepoint": "0x1228C",
+      "name": "PIRIG X UD"
+    },
+    {
+      "codepoint": "0x1228D",
+      "name": "PIRIG X ZA"
+    },
+    {
+      "codepoint": "0x1228E",
+      "name": "PIRIG OPPOSING PIRIG"
+    },
+    {
+      "codepoint": "0x1228F",
+      "name": "RA"
+    },
+    {
+      "codepoint": "0x12290",
+      "name": "RAB"
+    },
+    {
+      "codepoint": "0x12291",
+      "name": "RI"
+    },
+    {
+      "codepoint": "0x12292",
+      "name": "RU"
+    },
+    {
+      "codepoint": "0x12293",
+      "name": "SA"
+    },
+    {
+      "codepoint": "0x12294",
+      "name": "SAG NUTILLU"
+    },
+    {
+      "codepoint": "0x12295",
+      "name": "SAG"
+    },
+    {
+      "codepoint": "0x12296",
+      "name": "SAG X A"
+    },
+    {
+      "codepoint": "0x12297",
+      "name": "SAG X DU"
+    },
+    {
+      "codepoint": "0x12298",
+      "name": "SAG X DUB"
+    },
+    {
+      "codepoint": "0x12299",
+      "name": "SAG X HA"
+    },
+    {
+      "codepoint": "0x1229A",
+      "name": "SAG X KAK"
+    },
+    {
+      "codepoint": "0x1229B",
+      "name": "SAG X KUR"
+    },
+    {
+      "codepoint": "0x1229C",
+      "name": "SAG X LUM"
+    },
+    {
+      "codepoint": "0x1229D",
+      "name": "SAG X MI"
+    },
+    {
+      "codepoint": "0x1229E",
+      "name": "SAG X NUN"
+    },
+    {
+      "codepoint": "0x1229F",
+      "name": "SAG X SAL"
+    },
+    {
+      "codepoint": "0x122A0",
+      "name": "SAG X SHID"
+    },
+    {
+      "codepoint": "0x122A1",
+      "name": "SAG X TAB"
+    },
+    {
+      "codepoint": "0x122A2",
+      "name": "SAG X U2"
+    },
+    {
+      "codepoint": "0x122A3",
+      "name": "SAG X UB"
+    },
+    {
+      "codepoint": "0x122A4",
+      "name": "SAG X UM"
+    },
+    {
+      "codepoint": "0x122A5",
+      "name": "SAG X UR"
+    },
+    {
+      "codepoint": "0x122A6",
+      "name": "SAG X USH"
+    },
+    {
+      "codepoint": "0x122A7",
+      "name": "SAG OVER SAG"
+    },
+    {
+      "codepoint": "0x122A8",
+      "name": "SAG GUNU"
+    },
+    {
+      "codepoint": "0x122A9",
+      "name": "SAL"
+    },
+    {
+      "codepoint": "0x122AA",
+      "name": "SAL LAGAB X ASH2"
+    },
+    {
+      "codepoint": "0x122AB",
+      "name": "SANGA2"
+    },
+    {
+      "codepoint": "0x122AC",
+      "name": "SAR"
+    },
+    {
+      "codepoint": "0x122AD",
+      "name": "SHA"
+    },
+    {
+      "codepoint": "0x122AE",
+      "name": "SHA3"
+    },
+    {
+      "codepoint": "0x122AF",
+      "name": "SHA3 X A"
+    },
+    {
+      "codepoint": "0x122B0",
+      "name": "SHA3 X BAD"
+    },
+    {
+      "codepoint": "0x122B1",
+      "name": "SHA3 X GISH"
+    },
+    {
+      "codepoint": "0x122B2",
+      "name": "SHA3 X NE"
+    },
+    {
+      "codepoint": "0x122B3",
+      "name": "SHA3 X SHU2"
+    },
+    {
+      "codepoint": "0x122B4",
+      "name": "SHA3 X TUR"
+    },
+    {
+      "codepoint": "0x122B5",
+      "name": "SHA3 X U"
+    },
+    {
+      "codepoint": "0x122B6",
+      "name": "SHA3 X U PLUS A"
+    },
+    {
+      "codepoint": "0x122B7",
+      "name": "SHA6"
+    },
+    {
+      "codepoint": "0x122B8",
+      "name": "SHAB6"
+    },
+    {
+      "codepoint": "0x12245",
+      "name": "NAM NUTILLU"
+    },
+    {
+      "codepoint": "0x12246",
+      "name": "NAM"
+    },
+    {
+      "codepoint": "0x12247",
+      "name": "NAM2"
+    },
+    {
+      "codepoint": "0x12248",
+      "name": "NE"
+    },
+    {
+      "codepoint": "0x12249",
+      "name": "NE X A"
+    },
+    {
+      "codepoint": "0x1224A",
+      "name": "NE X UD"
+    },
+    {
+      "codepoint": "0x1224B",
+      "name": "NE SHESHIG"
+    },
+    {
+      "codepoint": "0x1224C",
+      "name": "NI"
+    },
+    {
+      "codepoint": "0x1224D",
+      "name": "NI X E"
+    },
+    {
+      "codepoint": "0x1224E",
+      "name": "NI2"
+    },
+    {
+      "codepoint": "0x1224F",
+      "name": "NIM"
+    },
+    {
+      "codepoint": "0x12250",
+      "name": "NIM X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x12251",
+      "name": "NIM X GAR PLUS GAN2"
+    },
+    {
+      "codepoint": "0x12252",
+      "name": "NINDA2"
+    },
+    {
+      "codepoint": "0x12253",
+      "name": "NINDA2 X AN"
+    },
+    {
+      "codepoint": "0x12254",
+      "name": "NINDA2 X ASH"
+    },
+    {
+      "codepoint": "0x12255",
+      "name": "NINDA2 X ASH PLUS"
+    },
+    {
+      "codepoint": "0x12256",
+      "name": "NINDA2 X GUD"
+    },
+    {
+      "codepoint": "0x12257",
+      "name": "NINDA2 X ME PLUS"
+    },
+    {
+      "codepoint": "0x12258",
+      "name": "NINDA2 X NE"
+    },
+    {
+      "codepoint": "0x12259",
+      "name": "NINDA2 X NUN"
+    },
+    {
+      "codepoint": "0x1225A",
+      "name": "NINDA2 X SHE"
+    },
+    {
+      "codepoint": "0x1225B",
+      "name": "NINDA2 X SHE PLUS A"
+    },
+    {
+      "codepoint": "0x1225C",
+      "name": "NINDA2 X SHE PLUS"
+    },
+    {
+      "codepoint": "0x1225D",
+      "name": "NINDA2 X SHE PLUS"
+    },
+    {
+      "codepoint": "0x1225E",
+      "name": "NINDA2 X U2 PLUS ASH"
+    },
+    {
+      "codepoint": "0x1225F",
+      "name": "NINDA2 X USH"
+    },
+    {
+      "codepoint": "0x12260",
+      "name": "NISAG"
+    },
+    {
+      "codepoint": "0x12261",
+      "name": "NU"
+    },
+    {
+      "codepoint": "0x12262",
+      "name": "NU11"
+    },
+    {
+      "codepoint": "0x12263",
+      "name": "NUN"
+    },
+    {
+      "codepoint": "0x12264",
+      "name": "NUN LAGAR X GAR"
+    },
+    {
+      "codepoint": "0x12265",
+      "name": "NUN LAGAR X MASH"
+    },
+    {
+      "codepoint": "0x12266",
+      "name": "NUN LAGAR X SAL"
+    },
+    {
+      "codepoint": "0x12267",
+      "name": "NUN LAGAR X SAL"
+    },
+    {
+      "codepoint": "0x12268",
+      "name": "NUN LAGAR X USH"
+    },
+    {
+      "codepoint": "0x12269",
+      "name": "NUN TENU"
+    },
+    {
+      "codepoint": "0x1226A",
+      "name": "NUN OVER NUN"
+    },
+    {
+      "codepoint": "0x1226B",
+      "name": "NUN CROSSING NUN"
+    },
+    {
+      "codepoint": "0x1226C",
+      "name": "NUN CROSSING NUN LAGAR"
+    },
+    {
+      "codepoint": "0x1226D",
+      "name": "NUNUZ"
+    },
+    {
+      "codepoint": "0x1226E",
+      "name": "NUNUZ AB2 X ASHGAB"
+    },
+    {
+      "codepoint": "0x1226F",
+      "name": "NUNUZ AB2 X BI"
+    },
+    {
+      "codepoint": "0x12270",
+      "name": "NUNUZ AB2 X DUG"
+    },
+    {
+      "codepoint": "0x12271",
+      "name": "NUNUZ AB2 X GUD"
+    },
+    {
+      "codepoint": "0x12272",
+      "name": "NUNUZ AB2 X IGI GUNU"
+    },
+    {
+      "codepoint": "0x12273",
+      "name": "NUNUZ AB2 X KAD3"
+    },
+    {
+      "codepoint": "0x12274",
+      "name": "NUNUZ AB2 X LA"
+    },
+    {
+      "codepoint": "0x12275",
+      "name": "NUNUZ AB2 X NE"
+    },
+    {
+      "codepoint": "0x12276",
+      "name": "NUNUZ AB2 X SILA3"
+    },
+    {
+      "codepoint": "0x12277",
+      "name": "NUNUZ AB2 X U2"
+    },
+    {
+      "codepoint": "0x12278",
+      "name": "NUNUZ KISIM5 X BI"
+    },
+    {
+      "codepoint": "0x12279",
+      "name": "NUNUZ KISIM5 X BI U"
+    },
+    {
+      "codepoint": "0x1227A",
+      "name": "PA"
+    },
+    {
+      "codepoint": "0x1227B",
+      "name": "PAD"
+    },
+    {
+      "codepoint": "0x122EF",
+      "name": "TA GUNU"
+    },
+    {
+      "codepoint": "0x122F0",
+      "name": "TAB"
+    },
+    {
+      "codepoint": "0x122F1",
+      "name": "TAB OVER TAB NI OVER NI"
+    },
+    {
+      "codepoint": "0x122F2",
+      "name": "TAB SQUARED"
+    },
+    {
+      "codepoint": "0x122F3",
+      "name": "TAG"
+    },
+    {
+      "codepoint": "0x122F4",
+      "name": "TAG X BI"
+    },
+    {
+      "codepoint": "0x122F5",
+      "name": "TAG X GUD"
+    },
+    {
+      "codepoint": "0x122F6",
+      "name": "TAG X SHE"
+    },
+    {
+      "codepoint": "0x122F7",
+      "name": "TAG X SHU"
+    },
+    {
+      "codepoint": "0x122F8",
+      "name": "TAG X TUG2"
+    },
+    {
+      "codepoint": "0x122F9",
+      "name": "TAG X UD"
+    },
+    {
+      "codepoint": "0x122FA",
+      "name": "TAK4"
+    },
+    {
+      "codepoint": "0x122FB",
+      "name": "TAR"
+    },
+    {
+      "codepoint": "0x122FC",
+      "name": "TE"
+    },
+    {
+      "codepoint": "0x122FD",
+      "name": "TE GUNU"
+    },
+    {
+      "codepoint": "0x122FE",
+      "name": "TI"
+    },
+    {
+      "codepoint": "0x122FF",
+      "name": "TI TENU"
+    },
+    {
+      "codepoint": "0x12300",
+      "name": "TIL"
+    },
+    {
+      "codepoint": "0x12301",
+      "name": "TIR"
+    },
+    {
+      "codepoint": "0x12302",
+      "name": "TIR X TAK4"
+    },
+    {
+      "codepoint": "0x12303",
+      "name": "TIR OVER TIR"
+    },
+    {
+      "codepoint": "0x12304",
+      "name": "TIR OVER TIR GAD OVER"
+    },
+    {
+      "codepoint": "0x12305",
+      "name": "TU"
+    },
+    {
+      "codepoint": "0x12306",
+      "name": "TUG2"
+    },
+    {
+      "codepoint": "0x12307",
+      "name": "TUK"
+    },
+    {
+      "codepoint": "0x12308",
+      "name": "TUM"
+    },
+    {
+      "codepoint": "0x12309",
+      "name": "TUR"
+    },
+    {
+      "codepoint": "0x1230A",
+      "name": "TUR OVER TUR ZA OVER ZA"
+    },
+    {
+      "codepoint": "0x1230B",
+      "name": "U"
+    },
+    {
+      "codepoint": "0x1230C",
+      "name": "U GUD"
+    },
+    {
+      "codepoint": "0x1230D",
+      "name": "U U U"
+    },
+    {
+      "codepoint": "0x1230E",
+      "name": "U OVER U PA OVER PA GAR"
+    },
+    {
+      "codepoint": "0x1230F",
+      "name": "U OVER U SUR OVER SUR"
+    },
+    {
+      "codepoint": "0x12310",
+      "name": "U OVER U U REVERSED OVER"
+    },
+    {
+      "codepoint": "0x12311",
+      "name": "U2"
+    },
+    {
+      "codepoint": "0x12312",
+      "name": "UB"
+    },
+    {
+      "codepoint": "0x12313",
+      "name": "UD"
+    },
+    {
+      "codepoint": "0x12314",
+      "name": "UD KUSHU2"
+    },
+    {
+      "codepoint": "0x12315",
+      "name": "UD X BAD"
+    },
+    {
+      "codepoint": "0x12316",
+      "name": "UD X MI"
+    },
+    {
+      "codepoint": "0x12317",
+      "name": "UD X U PLUS U PLUS U"
+    },
+    {
+      "codepoint": "0x12318",
+      "name": "UD X U PLUS U PLUS U"
+    },
+    {
+      "codepoint": "0x12319",
+      "name": "UD GUNU"
+    },
+    {
+      "codepoint": "0x1231A",
+      "name": "UD SHESHIG"
+    },
+    {
+      "codepoint": "0x1231B",
+      "name": "UD SHESHIG X BAD"
+    },
+    {
+      "codepoint": "0x1231C",
+      "name": "UDUG"
+    },
+    {
+      "codepoint": "0x1231D",
+      "name": "UM"
+    },
+    {
+      "codepoint": "0x1231E",
+      "name": "UM X LAGAB"
+    },
+    {
+      "codepoint": "0x1231F",
+      "name": "UM X ME PLUS DA"
+    },
+    {
+      "codepoint": "0x12320",
+      "name": "UM X SHA3"
+    },
+    {
+      "codepoint": "0x12321",
+      "name": "UM X U"
+    },
+    {
+      "codepoint": "0x12322",
+      "name": "UMBIN"
+    },
+    {
+      "codepoint": "0x12323",
+      "name": "UMUM"
+    },
+    {
+      "codepoint": "0x12324",
+      "name": "UMUM X KASKAL"
+    },
+    {
+      "codepoint": "0x12325",
+      "name": "UMUM X PA"
+    },
+    {
+      "codepoint": "0x122B9",
+      "name": "SHAR2"
+    },
+    {
+      "codepoint": "0x122BA",
+      "name": "SHE"
+    },
+    {
+      "codepoint": "0x122BB",
+      "name": "SHE HU"
+    },
+    {
+      "codepoint": "0x122BC",
+      "name": "SHE OVER SHE GAD OVER"
+    },
+    {
+      "codepoint": "0x122BD",
+      "name": "SHE OVER SHE TAB OVER"
+    },
+    {
+      "codepoint": "0x122BE",
+      "name": "SHEG9"
+    },
+    {
+      "codepoint": "0x122BF",
+      "name": "SHEN"
+    },
+    {
+      "codepoint": "0x122C0",
+      "name": "SHESH"
+    },
+    {
+      "codepoint": "0x122C1",
+      "name": "SHESH2"
+    },
+    {
+      "codepoint": "0x122C2",
+      "name": "SHESHLAM"
+    },
+    {
+      "codepoint": "0x122C3",
+      "name": "SHID"
+    },
+    {
+      "codepoint": "0x122C4",
+      "name": "SHID X A"
+    },
+    {
+      "codepoint": "0x122C5",
+      "name": "SHID X IM"
+    },
+    {
+      "codepoint": "0x122C6",
+      "name": "SHIM"
+    },
+    {
+      "codepoint": "0x122C7",
+      "name": "SHIM X A"
+    },
+    {
+      "codepoint": "0x122C8",
+      "name": "SHIM X BAL"
+    },
+    {
+      "codepoint": "0x122C9",
+      "name": "SHIM X BULUG"
+    },
+    {
+      "codepoint": "0x122CA",
+      "name": "SHIM X DIN"
+    },
+    {
+      "codepoint": "0x122CB",
+      "name": "SHIM X GAR"
+    },
+    {
+      "codepoint": "0x122CC",
+      "name": "SHIM X IGI"
+    },
+    {
+      "codepoint": "0x122CD",
+      "name": "SHIM X IGI GUNU"
+    },
+    {
+      "codepoint": "0x122CE",
+      "name": "SHIM X KUSHU2"
+    },
+    {
+      "codepoint": "0x122CF",
+      "name": "SHIM X LUL"
+    },
+    {
+      "codepoint": "0x122D0",
+      "name": "SHIM X MUG"
+    },
+    {
+      "codepoint": "0x122D1",
+      "name": "SHIM X SAL"
+    },
+    {
+      "codepoint": "0x122D2",
+      "name": "SHINIG"
+    },
+    {
+      "codepoint": "0x122D3",
+      "name": "SHIR"
+    },
+    {
+      "codepoint": "0x122D6",
+      "name": "SHITA"
+    },
+    {
+      "codepoint": "0x122D7",
+      "name": "SHU"
+    },
+    {
+      "codepoint": "0x122D8",
+      "name": "SHU OVER INVERTED SHU"
+    },
+    {
+      "codepoint": "0x122D9",
+      "name": "SHU2"
+    },
+    {
+      "codepoint": "0x122DA",
+      "name": "SHUBUR"
+    },
+    {
+      "codepoint": "0x122DB",
+      "name": "SI"
+    },
+    {
+      "codepoint": "0x122DC",
+      "name": "SI GUNU"
+    },
+    {
+      "codepoint": "0x122DD",
+      "name": "SIG"
+    },
+    {
+      "codepoint": "0x122DE",
+      "name": "SIG4"
+    },
+    {
+      "codepoint": "0x122DF",
+      "name": "SIG4 OVER SIG4 SHU2"
+    },
+    {
+      "codepoint": "0x122E0",
+      "name": "SIK2"
+    },
+    {
+      "codepoint": "0x122E1",
+      "name": "SILA3"
+    },
+    {
+      "codepoint": "0x122E2",
+      "name": "SU"
+    },
+    {
+      "codepoint": "0x122E3",
+      "name": "SU OVER SU"
+    },
+    {
+      "codepoint": "0x122E4",
+      "name": "SUD"
+    },
+    {
+      "codepoint": "0x122E5",
+      "name": "SUD2"
+    },
+    {
+      "codepoint": "0x122E6",
+      "name": "SUHUR"
+    },
+    {
+      "codepoint": "0x122E7",
+      "name": "SUM"
+    },
+    {
+      "codepoint": "0x122E8",
+      "name": "SUMASH"
+    },
+    {
+      "codepoint": "0x122E9",
+      "name": "SUR"
+    },
+    {
+      "codepoint": "0x122EA",
+      "name": "SUR9"
+    },
+    {
+      "codepoint": "0x122EB",
+      "name": "TA"
+    },
+    {
+      "codepoint": "0x122EC",
+      "name": "TA ASTERISK"
+    },
+    {
+      "codepoint": "0x122ED",
+      "name": "TA X HI"
+    },
+    {
+      "codepoint": "0x122EE",
+      "name": "TA X MI"
+    },
+    {
+      "codepoint": "0x1235F",
+      "name": "ZA SQUARED X KUR"
+    },
+    {
+      "codepoint": "0x12360",
+      "name": "ZAG"
+    },
+    {
+      "codepoint": "0x12361",
+      "name": "ZAMX"
+    },
+    {
+      "codepoint": "0x12362",
+      "name": "ZE2"
+    },
+    {
+      "codepoint": "0x12363",
+      "name": "ZI"
+    },
+    {
+      "codepoint": "0x12364",
+      "name": "ZI OVER ZI"
+    },
+    {
+      "codepoint": "0x12365",
+      "name": "ZI3"
+    },
+    {
+      "codepoint": "0x12366",
+      "name": "ZIB"
+    },
+    {
+      "codepoint": "0x12367",
+      "name": "ZIB KABA TENU"
+    },
+    {
+      "codepoint": "0x12368",
+      "name": "ZIG"
+    },
+    {
+      "codepoint": "0x12369",
+      "name": "ZIZ2"
+    },
+    {
+      "codepoint": "0x1236A",
+      "name": "ZU"
+    },
+    {
+      "codepoint": "0x1236B",
+      "name": "ZU5"
+    },
+    {
+      "codepoint": "0x1236C",
+      "name": "ZU5 X A"
+    },
+    {
+      "codepoint": "0x1236D",
+      "name": "ZUBUR"
+    },
+    {
+      "codepoint": "0x1236E",
+      "name": "ZUM"
+    },
+    {
+      "codepoint": "0x1236F",
+      "name": "KAP ELAMITE"
+    },
+    {
+      "codepoint": "0x12370",
+      "name": "AB X NUN"
+    },
+    {
+      "codepoint": "0x12371",
+      "name": "AB2 X A"
+    },
+    {
+      "codepoint": "0x12372",
+      "name": "AMAR X KUG"
+    },
+    {
+      "codepoint": "0x12373",
+      "name": "DAG KISIM5 X U2 PLUS"
+    },
+    {
+      "codepoint": "0x12374",
+      "name": "DAG3"
+    },
+    {
+      "codepoint": "0x12375",
+      "name": "DISH PLUS SHU"
+    },
+    {
+      "codepoint": "0x12376",
+      "name": "DUB X SHE"
+    },
+    {
+      "codepoint": "0x12377",
+      "name": "EZEN X GUD"
+    },
+    {
+      "codepoint": "0x12378",
+      "name": "EZEN X SHE"
+    },
+    {
+      "codepoint": "0x12379",
+      "name": "GA2 X AN PLUS KAK"
+    },
+    {
+      "codepoint": "0x1237A",
+      "name": "GA2 X ASH2"
+    },
+    {
+      "codepoint": "0x1237B",
+      "name": "GE22"
+    },
+    {
+      "codepoint": "0x1237C",
+      "name": "GIG"
+    },
+    {
+      "codepoint": "0x1237D",
+      "name": "HUSH"
+    },
+    {
+      "codepoint": "0x1237E",
+      "name": "KA X ANSHE"
+    },
+    {
+      "codepoint": "0x1237F",
+      "name": "KA X ASH3"
+    },
+    {
+      "codepoint": "0x12380",
+      "name": "KA X GISH"
+    },
+    {
+      "codepoint": "0x12381",
+      "name": "KA X GUD"
+    },
+    {
+      "codepoint": "0x12382",
+      "name": "KA X HI X ASH2"
+    },
+    {
+      "codepoint": "0x12383",
+      "name": "KA X LUM"
+    },
+    {
+      "codepoint": "0x12384",
+      "name": "KA X PA"
+    },
+    {
+      "codepoint": "0x12385",
+      "name": "KA X SHUL"
+    },
+    {
+      "codepoint": "0x12386",
+      "name": "KA X TU"
+    },
+    {
+      "codepoint": "0x12387",
+      "name": "KA X UR2"
+    },
+    {
+      "codepoint": "0x12388",
+      "name": "LAGAB X GI"
+    },
+    {
+      "codepoint": "0x12389",
+      "name": "LU2 SHESHIG X BAD"
+    },
+    {
+      "codepoint": "0x1238A",
+      "name": "LU2 X ESH2 PLUS LAL"
+    },
+    {
+      "codepoint": "0x1238B",
+      "name": "LU2 X SHU"
+    },
+    {
+      "codepoint": "0x1238C",
+      "name": "MESH"
+    },
+    {
+      "codepoint": "0x1238D",
+      "name": "MUSH3 X ZA"
+    },
+    {
+      "codepoint": "0x1238E",
+      "name": "NA4"
+    },
+    {
+      "codepoint": "0x1238F",
+      "name": "NIN"
+    },
+    {
+      "codepoint": "0x12390",
+      "name": "NIN9"
+    },
+    {
+      "codepoint": "0x12391",
+      "name": "NINDA2 X BAL"
+    },
+    {
+      "codepoint": "0x12392",
+      "name": "NINDA2 X GI"
+    },
+    {
+      "codepoint": "0x12393",
+      "name": "NU11 ROTATED NINETY"
+    },
+    {
+      "codepoint": "0x12394",
+      "name": "PESH2 ASTERISK"
+    },
+    {
+      "codepoint": "0x12395",
+      "name": "PIR2"
+    },
+    {
+      "codepoint": "0x12396",
+      "name": "SAG X IGI GUNU"
+    },
+    {
+      "codepoint": "0x12326",
+      "name": "UN"
+    },
+    {
+      "codepoint": "0x12327",
+      "name": "UN GUNU"
+    },
+    {
+      "codepoint": "0x12328",
+      "name": "UR"
+    },
+    {
+      "codepoint": "0x12329",
+      "name": "UR CROSSING UR"
+    },
+    {
+      "codepoint": "0x1232A",
+      "name": "UR SHESHIG"
+    },
+    {
+      "codepoint": "0x1232B",
+      "name": "UR2"
+    },
+    {
+      "codepoint": "0x1232C",
+      "name": "UR2 X A PLUS HA"
+    },
+    {
+      "codepoint": "0x1232D",
+      "name": "UR2 X A PLUS NA"
+    },
+    {
+      "codepoint": "0x1232E",
+      "name": "UR2 X AL"
+    },
+    {
+      "codepoint": "0x1232F",
+      "name": "UR2 X HA"
+    },
+    {
+      "codepoint": "0x12330",
+      "name": "UR2 X NUN"
+    },
+    {
+      "codepoint": "0x12331",
+      "name": "UR2 X U2"
+    },
+    {
+      "codepoint": "0x12332",
+      "name": "UR2 X U2 PLUS ASH"
+    },
+    {
+      "codepoint": "0x12333",
+      "name": "UR2 X U2 PLUS BI"
+    },
+    {
+      "codepoint": "0x12334",
+      "name": "UR4"
+    },
+    {
+      "codepoint": "0x12335",
+      "name": "URI"
+    },
+    {
+      "codepoint": "0x12336",
+      "name": "URI3"
+    },
+    {
+      "codepoint": "0x12337",
+      "name": "URU"
+    },
+    {
+      "codepoint": "0x12338",
+      "name": "URU X A"
+    },
+    {
+      "codepoint": "0x12339",
+      "name": "URU X ASHGAB"
+    },
+    {
+      "codepoint": "0x1233A",
+      "name": "URU X BAR"
+    },
+    {
+      "codepoint": "0x1233B",
+      "name": "URU X DUN"
+    },
+    {
+      "codepoint": "0x1233C",
+      "name": "URU X GA"
+    },
+    {
+      "codepoint": "0x1233D",
+      "name": "URU X GAL"
+    },
+    {
+      "codepoint": "0x1233E",
+      "name": "URU X GAN2 TENU"
+    },
+    {
+      "codepoint": "0x1233F",
+      "name": "URU X GAR"
+    },
+    {
+      "codepoint": "0x12340",
+      "name": "URU X GU"
+    },
+    {
+      "codepoint": "0x12341",
+      "name": "URU X HA"
+    },
+    {
+      "codepoint": "0x12342",
+      "name": "URU X IGI"
+    },
+    {
+      "codepoint": "0x12343",
+      "name": "URU X IM"
+    },
+    {
+      "codepoint": "0x12344",
+      "name": "URU X ISH"
+    },
+    {
+      "codepoint": "0x12345",
+      "name": "URU X KI"
+    },
+    {
+      "codepoint": "0x12346",
+      "name": "URU X LUM"
+    },
+    {
+      "codepoint": "0x12347",
+      "name": "URU X MIN"
+    },
+    {
+      "codepoint": "0x12348",
+      "name": "URU X PA"
+    },
+    {
+      "codepoint": "0x12349",
+      "name": "URU X SHE"
+    },
+    {
+      "codepoint": "0x1234A",
+      "name": "URU X SIG4"
+    },
+    {
+      "codepoint": "0x1234B",
+      "name": "URU X TU"
+    },
+    {
+      "codepoint": "0x1234C",
+      "name": "URU X U PLUS GUD"
+    },
+    {
+      "codepoint": "0x1234D",
+      "name": "URU X UD"
+    },
+    {
+      "codepoint": "0x1234E",
+      "name": "URU X URUDA"
+    },
+    {
+      "codepoint": "0x1234F",
+      "name": "URUDA"
+    },
+    {
+      "codepoint": "0x12350",
+      "name": "URUDA X U"
+    },
+    {
+      "codepoint": "0x12351",
+      "name": "USH"
+    },
+    {
+      "codepoint": "0x12352",
+      "name": "USH X A"
+    },
+    {
+      "codepoint": "0x12353",
+      "name": "USH X KU"
+    },
+    {
+      "codepoint": "0x12354",
+      "name": "USH X KUR"
+    },
+    {
+      "codepoint": "0x12355",
+      "name": "USH X TAK4"
+    },
+    {
+      "codepoint": "0x12356",
+      "name": "USHX"
+    },
+    {
+      "codepoint": "0x12357",
+      "name": "USH2"
+    },
+    {
+      "codepoint": "0x12358",
+      "name": "USHUMX"
+    },
+    {
+      "codepoint": "0x12359",
+      "name": "UTUKI"
+    },
+    {
+      "codepoint": "0x1235A",
+      "name": "UZ3"
+    },
+    {
+      "codepoint": "0x1235B",
+      "name": "UZ3 X KASKAL"
+    },
+    {
+      "codepoint": "0x1235C",
+      "name": "UZU"
+    },
+    {
+      "codepoint": "0x1235D",
+      "name": "ZA"
+    },
+    {
+      "codepoint": "0x1235E",
+      "name": "ZA TENU"
+    },
+    {
+      "codepoint": "0x12397",
+      "name": "TI2"
+    },
+    {
+      "codepoint": "0x12398",
+      "name": "UM X ME"
+    },
+    {
+      "codepoint": "0x12399",
+      "name": "U U"
+    }
+  ]
+}

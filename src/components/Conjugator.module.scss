@@ -1,0 +1,235 @@
+@use "../styles/styles.scss" as *;
+
+button {
+  background-color: $silver-setting;
+  color: $dark-rift;
+}
+
+.conjugator {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 60% 30% 10%;
+  padding: 20px 10px;
+  height: 100%;
+  width: calc(100% - 40px);
+
+  .error {
+    background-color: $nyc-taxi;
+    color: $proton-red;
+    padding: 10px;
+  }
+
+  .withLabels {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    padding-left: 20px;
+
+    label {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+
+      &:has(input[type="checkbox"]:disabled),
+      &:has(input[type="radio"]:disabled) {
+        color: $silver-setting;
+      }
+    }
+  }
+
+  // https://moderncss.dev/pure-css-custom-styled-radio-buttons/
+  input[type="radio"] {
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    margin-right: 10px;
+    font: inherit;
+    color: black;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid black;
+    border-radius: 50%;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+
+    &:disabled {
+      border-color: $silver-setting;
+      cursor: not-allowed;
+    }
+  }
+
+  input[type="radio"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em $proton-red;
+  }
+
+  input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+
+  // https://moderncss.dev/pure-css-custom-checkbox-style/
+  input[type="checkbox"] {
+    appearance: none;
+    background-color: #fff;
+    margin: 0px 10px 10px 0px;
+    font: inherit;
+    color: black;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid black;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+
+    &:disabled {
+      border-color: $silver-setting;
+      cursor: not-allowed;
+    }
+  }
+
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em $proton-red;
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+
+  .selectors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+
+    p {
+      margin: 5px;
+    }
+
+    .firstColumn,
+    .secondColumn {
+      padding: 0px 15%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      span {
+        margin: 10px;
+      }
+
+      & > div {
+        margin: 5px;
+      }
+    }
+  }
+
+  .result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+
+    .cuneiforms {
+      font-family: "CuneiformComposite", sans-serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-left: 20px;
+    }
+
+    .translation {
+      font-size: 1.5rem;
+      margin: 0px 5px;
+    }
+
+    .verbResult {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+    }
+
+    table {
+      // border-collapse: collapse;
+      border-color: $dark-rift;
+      border-width: 1px;
+      border-radius: 20px;
+      border-spacing: 0px;
+
+      th,
+      td {
+        border-style: solid;
+        padding: 10px;
+        text-align: center;
+        border-right: none;
+
+        &:nth-of-type(even) {
+          background: $silver-setting;
+        }
+
+        &:last-of-type {
+          border-right: solid;
+        }
+      }
+
+      th {
+        border-bottom: none;
+
+        &:first-of-type {
+          border-start-start-radius: 0.5em;
+        }
+        &:last-of-type {
+          border-start-end-radius: 0.5em;
+        }
+      }
+      tr {
+        &:last-of-type {
+          & td {
+            &:first-of-type {
+              border-end-start-radius: 0.5em;
+            }
+            &:last-of-type {
+              border-end-end-radius: 0.5em;
+            }
+          }
+        }
+      }
+
+      border-block-width: 1px 0;
+      border-inline-width: 1px 0;
+      &:last-of-type {
+        border-inline-end-width: 1px;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: center;
+  }
+
+  .epsdLink {
+    &:hover::after {
+      content: " \2197";
+      font-size: 0.9rem;
+    }
+  }
+}

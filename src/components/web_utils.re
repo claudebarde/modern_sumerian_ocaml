@@ -138,68 +138,74 @@ let parse_verb_syllables = (word: string, stem: string): array(string) => {
     }
 };
 
-[@mel.module] external resultStyles: {..} = "./Conjugator.module.scss"
-let build_results = (_verb: Conjugator.t): React.element => {
-//     switch (Conjugator.print(verb)) {
-//         | Ok({verb: conjugatedVerb, analysis}) => [|
-//             <div className={resultStyles##verbResult} key="verbResults">
-//                 <span style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
-//                     {conjugatedVerb|> React.string}
-//                 </span>
-//                 <span key="cuneiforms">
-//                     {
-//                         conjugatedVerb
-//                         |>parseVerbSyllables(verb.stem)
-//                         |>displayCuneiforms
-//                         |>Array.mapWithIndex(((codePoint, word), i) => {
-//                             <CuneiformChar
-//                                 key={codePoint ++ word ++ Int.toString(i)}
-//                                 codePoint={codePoint}
-//                                 pronunciation={word}
-//                             />
-//                         })
-//                         |> React.array
-//                     }
-//                 </span>
-//             </div>,
-//             <table key="verbAnalysis">
-//                 <tbody>
-//                     <tr>
-//                         {analysis|> VerbAnalysis.output|> Array.map(
-//                             ((output_type, _)) => {
-//                                 <th key={output_type}>
-//                                     {
-//                                         switch output_type {
-//                                             | "middlePrefix" => "Middle Prefix"
-//                                             | "initialPersonPrefix" => "Initial Person Prefix"
-//                                             | "finalPersonPrefix" => "Final Person Prefix"
-//                                             | "edMarker" => "ED Marker"
-//                                             | "finalPersonSuffix" => "Final Person Suffix"
-//                                             | _ => `${output_type|> String.charAt(0)|> String.toUpperCase}${output_type|> String.sliceToEnd(~start=1)|> String.toLowerCase}`
-//                                         }|> React.string
-//                                     }
-//                                 </th>
-//                             },
-//                         )|> React.array}
-//                     </tr>
-//                     <tr>
-//                         {analysis|> VerbAnalysis.output|> Array.mapWithIndex(
-//                             ((_, value), i) => {
-//                                 <td key={value ++ Int.toString(i)}>
-//                                     {value|> React.string}
-//                                 </td>
-//                             },
-//                         )|> React.array}
-//                     </tr>
-//                 </tbody>
-//             </table>,
-//             <span key="cuneiformWarning" style={{fontSize: "0.6rem", fontStyle: "italic"}}>
-//                 {"The cuneiforms are auto-generated and may not be historically accurate"|> React.string}
-//             </span>
-//         |] |> React.array
-//         | Error(err) => <div>{err |> React.string}</div>
-//     }
-    <span>{React.string("placeholder")}</span>
+module BuildResults = {
+    [@mel.module "./Conjugator.module.scss"] external css: Js.t({..}) = "default";
+    [@react.component]
+    let make = (~verb: Conjugator.t) => {    
+        switch (Conjugator.print(verb)) {
+            | Ok({verb: conjugatedVerb, analysis, _}) => [|
+                <div className={css##verbResult} key="verbResults">
+                    <span style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
+                        {{j|$conjugatedVerb|j} |> React.string}
+                    </span>
+                    <span key="cuneiforms">
+                        {
+                            conjugatedVerb
+                            |>parse_verb_syllables(verb.stem)
+                            |>display_cuneiforms
+                            |>Array.mapi((i, (codePoint, word)) => {
+                                <Cuneiform_char
+                                    key={codePoint ++ word ++ Int.to_string(i)}
+                                    codePoint={codePoint}
+                                    pronunciation={word}
+                                />
+                            })
+                            |> React.array
+                        }
+                    </span>
+                </div>,
+                <table key="verbAnalysis">
+                    <tbody>
+                        <tr>
+                            {analysis |> Conjugator__Verb_analysis.output |> Array.map(
+                                ((output_type, _)) => {
+                                    <th key={output_type}>
+                                        {
+                                            switch output_type {
+                                                | "middlePrefix" => "Middle Prefix"
+                                                | "initialPersonPrefix" => "Initial Person Prefix"
+                                                | "finalPersonPrefix" => "Final Person Prefix"
+                                                | "edMarker" => "ED Marker"
+                                                | "finalPersonSuffix" => "Final Person Suffix"
+                                                | _ => {
+                                                    let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
+                                                    let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
+                                                    first_char ++ rest
+                                                }
+                                            }|> React.string
+                                        }
+                                    </th>
+                                },
+                            )|> React.array}
+                        </tr>
+                        <tr>
+                            {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
+                                (i, (_, value)) => {
+                                    <td key={value ++ Int.to_string(i)}>
+                                        {value |> React.string}
+                                    </td>
+                                },
+                            )|> React.array}
+                        </tr>
+                    </tbody>
+                </table>,
+                <span key="cuneiformWarning" style=(ReactDOM.Style.make(~fontSize="0.6rem", ~fontStyle="italic", ()))>
+                    {"The cuneiforms are auto-generated and may not be historically accurate"|> React.string}
+                </span>
+            |] |> React.array
+            | Error(err) => <div>{err |> React.string}</div>
+        }
+    };
 };
 
 module EpsdDict = {

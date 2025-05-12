@@ -19,7 +19,7 @@ let add_first_prefix (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
     | Error err -> Error err
     | Ok arr ->
         let _ = match verb.first_prefix with
-        | Some FirstPrefix.Modal -> arr.(first_prefix_pos) <- "ḫa"
+        | Some FirstPrefix.Modal -> arr.(first_prefix_pos) <- {js|ḫa|js}
         | Some FirstPrefix.Negative -> arr.(first_prefix_pos) <- "nu"
         | Some FirstPrefix.Negative_nan -> arr.(first_prefix_pos) <- "nan"
         | Some FirstPrefix.Modal_ga -> arr.(first_prefix_pos) <- "ga"
@@ -52,7 +52,7 @@ let add_adverbial (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
         | Ok(arr) ->
             let _ = match verb.adverbial with
                 | Some(Ablative) -> arr.(adverbial_pos) <- "ta"
-                | Some(Terminative) -> arr.(adverbial_pos) <- "ši"
+                | Some(Terminative) -> arr.(adverbial_pos) <- {js|ši|js}
                 | None -> ()
             in Ok(arr)
 
@@ -67,13 +67,13 @@ let add_initial_person_prefix (verb: Constructs.conjugated_verb) (arr: morphemes
         | Error(err) -> Error(err)
         | Ok(arr) ->
             let _ = match verb.initial_person_prefix with
-                | Some(First_sing) -> arr.(initial_person_prefix_pos) <- "ʔ"
+                | Some(First_sing) -> arr.(initial_person_prefix_pos) <- {js|ʔ|js}
                 | Some(Second_sing) -> arr.(initial_person_prefix_pos) <- "e"
                 | Some(Third_sing_human) -> arr.(initial_person_prefix_pos) <- "n"
                 | Some(Third_sing_non_human) -> arr.(initial_person_prefix_pos) <- "b"
-                | Some(First_plur) -> arr.(initial_person_prefix_pos) <- "mē"
-                | Some(Second_plur) -> arr.(initial_person_prefix_pos) <- "enē"
-                | Some(Third_plur_human) -> arr.(initial_person_prefix_pos) <- "nnē"
+                | Some(First_plur) -> arr.(initial_person_prefix_pos) <- {js|mē|js}
+                | Some(Second_plur) -> arr.(initial_person_prefix_pos) <- {js|enē|js}
+                | Some(Third_plur_human) -> arr.(initial_person_prefix_pos) <- {js|nnē|js}
                 | Some(Third_plur_non_human) -> arr.(initial_person_prefix_pos) <- "b"
                 | None -> ()
         in Ok(arr)
@@ -87,9 +87,9 @@ let add_indirect_object_prefix (verb: Constructs.conjugated_verb) (arr: morpheme
                 | Some(Second_sing) -> arr.(indirect_object_prefix_pos) <- "ra"
                 | Some(Third_sing_human) -> arr.(indirect_object_prefix_pos) <- "nna"
                 | Some(Third_sing_non_human) -> arr.(indirect_object_prefix_pos) <- "ba"
-                | Some(First_plur) -> arr.(indirect_object_prefix_pos) <- "mē"
+                | Some(First_plur) -> arr.(indirect_object_prefix_pos) <- {js|mē|js}
                 | Some(Second_plur) -> arr.(indirect_object_prefix_pos) <- "ra"
-                | Some(Third_plur_human) -> arr.(indirect_object_prefix_pos) <- "nnē"
+                | Some(Third_plur_human) -> arr.(indirect_object_prefix_pos) <- {js|nnē|js}
                 | Some(Third_plur_non_human) -> arr.(indirect_object_prefix_pos) <- "ba"
                 | None -> ()
         in Ok(arr)
@@ -120,7 +120,7 @@ let add_final_person_prefix (verb: Constructs.conjugated_verb) (arr: morphemes_r
         | Error(err) -> Error(err)
         | Ok(arr) ->
             let _ = match verb.final_person_prefix with
-                | Some(First_sing) -> arr.(final_person_prefix_pos) <- "ʔ"
+                | Some(First_sing) -> arr.(final_person_prefix_pos) <- {js|ʔ|js}
                 | Some(Second_sing) -> arr.(final_person_prefix_pos) <- "e"
                 | Some(Third_sing_human) -> arr.(final_person_prefix_pos) <- "n"
                 | Some(Third_sing_non_human) -> arr.(final_person_prefix_pos) <- "b"
@@ -184,9 +184,9 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
                         | Second_sing -> "ri"
                         | Third_sing_human -> "nni"
                         | Third_sing_non_human -> "bi"
-                        | First_plur -> "mē"
-                        | Second_plur -> "enē"
-                        | Third_plur_human -> "nnē"
+                        | First_plur -> {js|mē|js}
+                        | Second_plur -> {js|enē|js}
+                        | Third_plur_human -> {js|nnē|js}
                         | Third_plur_non_human -> "bi")
                 in Ok(arr))
         | None -> Ok(arr)
@@ -233,7 +233,7 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                                         (* If the verbal form begins with the vocalic prefix /ʔi/ (§24.3),
                                         /ḫa/ contracts with it. The sequence /ḫaʔi/ thus becomes /ḫē/ *)
                                     let _ = outputArr.(preformative_pos) <- "" in
-                                    let _ = outputArr.(first_prefix_pos) <- "ḫē" in outputArr
+                                    let _ = outputArr.(first_prefix_pos) <- {js|ḫē|js} in outputArr
                                     | ("nu", "i") ->
                                         (* 24.3.2 *)
                                         let _ = outputArr.(preformative_pos) <- "u" in outputArr
@@ -249,7 +249,7 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                                         (* stem must start with CV and first consonant must be a glottal stop *)
                                     then 
                                         let stem_start_struct = String.sub (consonant_vowel_sequence morpheme) 0 2 in
-                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == "ʔ"
+                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == {js|ʔ|js}
                                         then 
                                             let prefix = String.sub morpheme 0 1 in
                                             (* removes the "i" of the preformative *)
@@ -339,7 +339,7 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                                 (match find_previous_morpheme locative_pos outputArr with
                                     (* 20.3.1 This /e/ has the same forms and spellings as the final
                                     person-prefix {e} of the second person.
-                                    Just like the latter, it contracts with a preceding vowel,                              lengthening the preceding vowel *)
+                                    Just like the latter, it contracts with a preceding vowel, lengthening the preceding vowel *)
                                     | Some (morpheme, marker) ->
                                         (match marker with
                                             | MiddlePrefix when morpheme == "ba" ->

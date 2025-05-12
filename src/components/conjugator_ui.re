@@ -65,12 +65,12 @@ let make = () => {
     let (indirect_object, set_indirect_object) = React.useState(_ => Js.Nullable.null);
 
     let verb_options: array(ReactSelect.select_option) = [|
-        {label: "ak (to do)", value: "ʔak"},
-        {label: "ĝen (to go)", value: "ĝen"},
+        {label: "ak (to do)", value: {js|ʔak|js}},
+        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}},
         {label: "gu (to eat)", value: "gu"},
-        {label: "naĝ (to drink)", value: "naĝ"},
+        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}},
         {label: "sar (to write)", value: "sar"},
-        {label: "šum (to give)", value: "šum"},
+        {label: {js|šum (to give)|js}, value: {js|šum|js}},
         {label: "tuku (to have)", value: "tuku"},
     |];
 
@@ -359,10 +359,10 @@ let make = () => {
             <div className=css##firstColumn>
                 <div>
                     <span>
-                        {"Verb Stem"->React.string}
+                        {"Verb Stem" |> React.string}
                     </span>
                     <ReactSelect 
-                        options={verb_options} 
+                        options={verb_options}
                         value={verb_stem} 
                         onChange={set_new_verb_stem} 
                         isDisabled={false}
@@ -370,7 +370,7 @@ let make = () => {
                 </div>
                 <div>
                     <p>
-                        {"Aspect"->React.string}
+                        {"Aspect" |> React.string}
                     </p>
                     <div className=css##withLabels>
                         <label>
@@ -417,7 +417,7 @@ let make = () => {
                                     })
                                 }} 
                             />
-                            {"Perfective"->React.string}
+                            {"Perfective" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -463,13 +463,13 @@ let make = () => {
                                     })
                                 }} 
                             />
-                            {"Imperfective"->React.string}
+                            {"Imperfective" |> React.string}
                         </label>
                     </div>
                 </div>
                 <div>
                     <p>
-                        {"Transitivity"->React.string}
+                        {"Transitivity" |> React.string}
                     </p>
                     <div className=css##withLabels>
                         <label>
@@ -516,7 +516,7 @@ let make = () => {
                                     })
                                 }} 
                             />
-                            {"Transitive"->React.string}
+                            {"Transitive" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -562,13 +562,13 @@ let make = () => {
                                     })
                                 }} 
                             />
-                            {"Intransitive"->React.string}
+                            {"Intransitive" |> React.string}
                         </label>
                     </div>
                 </div>
                 <div>
                     <span>
-                        {"Subject"->React.string}
+                        {"Subject" |> React.string}
                     </span>
                     <ReactSelect 
                         options={pronoun_options} 
@@ -588,7 +588,7 @@ let make = () => {
                 </div>
                 <div>
                     <span>
-                        {"Object"->React.string}
+                        {"Object" |> React.string}
                     </span>
                     <ReactSelect 
                         options={pronoun_options} 
@@ -608,7 +608,7 @@ let make = () => {
                 </div>
                 <div>
                     <span>
-                        {"Indirect Object"->React.string}
+                        {"Indirect Object" |> React.string}
                     </span>
                     <ReactSelect 
                         options={pronoun_options}
@@ -630,7 +630,7 @@ let make = () => {
             <div className=css##secondColumn>
                 <div>
                     <p>
-                        {"Preformative"->React.string}
+                        {"Preformative" |> React.string}
                     </p>
                     <div className=css##withLabels>
                         <label>
@@ -649,7 +649,7 @@ let make = () => {
                                 }
                                 onChange={change_preformative}
                             />
-                            {"A"->React.string}
+                            {"A" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -667,7 +667,7 @@ let make = () => {
                                 }
                                 onChange={change_preformative}
                             />
-                            {"I"->React.string}
+                            {"I" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -685,13 +685,13 @@ let make = () => {
                                 }
                                 onChange={change_preformative}
                             />
-                            {"U"->React.string}
+                            {"U" |> React.string}
                         </label>
                     </div>
                 </div>
                 <div>
                     <span>
-                        {"Initial Person Prefix"->React.string}
+                        {"Initial Person Prefix" |> React.string}
                     </span>
                     <ReactSelect 
                         options={pronoun_options} 
@@ -711,7 +711,7 @@ let make = () => {
                 </div>
                 <div>
                     <p>
-                        {"Dimensional Prefixes"->React.string}
+                        {"Dimensional Prefixes" |> React.string}
                     </p>
                     <div className=css##withLabels>
                         <label>
@@ -731,7 +731,7 @@ let make = () => {
                                     change_prefix(Comitative, checked)
                                 }}
                             />
-                            {"DA"->React.string}
+                            {"DA" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -750,7 +750,7 @@ let make = () => {
                                     change_prefix(Ablative, checked)
                                 }}
                             />
-                            {"TA"->React.string}
+                            {"TA" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -769,7 +769,7 @@ let make = () => {
                                     change_prefix(Terminative, checked)
                                 }}
                             />
-                            {"ŠI"->React.string}
+                            {{js|ŠI|js} |> React.string}
                         </label>
                         <label>
                             <input 
@@ -788,7 +788,7 @@ let make = () => {
                                     change_prefix(LocativeIn, checked)
                                 }}
                             />
-                            {"NI"->React.string}
+                            {"NI" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -807,13 +807,13 @@ let make = () => {
                                     change_prefix(LocativeOn, checked)
                                 }}
                             />
-                            {"E"->React.string}
+                            {"E" |> React.string}
                         </label>
                     </div>
                 </div>
                 <div>
                     <p>
-                        {"Modal Prefixes"->React.string}
+                        {"Modal Prefixes" |> React.string}
                     </p>
                     <div className=css##withLabels>
                         <label>
@@ -833,7 +833,7 @@ let make = () => {
                                     change_prefix(Modal, checked)
                                 }}
                              />
-                            {"ḪA"->React.string}
+                            {{js|"ḪA"|js} |> React.string}
                         </label>
                         <label>
                             <input 
@@ -852,7 +852,7 @@ let make = () => {
                                     change_prefix(NegativeNan, checked)
                                 }}
                             />
-                            {"NAN"->React.string}
+                            {"NAN" |> React.string}
                         </label>
                         <label>
                             <input 
@@ -871,13 +871,13 @@ let make = () => {
                                     change_prefix(Negative, checked)
                                 }}
                             />
-                            {"NU"->React.string}
+                            {"NU" |> React.string}
                         </label>
                     </div> 
                 </div>
                 <div>
                     <p>
-                        {"Other Prefixes"->React.string}
+                        {"Other Prefixes" |> React.string}
                     </p>                   
                     <div className=css##withLabels>   
                         <label>
@@ -897,7 +897,7 @@ let make = () => {
                                     change_prefix(Ventive, checked)
                                 }}
                             />
-                            {"MU"->React.string}
+                            {"MU" |> React.string}
                         </label>                     
                         <label>
                             <input 
@@ -916,7 +916,7 @@ let make = () => {
                                     change_prefix(MiddlePrefix, checked)
                                 }}
                             />
-                            {"BA"->React.string}
+                            {"BA" |> React.string}
                         </label>
                     </div>
                 </div>
@@ -927,7 +927,7 @@ let make = () => {
                             | Some(link) => <div>
                                 <p>
                                     <a href={link} target="_blank" className=css##epsdLink>
-                                        {"EPSD Link"->React.string}
+                                        {"EPSD Link" |> React.string}
                                     </a>
                                 </p>
                             </div>
@@ -944,11 +944,11 @@ let make = () => {
                 switch ((verb_form), error) {
                 | (_, Some(err)) => {
                     <span className=css##error>
-                        {err->React.string}
+                        {err |> React.string}
                     </span>
                 }
-                | (Some(verb), None) => Web_utils.build_results(verb)
-                | (None, None) => <span>{"No Selected Verb"->React.string}</span>
+                | (Some(verb), None) => <Web_utils.BuildResults verb={verb} />
+                | (None, None) => <span>{"No Selected Verb" |> React.string}</span>
                 }
             }
         </div>
@@ -971,10 +971,10 @@ let make = () => {
                 set_indirect_object(_ => Js.Nullable.null)
                 set_error(_ => None)
             }}>
-                {"Clear"->React.string}
+                {"Clear" |> React.string}
             </button>
             <button>
-                {"Copy"->React.string}
+                {"Copy" |> React.string}
             </button>
         </div>
     </div>

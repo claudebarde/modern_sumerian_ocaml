@@ -138,6 +138,18 @@ let parse_verb_syllables = (word: string, stem: string): array(string) => {
     }
 };
 
+let replace_with_unicode = (word: string): string => {
+    let glottal_stop = [%re "/x/gi"];
+    let sh_replacement = [%re "/sj/gi"];
+    let h_replacement = [%re "/hj/gi"];
+    let g_replacement = [%re "/gj/gi"];
+    word 
+    |> Js.String.replaceByRe(~regexp=glottal_stop, ~replacement={js|ʔ|js})
+    |> Js.String.replaceByRe(~regexp=sh_replacement, ~replacement={js|š|js})
+    |> Js.String.replaceByRe(~regexp=h_replacement, ~replacement={js|ḫ|js})
+    |> Js.String.replaceByRe(~regexp=g_replacement, ~replacement={js|ĝ|js})
+}
+
 module BuildResults = {
     [@mel.module "./Conjugator.module.scss"] external css: Js.t({..}) = "default";
     [@react.component]
@@ -146,7 +158,9 @@ module BuildResults = {
             | Ok({verb: conjugatedVerb, analysis, _}) => [|
                 <div className={css##verbResult} key="verbResults">
                     <span style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
-                        {{j|$conjugatedVerb|j} |> React.string}
+                        {
+                            conjugatedVerb |> React.string
+                        }
                     </span>
                     <span key="cuneiforms">
                         {

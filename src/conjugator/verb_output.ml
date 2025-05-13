@@ -1,3 +1,12 @@
+(*
+    For compatibility reasons with javaScript, some characters are replaced in the OCaml file.
+    Here is the list of correspondences:
+    - x -> ʔ
+    - $ -> ḫ
+    - # -> š
+    - & -> ĝ
+*)
+
 open Infixes 
 open Utils
 
@@ -67,13 +76,13 @@ let add_initial_person_prefix (verb: Constructs.conjugated_verb) (arr: morphemes
         | Error(err) -> Error(err)
         | Ok(arr) ->
             let _ = match verb.initial_person_prefix with
-                | Some(First_sing) -> arr.(initial_person_prefix_pos) <- {js|ʔ|js}
+                | Some(First_sing) -> arr.(initial_person_prefix_pos) <- "ʔ"
                 | Some(Second_sing) -> arr.(initial_person_prefix_pos) <- "e"
                 | Some(Third_sing_human) -> arr.(initial_person_prefix_pos) <- "n"
                 | Some(Third_sing_non_human) -> arr.(initial_person_prefix_pos) <- "b"
-                | Some(First_plur) -> arr.(initial_person_prefix_pos) <- {js|mē|js}
-                | Some(Second_plur) -> arr.(initial_person_prefix_pos) <- {js|enē|js}
-                | Some(Third_plur_human) -> arr.(initial_person_prefix_pos) <- {js|nnē|js}
+                | Some(First_plur) -> arr.(initial_person_prefix_pos) <- "mē"
+                | Some(Second_plur) -> arr.(initial_person_prefix_pos) <- "enē"
+                | Some(Third_plur_human) -> arr.(initial_person_prefix_pos) <- "nnē"
                 | Some(Third_plur_non_human) -> arr.(initial_person_prefix_pos) <- "b"
                 | None -> ()
         in Ok(arr)
@@ -87,9 +96,9 @@ let add_indirect_object_prefix (verb: Constructs.conjugated_verb) (arr: morpheme
                 | Some(Second_sing) -> arr.(indirect_object_prefix_pos) <- "ra"
                 | Some(Third_sing_human) -> arr.(indirect_object_prefix_pos) <- "nna"
                 | Some(Third_sing_non_human) -> arr.(indirect_object_prefix_pos) <- "ba"
-                | Some(First_plur) -> arr.(indirect_object_prefix_pos) <- {js|mē|js}
+                | Some(First_plur) -> arr.(indirect_object_prefix_pos) <- "mē"
                 | Some(Second_plur) -> arr.(indirect_object_prefix_pos) <- "ra"
-                | Some(Third_plur_human) -> arr.(indirect_object_prefix_pos) <- {js|nnē|js}
+                | Some(Third_plur_human) -> arr.(indirect_object_prefix_pos) <- "nnē"
                 | Some(Third_plur_non_human) -> arr.(indirect_object_prefix_pos) <- "ba"
                 | None -> ()
         in Ok(arr)
@@ -149,7 +158,7 @@ let add_final_person_suffix (verb: Constructs.conjugated_verb) (arr: morphemes_r
                 | Some(Second_plur) -> arr.(final_person_suffix_pos) <- "enzen"
                 | Some(Third_plur_human) -> arr.(final_person_suffix_pos) <-
                     (* can be "eš" or "enē" *)
-                    "eš"
+                    {js|eš|js}
                 | Some(Third_plur_non_human) -> arr.(final_person_suffix_pos) <- ""
                 | None -> ()
             in Ok(arr)
@@ -184,9 +193,9 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
                         | Second_sing -> "ri"
                         | Third_sing_human -> "nni"
                         | Third_sing_non_human -> "bi"
-                        | First_plur -> {js|mē|js}
-                        | Second_plur -> {js|enē|js}
-                        | Third_plur_human -> {js|nnē|js}
+                        | First_plur -> "mē"
+                        | Second_plur -> "enē"
+                        | Third_plur_human -> "nnē"
                         | Third_plur_non_human -> "bi")
                 in Ok(arr))
         | None -> Ok(arr)
@@ -226,15 +235,15 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                     | Some preformative ->
                         (* find previous morpheme *)
                         (match find_previous_morpheme preformative_pos outputArr with
-                            | Some((marker, _)) ->
-                                (match (marker, preformative) with
+                            | Some((marker, markerName)) ->
+                                (match (markerName, preformative) with
                                     (* TODO: An imperfective form with {h~a} is always transitive 25.4.2 *)
-                                    | ("ḫa", "i") ->
+                                    | (FirstPrefix, "i") when marker == {js|ḫa|js} ->
                                         (* If the verbal form begins with the vocalic prefix /ʔi/ (§24.3),
                                         /ḫa/ contracts with it. The sequence /ḫaʔi/ thus becomes /ḫē/ *)
-                                    let _ = outputArr.(preformative_pos) <- "" in
-                                    let _ = outputArr.(first_prefix_pos) <- {js|ḫē|js} in outputArr
-                                    | ("nu", "i") ->
+                                        let _ = outputArr.(preformative_pos) <- "" in
+                                        let _ = outputArr.(first_prefix_pos) <- {js|ḫē|js} in outputArr
+                                    | (FirstPrefix, "i") when marker == "nu" ->
                                         (* 24.3.2 *)
                                         let _ = outputArr.(preformative_pos) <- "u" in outputArr
                                     | _ ->
@@ -249,7 +258,7 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                                         (* stem must start with CV and first consonant must be a glottal stop *)
                                     then 
                                         let stem_start_struct = String.sub (consonant_vowel_sequence morpheme) 0 2 in
-                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == {js|ʔ|js}
+                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == "x"
                                         then 
                                             let prefix = String.sub morpheme 0 1 in
                                             (* removes the "i" of the preformative *)
@@ -653,8 +662,25 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
             (* returns the final string *)
             match outputRes with
             | Error(err) -> Error(err)
-            | Ok(outputArr) -> Ok { 
-                verb = outputArr |> Array.to_list |> String.concat "" ;
-                analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
-                warnings = warnings;
-            }
+            | Ok(outputArr) -> 
+                let final_verb = 
+                    outputArr 
+                    |> Array.to_list 
+                    |> String.concat ""
+                    (* |> String.to_seq
+                    |> List.of_seq
+                    |> List.map(fun s -> String.make 1 s)
+                    |> List.map (fun s -> 
+                        let _ = Js.log s in
+                        if s == "ʔ" 
+                        then "x" 
+                        else s)
+                    |> String.concat "" *)
+                in 
+                (* let final_verb = Js.String.replaceByRe ~regexp:[%re "/ḫ/gi"] ~replacement:"\u{12e9}" final_verb in *)
+                (* let unicode = {j|$final_verb|j} in *)
+                Ok { 
+                    verb = final_verb;
+                    analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
+                    warnings = warnings;
+                }

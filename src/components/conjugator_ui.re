@@ -833,7 +833,7 @@ let make = () => {
                                     change_prefix(Modal, checked)
                                 }}
                              />
-                            {{js|"ḪA"|js} |> React.string}
+                            {{js|ḪA|js} |> React.string}
                         </label>
                         <label>
                             <input 

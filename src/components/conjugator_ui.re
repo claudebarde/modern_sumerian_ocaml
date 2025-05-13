@@ -1,4 +1,4 @@
-[@mel.module "./Conjugator.module.scss"] external css: Js.t({..}) = "default"; 
+[@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default"; 
 
 type prefix =
     Modal
@@ -240,10 +240,8 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
-                                    set_ventive(_ => checked)
                                     Some(Conjugator.set_ventive(verb))
                                 } else {
-                                    set_ventive(_ => checked)
                                     Some(Conjugator.reset_ventive(verb))
                                 }
                             }
@@ -258,13 +256,11 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
-                                    set_comitative(_ => checked)
                                     Some(Conjugator.set_comitative(
                                         verb, 
                                         initial_person_prefix |> Js.Nullable.toOption)
                                     )
                                 } else {
-                                    set_comitative(_ => checked)
                                     Some(Conjugator.reset_comitative(verb))
                                 }
                             }
@@ -279,10 +275,8 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
-                                    set_ablative(_ => checked)
                                     Some(Conjugator.set_ablative(verb, initial_person_prefix |> Js.Nullable.toOption))
                                 } else {
-                                    set_ablative(_ => checked)
                                     Some(Conjugator.reset_ablative(verb))
                                 }
                             }
@@ -297,10 +291,8 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
-                                    set_terminative(_ => checked)
                                     Some(Conjugator.set_terminative(verb, initial_person_prefix |> Js.Nullable.toOption))
                                 } else {
-                                    set_terminative(_ => checked)
                                     Some(Conjugator.reset_terminative(verb))
                                 }
                             }
@@ -315,10 +307,8 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
-                                    set_middle_prefix(_ => checked)
                                     Some(Conjugator.set_middle_prefix(verb))
                                 } else {
-                                    set_middle_prefix(_ => checked)
                                     Some(Conjugator.reset_middle_prefix(verb))
                                 }
                             }
@@ -327,24 +317,32 @@ let make = () => {
                     })
                 }
                 | LocativeIn => {
-                    set_locative(_ => Some("IN"))
+                    set_locative(_ => if (checked) { Some("IN") } else { None })
                     set_verb_form(prev_verb_form => {
+                        set_error(_ => None)
                         switch prev_verb_form {
                             | Some(verb) => {
-                                set_error(_ => None)
-                                Some(Conjugator.set_locative_in(verb, None))
+                                if (checked) {
+                                    Some(Conjugator.set_locative_in(verb, None))
+                                } else {
+                                    Some(Conjugator.reset_locative(verb))
+                                }
                             }
                             | None => None
                         }
                     })
                 }
                 | LocativeOn => {
-                    set_locative(_ => Some("ON"))
+                    set_locative(_ => if (checked) { Some("ON") } else { None })
                     set_verb_form(prev_verb_form => {
+                        set_error(_ => None)
                         switch prev_verb_form {
                             | Some(verb) => {
-                                set_error(_ => None)
-                                Some(Conjugator.set_locative_on(verb, None))
+                                if (checked) {
+                                    Some(Conjugator.set_locative_on(verb, None))
+                                } else {
+                                    Some(Conjugator.reset_locative(verb))
+                                }
                             }
                             | None => None
                         }

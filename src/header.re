@@ -8,7 +8,7 @@ let make = () => {
     <header>
         <div>
             <h1>
-                {[|"eme", "ĝir15", "u", "me", "e"|]
+                {[|"eme", {js|ĝir15|js}, "u", "me", "e"|]
                 |> Components.Web_utils.display_cuneiforms
                 |> Array.mapi((i, (codePoint, word)) => {
                     <span

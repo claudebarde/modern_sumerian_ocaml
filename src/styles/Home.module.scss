@@ -1,0 +1,13 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-image: url("../assets/sumer-bg.png");
+  background-size: cover;
+  background-position: 50% 20%;
+  background-repeat: no-repeat;
+  color: white;
+}

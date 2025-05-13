@@ -16,7 +16,11 @@ let make = () => {
                     className={css##buyMeACoffee} 
                 />
             </a>
-            <a href="https://commerce.coinbase.com/checkout/86ab3abf-c300-421f-b702-db4e58eb1bb8" target="_blank">
+            <a 
+                className=css##donateLink
+                href="https://commerce.coinbase.com/checkout/86ab3abf-c300-421f-b702-db4e58eb1bb8" 
+                target="_blank"
+            >
                 {"Crypto donations"|>React.string}
             </a>
         </div>

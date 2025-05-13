@@ -3,9 +3,8 @@ let make = (~codePoint: string, ~pronunciation: string) => {
     let (hover, setHover) = React.useState(() => false)
 
     let styles = ReactDOM.Style.make(
-        ~fontWeight="bold",
-        ~padding="0px 6px",
         ~cursor="help",
+        ~transform="scale(1.3)",
         (),
     )
 

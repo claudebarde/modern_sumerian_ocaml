@@ -71,14 +71,14 @@ let rec analyse (verbArr: string array) (verbRec: Constructs.conjugated_verb) (v
                     analyse verbArr verbRec verb (start + 1)
                 )
              else 
-                analyse verbArr verbRec verb (start + 1)             
+                analyse verbArr verbRec verb (start + 1)
         | (1, Some prefix) ->
             if String.length prefix > 0 
             then
                 let verb = { verb with slot2 = Some prefix } in
                 analyse verbArr verbRec verb (start + 1)
              else 
-                analyse verbArr verbRec verb (start + 1)            
+                analyse verbArr verbRec verb (start + 1)
         | (2, Some prefix) ->
             if String.length prefix > 0 
             then 
@@ -182,6 +182,7 @@ let rec analyse (verbArr: string array) (verbRec: Constructs.conjugated_verb) (v
                  { verb with slot15 = Some prefix }
              else 
                 verb
+        | (_, None) -> analyse verbArr verbRec verb (start + 1)
         | _ -> verb
 
 let output (verb: t): (string * string) array = 

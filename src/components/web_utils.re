@@ -11,13 +11,16 @@ type cuneiformData = (string, string); // (Unicode code point, sound)
 
 [@mel.scope "JSON"] external parseCuneiformCodePoints: string => jsonCuneiformData = "parse";
 
-let fallbackDict = Js.Dict.fromArray([|("eme", "0x12174"), ("ĝir15", "0x120A0"), ("ul", "0x12109"), ("la", "0x121B7"), ("im", "0x1214E"), ("ĝen", "0x1207A"), ("ʔak", "0x1201D"), ("tuku", "0x12307"), ("niĝ", "0x120FB"), ("šum", "0x122E7"), ("naĝ", "0x12158")|]); 
+let fallbackDict = Js.Dict.fromArray([|("eme", "0x12174"), ({js|ĝir15|js}, "0x120A0"), ("ul", "0x12109"), ("la", "0x121B7"), ("im", "0x1214E"), ({js|ĝen|js}, "0x1207A"), ({js|ʔak|js}, "0x1201D"), ("tuku", "0x12307"), ({js|niĝ|js}, "0x120FB"), ({js|šum|js}, "0x122E7"), ({js|naĝ|js}, "0x12158")|]); 
 
 let search_cuneiforms = (words: array(string)): array((string, option(string))) => {
-    let cuneiformData: jsonCuneiformData = cuneiformCodePoints|>Js.Json.stringify|>parseCuneiformCodePoints;
+    let cuneiformData: jsonCuneiformData = cuneiformCodePoints |> Js.Json.stringify |> parseCuneiformCodePoints;
     words |> Array.map(word => {
         // remove the glottal stop
-        let formattedWord = word|>Js.String.replaceByRe(~regexp=Js.Re.fromString("ʔ"), ~replacement="")|>Js.String.toUpperCase;
+        let formattedWord = 
+            word
+            |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ʔ|js}), ~replacement="")
+            |> Js.String.toUpperCase;
         switch (Array.find_opt(item => item.name == formattedWord, cuneiformData.codepoints)) {
             | Some(codePointData) => (word, Some(codePointData.codepoint))
             | None => 
@@ -31,7 +34,7 @@ let search_cuneiforms = (words: array(string)): array((string, option(string))) 
 };
 
 let display_cuneiforms = (words: array(string)):  array(cuneiformData) => {
-    words |> search_cuneiforms|>Array.map(((word, codePoint)) => {
+    words |> search_cuneiforms |> Array.map(((word, codePoint)) => {
         switch codePoint {
         | Some(code) => (code|>toNumber|>Js.String.fromCodePoint, {j|$word|j})
         | None => (word, word)
@@ -151,23 +154,20 @@ let replace_with_unicode = (word: string): string => {
 }
 
 module BuildResults = {
-    [@mel.module "./Conjugator.module.scss"] external css: Js.t({..}) = "default";
+    [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default";
     [@react.component]
-    let make = (~verb: Conjugator.t) => {    
+    let make = (~verb: Conjugator.t) => {
         switch (Conjugator.print(verb)) {
-            | Ok({verb: conjugatedVerb, analysis, _}) => [|
+            | Ok({verb: conjugatedVerb, analysis, _}) => {[|
                 <div className={css##verbResult} key="verbResults">
                     <span style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
-                        {
-                            conjugatedVerb |> React.string
-                        }
+                        {conjugatedVerb |> React.string}
                     </span>
                     <span key="cuneiforms">
                         {
-                            conjugatedVerb
-                            |>parse_verb_syllables(verb.stem)
-                            |>display_cuneiforms
-                            |>Array.mapi((i, (codePoint, word)) => {
+                            parse_verb_syllables(conjugatedVerb, verb.stem)
+                            |> display_cuneiforms
+                            |> Array.mapi((i, (codePoint, word)) => {
                                 <Cuneiform_char
                                     key={codePoint ++ word ++ Int.to_string(i)}
                                     codePoint={codePoint}
@@ -216,7 +216,7 @@ module BuildResults = {
                 <span key="cuneiformWarning" style=(ReactDOM.Style.make(~fontSize="0.6rem", ~fontStyle="italic", ()))>
                     {"The cuneiforms are auto-generated and may not be historically accurate"|> React.string}
                 </span>
-            |] |> React.array
+            |] |> React.array}
             | Error(err) => <div>{err |> React.string}</div>
         }
     };

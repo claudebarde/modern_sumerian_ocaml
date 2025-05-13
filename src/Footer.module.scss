@@ -1,4 +1,19 @@
 .buyMeACoffee {
   height: 30px;
   width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.donateLink {
+  text-decoration: none;
+  color: #f3f3f4;
+  background-color: #1034a6;
+  height: 30px;
+  width: 120px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

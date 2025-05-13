@@ -83,9 +83,10 @@ let rec find_previous_morpheme (pos: int) (arr: string array): (string * markerN
           (match marker_by_pos(pos - 1) with
           | Some marker -> Some((morph, marker))
           | None -> None)
-        else None
+        else find_previous_morpheme (pos - 1) arr
       with
-        | Invalid_argument _ -> find_previous_morpheme (pos - 1) arr
+        (* | Invalid_argument _ -> find_previous_morpheme (pos - 1) arr *)
+        | Invalid_argument _ -> None
 
 
 let rec find_next_morpheme (pos: int) (arr: string array): (string * markerName) option = 
@@ -110,10 +111,16 @@ let starts_with_vowel (str: string): bool =
         | _ -> false
 
 let ends_with_vowel (str: string): bool = 
-    let lastChar = String.get str (String.length str - 1) |> String.make 1 in
-    match lastChar with
-        | "a" | "á" | "e" | "è" | "i" | "o" | "u" -> true
-        | _ -> false
+    let vowels = ["a"; "á"; "e"; "è"; "i"; "o"; "u"] in
+    try
+      match String.length str with
+        | 0 -> false
+        | 1 -> List.mem str vowels
+        | _ ->
+          let last_char = String.get str (String.length str - 1) |> String.make 1
+          in List.mem last_char vowels
+    with
+      | Invalid_argument _ -> false
 
 let starts_with_consonant (str: string): bool =
     let firstChar = String.get str 0 |> String.make 1 in

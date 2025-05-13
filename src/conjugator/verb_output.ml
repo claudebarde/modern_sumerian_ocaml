@@ -258,7 +258,15 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                                         (* stem must start with CV and first consonant must be a glottal stop *)
                                     then 
                                         let stem_start_struct = String.sub (consonant_vowel_sequence morpheme) 0 2 in
-                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == "x"
+                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == {js|ʔ|js}
+                                        then 
+                                            (* removes the "i" of the preformative *)
+                                            let prefix = String.sub morpheme 0 1 in
+                                            let _ = outputArr.(preformative_pos) <- prefix in
+                                            (* removes the "i" of the stem *)
+                                            let _ = outputArr.(stem_pos) <- String.sub morpheme 1 ((String.length morpheme) - 1) in
+                                            outputArr
+                                        else if morpheme |> starts_with_consonant && ventive_pos == ventive_pos
                                         then 
                                             let prefix = String.sub morpheme 0 1 in
                                             (* removes the "i" of the preformative *)
@@ -402,13 +410,18 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                     13.2.4 The prefix {e} contracts with a preceding vowel, lengthening that vowel *)
                     match get_morpheme_at_pos final_person_prefix_pos outputArr with
                     | Some(fpp) when fpp == "e" ->
+                        (* 13.2.4 The prefix {e} contracts with a preceding vowel, lengthening that vowel *)
                         (* find previous morpheme *)
                         (match find_previous_morpheme final_person_prefix_pos outputArr with
                             | Some (morpheme, _) ->
                                 if ends_with_vowel morpheme
                                 then
                                     (* gets the last vowel of the marker *)
-                                    let last_vowel = String.sub morpheme ((String.length morpheme) - 1) (String.length morpheme) in
+                                    let last_vowel = 
+                                        if String.length morpheme == 1
+                                        then morpheme
+                                        else String.get morpheme ((String.length morpheme) - 1) |> String.make 1
+                                    in
                                     let _ = outputArr.(final_person_prefix_pos) <- last_vowel in
                                     outputArr
                                 else
@@ -667,18 +680,7 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                     outputArr 
                     |> Array.to_list 
                     |> String.concat ""
-                    (* |> String.to_seq
-                    |> List.of_seq
-                    |> List.map(fun s -> String.make 1 s)
-                    |> List.map (fun s -> 
-                        let _ = Js.log s in
-                        if s == "ʔ" 
-                        then "x" 
-                        else s)
-                    |> String.concat "" *)
                 in 
-                (* let final_verb = Js.String.replaceByRe ~regexp:[%re "/ḫ/gi"] ~replacement:"\u{12e9}" final_verb in *)
-                (* let unicode = {j|$final_verb|j} in *)
                 Ok { 
                     verb = final_verb;
                     analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;

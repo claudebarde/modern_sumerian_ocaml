@@ -55,3 +55,6 @@ Thumbs.db
 .env.test.local
 .env.production.local
 
+
+# Local Netlify folder
+.netlify

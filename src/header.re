@@ -25,7 +25,6 @@ let make = () => {
             <h1>{"Modern Sumerian"|>React.string}</h1>
         </div>
         <div>
-            {node_env === "development" ? (               
                 <nav className={css##navColumn} role="navigation">
                     <ul>
                         <li>
@@ -42,56 +41,60 @@ let make = () => {
                                 {"Home"|>React.string}
                             </a>
                         </li>
-                        <li>
-                            <a
-                                className={
-                                    switch (List.nth_opt(url.path, 0)) {
-                                    | Some(path) when path === "conjugator" => css##active
-                                    | Some(path) when path === "cuneiforms" => css##active
-                                    | Some(path) when path === "dictionary" => css##active
-                                    | _ => ""
-                                    }
-                                }>
-                                {"Tools"|>React.string}
-                            </a>
-                            <ul className={css##dropdown}>
+                        {node_env === "development" ? (
+                            <>
                                 <li>
-                                    <a 
-                                        onClick={_ => { ReasonReactRouter.push("conjugator") }}
-                                    >
-                                        {"Conjugator"|>React.string}
+                                    <a
+                                        className={
+                                            switch (List.nth_opt(url.path, 0)) {
+                                            | Some(path) when path === "conjugator" => css##active
+                                            | Some(path) when path === "cuneiforms" => css##active
+                                            | Some(path) when path === "dictionary" => css##active
+                                            | _ => ""
+                                            }
+                                        }>
+                                        {"Tools"|>React.string}
                                     </a>
+                                    <ul className={css##dropdown}>
+                                        <li>
+                                            <a 
+                                                onClick={_ => { ReasonReactRouter.push("conjugator") }}
+                                            >
+                                                {"Conjugator"|>React.string}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a 
+                                                onClick={_ => { ReasonReactRouter.push("cuneiforms") }}
+                                            >
+                                                {"Cuneiforms"|>React.string}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a 
+                                                onClick={_ => { ReasonReactRouter.push("dictionary") }}
+                                            >
+                                                {"Dictionary"|>React.string}
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li>
-                                    <a 
-                                        onClick={_ => { ReasonReactRouter.push("cuneiforms") }}
-                                    >
-                                        {"Cuneiforms"|>React.string}
+                                    <a
+                                        className={
+                                            switch (List.nth_opt(url.path, 0)) {
+                                            | Some(path) when path === "lessons" => css##active
+                                            | _ => ""
+                                            }
+                                        }
+                                        onClick={_ => {
+                                            ReasonReactRouter.push("lessons")
+                                        }}>
+                                        {"Lessons"|>React.string}
                                     </a>
                                 </li>
-                                <li>
-                                    <a 
-                                        onClick={_ => { ReasonReactRouter.push("dictionary") }}
-                                    >
-                                        {"Dictionary"|>React.string}
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a
-                                className={
-                                    switch (List.nth_opt(url.path, 0)) {
-                                    | Some(path) when path === "lessons" => css##active
-                                    | _ => ""
-                                    }
-                                }
-                                onClick={_ => {
-                                    ReasonReactRouter.push("lessons")
-                                }}>
-                                {"Lessons"|>React.string}
-                            </a>
-                        </li>
+                            </>
+                        ) : React.null}
                         <li>
                             <a
                                 className={
@@ -108,7 +111,6 @@ let make = () => {
                         </li>
                     </ul>
                 </nav>
-            ) : React.null}
         </div>
     </header>
 };

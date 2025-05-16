@@ -115,7 +115,16 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 set_subject(_ => person_param |> Js.Nullable.return)
-                                Some(Conjugator.set_subject(verb, person_param))
+                                try (
+                                    Conjugator.set_subject(verb, person_param)
+                                    ->Result.get_ok
+                                    ->Some
+                                ) {
+                                    | Conjugator__Utils.Todo(err) => {
+                                        set_error(_ => Some(err))
+                                        prev_verb_form
+                                    }
+                                }
                             }
                             | None => None
                         }
@@ -390,19 +399,33 @@ let make = () => {
                                                     set_error(_ => None)
                                                     set_is_perfective(_ => Some(true))
                                                     switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
-                                                        | (Some(subj), Some(obj)) =>
-                                                            verb
+                                                        | (Some(subj), Some(obj)) => {
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_perfective
                                                             ->Conjugator.set_subject(subj)
+                                                            ->Result.get_ok
                                                             ->Conjugator.set_object(obj)
-                                                            ->Some
-                                                        | (Some(subj), _) => 
-                                                            verb
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
+                                                        }
+                                                        | (Some(subj), _) => {
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_perfective
                                                             ->Conjugator.set_subject(subj)
-                                                            ->Some
+                                                            ->Result.get_ok
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
+                                                        }
                                                         | (_, Some(obj)) => 
                                                             verb
                                                             ->Conjugator.reset_subject_object
@@ -436,19 +459,32 @@ let make = () => {
                                                     set_error(_ => None)
                                                     set_is_perfective(_ => Some(false))
                                                     switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
-                                                        | (Some(subj), Some(obj)) =>
-                                                            verb
+                                                        | (Some(subj), Some(obj)) => {
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_imperfective(None)
                                                             ->Conjugator.set_subject(subj)
+                                                            ->Result.get_ok
                                                             ->Conjugator.set_object(obj)
-                                                            ->Some
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
+                                                        }
                                                         | (Some(subj), _) => 
-                                                            verb
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_imperfective(None)
                                                             ->Conjugator.set_subject(subj)
-                                                            ->Some
+                                                            ->Result.get_ok
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
                                                         | (_, Some(obj)) => 
                                                             verb
                                                             ->Conjugator.reset_subject_object
@@ -490,18 +526,30 @@ let make = () => {
                                                     set_is_transitive(_ => Some(true))
                                                     switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
                                                         | (Some(subj), Some(obj)) =>
-                                                            verb
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_transitive
                                                             ->Conjugator.set_subject(subj)
+                                                            ->Result.get_ok
                                                             ->Conjugator.set_object(obj)
-                                                            ->Some
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
                                                         | (Some(subj), _) => 
-                                                            verb
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_transitive
                                                             ->Conjugator.set_subject(subj)
-                                                            ->Some
+                                                            ->Result.get_ok
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
                                                         | (_, Some(obj)) => 
                                                             verb
                                                             ->Conjugator.reset_subject_object
@@ -536,18 +584,30 @@ let make = () => {
                                                     set_is_transitive(_ => Some(false))
                                                     switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
                                                         | (Some(subj), Some(obj)) =>
-                                                            verb
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_intransitive
                                                             ->Conjugator.set_subject(subj)
+                                                            ->Result.get_ok
                                                             ->Conjugator.set_object(obj)
-                                                            ->Some
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
                                                         | (Some(subj), _) => 
-                                                            verb
+                                                            try (verb
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_intransitive
                                                             ->Conjugator.set_subject(subj)
-                                                            ->Some
+                                                            ->Result.get_ok
+                                                            ->Some) {
+                                                                | Conjugator__Utils.Todo(err) => {
+                                                                    set_error(_ => Some(err))
+                                                                    prev_verb_form
+                                                                }
+                                                            }
                                                         | (_, Some(obj)) => 
                                                             verb
                                                             ->Conjugator.reset_subject_object

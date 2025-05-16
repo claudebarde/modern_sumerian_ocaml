@@ -39,7 +39,7 @@ module FinalPersonPrefix = struct
         | PersonParam.Second_sing -> Second_sing
         | PersonParam.Third_sing_human -> Third_sing_human
         | PersonParam.Third_sing_non_human -> Third_sing_non_human
-        | _ -> failwith "Invalid person for FinalPersonPrefix"
+        | _ -> Utils.todo "Unsupported person for FinalPersonPrefix"
 end
 
 module InitialPersonPrefix = struct
@@ -102,7 +102,7 @@ module FinalPersonSuffix = struct
         | Second_sing -> FinalPersonPrefix.Second_sing
         | Third_sing_human -> FinalPersonPrefix.Third_sing_human
         | Third_sing_non_human -> FinalPersonPrefix.Third_sing_non_human
-        | _ -> failwith "Invalid person for FinalPersonSuffix"
+        | _ -> Utils.todo "Invalid person for FinalPersonSuffix"
 end
 
 type adverbial_prefix =

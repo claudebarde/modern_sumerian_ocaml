@@ -1,4 +1,3 @@
-open Utils
 include Infixes
 (*
     Slot 1 Modal prefix (ḫa); negative particle; prefix of anteriority; stem (in imperative forms)
@@ -144,15 +143,12 @@ let set_initial_person_prefix verb (ipp: PersonParam.t): t =
         | Third_plur_non_human -> Some Third_plur_non_human
     in { verb with initial_person_prefix = prefix }
 
-let set_final_person_prefix verb (pp: PersonParam.t): t =
-    let open FinalPersonPrefix in
-    let prefix: FinalPersonPrefix.t option = match pp with
-    | First_sing -> Some First_sing
-    | Second_sing -> Some Second_sing
-    | Third_sing_human -> Some Third_sing_human
-    | Third_sing_non_human -> Some Third_sing_non_human
-    | _ -> todo "TODO = handle plural final person prefixes"
-    in { verb with final_person_prefix = prefix }
+let set_final_person_prefix verb (pp: PersonParam.t): (t, string) result =
+    try
+        let prefix = FinalPersonPrefix.from_person pp
+        in Ok { verb with final_person_prefix = Some prefix }
+    with
+    | Failure exn -> Error exn
 
 let set_indirect_object verb (ipp: PersonParam.t): t =
     let open IndirectObjectPrefix in
@@ -201,8 +197,7 @@ let set_locative_on verb person: t =
 
 let reset_locative verb: t = { verb with locative = None}
 
-let set_subject (verb: t) (person: PersonParam.t): t =
-    let open FinalPersonPrefix in
+let set_subject (verb: t) (person: PersonParam.t): (t, string) result =
     let open FinalPersonSuffix in
     if not verb.is_transitive || (verb.is_transitive && not verb.is_perfective)
     then let suffix: FinalPersonSuffix.t option = match person with
@@ -214,17 +209,15 @@ let set_subject (verb: t) (person: PersonParam.t): t =
             | Second_plur -> Some Second_plur
             | Third_plur_human -> Some Third_plur_human
             | Third_plur_non_human -> Some Third_plur_non_human
-        in { verb with final_person_suffix = suffix }
+        in Ok { verb with final_person_suffix = suffix }
     else
-        let prefix: FinalPersonPrefix.t option = match person with
-            | First_sing -> Some First_sing
-            | Second_sing -> Some Second_sing
-            | Third_sing_human -> Some Third_sing_human
-            | _ -> todo "TODO = handle plural subjects in perfective verbs"
-        in { verb with final_person_prefix = prefix}
+        try
+            let prefix = FinalPersonPrefix.from_person person
+            in Ok { verb with final_person_prefix = Some prefix }
+        with
+        | Failure exn -> Error exn
 
 let set_object (verb: t) (person: PersonParam.t): t =
-    let open FinalPersonPrefix in
     let open FinalPersonSuffix in
     if verb.is_transitive && verb.is_perfective
     then let suffix: FinalPersonSuffix.t option = match person with
@@ -238,13 +231,9 @@ let set_object (verb: t) (person: PersonParam.t): t =
             | Third_plur_non_human -> Some Third_plur_non_human
         in { verb with final_person_suffix = suffix }
     else if verb.is_transitive && not verb.is_perfective
-    then let prefix: FinalPersonPrefix.t option = match person with
-            | First_sing -> Some First_sing
-            | Second_sing -> Some Second_sing
-            | Third_sing_human -> Some Third_sing_human
-            | Third_sing_non_human -> Some Third_sing_non_human
-            | _ -> todo "TODO = handle plural objects in imperfective verbs"
-        in { verb with final_person_prefix = prefix}
+    then 
+        let prefix = FinalPersonPrefix.from_person person
+        in { verb with final_person_prefix = Some prefix}
     else
         (* cannot set the object of an intransitive verb
         TODO = may be worth throwing an error here

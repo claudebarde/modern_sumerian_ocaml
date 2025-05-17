@@ -14,6 +14,8 @@ type prefix =
   
 type modal_prefix = HA | NAN | NU;
 
+type verb_data = { label: string, value: string, imperfective: Conjugator.ipfv_stem };
+
 module ReactSelect = {
     open Conjugator;
 
@@ -65,15 +67,22 @@ let make = () => {
     let (indirect_object, set_indirect_object) = React.useState(_ => Js.Nullable.null);
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
 
-    let verb_options: array(ReactSelect.select_option) = [|
-        {label: "ak (to do)", value: {js|ʔak|js}},
-        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}},
-        {label: "gu (to eat)", value: "gu"},
-        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}},
-        {label: "sar (to write)", value: "sar"},
-        {label: {js|šum (to give)|js}, value: {js|šum|js}},
-        {label: "tuku (to have)", value: "tuku"},
+    let available_verbs: array(verb_data) = [|
+        {label: "ak (to do)", value: {js|ʔak|js}, imperfective: Other({js|ʔak|js}) },
+        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}, imperfective: Other({js|ĝen|js})},
+        {label: "gu (to eat)", value: "gu", imperfective: Other("gu")},
+        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}, imperfective: Other("na-na")},
+        {label: "sar (to write)", value: "sar", imperfective: Other("sar")},
+        {label: {js|šum (to give)|js}, value: {js|šum|js}, imperfective: Other({js|šum|js})},
+        {label: "tuku (to have)", value: "tuku", imperfective: Other("tuku")},
     |];
+
+    let verb_options: array(ReactSelect.select_option) = Array.map(
+        (verb: verb_data): ReactSelect.select_option => {
+            {label: verb.label, value: verb.value}
+        },
+        available_verbs
+    );
 
     let pronoun_options: array(ReactSelect.select_option) = [|
         {label: "I", value: "first-sing"},
@@ -398,9 +407,16 @@ let make = () => {
                                                 | Some(verb) => {
                                                     set_error(_ => None)
                                                     set_is_perfective(_ => Some(true))
+                                                    // finds the perfective stem
+                                                    let stem = switch (verb_stem |> Js.Nullable.toOption,) {
+                                                        | Some(verb_data) => verb_data.value
+                                                        | None => ""
+                                                    }
+
                                                     switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
                                                         | (Some(subj), Some(obj)) => {
                                                             try (verb
+                                                            ->Conjugator.set_stem(stem)
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_perfective
                                                             ->Conjugator.set_subject(subj)
@@ -415,6 +431,7 @@ let make = () => {
                                                         }
                                                         | (Some(subj), _) => {
                                                             try (verb
+                                                            ->Conjugator.set_stem(stem)
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_perfective
                                                             ->Conjugator.set_subject(subj)
@@ -428,11 +445,15 @@ let make = () => {
                                                         }
                                                         | (_, Some(obj)) => 
                                                             verb
+                                                            ->Conjugator.set_stem(stem)
                                                             ->Conjugator.reset_subject_object
                                                             ->Conjugator.is_perfective
                                                             ->Conjugator.set_object(obj)
                                                             ->Some
-                                                        | _ => Some(Conjugator.is_perfective(verb))
+                                                        | _ => verb
+                                                            ->Conjugator.set_stem(stem)
+                                                            ->Conjugator.is_perfective
+                                                            ->Some
                                                     }
                                                 }
                                                 | None => None
@@ -458,11 +479,20 @@ let make = () => {
                                                 | Some(verb) => {
                                                     set_error(_ => None)
                                                     set_is_perfective(_ => Some(false))
+                                                    // finds the imperfective stem
+                                                    let ipfv_stem = switch (Array.find_opt(
+                                                        av_verb => av_verb.value == verb.stem, 
+                                                        available_verbs
+                                                    )) {
+                                                        | Some(verb_data) => Some(verb_data.imperfective)
+                                                        | None => None
+                                                    }
+
                                                     switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
                                                         | (Some(subj), Some(obj)) => {
                                                             try (verb
                                                             ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_imperfective(None)
+                                                            ->Conjugator.is_imperfective(ipfv_stem)
                                                             ->Conjugator.set_subject(subj)
                                                             ->Result.get_ok
                                                             ->Conjugator.set_object(obj)
@@ -476,7 +506,7 @@ let make = () => {
                                                         | (Some(subj), _) => 
                                                             try (verb
                                                             ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_imperfective(None)
+                                                            ->Conjugator.is_imperfective(ipfv_stem)
                                                             ->Conjugator.set_subject(subj)
                                                             ->Result.get_ok
                                                             ->Some) {
@@ -488,10 +518,10 @@ let make = () => {
                                                         | (_, Some(obj)) => 
                                                             verb
                                                             ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_imperfective(None)
+                                                            ->Conjugator.is_imperfective(ipfv_stem)
                                                             ->Conjugator.set_object(obj)
                                                             ->Some
-                                                        | _ => Some(Conjugator.is_imperfective(verb, None))
+                                                        | _ => Some(Conjugator.is_imperfective(verb, ipfv_stem))
                                                     }
                                                 }
                                                 | None => None
@@ -708,6 +738,18 @@ let make = () => {
                                         || Js.Nullable.isNullable(verb_stem)    
                                     }
                                     onChange={change_preformative}
+                                    onClick={_ => {
+                                        set_verb_form(prev_verb_form => {
+                                            switch prev_verb_form {
+                                                | Some(verb) when preformative == Some(Conjugator.Preformative.A) => {
+                                                    set_error(_ => None)
+                                                    set_preformative(_ => None)
+                                                    Some(Conjugator.reset_preformative(verb))
+                                                }
+                                                | _ => prev_verb_form
+                                            }
+                                        })
+                                    }}
                                 />
                                 {"A" |> React.string}
                             </label>
@@ -726,6 +768,18 @@ let make = () => {
                                         || Js.Nullable.isNullable(verb_stem)    
                                     }
                                     onChange={change_preformative}
+                                    onClick={_ => {
+                                        set_verb_form(prev_verb_form => {
+                                            switch prev_verb_form {
+                                                | Some(verb) when preformative == Some(Conjugator.Preformative.I) => {
+                                                    set_error(_ => None)
+                                                    set_preformative(_ => None)
+                                                    Some(Conjugator.reset_preformative(verb))
+                                                }
+                                                | _ => prev_verb_form
+                                            }
+                                        })
+                                    }}
                                 />
                                 {"I" |> React.string}
                             </label>
@@ -744,6 +798,18 @@ let make = () => {
                                         || Js.Nullable.isNullable(verb_stem)    
                                     }
                                     onChange={change_preformative}
+                                    onClick={_ => {
+                                        set_verb_form(prev_verb_form => {
+                                            switch prev_verb_form {
+                                                | Some(verb) when preformative == Some(Conjugator.Preformative.U) => {
+                                                    set_error(_ => None)
+                                                    set_preformative(_ => None)
+                                                    Some(Conjugator.reset_preformative(verb))
+                                                }
+                                                | _ => prev_verb_form
+                                            }
+                                        })
+                                    }}
                                 />
                                 {"U" |> React.string}
                             </label>

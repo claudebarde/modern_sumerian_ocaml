@@ -51,6 +51,8 @@ let create (stem: string): t =
       subordinator = false
   }
 
+let set_stem (verb: t) (stem: string): t = { verb with stem = stem }
+
 let is_perfective verb: t = { verb with is_perfective = true }
 
 let is_imperfective (verb: t) ipfv_stem: t =

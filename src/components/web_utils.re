@@ -11,9 +11,7 @@ type cuneiformData = (string, string); // (Unicode code point, sound)
 
 [@mel.scope "JSON"] external parseCuneiformCodePoints: string => jsonCuneiformData = "parse";
 
-let fallbackDict = Js.Dict.fromArray([|("eme", "0x12174"), ({js|ĝir15|js}, "0x120A0"), ("ul", "0x12109"), ("la", "0x121B7"), ("im", "0x1214E"), ({js|ĝen|js}, "0x1207A"), ({js|ʔak|js}, "0x1201D"), ("tuku", "0x12307"), ({js|niĝ|js}, "0x120FB"), ({js|šum|js}, "0x122E7"), ({js|naĝ|js}, "0x12158")|]); 
-
-let search_cuneiforms = (words: array(string)): array((string, option(string))) => {
+let search_cuneiforms = (words: array(string)): array((string, option(list(string)))) => {
     let cuneiformData: jsonCuneiformData = cuneiformCodePoints |> Js.Json.stringify |> parseCuneiformCodePoints;
     words |> Array.map(word => {
         // remove the glottal stop
@@ -22,11 +20,11 @@ let search_cuneiforms = (words: array(string)): array((string, option(string))) 
             |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ʔ|js}), ~replacement="")
             |> Js.String.toUpperCase;
         switch (Array.find_opt(item => item.name == formattedWord, cuneiformData.codepoints)) {
-            | Some(codePointData) => (word, Some(codePointData.codepoint))
+            | Some(codePointData) => (word, Some([codePointData.codepoint]))
             | None => 
                 // checks if the word is in the fallback dictionary
-                switch (Js.Dict.get(fallbackDict, word)) {
-                | Some(code) => (word, Some(code))
+                switch (Js.Dict.get(Custom_dict.fallbackDict, word)) {
+                | Some(code_list) => (word, Some(code_list))
                 | None => (word, None)
                 }
         }
@@ -36,7 +34,14 @@ let search_cuneiforms = (words: array(string)): array((string, option(string))) 
 let display_cuneiforms = (words: array(string)):  array(cuneiformData) => {
     words |> search_cuneiforms |> Array.map(((word, codePoint)) => {
         switch codePoint {
-        | Some(code) => (code|>toNumber|>Js.String.fromCodePoint, {j|$word|j})
+        | Some(code_list) => {
+            let code = 
+                code_list 
+                |> List.map(code => code |> toNumber |> Js.String.fromCodePoint)
+                |> Array.of_list
+                |> Js.Array.join(~sep="");
+            (code, {j|$word|j})
+        }
         | None => (word, word)
         }
     })

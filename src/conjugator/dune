@@ -10,4 +10,5 @@
 (library
  (name conjugator)
  ; (modules conjugator constructs infixes utils verb_analysis verb_output)
- (modes melange))
+ (modes melange)
+ )

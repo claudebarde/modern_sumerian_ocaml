@@ -54,7 +54,7 @@ let make = (~verb: option(Conjugator.t)) => {
                 {
                     switch (verb) {
                         | Some(verb_form) => {
-                            switch (Conjugator.print(verb_form)) {
+                            switch (Conjugator.print(verb_form, None)) {
                                 | Ok({ verb, _ }) => { "`" ++ verb ++ "`" |> React.string }
                                 | Error(_) => React.null
                             }

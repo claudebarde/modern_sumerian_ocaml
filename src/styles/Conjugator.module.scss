@@ -10,8 +10,8 @@ button {
   grid-template-columns: 1fr;
   grid-template-rows: 60% 30% 10%;
   padding: 20px 10px;
-  height: 100%;
-  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  width: calc(100% - 20px);
 
   .error {
     background-color: $nyc-taxi;
@@ -19,12 +19,17 @@ button {
     padding: 10px;
   }
 
-  .withLabels {
+  .selectColumn {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    text-align: left;
     gap: 20px;
-    padding-left: 20px;
+  }
+
+  @mixin withLabels {
+    display: flex;
+    justify-content: flex-start;
 
     label {
       display: flex;
@@ -36,6 +41,20 @@ button {
         color: $silver-setting;
       }
     }
+  }
+
+  .withLabels {
+    @include withLabels;
+    align-items: center;
+    padding-left: 20px;
+    gap: 20px;
+  }
+
+  .withLabelsColumn {
+    @include withLabels;
+    flex-direction: column;
+    align-items: normal;
+    width: 100%;
   }
 
   // https://moderncss.dev/pure-css-custom-styled-radio-buttons/
@@ -122,7 +141,7 @@ button {
 
     .firstColumn,
     .secondColumn {
-      padding: 0px 15%;
+      padding: 0px 10%;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -222,7 +241,7 @@ button {
   .buttons {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     text-align: center;
   }
 

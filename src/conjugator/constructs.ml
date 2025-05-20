@@ -19,4 +19,6 @@ type conjugated_verb = {
   ed_marker: bool; (* ed_marker *)
   final_person_suffix: FinalPersonSuffix.t option;
   subordinator: bool; (* subordinator *)
+  subject: subject;
+  object_: object_;
 }

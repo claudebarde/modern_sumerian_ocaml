@@ -31,24 +31,26 @@ type ipfv_stem =
 
 let create (stem: string): t =
   {
-      stem = stem;
-      is_perfective = false;
-      is_transitive = false;
-      oblique_object = None;
-      first_prefix = None;
-      preformative = None;
-      coordinator = false;
-      ventive = false;
-      middle_prefix = false;
-      initial_person_prefix = None;
-      indirect_object_prefix = None;
-      comitative = false;
-      adverbial = None;
-      locative = None;
-      final_person_prefix = None;
-      ed_marker = false;
-      final_person_suffix = None;
-      subordinator = false
+    stem = stem;
+    is_perfective = false;
+    is_transitive = false;
+    oblique_object = None;
+    first_prefix = None;
+    preformative = None;
+    coordinator = false;
+    ventive = false;
+    middle_prefix = false;
+    initial_person_prefix = None;
+    indirect_object_prefix = None;
+    comitative = false;
+    adverbial = None;
+    locative = None;
+    final_person_prefix = None;
+    ed_marker = false;
+    final_person_suffix = None;
+    subordinator = false;
+    subject = None;
+    object_ = None;
   }
 
 let set_stem (verb: t) (stem: string): t = { verb with stem = stem }
@@ -202,40 +204,56 @@ let reset_locative verb: t = { verb with locative = None}
 let set_subject (verb: t) (person: PersonParam.t): (t, string) result =
     let open FinalPersonSuffix in
     if not verb.is_transitive || (verb.is_transitive && not verb.is_perfective)
-    then let suffix: FinalPersonSuffix.t option = match person with
-            | First_sing -> Some First_sing
-            | Second_sing -> Some Second_sing
-            | Third_sing_human -> Some Third_sing_human 
-            | Third_sing_non_human -> Some Third_sing_non_human
-            | First_plur -> Some First_plur
-            | Second_plur -> Some Second_plur
-            | Third_plur_human -> Some Third_plur_human
-            | Third_plur_non_human -> Some Third_plur_non_human
-        in Ok { verb with final_person_suffix = suffix }
+    then let suffix: FinalPersonSuffix.t = match person with
+            | First_sing -> First_sing
+            | Second_sing -> Second_sing
+            | Third_sing_human -> Third_sing_human 
+            | Third_sing_non_human -> Third_sing_non_human
+            | First_plur -> First_plur
+            | Second_plur -> Second_plur
+            | Third_plur_human -> Third_plur_human
+            | Third_plur_non_human -> Third_plur_non_human
+        in Ok { 
+                verb with 
+                    final_person_suffix = Some suffix; 
+                    subject = Subject_suffix (suffix |> FinalPersonSuffix.to_person) 
+            }
     else
         try
             let prefix = FinalPersonPrefix.from_person person
-            in Ok { verb with final_person_prefix = Some prefix }
+            in Ok { 
+                    verb with 
+                        final_person_prefix = Some prefix; 
+                        subject = Subject_prefix (prefix |> FinalPersonPrefix.to_person) 
+                }
         with
         | Failure exn -> Error exn
 
 let set_object (verb: t) (person: PersonParam.t): t =
     let open FinalPersonSuffix in
     if verb.is_transitive && verb.is_perfective
-    then let suffix: FinalPersonSuffix.t option = match person with
-            | First_sing -> Some First_sing
-            | Second_sing -> Some Second_sing
-            | Third_sing_human -> Some Third_sing_human
-            | Third_sing_non_human -> Some Third_sing_non_human
-            | First_plur -> Some First_plur
-            | Second_plur -> Some Second_plur
-            | Third_plur_human -> Some Third_plur_human
-            | Third_plur_non_human -> Some Third_plur_non_human
-        in { verb with final_person_suffix = suffix }
+    then let suffix: FinalPersonSuffix.t = match person with
+            | First_sing -> First_sing
+            | Second_sing -> Second_sing
+            | Third_sing_human -> Third_sing_human
+            | Third_sing_non_human -> Third_sing_non_human
+            | First_plur -> First_plur
+            | Second_plur -> Second_plur
+            | Third_plur_human -> Third_plur_human
+            | Third_plur_non_human -> Third_plur_non_human
+        in { 
+                verb with 
+                    final_person_suffix = Some suffix; 
+                    object_ = Object_suffix (suffix |> FinalPersonSuffix.to_person) 
+            }
     else if verb.is_transitive && not verb.is_perfective
     then 
         let prefix = FinalPersonPrefix.from_person person
-        in { verb with final_person_prefix = Some prefix}
+        in { 
+                verb with 
+                    final_person_prefix = Some prefix; 
+                    object_ = Object_prefix (prefix |> FinalPersonPrefix.to_person) 
+            }
     else
         (* cannot set the object of an intransitive verb
         TODO = may be worth throwing an error here
@@ -263,4 +281,8 @@ let set_ed_marker verb: t = { verb with ed_marker = true}
 
 let reset_ed_marker verb: t = { verb with ed_marker = false}
 
-let print verb = Verb_output.print verb
+let print verb (meaning: string option) = 
+        try Verb_output.print verb meaning
+        with
+            | Invalid_argument exn -> Error ("Invalid argument: " ^ exn)
+            | _ -> Error "Unknown error"

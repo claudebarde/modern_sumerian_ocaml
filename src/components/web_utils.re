@@ -161,9 +161,9 @@ let replace_with_unicode = (word: string): string => {
 module BuildResults = {
     [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default";
     [@react.component]
-    let make = (~verb: Conjugator.t) => {
-        switch (Conjugator.print(verb)) {
-            | Ok({verb: conjugatedVerb, analysis, _}) => {[|
+    let make = (~verb: Conjugator.t, ~meaning: option(string)) => {
+        switch (Conjugator.print(verb, meaning)) {
+            | Ok({verb: conjugatedVerb, analysis, translation, _}) => {[|
                 <div className={css##verbResult} key="verbResults">
                     <span style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
                         {conjugatedVerb |> React.string}
@@ -181,6 +181,9 @@ module BuildResults = {
                             })
                             |> React.array
                         }
+                    </span>
+                    <span>
+                        {"(" ++ translation ++ ")" |> React.string}
                     </span>
                 </div>,
                 <table key="verbAnalysis">
@@ -222,7 +225,10 @@ module BuildResults = {
                     {"The cuneiforms are auto-generated and may not be historically accurate"|> React.string}
                 </span>
             |] |> React.array}
-            | Error(err) => <div>{err |> React.string}</div>
+            | Error(err) => 
+                <span className=css##error>
+                    {err |> React.string}
+                </span>
         }
     };
 };

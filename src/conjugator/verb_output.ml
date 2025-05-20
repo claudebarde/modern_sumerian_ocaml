@@ -13,6 +13,7 @@ open Utils
 type t = {
     verb: string;
     analysis: Verb_analysis.t;
+    translation: string;
     warnings: string array;
 }
 
@@ -200,7 +201,7 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
                 in Ok(arr))
         | None -> Ok(arr)
 
-let print (verb: Constructs.conjugated_verb): (t, string) result  =
+let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, string) result  =
     let warnings: string array = [||] in
     let morphemes_start = Array.make 15 "" in
     (* builds the array with all the markers *)
@@ -579,7 +580,7 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                                     (* 25.2 If the following vowel is /a/, {nu} becomes /na/. 
                                     This /na/ is written explicitly from the Ur III period onwards. Earlier texts have nu. *)
                                     (match find_next_morpheme first_prefix_pos outputArr with
-                                    | Some (morpheme, _) ->
+                                    | Some (morpheme, _) when String.length morpheme == 2 ->
                                         (match (String.get morpheme 0, String.get morpheme 1) with
                                         | ('b', 'a') ->
                                             let _ = outputArr.(first_prefix_pos) = "la" in
@@ -684,5 +685,6 @@ let print (verb: Constructs.conjugated_verb): (t, string) result  =
                 Ok { 
                     verb = final_verb;
                     analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
+                    translation = Verb_analysis.Translation.translate verb meaning;
                     warnings = warnings;
                 }

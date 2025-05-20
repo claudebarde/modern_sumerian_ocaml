@@ -296,3 +296,66 @@ let print (verb: t): string =
     |> Array.to_list
     |> List.filter (fun x -> String.length x > 0)
     |> String.concat ""
+
+module Translation = struct
+    let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): string =
+        let res = Array.make 4 "" in
+
+        let subject = 
+            match verb_form.subject with
+            | Subject_prefix subj | Subject_suffix subj -> subj |> PersonParam.print Subject
+            | _ -> ""
+        in res.(0) <- subject;
+
+        let object_ = 
+            match verb_form.object_ with
+            | Object_prefix obj | Object_suffix obj -> obj |> PersonParam.print Object
+            | _ -> ""
+        in res.(2) <- object_;
+
+        let indirect_object = 
+            match verb_form.indirect_object_prefix with
+            | Some obj -> obj |> IndirectObjectPrefix.to_person |> PersonParam.print Indirect_object
+            | None -> ""
+        in res.(3) <- indirect_object;
+
+        let conjugated_verb =
+            match verb_form.subject with
+            | Subject_prefix subj | Subject_suffix subj -> 
+                (
+                    match subj with
+                    | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human -> 
+                        if String.ends_with ~suffix:"o" english_verb
+                        then english_verb ^ "es"
+                        else english_verb ^ "s"
+                    | _ -> english_verb
+                )
+            | _ -> english_verb
+        in res.(1) <- conjugated_verb;
+
+        Array.to_list res |> String.concat " " |> String.trim
+  
+    let translate (verb: Constructs.conjugated_verb) (meaning: string option): string =
+        match meaning with
+        | Some m -> 
+            (* isolates the verb root *)
+            let re = Js.Re.fromString "\\(to ([a-z]+)\\)" in
+            (
+                match (Js.Re.exec ~str:m re) with
+                | Some res -> (
+                    (* Captures the verb root *)
+                    let caps = Js.Re.captures res in
+                    if Array.length caps >= 2
+                    then 
+                        (
+                            match caps.(1) |> Js.Nullable.toOption with
+                            | Some cap -> conjugate verb cap
+                            | None -> verb.stem
+                        )
+                    else verb.stem
+                    )
+                | None -> verb.stem
+            )
+        | None -> verb.stem
+
+end

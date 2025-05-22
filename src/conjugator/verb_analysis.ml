@@ -325,15 +325,46 @@ module Translation = struct
                 (
                     match subj with
                     | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human -> 
-                        if String.ends_with ~suffix:"o" english_verb
-                        then english_verb ^ "es"
-                        else english_verb ^ "s"
-                    | _ -> english_verb
+                        (
+                            match verb_form.first_prefix with
+                            | Some FirstPrefix.Negative -> "doesn't " ^ english_verb
+                            | _ ->
+                                if String.ends_with ~suffix:"o" english_verb
+                                then english_verb ^ "es"
+                                else english_verb ^ "s"
+                        )
+                    | _ ->
+                        (
+                            match verb_form.first_prefix with
+                            | Some FirstPrefix.Negative -> "don't " ^ english_verb
+                            | _ -> english_verb
+                        )
                 )
             | _ -> english_verb
         in res.(1) <- conjugated_verb;
 
         Array.to_list res |> String.concat " " |> String.trim
+
+    let add_complements (verb: Constructs.conjugated_verb): string =
+        let comitative = match (verb.comitative, verb.initial_person_prefix) with
+            | (true, Some ipp) -> "with " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
+            | (true, None) -> "with"
+            | _ -> ""
+        in
+        let adverbial = match (verb.adverbial, verb.initial_person_prefix) with
+            | (Some Infixes.Ablative, Some ipp) -> "from " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
+            | (Some Infixes.Ablative, None) -> "from"
+            | (Some Infixes.Terminative, Some ipp) -> "to " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
+            | (Some Infixes.Terminative, None) -> "to"
+            | _ -> ""
+        in
+        let locative = match (verb.locative, verb.initial_person_prefix) with
+            | (Some In_with_initial_person, Some ipp) -> "in " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
+            | (Some In_without_initial_person, _) -> "here"
+            | (Some On_with_initial_person, Some ipp) -> "on " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
+            | (Some On_without_initial_person, _) -> "on"
+            | _ -> ""
+        in comitative ^ " " ^ adverbial ^ " " ^ locative
   
     let translate (verb: Constructs.conjugated_verb) (meaning: string option): string =
         match meaning with
@@ -349,7 +380,10 @@ module Translation = struct
                     then 
                         (
                             match caps.(1) |> Js.Nullable.toOption with
-                            | Some cap -> conjugate verb cap
+                            | Some cap -> 
+                                let conjugated_verb = conjugate verb cap in
+                                let complements = add_complements verb in
+                                conjugated_verb ^ " " ^ complements
                             | None -> verb.stem
                         )
                     else verb.stem

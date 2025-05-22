@@ -109,6 +109,17 @@ module InitialPersonPrefix = struct
         | PersonParam.Third_plur_human -> Third_plur_human
         | PersonParam.Third_plur_non_human -> Third_plur_non_human
 
+    let to_person pers =
+        match pers with
+        | First_sing -> PersonParam.First_sing
+        | Second_sing -> PersonParam.Second_sing
+        | Third_sing_human -> PersonParam.Third_sing_human
+        | Third_sing_non_human -> PersonParam.Third_sing_non_human
+        | First_plur -> PersonParam.First_plur
+        | Second_plur -> PersonParam.Second_plur
+        | Third_plur_human -> PersonParam.Third_plur_human
+        | Third_plur_non_human -> PersonParam.Third_plur_non_human
+
     let to_final_person_prefix pers = 
         match pers with
         | First_sing -> FinalPersonPrefix.First_sing

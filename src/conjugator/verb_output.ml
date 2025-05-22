@@ -81,9 +81,9 @@ let add_initial_person_prefix (verb: Constructs.conjugated_verb) (arr: morphemes
                 | Some(Second_sing) -> arr.(initial_person_prefix_pos) <- "e"
                 | Some(Third_sing_human) -> arr.(initial_person_prefix_pos) <- "n"
                 | Some(Third_sing_non_human) -> arr.(initial_person_prefix_pos) <- "b"
-                | Some(First_plur) -> arr.(initial_person_prefix_pos) <- "mē"
-                | Some(Second_plur) -> arr.(initial_person_prefix_pos) <- "enē"
-                | Some(Third_plur_human) -> arr.(initial_person_prefix_pos) <- "nnē"
+                | Some(First_plur) -> arr.(initial_person_prefix_pos) <- {js|mē|js}
+                | Some(Second_plur) -> arr.(initial_person_prefix_pos) <- {js|enē|js}
+                | Some(Third_plur_human) -> arr.(initial_person_prefix_pos) <- {js|nnē|js}
                 | Some(Third_plur_non_human) -> arr.(initial_person_prefix_pos) <- "b"
                 | None -> ()
         in Ok(arr)
@@ -97,9 +97,9 @@ let add_indirect_object_prefix (verb: Constructs.conjugated_verb) (arr: morpheme
                 | Some(Second_sing) -> arr.(indirect_object_prefix_pos) <- "ra"
                 | Some(Third_sing_human) -> arr.(indirect_object_prefix_pos) <- "nna"
                 | Some(Third_sing_non_human) -> arr.(indirect_object_prefix_pos) <- "ba"
-                | Some(First_plur) -> arr.(indirect_object_prefix_pos) <- "mē"
+                | Some(First_plur) -> arr.(indirect_object_prefix_pos) <- {js|mē|js}
                 | Some(Second_plur) -> arr.(indirect_object_prefix_pos) <- "ra"
-                | Some(Third_plur_human) -> arr.(indirect_object_prefix_pos) <- "nnē"
+                | Some(Third_plur_human) -> arr.(indirect_object_prefix_pos) <- {js|nnē|js}
                 | Some(Third_plur_non_human) -> arr.(indirect_object_prefix_pos) <- "ba"
                 | None -> ()
         in Ok(arr)
@@ -254,8 +254,8 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                 (* 24.3.2 The prefix {ʔi} may also contract with the verbal stem,
                                 if the latter has an initial glottal stop. *)
                                 (match find_next_morpheme preformative_pos outputArr with
-                                | Some (morpheme, marker) ->
-                                    if marker == Stem 
+                                | Some (morpheme, marker) when String.length morpheme > 1 ->
+                                    if marker == Stem && String.length morpheme > 0
                                         (* stem must start with CV and first consonant must be a glottal stop *)
                                     then 
                                         let stem_start_struct = String.sub (consonant_vowel_sequence morpheme) 0 2 in
@@ -280,7 +280,7 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                     else
                                         (* no change *)
                                         outputArr
-                                | None ->
+                                | _ ->
                                     (* there is no marker after the preformative *)
                                     outputArr)
                         )
@@ -333,7 +333,11 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                 if ends_with_vowel marker
                                 then
                                     (* gets the last vowel of the marker *)
-                                    let last_vowel = String.sub marker ((String.length marker) - 1) (String.length marker) in
+                                    let last_vowel =  
+                                        if String.length marker == 1
+                                        then marker
+                                        else String.sub marker ((String.length marker) - 1) 1
+                                    in
                                     let _ = outputArr.(initial_person_prefix_pos) <- last_vowel in outputArr
                                 else
                                     (* no change *)
@@ -366,7 +370,11 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                                 if morpheme |> ends_with_vowel
                                                 then
                                                     (* gets the last vowel of the marker *)
-                                                    let new_morpheme = String.sub morpheme ((String.length morpheme) - 1) (String.length morpheme) in
+                                                    let new_morpheme = 
+                                                        if String.length morpheme == 1
+                                                        then morpheme
+                                                        else String.sub morpheme ((String.length morpheme) - 1) (String.length morpheme)
+                                                    in
                                                     let _ = outputArr.(locative_pos) <- new_morpheme in
                                                     outputArr
                                                 else
@@ -553,7 +561,8 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                                 let _ = outputArr.(ventive_pos) <- "m" in
                                                 let _ = outputArr.(marker_to_pos marker) <- "mi" in
                                                 Ok(outputArr) 
-                                            else
+                                            else if String.length morpheme > 1
+                                            then
                                                 (* 22.2 The basic form of the ventive prefix is /mu/, 
                                                 but the /u/ of the prefix is lost in the sequence /muCV/, that is, 
                                                 if followed by a consonant and a vowel (§3.9.4). *)
@@ -566,6 +575,9 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                                 else
                                                     (* no change *)
                                                     Ok(outputArr)
+                                            else
+                                                (* no change *)
+                                                Ok(outputArr)
                                         | None -> Ok(outputArr))
                             | _ -> Ok(outputArr)
                         in
@@ -609,16 +621,16 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                         |> String.concat "" 
                                     in
                                     let cvc_seq = consonant_vowel_sequence temp_verb in
-                                    if String.sub cvc_seq 0 2 == "CC"
-                                        || String.sub cvc_seq 0 1 == "V"
+                                    if (String.length cvc_seq > 1 && String.sub cvc_seq 0 2 == "CC")
+                                        || (String.length cvc_seq > 0 && String.sub cvc_seq 0 1 == "V")
                                     then
                                         (* 25.5 A by-form /na/ occurs before /b/ or /m/ *)
                                         let _ = outputArr.(first_prefix_pos) <- "na" in
                                         Ok(outputArr)
                                     else
                                         (* 25.5 A by-form /nam/ occurs before /b/ or /m/ *)
-                                        if String.sub temp_verb 0 1 == "b"
-                                        || String.sub temp_verb 0 1 == "m"
+                                        if String.length temp_verb > 0 && 
+                                            (String.sub temp_verb 0 1 == "b" || String.sub temp_verb 0 1 == "m")
                                         then
                                             let _ = outputArr.(first_prefix_pos) <- "nam" in
                                             Ok(outputArr)

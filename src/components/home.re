@@ -3,12 +3,12 @@
 [@react.component]
 let make = () => {
     <div className={css##home}>
-        <p>{"Coming soon"|> React.string}</p>
-        <p className="cuneiforms">{[| "ul", "la", " ", "im", {js|ĝen|js} |]
-            |> Web_utils.display_cuneiforms
-            |> Array.map(((cuneiform, _)) => cuneiform)
-            |> Js.Array.join(~sep="")
-            |> React.string}
-        </p>
+        <div className={css##intro}>
+            <p>{"Welcome to Modern Sumerian!"|> React.string}</p>
+            <p>{"Modern Sumerian is your gateway to exploring the ancient and fascinating Sumerian language!"|> React.string}</p>
+            <p>{"Dive into our interactive verb conjugator to master Sumerian grammar"|> React.string} </p>
+            <p>{"Stay tuned for our upcoming dictionary, lessons, and more tools designed to bring this ancient language to life."|> React.string}</p>
+            <p>{"Whether you're a scholar, enthusiast, or curious learner, Modern Sumerian is here to help you unlock the secrets of humanity's oldest written language."|> React.string}</p>
+        </div>
     </div>
 }

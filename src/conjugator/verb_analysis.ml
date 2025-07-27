@@ -298,6 +298,11 @@ let print (verb: t): string =
     |> String.concat ""
 
 module Translation = struct
+
+    type tense =
+        | Present
+        | Past
+
     let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): string =
         let res = Array.make 4 "" in
 
@@ -319,12 +324,38 @@ module Translation = struct
             | None -> ""
         in res.(3) <- indirect_object;
 
+        let continuous : verb:string -> pers:PersonParam.t -> tense:tense -> negative:bool -> string = 
+            fun ~verb ~pers ~tense ~negative -> 
+                let ing_form =
+                    if String.ends_with ~suffix:"e" verb
+                    then String.sub verb 0 (String.length verb - 1) ^ "ing"
+                    else verb ^ "ing"
+                in
+                match tense with
+                | Present when not negative -> 
+                    (
+                        match pers with
+                        | PersonParam.First_sing -> "am " ^ ing_form
+                        | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human -> "is " ^ ing_form
+                        | _ -> "are " ^ ing_form
+                    )
+                | Present when negative -> 
+                    (
+                        match pers with
+                        | PersonParam.First_sing -> "am not " ^ ing_form
+                        | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human -> "is not " ^ ing_form
+                        | _ -> "are not " ^ ing_form
+                    )
+                | _ -> verb
+        in
+
         let conjugated_verb =
             match verb_form.subject with
             | Subject_prefix subj | Subject_suffix subj -> 
                 (
                     match subj with
-                    | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human -> 
+                    | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human 
+                        when verb_form.is_perfective -> 
                         (
                             match verb_form.first_prefix with
                             | Some FirstPrefix.Negative -> "doesn't " ^ english_verb
@@ -333,12 +364,26 @@ module Translation = struct
                                 then english_verb ^ "es"
                                 else english_verb ^ "s"
                         )
-                    | _ ->
+                    | PersonParam.Third_sing_human | PersonParam.Third_sing_non_human 
+                        when not verb_form.is_perfective -> 
+                        (
+                            match verb_form.first_prefix with
+                            | Some FirstPrefix.Negative -> continuous ~verb:english_verb ~pers:subj ~tense:Present ~negative:true
+                            | _ -> continuous ~verb:english_verb ~pers:subj ~tense:Present ~negative:false
+                        )
+                    | _ when verb_form.is_perfective ->
                         (
                             match verb_form.first_prefix with
                             | Some FirstPrefix.Negative -> "don't " ^ english_verb
                             | _ -> english_verb
                         )
+                    | _ when not verb_form.is_perfective -> 
+                        (
+                            match verb_form.first_prefix with
+                            | Some FirstPrefix.Negative -> continuous ~verb:english_verb ~pers:subj ~tense:Present ~negative:true
+                            | _ -> continuous ~verb:english_verb ~pers:subj ~tense:Present ~negative:false
+                        )
+                    | _ -> english_verb
                 )
             | _ -> english_verb
         in res.(1) <- conjugated_verb;
@@ -383,7 +428,7 @@ module Translation = struct
                             | Some cap -> 
                                 let conjugated_verb = conjugate verb cap in
                                 let complements = add_complements verb in
-                                conjugated_verb ^ " " ^ complements
+                                (conjugated_verb ^ " " ^ complements) |> String.trim
                             | None -> verb.stem
                         )
                     else verb.stem

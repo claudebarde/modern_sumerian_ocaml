@@ -294,6 +294,7 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
+                                    set_terminative(_ => false)
                                     Some(Conjugator.set_ablative(verb, initial_person_prefix |> Js.Nullable.toOption))
                                 } else {
                                     Some(Conjugator.reset_ablative(verb))
@@ -310,6 +311,7 @@ let make = () => {
                             | Some(verb) => {
                                 set_error(_ => None)
                                 if (checked) {
+                                    set_ablative(_ => false)
                                     Some(Conjugator.set_terminative(verb, initial_person_prefix |> Js.Nullable.toOption))
                                 } else {
                                     Some(Conjugator.reset_terminative(verb))
@@ -369,6 +371,17 @@ let make = () => {
                 }
             }
         }
+    };
+
+    let reset_modal = () => {
+        set_error(_ => None)
+        set_modal_prefix(_ => None)
+        set_verb_form(prev_verb_form => {
+            switch prev_verb_form {
+                | Some(verb) => Some(Conjugator.reset_modal(verb))
+                | None => None
+            }
+        })
     };
 
     <>
@@ -962,6 +975,7 @@ let make = () => {
                                         let checked: bool = target##checked
                                         change_prefix(Modal, checked)
                                     }}
+                                    onClick={_ => reset_modal()}
                                 />
                                 {{js|ḪA|js} |> React.string}
                             </label>
@@ -981,6 +995,7 @@ let make = () => {
                                         let checked: bool = target##checked
                                         change_prefix(NegativeNan, checked)
                                     }}
+                                    onClick={_ => reset_modal()}
                                 />
                                 {"NAN" |> React.string}
                             </label>
@@ -1000,6 +1015,7 @@ let make = () => {
                                         let checked: bool = target##checked
                                         change_prefix(Negative, checked)
                                     }}
+                                    onClick={_ => reset_modal()}
                                 />
                                 {"NU" |> React.string}
                             </label>

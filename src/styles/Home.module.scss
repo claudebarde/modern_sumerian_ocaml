@@ -10,4 +10,13 @@
   background-position: 50% 20%;
   background-repeat: no-repeat;
   color: white;
+  text-align: center;
+
+  .intro {
+    width: 50%;
+    background-color: rgba($color: #2d3748, $alpha: 0.4);
+    border-radius: 25px;
+    padding: 20px;
+    font-size: 1.2rem;
+  }
 }

@@ -1,5 +1,6 @@
 [@mel.module "./Header.module.scss"] external css: Js.t({..}) = "default"; 
 [@mel.scope ("process", "env")] external node_env: string = "NODE_ENV";
+[@mel.module "./assets/beta-button-50.png"] external betaButtonImage: string = "default";
 
 [@react.component]
 let make = () => {
@@ -21,8 +22,14 @@ let make = () => {
                 |> React.array}
             </h1>
         </div>
-        <div>
+        <div className={css##title}>
             <h1>{"Modern Sumerian"|>React.string}</h1>
+            {node_env !== "development" ?
+                <img 
+                    src=betaButtonImage
+                    alt="beta"
+                />
+            : React.null}
         </div>
         <div>
                 <nav className={css##navColumn} role="navigation">
@@ -94,7 +101,21 @@ let make = () => {
                                     </a>
                                 </li>
                             </>
-                        ) : React.null}
+                        ) : 
+                        <li>
+                            <a 
+                                className={
+                                    switch (List.nth_opt(url.path, 0)) {
+                                    | Some(path) when path === "conjugator" => css##active
+                                    | _ => ""
+                                    }
+                                }
+                                onClick={_ => { ReasonReactRouter.push("conjugator") }}
+                            >
+                                {"Conjugator"|>React.string}
+                            </a>
+                        </li>
+                        }
                         <li>
                             <a
                                 className={

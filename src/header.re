@@ -74,7 +74,7 @@ let make = () => {
                                             <a 
                                                 onClick={_ => { ReasonReactRouter.push("cuneiforms") }}
                                             >
-                                                {"Cuneiforms"|>React.string}
+                                                {"Keyboard"|>React.string}
                                             </a>
                                         </li>
                                         <li>

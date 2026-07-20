@@ -10,14 +10,14 @@
 (using directory-targets 0.1)
 
 ; Sets the name of the project.
-(name sumerian_conjugator_ocaml)
+(name modern_sumerian_ocaml)
 
 ; Indicates whether OPAM files should be automatically generated.
 (generate_opam_files true)
 
 ; Provides the source location of the project, typically a GitHub repository.
 (source
- (github your-username/sumerian_conjugator_ocaml))
+ (github your-username/modern_sumerian_ocaml))
 
 ; Lists the authors of the project.
 (authors "Your Name <your.email@gmail.com>")
@@ -29,11 +29,11 @@
 (license MIT)
 
 ; Provides a link to the project's documentation.
-(documentation https://github.com/your-username/sumerian_conjugator_ocaml)
+(documentation https://github.com/your-username/modern_sumerian_ocaml)
 
 ; The package stanza defines the configuration for an OPAM package.
 (package
- (name sumerian_conjugator_ocaml)
+ (name modern_sumerian_ocaml)
  (synopsis "Enter a synopsis of your app here")
  (description "Enter a description of your app here")
 ; Allows the package to be empty, which can be useful during development.
@@ -53,4 +53,3 @@
 ; Tags to categorize or label the package, useful for searches and indexing.
  (tags
   (reasonml, ocaml, melange)))
-

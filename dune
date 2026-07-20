@@ -33,7 +33,7 @@
   (alias vite)
    (targets (dir dist))
    (deps
-     (alias_rec sumerian_conjugator_ocaml) 
+     (alias_rec modern_sumerian_ocaml)
      (:vite ./vite.config.js) 
      (:index_html ./index.html))
    (action
@@ -48,7 +48,7 @@
 ;   (here, es6 and mjs).
   (melange.emit
    (target output)
-   (alias sumerian_conjugator_ocaml)
+   (alias modern_sumerian_ocaml)
    (libraries app)
    (module_systems (es6 mjs))
    (runtime_deps 
@@ -58,5 +58,3 @@
     (glob_files public/*)
     )
   )
-
-

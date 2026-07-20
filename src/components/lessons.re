@@ -5,6 +5,7 @@
 let make = () => {
     <div className=css##lessons>
         <div style={ReactDOM.Style.make(~textAlign="center", ())}>
+            <p>{"Lessons"|> React.string}</p>
             <p>{"Coming soon"|> React.string}</p>
             <p className="cuneiforms">{[| "ul", "la", " ", "im", {js|ĝen|js} |]
                 |> Web_utils.display_cuneiforms

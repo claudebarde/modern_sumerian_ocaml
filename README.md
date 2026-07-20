@@ -1,5 +1,5 @@
 <h1 align="center">
-    sumerian_conjugator_ocaml</br>
+    modern_sumerian_ocaml</br>
     <span style="font-size: 1.25rem">
         powered by 
         ✨<a href="https://github.com/dmmulroy/create-melange-app">create-melange-app✨</a>
@@ -28,15 +28,33 @@ npm run dev
 
 ### Building your application
 
-Building your application is as simple as running:
+The deployment build uses the JavaScript already committed in `generated/`:
 
 ```sh
 npm run build
 ```
 
-This will handle running `Melange`'s build process and bundling your application
-with `Vite`. Your bundled application and output will be located in `./dist`
-after the build process completes.
+This runs Vite without requiring OCaml, OPAM, Melange, or Dune. The bundled
+application is written to `./dist`.
+
+To compile the OCaml/Reason sources locally and then run Vite, use:
+
+```sh
+npm run build:full
+```
+
+### Keeping generated JavaScript synchronized
+
+Install the repository's Git hook once after cloning:
+
+```sh
+npm run hooks:install
+```
+
+When a commit contains changes under `src/`, to a `dune` file, to
+`dune-project`, or to an OPAM file, the hook runs `npm run precompile` and adds
+the refreshed `generated/` files to the same commit. The commit is stopped if
+compilation fails or relevant source changes have not been staged.
 
 ## Your project layout
 
@@ -45,7 +63,7 @@ Many of these files will contain additional comments, explanations, examples,
 and help for learning and getting started with `ReasonML` and `Melange.`
 
 ```
-sumerian_conjugator_ocaml
+modern_sumerian_ocaml
 ├── src
 │   │   // This is a React Component and the entry point to your application
 │   ├── App.re
@@ -151,7 +169,7 @@ do the following steps:
 
 ```sh
 eval $(opam env) # This activates your local switch in your shell
-dune build sumerian_conjugator_ocaml.opam # This will regenerate your `opam` file
+dune build modern_sumerian_ocaml.opam # This will regenerate your `opam` file
 opam update # This will ensure `opam` can see the most recent versions of packages
 opam install . --deps-only --yes # This will install your new packages
 ```
@@ -168,4 +186,3 @@ resource for learing Melange, OCaml, and ReasonML even if you're not using React
   the maintainers of `create-melange-app` hang out!
 - [OCaml Discord Server](https://discord.gg/Qpzjmc4t)
 - [ReasonML Discord Server](https://discord.gg/jPEH58TU)
-

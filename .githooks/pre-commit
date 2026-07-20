@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -eu
+
+is_precompile_input() {
+  grep -Eq '(^src/)|(^|/)dune$|^dune-project$|\.opam$'
+}
+
+staged_paths="$(git diff --cached --name-only --diff-filter=ACMRD)"
+
+if ! printf '%s\n' "$staged_paths" | is_precompile_input; then
+  exit 0
+fi
+
+unstaged_paths="$(git diff --name-only --diff-filter=ACMRD)"
+untracked_source_paths="$(git ls-files --others --exclude-standard -- src)"
+
+if printf '%s\n' "$unstaged_paths" | is_precompile_input ||
+   test -n "$untracked_source_paths"; then
+  printf '%s\n' \
+    'OCaml/Reason inputs have unstaged or untracked changes.' \
+    'Stage or stash them before committing so generated JavaScript matches the committed source.' >&2
+  exit 1
+fi
+
+printf '%s\n' 'OCaml/Reason changes detected; precompiling JavaScript...'
+
+if ! npm run precompile; then
+  printf '%s\n' \
+    'Precompilation failed. Activate the project OPAM environment and try the commit again.' >&2
+  exit 1
+fi
+
+git add -A -- generated
+printf '%s\n' 'Updated generated JavaScript has been added to this commit.'

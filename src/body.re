@@ -13,6 +13,7 @@ let make = () => {
                 | ["cuneiforms"] => <Cuneiforms />
                 | ["links"] => <Links />
                 | ["lessons"] => <Lessons />
+                | ["dictionary"] => <Dictionary />
                 | [] | ["home"] => <Home />
                 | _ => <Page_not_found/>
             }

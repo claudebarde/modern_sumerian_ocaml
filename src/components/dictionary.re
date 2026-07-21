@@ -13,7 +13,8 @@ module SelectLang = {
         ~options: array<select_option>,
         ~value: select_option,
         ~onChange: select_option => unit,
-        ~isDisabled: bool
+        ~isDisabled: bool,
+        ~isSearchable: bool,
     ) => React.element = "default";
 };
 
@@ -30,7 +31,8 @@ module SelectSearchShape = {
         ~options: array<select_option>,
         ~value: select_option,
         ~onChange: select_option => unit,
-        ~isDisabled: bool
+        ~isDisabled: bool,
+        ~isSearchable: bool,
     ) => React.element = "default";
 };
 
@@ -95,36 +97,45 @@ let make = () => {
     let (selected_search_shape, set_selected_search_shape) = React.useState(_ => search_shape_options[0]);
 
     let search_word = () => {
-        set_searching(_ => true);
-        set_search_results(_ => None);
-        Js.log("Searching for word: " ++ word);
-        // Implement the search logic here, possibly using Supabase client
-        let column = switch selected_lang.value {
-            | SelectLang.EngToSum => "translation"
-            | SelectLang.SumToEng => "word"
-        };
-        let filter = switch selected_search_shape.value {
-            | SelectSearchShape.ExactWord => Supabase.Filter.eq(~column, ~value=word)
-            | SelectSearchShape.Contains => Supabase.Filter.like(~column, ~value=("%" ++ word ++ "%"))
-        };
-        let _ = 
-            Supabase.client 
-            |> Supabase.Query.from("dictionary")
-            |> Supabase.Query.select("*")
-            |> filter
-            |> Supabase.Modifier.order(~column="icount", ~options=Some({ascending: false}))
-            |> Js.Promise.then_(res => {
-                // Js.log("Search result: " ++ Js.Json.stringify(res));
-                let decoded = Supabase.SupabaseResponse.decode(res);
-                set_search_results(_ => Some(decoded.data));
-                set_searching(_ => false);
-                Js.Promise.resolve();
-            })
-            |> Js.Promise.catch(err => {
-                set_searching(_ => false);
-                Js.log2("Error during search:", err);
-                Js.Promise.resolve();
-            });
+        if (word |> Js.String.trim |> Js.String.length === 0) {
+            set_search_results(_ => None);
+        } else {
+            set_searching(_ => true);
+            set_search_results(_ => None);
+            let word_to_search = 
+                word 
+                |> Js.String.trim 
+                |> Js.String.toLowerCase 
+                |> Web_utils.Format.from_standard_to_phonetic;
+            Js.log("Searching for word: " ++ word_to_search);
+            // Implement the search logic here, possibly using Supabase client
+            let column = switch selected_lang.value {
+                | SelectLang.EngToSum => "translation"
+                | SelectLang.SumToEng => "word"
+            };
+            let filter = switch selected_search_shape.value {
+                | SelectSearchShape.ExactWord => Supabase.Filter.eq(~column, ~value=word_to_search)
+                | SelectSearchShape.Contains => Supabase.Filter.like(~column, ~value=("%" ++ word_to_search ++ "%"))
+            };
+            let _ = 
+                Supabase.client 
+                |> Supabase.Query.from("dictionary")
+                |> Supabase.Query.select("*")
+                |> filter
+                |> Supabase.Modifier.order(~column="icount", ~options=Some({ascending: false}))
+                |> Js.Promise.then_(res => {
+                    // Js.log("Search result: " ++ Js.Json.stringify(res));
+                    let decoded = Supabase.SupabaseResponse.decode(res);
+                    set_search_results(_ => Some(decoded.data));
+                    set_searching(_ => false);
+                    Js.Promise.resolve();
+                })
+                |> Js.Promise.catch(err => {
+                    set_searching(_ => false);
+                    Js.log2("Error during search:", err);
+                    Js.Promise.resolve();
+                });
+        }
     };
 
     <div className=css##dictionary>
@@ -138,6 +149,7 @@ let make = () => {
             value={selected_lang} 
             onChange={option => set_selected_lang(_previous => option)}
             isDisabled={false}
+            isSearchable={false}
         />
         <div className=css##searchBar>
             <input 
@@ -157,6 +169,7 @@ let make = () => {
                 value={selected_search_shape}
                 onChange={option => set_selected_search_shape(_previous => option)}
                 isDisabled={false}
+                isSearchable={false}
             />
             <button onClick={_ => search_word()}>
                 {searching ? <TablerReact.IconRefresh className=css##refreshIcon size=20 /> : <TablerReact.IconSearch size=20 />}
@@ -177,8 +190,9 @@ let make = () => {
                                 <th>{"Marker" |> React.string}</th>
                                 <th>{"Word" |> React.string}</th>
                                 <th>{"Translation" |> React.string}</th>
+                                <th>{"Part of Speech" |> React.string}</th>
                                 <th>{"Count" |> React.string}</th>
-                                <th>{"EPSD2 Link" |> React.string}</th>
+                                <th>{"More info" |> React.string}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -205,10 +219,19 @@ let make = () => {
                                         }}
                                     </td>
                                     <td>
-                                        <strong>{result.word |> Web_utils.Format.phonetic_word |> React.string}</strong>
+                                        <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
                                     </td>
                                     <td>
                                         {result.translation |> React.string}
+                                    </td>
+                                    <td>
+                                        {switch result.part_of_speech {
+                                            | "N" => "Noun" 
+                                            | "V/t" => "Transitive Verb"
+                                            | "V/i" => "Intransitive Verb"
+                                            | "AJ" => "Adjective"
+                                            | _ => result.part_of_speech
+                                        } |> React.string}
                                     </td>
                                     <td>
                                         {result.icount |> Js.Int.toString |> React.string}

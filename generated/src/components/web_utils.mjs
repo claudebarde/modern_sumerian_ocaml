@@ -296,12 +296,17 @@ const EpsdDict = {
   get_epsd_link: get_epsd_link
 };
 
-function phonetic_word(word) {
+function from_phonetic_to_standard(word) {
   return word.replace(new RegExp("ʾ"), "ʔ").replace(new RegExp("š"), "sh").replace(new RegExp("ḫ"), "kh").replace(new RegExp("ŋ"), "ĝ");
 }
 
+function from_standard_to_phonetic(word) {
+  return word.replace(new RegExp("ʔ"), "ʾ").replace(new RegExp("sh"), "š").replace(new RegExp("kh"), "ḫ").replace(new RegExp("ĝ"), "ŋ");
+}
+
 const Format = {
-  phonetic_word: phonetic_word
+  from_phonetic_to_standard: from_phonetic_to_standard,
+  from_standard_to_phonetic: from_standard_to_phonetic
 };
 
 export {

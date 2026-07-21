@@ -64,13 +64,19 @@ function Dictionary(Props) {
   const set_selected_search_shape = match$4[1];
   const selected_search_shape = match$4[0];
   const search_word = function (param) {
+    if (word.trim().length === 0) {
+      return Curry._1(set_search_results, (function (param) {
+        
+      }));
+    }
     Curry._1(set_searching, (function (param) {
       return true;
     }));
     Curry._1(set_search_results, (function (param) {
       
     }));
-    console.log("Searching for word: " + word);
+    const word_to_search = Components__Web_utils.Format.from_standard_to_phonetic(word.trim().toLowerCase());
+    console.log("Searching for word: " + word_to_search);
     const match = selected_lang.value;
     let column;
     column = match === /* EngToSum */ 0 ? "translation" : "word";
@@ -78,10 +84,10 @@ function Dictionary(Props) {
     let filter;
     if (match$1 === /* ExactWord */ 0) {
       filter = (function (param) {
-        return param.eq(column, word);
+        return param.eq(column, word_to_search);
       });
     } else {
-      const partial_arg = "%" + (word + "%");
+      const partial_arg = "%" + (word_to_search + "%");
       filter = (function (param) {
         return param.like(column, partial_arg);
       });
@@ -118,7 +124,8 @@ function Dictionary(Props) {
             return option;
           }));
         }),
-        isDisabled: false
+        isDisabled: false,
+        isSearchable: false
       }),
       JsxRuntime.jsxs("div", {
         children: [
@@ -147,7 +154,8 @@ function Dictionary(Props) {
                 return option;
               }));
             }),
-            isDisabled: false
+            isDisabled: false,
+            isSearchable: false
           }),
           JsxRuntime.jsx("button", {
             children: searching ? JsxRuntime.jsx(IconsReact.IconRefresh, {
@@ -185,10 +193,13 @@ function Dictionary(Props) {
                           children: "Translation"
                         }),
                         JsxRuntime.jsx("th", {
+                          children: "Part of Speech"
+                        }),
+                        JsxRuntime.jsx("th", {
                           children: "Count"
                         }),
                         JsxRuntime.jsx("th", {
-                          children: "EPSD2 Link"
+                          children: "More info"
                         })
                       ]
                     })
@@ -224,9 +235,27 @@ function Dictionary(Props) {
                           tmp = "Uncertain";
                           break;
                       }
-                      const match$1 = result.marker;
+                      const match$1 = result.part_of_speech;
                       let tmp$1;
-                      tmp$1 = match$1 === /* A */ 0 ? JsxRuntime.jsx("a", {
+                      switch (match$1) {
+                        case "AJ" :
+                          tmp$1 = "Adjective";
+                          break;
+                        case "N" :
+                          tmp$1 = "Noun";
+                          break;
+                        case "V/i" :
+                          tmp$1 = "Intransitive Verb";
+                          break;
+                        case "V/t" :
+                          tmp$1 = "Transitive Verb";
+                          break;
+                        default:
+                          tmp$1 = result.part_of_speech;
+                      }
+                      const match$2 = result.marker;
+                      let tmp$2;
+                      tmp$2 = match$2 === /* A */ 0 ? JsxRuntime.jsx("a", {
                           children: "EPSD2 link",
                           href: "https://oracc.museum.upenn.edu/epsd2/sux/" + result.id,
                           rel: "noopener noreferrer",
@@ -245,17 +274,20 @@ function Dictionary(Props) {
                           }),
                           JsxRuntime.jsx("td", {
                             children: JsxRuntime.jsx("strong", {
-                              children: Components__Web_utils.Format.phonetic_word(result.word)
+                              children: Components__Web_utils.Format.from_phonetic_to_standard(result.word)
                             })
                           }),
                           JsxRuntime.jsx("td", {
                             children: result.translation
                           }),
                           JsxRuntime.jsx("td", {
+                            children: tmp$1
+                          }),
+                          JsxRuntime.jsx("td", {
                             children: result.icount.toString(undefined)
                           }),
                           JsxRuntime.jsx("td", {
-                            children: tmp$1
+                            children: tmp$2
                           })
                         ]
                       }, Key);

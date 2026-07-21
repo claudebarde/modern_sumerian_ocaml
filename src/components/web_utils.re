@@ -262,11 +262,19 @@ module EpsdDict = {
 }
 
 module Format = {
-    let phonetic_word = (word: string): string => {
+    let from_phonetic_to_standard = (word: string): string => {
         word
         |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ʾ|js}), ~replacement={js|ʔ|js})
         |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|š|js}), ~replacement={js|sh|js})
         |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ḫ|js}), ~replacement={js|kh|js})
         |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ŋ|js}), ~replacement={js|ĝ|js})
+    };
+
+    let from_standard_to_phonetic = (word: string): string => {
+        word
+        |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ʔ|js}), ~replacement={js|ʾ|js})
+        |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|sh|js}), ~replacement={js|š|js})
+        |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|kh|js}), ~replacement={js|ḫ|js})
+        |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ĝ|js}), ~replacement={js|ŋ|js})
     };
 }

@@ -5,13 +5,12 @@
 
 ; (modes melange) indicates that this library uses Melange for compiling. 
 
-; (libraries melange.js melange.node melange.dom) lists the dependencies of the
+; (libraries melange.js melange.node melange.dom reason-react) lists the dependencies of the
 ; 'bindings' library. These are other libraries that 'bindings' requires, 
 ; likely providing bindings to various JavaScript APIs.
 
-; (preprocess (pps melange.ppx)) sets up preprocessing with 'melange.ppx', a 
-; preprocessor used by Melange for code transformations necessary before 
-; compilation.
+; (preprocess (pps melange.ppx reason-react-ppx)) enables both Melange bindings
+; and ReasonReact component bindings.
 
 ; Overall, this configuration ensures that the 'bindings' library is correctly 
 ; set up with the necessary tools and dependencies for development in a 
@@ -20,6 +19,6 @@
 (library
  (name bindings)
  (modes melange)
- (libraries melange.js melange.node melange.dom)
+ (libraries melange.js melange.node melange.dom reason-react)
  (preprocess
-  (pps melange.ppx)))
+  (pps melange.ppx reason-react-ppx)))

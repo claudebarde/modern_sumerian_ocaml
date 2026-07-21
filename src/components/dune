@@ -10,6 +10,6 @@
 (library
  (name components)
  (modes melange)
- (libraries cma_configuration conjugator reason-react)
+ (libraries bindings cma_configuration conjugator reason-react)
  (preprocess
   (pps melange.ppx reason-react-ppx)))

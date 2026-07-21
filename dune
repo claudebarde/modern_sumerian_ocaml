@@ -6,40 +6,11 @@
 ; dependency files.
 (dirs :standard \ node_modules)
 
-; The 'alias' block named 'all' defines a high-level alias for building the 
-; entire project. It specifies that the 'all' alias depends on another alias, 
-; typically named after the bundler being used (e.g., 'vite', 'webpack'). This 
-; setup allows for easy switching between different bundlers without changing 
-; the overall build process.
-(alias 
+; Build the Melange output as part of Dune's default `all` alias.
+(alias
   (name all)
   (deps
-     (alias_rec vite)))
-
-
-; The 'rule' block associated with the bundler alias (e.g., 'vite', 'webpack') 
-; defines the specific steps to build and bundle the web application. 
-;
-; - 'targets (dir dist)' indicates the output directory for the bundled files.
-;
-; - The 'deps' section lists dependencies like the project alias, bundler config 
-;   files, and entry HTML file. 
-;
-; - The 'action' specifies the system command to run the bundler, in this case a
-;   script from 'node_modules' to run a bundler.
-;
-; - 'promote (until-clean)' in 'mode' is used for artifact promotion, managing built files.
-(rule
-  (alias vite)
-   (targets (dir dist))
-   (deps
-     (alias_rec modern_sumerian_ocaml)
-     (:vite ./vite.config.js) 
-     (:index_html ./index.html))
-   (action
-    (system "../../node_modules/.bin/vite build"))
-   (mode
-     (promote (until-clean))))
+    (alias_rec modern_sumerian_ocaml)))
 
 
 ; The 'melange.emit' block is used to compile ReasonML/OCaml code to JavaScript.

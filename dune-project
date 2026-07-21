@@ -1,13 +1,9 @@
-(lang dune 3.16)
+(lang dune 3.18)
 ; The above stanza specifies the Dune language version being used.
 
 
 ; Declares the use of the Melange compiler with a specific version.
 (using melange 0.1)
-
-; Declares the use of the directory-targets extension, useful for managing 
-; directory-level build targets.
-(using directory-targets 0.1)
 
 ; Sets the name of the project.
 (name modern_sumerian_ocaml)
@@ -40,15 +36,15 @@
  (allow_empty) 
 ; Lists the dependencies of the package along with version constraints.
  (depends
-  (dune (>= 3.14))
-  (melange (>= 3.0.0-51))
-  (ocaml (>= 5.1.1))
-  opam-check-npm-deps
-  ppx_deriving
-  (reason (>= 3.11.0))
-  (reason-react (>= 0.13.0))
-  reason-react-ppx
-  ocamlformat
+  (dune (>= 3.24))
+  (melange (= 7.0.0-55))
+  (ocaml (= 5.5.0))
+  (opam-check-npm-deps (>= 4.1.0))
+  (ppx_deriving (>= 6.1.2))
+  (reason (>= 3.18.0))
+  (reason-react (= 0.17.0))
+  (reason-react-ppx (= 0.17.0))
+  (ocamlformat (>= 0.29.0))
 )
 ; Tags to categorize or label the package, useful for searches and indexing.
  (tags

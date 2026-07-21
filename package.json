@@ -13,6 +13,8 @@
     "vite-dev": "vite _build/default"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.7",
+    "@tabler/icons-react": "^3.45.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-select": "^5.10.2",

@@ -296,6 +296,14 @@ const EpsdDict = {
   get_epsd_link: get_epsd_link
 };
 
+function phonetic_word(word) {
+  return word.replace(new RegExp("ʾ"), "ʔ").replace(new RegExp("š"), "sh").replace(new RegExp("ḫ"), "kh").replace(new RegExp("ŋ"), "ĝ");
+}
+
+const Format = {
+  phonetic_word: phonetic_word
+};
+
 export {
   cuneiformCodePoints,
   search_cuneiforms,
@@ -305,5 +313,6 @@ export {
   replace_with_unicode,
   BuildResults,
   EpsdDict,
+  Format,
 }
 /* cuneiformCodePoints Not a pure module */

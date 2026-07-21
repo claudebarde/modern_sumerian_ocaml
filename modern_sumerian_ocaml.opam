@@ -8,18 +8,17 @@ license: "MIT"
 tags: ["reasonml," "ocaml," "melange"]
 homepage: "https://github.com/your-username/modern_sumerian_ocaml"
 doc: "https://github.com/your-username/modern_sumerian_ocaml"
-bug-reports:
-  "https://github.com/your-username/modern_sumerian_ocaml/issues"
+bug-reports: "https://github.com/your-username/modern_sumerian_ocaml/issues"
 depends: [
-  "dune" {>= "3.16" & >= "3.14"}
-  "melange" {>= "3.0.0-51"}
-  "ocaml" {>= "5.1.1"}
-  "opam-check-npm-deps"
-  "ppx_deriving"
-  "reason" {>= "3.11.0"}
-  "reason-react" {>= "0.13.0"}
-  "reason-react-ppx"
-  "ocamlformat"
+  "dune" {>= "3.18" & >= "3.24"}
+  "melange" {= "7.0.0-55"}
+  "ocaml" {= "5.5.0"}
+  "opam-check-npm-deps" {>= "4.1.0"}
+  "ppx_deriving" {>= "6.1.2"}
+  "reason" {>= "3.18.0"}
+  "reason-react" {= "0.17.0"}
+  "reason-react-ppx" {= "0.17.0"}
+  "ocamlformat" {>= "0.29.0"}
   "odoc" {with-doc}
 ]
 build: [
@@ -36,5 +35,5 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo:
-  "git+https://github.com/your-username/modern_sumerian_ocaml.git"
+dev-repo: "git+https://github.com/your-username/modern_sumerian_ocaml.git"
+x-maintenance-intent: ["(latest)"]

@@ -24,12 +24,10 @@ let make = () => {
         </div>
         <div className={css##title}>
             <h1>{"Modern Sumerian"|>React.string}</h1>
-            {node_env !== "development" ?
-                <img 
-                    src=betaButtonImage
-                    alt="beta"
-                />
-            : React.null}
+            <img 
+                src=betaButtonImage
+                alt="beta"
+            />
         </div>
         <div>
                 <nav className={css##navColumn} role="navigation">
@@ -48,7 +46,6 @@ let make = () => {
                                 {"Home"|>React.string}
                             </a>
                         </li>
-                        {node_env === "development" ? (
                             <>
                                 <li>
                                     <a
@@ -101,21 +98,6 @@ let make = () => {
                                     </a>
                                 </li>
                             </>
-                        ) : 
-                        <li>
-                            <a 
-                                className={
-                                    switch (List.nth_opt(url.path, 0)) {
-                                    | Some(path) when path === "conjugator" => css##active
-                                    | _ => ""
-                                    }
-                                }
-                                onClick={_ => { ReasonReactRouter.push("conjugator") }}
-                            >
-                                {"Conjugator"|>React.string}
-                            </a>
-                        </li>
-                        }
                         <li>
                             <a
                                 className={

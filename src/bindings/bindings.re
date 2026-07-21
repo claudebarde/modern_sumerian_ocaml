@@ -20,3 +20,6 @@
  * easier access by other parts of the application.
  */
 module Browser = Browser;
+module Config = Config;
+module Supabase = Supabase;
+module TablerReact = Tabler_react_bindings;

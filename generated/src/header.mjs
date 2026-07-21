@@ -16,73 +16,9 @@ const betaButtonImage = BetaButtonPng;
 function Header(Props) {
   const url = ReasonReactRouter.useUrl(undefined, undefined);
   const match = Stdlib__List.nth_opt(url.path, 0);
-  let tmp;
-  if (process.env.NODE_ENV === "development") {
-    const path = Stdlib__List.nth_opt(url.path, 0);
-    const path$1 = Stdlib__List.nth_opt(url.path, 0);
-    tmp = JsxRuntime.jsxs(JsxRuntime.Fragment, {
-      children: [
-        JsxRuntime.jsxs("li", {
-          children: [
-            JsxRuntime.jsx("a", {
-              children: "Tools",
-              className: path !== undefined && (path === "conjugator" || path === "cuneiforms" || path === "dictionary") ? css.active : ""
-            }),
-            JsxRuntime.jsxs("ul", {
-              children: [
-                JsxRuntime.jsx("li", {
-                  children: JsxRuntime.jsx("a", {
-                    children: "Conjugator",
-                    onClick: (function (param) {
-                      ReasonReactRouter.push("conjugator");
-                    })
-                  })
-                }),
-                JsxRuntime.jsx("li", {
-                  children: JsxRuntime.jsx("a", {
-                    children: "Keyboard",
-                    onClick: (function (param) {
-                      ReasonReactRouter.push("cuneiforms");
-                    })
-                  })
-                }),
-                JsxRuntime.jsx("li", {
-                  children: JsxRuntime.jsx("a", {
-                    children: "Dictionary",
-                    onClick: (function (param) {
-                      ReasonReactRouter.push("dictionary");
-                    })
-                  })
-                })
-              ],
-              className: css.dropdown
-            })
-          ]
-        }),
-        JsxRuntime.jsx("li", {
-          children: JsxRuntime.jsx("a", {
-            children: "Lessons",
-            className: path$1 === "lessons" ? css.active : "",
-            onClick: (function (param) {
-              ReasonReactRouter.push("lessons");
-            })
-          })
-        })
-      ]
-    });
-  } else {
-    const path$2 = Stdlib__List.nth_opt(url.path, 0);
-    tmp = JsxRuntime.jsx("li", {
-      children: JsxRuntime.jsx("a", {
-        children: "Conjugator",
-        className: path$2 === "conjugator" ? css.active : "",
-        onClick: (function (param) {
-          ReasonReactRouter.push("conjugator");
-        })
-      })
-    });
-  }
-  const path$3 = Stdlib__List.nth_opt(url.path, 0);
+  const path = Stdlib__List.nth_opt(url.path, 0);
+  const path$1 = Stdlib__List.nth_opt(url.path, 0);
+  const path$2 = Stdlib__List.nth_opt(url.path, 0);
   return JsxRuntime.jsxs("header", {
     children: [
       JsxRuntime.jsx("div", {
@@ -108,10 +44,10 @@ function Header(Props) {
           JsxRuntime.jsx("h1", {
             children: "Modern Sumerian"
           }),
-          process.env.NODE_ENV !== "development" ? JsxRuntime.jsx("img", {
-              alt: "beta",
-              src: betaButtonImage
-            }) : null
+          JsxRuntime.jsx("img", {
+            alt: "beta",
+            src: betaButtonImage
+          })
         ],
         className: css.title
       }),
@@ -128,11 +64,60 @@ function Header(Props) {
                   })
                 })
               }),
-              tmp,
+              JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                children: [
+                  JsxRuntime.jsxs("li", {
+                    children: [
+                      JsxRuntime.jsx("a", {
+                        children: "Tools",
+                        className: path !== undefined && (path === "conjugator" || path === "cuneiforms" || path === "dictionary") ? css.active : ""
+                      }),
+                      JsxRuntime.jsxs("ul", {
+                        children: [
+                          JsxRuntime.jsx("li", {
+                            children: JsxRuntime.jsx("a", {
+                              children: "Conjugator",
+                              onClick: (function (param) {
+                                ReasonReactRouter.push("conjugator");
+                              })
+                            })
+                          }),
+                          JsxRuntime.jsx("li", {
+                            children: JsxRuntime.jsx("a", {
+                              children: "Keyboard",
+                              onClick: (function (param) {
+                                ReasonReactRouter.push("cuneiforms");
+                              })
+                            })
+                          }),
+                          JsxRuntime.jsx("li", {
+                            children: JsxRuntime.jsx("a", {
+                              children: "Dictionary",
+                              onClick: (function (param) {
+                                ReasonReactRouter.push("dictionary");
+                              })
+                            })
+                          })
+                        ],
+                        className: css.dropdown
+                      })
+                    ]
+                  }),
+                  JsxRuntime.jsx("li", {
+                    children: JsxRuntime.jsx("a", {
+                      children: "Lessons",
+                      className: path$1 === "lessons" ? css.active : "",
+                      onClick: (function (param) {
+                        ReasonReactRouter.push("lessons");
+                      })
+                    })
+                  })
+                ]
+              }),
               JsxRuntime.jsx("li", {
                 children: JsxRuntime.jsx("a", {
                   children: "Links",
-                  className: path$3 === "links" ? css.active : "",
+                  className: path$2 === "links" ? css.active : "",
                   onClick: (function (param) {
                     ReasonReactRouter.push("links");
                   })

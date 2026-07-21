@@ -2,9 +2,9 @@
 
 import BodyModuleScss from "./Body.module.scss";
 import * as Components__Conjugator_ui from "./components/conjugator_ui.mjs";
-import * as Components__Cuneiforms from "./components/cuneiforms.mjs";
 import * as Components__Dictionary from "./components/dictionary.mjs";
 import * as Components__Home from "./components/home.mjs";
+import * as Components__Keyboard from "./components/keyboard.mjs";
 import * as Components__Lessons from "./components/lessons.mjs";
 import * as Components__Links from "./components/links.mjs";
 import * as Components__Page_not_found from "./components/page_not_found.mjs";
@@ -27,13 +27,6 @@ function Body(Props) {
           tmp = JsxRuntime.jsx(Components__Conjugator_ui.make, {});
         }
         break;
-      case "cuneiforms" :
-        if (match.tl) {
-          exit = 1;
-        } else {
-          tmp = JsxRuntime.jsx(Components__Cuneiforms.make, {});
-        }
-        break;
       case "dictionary" :
         if (match.tl) {
           exit = 1;
@@ -46,6 +39,13 @@ function Body(Props) {
           exit = 1;
         } else {
           tmp = JsxRuntime.jsx(Components__Home.make, {});
+        }
+        break;
+      case "keyboard" :
+        if (match.tl) {
+          exit = 1;
+        } else {
+          tmp = JsxRuntime.jsx(Components__Keyboard.make, {});
         }
         break;
       case "lessons" :

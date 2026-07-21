@@ -65,6 +65,40 @@ module Filter = {
     /** Filter a query by columns that are like a value */
     [@mel.send]
     external like: (~column: string, ~value: string, [@mel.this] Js.Promise.t(Js.Json.t)) => Js.Promise.t(Js.Json.t) = "like";
+
+    /** Filter a query by columns that match a value case-insensitively. */
+    [@mel.send]
+    external ilike: (~column: string, ~value: string, [@mel.this] Js.Promise.t(Js.Json.t)) => Js.Promise.t(Js.Json.t) = "ilike";
+
+    /** Combine raw PostgREST filters with OR. Prefer ilike_any for user input. */
+    [@mel.send]
+    external or_: (~filters: string, [@mel.this] Js.Promise.t(Js.Json.t)) => Js.Promise.t(Js.Json.t) = "or";
+
+    let quote_filter_value = value => {
+        let escaped =
+            value
+            |> Js.String.replaceByRe(
+                ~regexp=Js.Re.fromStringWithFlags("\\\\", ~flags="g"),
+                ~replacement="\\\\",
+            )
+            |> Js.String.replaceByRe(
+                ~regexp=Js.Re.fromStringWithFlags("\"", ~flags="g"),
+                ~replacement="\\\"",
+            );
+        "\"" ++ escaped ++ "\"";
+    };
+
+    /** Match any of several values case-insensitively. */
+    let ilike_any = (~column, ~values, ~contains, query) => {
+        let filters =
+            values
+            |> Array.map(value => {
+                let pattern = contains ? "%" ++ value ++ "%" : value;
+                column ++ ".ilike." ++ quote_filter_value(pattern);
+            })
+            |> Js.Array.join(~sep=",");
+        query |> or_(~filters);
+    };
 }
 
 module Modifier = {
@@ -77,7 +111,7 @@ module Modifier = {
     external order: (~column: string, ~options: option(order_options), [@mel.this] Js.Promise.t(Js.Json.t)) => Js.Promise.t(Js.Json.t) = "order";
 };
 
-module SupabaseResponse = {
+module Response = {
     /** 
      * Decode a JSON response into an array of dictionary_row records. 
     */

@@ -304,9 +304,27 @@ function from_standard_to_phonetic(word) {
   return word.replace(new RegExp("ʔ"), "ʾ").replace(new RegExp("sh"), "š").replace(new RegExp("kh"), "ḫ").replace(new RegExp("ĝ"), "ŋ");
 }
 
+function with_g_variants(word) {
+  return Stdlib__Array.fold_left((function (variants, character) {
+    if (character === "g") {
+      return Stdlib__Array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (prefix) {
+        return [
+          prefix + "g",
+          prefix + "ŋ"
+        ];
+      }), variants)));
+    } else {
+      return Stdlib__Array.map((function (prefix) {
+        return prefix + character;
+      }), variants);
+    }
+  }), [""], word.split("", undefined));
+}
+
 const Format = {
   from_phonetic_to_standard: from_phonetic_to_standard,
-  from_standard_to_phonetic: from_standard_to_phonetic
+  from_standard_to_phonetic: from_standard_to_phonetic,
+  with_g_variants: with_g_variants
 };
 
 export {

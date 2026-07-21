@@ -9,7 +9,23 @@ import * as Stdlib__Array from "melange/array.mjs";
 
 const Query = {};
 
-const Filter = {};
+function quote_filter_value(value) {
+  const escaped = value.replace(new RegExp("\\\\", "g"), "\\\\").replace(new RegExp("\"", "g"), "\\\"");
+  return "\"" + (escaped + "\"");
+}
+
+function ilike_any(column, values, contains, query) {
+  const filters = Stdlib__Array.map((function (value) {
+    const pattern = contains ? "%" + (value + "%") : value;
+    return column + (".ilike." + quote_filter_value(pattern));
+  }), values).join(",");
+  return query.or(filters);
+}
+
+const Filter = {
+  quote_filter_value: quote_filter_value,
+  ilike_any: ilike_any
+};
 
 const Modifier = {};
 
@@ -170,7 +186,7 @@ function decode(json) {
   };
 }
 
-const SupabaseResponse = {
+const $$Response = {
   decode_string_field: decode_string_field,
   decode_marker: decode_marker,
   decode_string_array: decode_string_array,
@@ -185,7 +201,7 @@ export {
   Query,
   Filter,
   Modifier,
-  SupabaseResponse,
+  $$Response,
   client,
 }
 /* client Not a pure module */

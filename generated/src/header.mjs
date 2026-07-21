@@ -70,7 +70,7 @@ function Header(Props) {
                     children: [
                       JsxRuntime.jsx("a", {
                         children: "Tools",
-                        className: path !== undefined && (path === "conjugator" || path === "cuneiforms" || path === "dictionary") ? css.active : ""
+                        className: path !== undefined && (path === "conjugator" || path === "keyboard" || path === "dictionary") ? css.active : ""
                       }),
                       JsxRuntime.jsxs("ul", {
                         children: [
@@ -86,7 +86,7 @@ function Header(Props) {
                             children: JsxRuntime.jsx("a", {
                               children: "Keyboard",
                               onClick: (function (param) {
-                                ReasonReactRouter.push("cuneiforms");
+                                ReasonReactRouter.push("keyboard");
                               })
                             })
                           }),

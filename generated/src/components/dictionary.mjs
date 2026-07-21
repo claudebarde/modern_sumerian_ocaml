@@ -80,22 +80,35 @@ function Dictionary(Props) {
     const match = selected_lang.value;
     let column;
     column = match === /* EngToSum */ 0 ? "translation" : "word";
-    const match$1 = selected_search_shape.value;
+    const match$1 = selected_lang.value;
+    const match$2 = selected_search_shape.value;
     let filter;
-    if (match$1 === /* ExactWord */ 0) {
+    if (match$1 === /* EngToSum */ 0) {
+      if (match$2 === /* ExactWord */ 0) {
+        filter = (function (param) {
+          return param.ilike(column, word_to_search);
+        });
+      } else {
+        const partial_arg = "%" + (word_to_search + "%");
+        filter = (function (param) {
+          return param.ilike(column, partial_arg);
+        });
+      }
+    } else if (match$2 === /* ExactWord */ 0) {
+      const partial_arg$1 = Components__Web_utils.Format.with_g_variants(word_to_search);
       filter = (function (param) {
-        return param.eq(column, word_to_search);
+        return Bindings__Supabase.Filter.ilike_any(column, partial_arg$1, false, param);
       });
     } else {
-      const partial_arg = "%" + (word_to_search + "%");
+      const partial_arg$2 = Components__Web_utils.Format.with_g_variants(word_to_search);
       filter = (function (param) {
-        return param.like(column, partial_arg);
+        return Bindings__Supabase.Filter.ilike_any(column, partial_arg$2, true, param);
       });
     }
     Curry._1(filter, Bindings__Supabase.client.from("dictionary").select("*")).order("icount", {
       ascending: false
     }).then(function (res) {
-      const decoded = Bindings__Supabase.SupabaseResponse.decode(res);
+      const decoded = Bindings__Supabase.$$Response.decode(res);
       Curry._1(set_search_results, (function (param) {
         return decoded.data;
       }));

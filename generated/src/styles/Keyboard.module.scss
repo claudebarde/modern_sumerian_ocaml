@@ -1,0 +1,95 @@
+@use "../styles/styles.scss" as *;
+
+$container-width: 60%;
+$container-padding: 5px;
+
+.keyboardContainer {
+  height: 100%;
+  width: 100vw;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  padding: 50px;
+
+  .cuneiformDisplay {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0px;
+    border: solid 1px $proton-red;
+    border-radius: 10px;
+    min-height: 70px;
+    width: $container-width;
+    overflow-y: auto;
+    background-color: white;
+    padding: $container-padding;
+  }
+
+  .phoneticDisplay {
+    text-align: left;
+    font-style: italic;
+    border: solid 1px $proton-red;
+    border-radius: 10px;
+    width: $container-width;
+    padding: $container-padding;
+    background-color: white;
+  }
+
+  .cuneiformSelection {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    border: solid 1px $proton-red;
+    border-radius: 10px;
+    height: 70px;
+    width: $container-width;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: $container-padding;
+    background-color: white;
+
+    .cuneiformSelectionItem {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      border: solid 1px $proton-red;
+      padding: $container-padding;
+      background-color: $silver-setting;
+      cursor: pointer;
+
+      &[aria-selected="true"] {
+        background-color: $proton-red;
+        color: white;
+      }
+    }
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: $container-width;
+  }
+
+  .typingArea {
+    width: $container-width;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    input {
+      width: 50%;
+    }
+  }
+}

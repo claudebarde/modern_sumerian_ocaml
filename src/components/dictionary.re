@@ -113,9 +113,21 @@ let make = () => {
                 | SelectLang.EngToSum => "translation"
                 | SelectLang.SumToEng => "word"
             };
-            let filter = switch selected_search_shape.value {
-                | SelectSearchShape.ExactWord => Supabase.Filter.eq(~column, ~value=word_to_search)
-                | SelectSearchShape.Contains => Supabase.Filter.like(~column, ~value=("%" ++ word_to_search ++ "%"))
+            let filter = switch (selected_lang.value, selected_search_shape.value) {
+                | (SelectLang.SumToEng, SelectSearchShape.ExactWord) =>
+                    Supabase.Filter.ilike_any(
+                        ~column,
+                        ~values=Web_utils.Format.with_g_variants(word_to_search),
+                        ~contains=false,
+                    )
+                | (SelectLang.SumToEng, SelectSearchShape.Contains) =>
+                    Supabase.Filter.ilike_any(
+                        ~column,
+                        ~values=Web_utils.Format.with_g_variants(word_to_search),
+                        ~contains=true,
+                    )
+                | (_, SelectSearchShape.ExactWord) => Supabase.Filter.ilike(~column, ~value=word_to_search)
+                | (_, SelectSearchShape.Contains) => Supabase.Filter.ilike(~column, ~value=("%" ++ word_to_search ++ "%"))
             };
             let _ = 
                 Supabase.client 
@@ -125,7 +137,7 @@ let make = () => {
                 |> Supabase.Modifier.order(~column="icount", ~options=Some({ascending: false}))
                 |> Js.Promise.then_(res => {
                     // Js.log("Search result: " ++ Js.Json.stringify(res));
-                    let decoded = Supabase.SupabaseResponse.decode(res);
+                    let decoded = Supabase.Response.decode(res);
                     set_search_results(_ => Some(decoded.data));
                     set_searching(_ => false);
                     Js.Promise.resolve();

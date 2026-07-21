@@ -10,7 +10,7 @@ let make = () => {
         {
             switch (url.path) {
                 | ["conjugator"] => <Conjugator_ui />
-                | ["cuneiforms"] => <Cuneiforms />
+                | ["keyboard"] => <Keyboard />
                 | ["links"] => <Links />
                 | ["lessons"] => <Lessons />
                 | ["dictionary"] => <Dictionary />

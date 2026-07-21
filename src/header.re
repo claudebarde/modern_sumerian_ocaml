@@ -52,7 +52,7 @@ let make = () => {
                                         className={
                                             switch (List.nth_opt(url.path, 0)) {
                                             | Some(path) when path === "conjugator" => css##active
-                                            | Some(path) when path === "cuneiforms" => css##active
+                                            | Some(path) when path === "keyboard" => css##active
                                             | Some(path) when path === "dictionary" => css##active
                                             | _ => ""
                                             }
@@ -69,7 +69,7 @@ let make = () => {
                                         </li>
                                         <li>
                                             <a 
-                                                onClick={_ => { ReasonReactRouter.push("cuneiforms") }}
+                                                onClick={_ => { ReasonReactRouter.push("keyboard") }}
                                             >
                                                 {"Keyboard"|>React.string}
                                             </a>

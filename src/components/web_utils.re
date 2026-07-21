@@ -277,4 +277,19 @@ module Format = {
         |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|kh|js}), ~replacement={js|ḫ|js})
         |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ĝ|js}), ~replacement={js|ŋ|js})
     };
+
+    /** Return every spelling obtained by treating plain g as either g or ŋ. */
+    let with_g_variants = (word: string): array(string) => {
+        word
+        |> Js.String.split(~sep="")
+        |> Array.fold_left((variants, character) =>
+            if (character == "g") {
+                variants
+                |> Array.map(prefix => [|prefix ++ "g", prefix ++ {js|ŋ|js}|])
+                |> Array.to_list
+                |> Array.concat;
+            } else {
+                variants |> Array.map(prefix => prefix ++ character);
+            }, [|""|]);
+    };
 }

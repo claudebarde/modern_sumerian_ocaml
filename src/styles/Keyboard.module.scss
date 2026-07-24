@@ -16,19 +16,33 @@ $container-padding: 5px;
   gap: 20px;
   padding: 50px;
 
-  .cuneiformDisplay {
+  .cuneiformDisplayContainer {
+    width: $container-width;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 0px;
-    border: solid 1px $proton-red;
-    border-radius: 10px;
-    min-height: 70px;
-    width: $container-width;
-    overflow-y: auto;
-    background-color: white;
-    padding: $container-padding;
+    padding: 0px;
+
+    .cuneiformDisplay {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0px;
+      border: solid 1px $proton-red;
+      border-radius: 10px;
+      min-height: 70px;
+      width: 100%;
+      overflow-y: auto;
+      background-color: white;
+      padding: $container-padding;
+    }
+
+    .cuneiformDisplayButtons {
+      padding: 5px 0px;
+    }
   }
 
   .phoneticDisplay {
@@ -91,5 +105,24 @@ $container-padding: 5px;
     input {
       width: 50%;
     }
+  }
+}
+
+.refreshIcon {
+  margin-left: 10px;
+  opacity: 0;
+
+  &.active {
+    animation: spin 1s linear infinite;
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

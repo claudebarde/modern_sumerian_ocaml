@@ -1,5 +1,10 @@
 [@mel.module "../styles/Keyboard.module.scss"] external css: Js.t({..}) = "default"; 
 
+module BrowserClipboard = {
+    [@mel.scope ("navigator", "clipboard")]
+    external write_text: string => Js.Promise.t(unit) = "writeText";
+};
+
 type cuneiform_selection = {
     id: string,
     cuneiforms: array(string),
@@ -39,6 +44,9 @@ let make = () => {
     let (active_cuneiform_selection, set_active_cuneiform_selection) =
         React.useState(_ => (None: option(cuneiform_selection)));
     let (has_word_delimiter, set_has_word_delimiter) = React.useState(_ => true);
+    let (dictionary_search, set_dictionary_search) = React.useState(_ => false);
+    let (keyboard_dictionary, set_keyboard_dictionary) = React.useState(_ => (None: option(LocalStorage.keyboard)));
+
     let latest_search_id = React.useRef(0);
 
     let curate_cuneiforms = (selections: array(cuneiform_selection)): array(cuneiform_selection) => {
@@ -78,7 +86,42 @@ let make = () => {
 
     let search_word = (~request_id: int, user_input: string) => {
         let vowels = [|"a", "e", "i", "u"|];
-
+        // First, it looks into the localStorage dictionary to see if the word exists there. 
+        let _results = 
+            switch keyboard_dictionary {
+            | Some(dictionary) => {
+                switch (Js.Dict.get(
+                    dictionary,
+                    user_input 
+                    |> Js.String.trim 
+                    |> Js.String.toLowerCase 
+                    |> Web_utils.Format.from_standard_to_phonetic,
+                )) {
+                | Some(cuneiforms) => {
+                    // If the word exists in the localStorage dictionary, it is added to cuneiform_selection
+                    let decodedCuneiforms: array(cuneiform_selection) = 
+                        cuneiforms
+                        |> Array.mapi((index, cuneiform,) => ({
+                            id: "local-" ++ Js.Int.toString(index),
+                            cuneiforms: [|cuneiform|],
+                            word: user_input |> Js.String.trim |> Js.String.toLowerCase,
+                            icount: 0,
+                        }: cuneiform_selection));
+                    let curatedCuneiforms = curate_cuneiforms(decodedCuneiforms);
+                    if (Array.length(curatedCuneiforms) > 0) {
+                        set_cuneiform_selection(_ => Some(curatedCuneiforms));
+                        set_active_cuneiform_selection(_ => Some(curatedCuneiforms[0]));
+                    } else {
+                        set_cuneiform_selection(_ => Some([||]));
+                        set_active_cuneiform_selection(_ => None);
+                    };
+                }
+                | None => ()
+                }
+            }
+            | None => ()
+            };
+        // Then a request is made to the Supabase database to fetch the cuneiforms for the word.
         let word_to_search = 
             user_input
             |> Js.String.trim 
@@ -110,12 +153,42 @@ let make = () => {
                             }: cuneiform_selection));
                         let curatedCuneiforms = curate_cuneiforms(decodedCuneiforms);
                         if (Array.length(curatedCuneiforms) > 0) {
-                            set_cuneiform_selection(_ => Some(curatedCuneiforms));
-                            set_active_cuneiform_selection(_ => Some(curatedCuneiforms[0]));
-                        } else {
-                            set_cuneiform_selection(_ => Some([||]));
-                            set_active_cuneiform_selection(_ => None);
-                        }
+                            // the cuneiform selection from Supabase is added to the cuneiform selection from localStorage, and duplicates are removed
+                            set_cuneiform_selection(prev => {
+                                let combined = switch prev {
+                                | Some(prev_selections) => {
+                                    // filters the Supabase results to exclude cuneiforms that are already present in the localStorage results
+                                    Array.concat([prev_selections, curatedCuneiforms])
+                                    |> Array.fold_left((acc, selection) => {
+                                        if (Array.exists(sel => sel.cuneiforms[0] === selection.cuneiforms[0], acc)) {
+                                            acc
+                                        } else {
+                                            Array.concat([acc, [|selection|]])
+                                        }
+                                    }, [||])
+                                }
+                                | None => curatedCuneiforms
+                                };
+                                Some(combined);
+                            });
+                            Js.log(active_cuneiform_selection);
+                            switch active_cuneiform_selection {
+                                | Some(_) => ()
+                                | None => {
+                                    set_active_cuneiform_selection(prev => {
+                                        switch prev {
+                                        | Some(_) => prev
+                                        | None => Some(curatedCuneiforms[0])
+                                        }
+                                    });
+                                }
+                            }
+                        } 
+                        // else {
+                        //     set_cuneiform_selection(_ => Some([||]));
+                        //     set_active_cuneiform_selection(_ => None);
+                        // };
+                        set_dictionary_search(_ => false);
                     };
                     Js.Promise.resolve();
                 })
@@ -123,6 +196,7 @@ let make = () => {
                     if (request_id === latest_search_id.current) {
                         set_cuneiform_selection(_ => None);
                         set_active_cuneiform_selection(_ => None);
+                        set_dictionary_search(_ => false);
                         Js.log2("Error during search:", err);
                     };
                     Js.Promise.resolve();
@@ -130,18 +204,42 @@ let make = () => {
         } else {
             set_cuneiform_selection(_ => None);
             set_active_cuneiform_selection(_ => None);
-        }
+            set_dictionary_search(_ => false);
+        };
     };
+
+    React.useEffect1(() => {
+        // on load, the page will fetch the "keyboard" dictionary from the local storage
+        // and loads it into the keyboard_dictionary state
+        let _ = switch (LocalStorage.get_item("keyboard")) {
+        | Some(value) =>
+            switch (LocalStorage.decode_keyboard(value)) {
+            | Some(keyboard) => set_keyboard_dictionary(_ => Some(keyboard))
+            | None => set_keyboard_dictionary(_ => None)
+            }
+        | None => set_keyboard_dictionary(_ => None)
+        };
+
+        None
+    }, [||])
 
     React.useEffect1(() => {
         latest_search_id.current = latest_search_id.current + 1;
         let request_id = latest_search_id.current;
+        switch input {
+        | Some(value) =>
+            set_dictionary_search(_ =>
+                value |> Js.String.trim |> Js.String.length > 0
+            )
+        | None => set_dictionary_search(_ => false)
+        };
         let timeout_id = Js.Global.setTimeout(~f=() => {
             switch input {
             | Some(value) => search_word(~request_id, value)
             | None => {
                 set_cuneiform_selection(_ => None);
                 set_active_cuneiform_selection(_ => None);
+                set_dictionary_search(_ => false);
             }
             };
         }, 300);
@@ -149,35 +247,72 @@ let make = () => {
         Some(() => Js.Global.clearTimeout(timeout_id));
     }, [|input|]);
 
+    let copy_cuneiform_display = () => {
+        switch cuneiform_display {
+        | Some(display) when Array.length(display) > 0 => {
+            let text =
+                display
+                |> Array.map(value =>
+                    if (value === "wd") {
+                        has_word_delimiter ? Js.String.fromCodePoint(0x00B7) : "";
+                    } else {
+                        value;
+                    }
+                )
+                |> Js.Array.join(~sep="");
+            let _ =
+                text
+                |> BrowserClipboard.write_text
+                |> Js.Promise.catch(error => {
+                    Js.log2("Could not copy the cuneiform text:", error);
+                    Js.Promise.resolve();
+                });
+        }
+        | _ => ()
+        };
+    };
+
     <div className=css##keyboardContainer>
         <h1>{"Sumerian Keyboard"|>React.string}</h1>
-        <div className=css##cuneiformDisplay>
-            {
-                switch cuneiform_display {
-                | Some(display) => 
-                    if (Array.length(display) > 0) {
-                        display
-                        |> Array.mapi((index, cuneiform) => {
-                            if (cuneiform === "wd" && has_word_delimiter) {
-                                <span 
-                                    key={Js.Int.toString(index) ++ "-" ++ cuneiform} 
-                                    style=(ReactDOM.Style.make(~fontSize="2.5rem", ()))
-                                >
-                                    {React.string(Js.String.fromCodePoint(0x00B7))}
-                                </span>
-                            } else if (cuneiform === "wd" && !has_word_delimiter) {
-                                <span key={Js.Int.toString(index) ++ "-" ++ cuneiform}>{React.string("")}</span>
-                            } else {
-                                <span key={Js.Int.toString(index) ++ "-" ++ cuneiform} className="cuneiforms">{cuneiform |> React.string}</span>
-                            }
-                        })
-                        |> React.array
-                    } else {
-                        <div>{"Nothing to show yet." |> React.string}</div>
+        <div className=css##cuneiformDisplayContainer>
+            <div className=css##cuneiformDisplay>
+                {
+                    switch cuneiform_display {
+                    | Some(display) => 
+                        if (Array.length(display) > 0) {
+                            display
+                            |> Array.mapi((index, cuneiform) => {
+                                if (cuneiform === "wd" && has_word_delimiter) {
+                                    <span 
+                                        key={Js.Int.toString(index) ++ "-" ++ cuneiform} 
+                                        style=(ReactDOM.Style.make(~fontSize="2.5rem", ()))
+                                    >
+                                        {React.string(Js.String.fromCodePoint(0x00B7))}
+                                    </span>
+                                } else if (cuneiform === "wd" && !has_word_delimiter) {
+                                    <span key={Js.Int.toString(index) ++ "-" ++ cuneiform}>{React.string("")}</span>
+                                } else {
+                                    <span key={Js.Int.toString(index) ++ "-" ++ cuneiform} className="cuneiforms">{cuneiform |> React.string}</span>
+                                }
+                            })
+                            |> React.array
+                        } else {
+                            <div>{"Nothing to show yet." |> React.string}</div>
+                        }
+                    | None => <div>{"Nothing to show yet." |> React.string}</div>
                     }
-                | None => <div>{"Nothing to show yet." |> React.string}</div>
                 }
-            }
+            </div>
+            <div className=css##cuneiformDisplayButtons>
+                <button
+                    className="small"
+                    ariaLabel="Copy cuneiform text"
+                    title="Copy cuneiform text"
+                    onClick={_ => copy_cuneiform_display()}
+                >
+                    <TablerReact.IconCopy size=15 stroke=3.0 />
+                </button>
+            </div>
         </div>
         <div className=css##phoneticDisplay>
             {switch phonetic_display {
@@ -304,6 +439,74 @@ let make = () => {
                         }
                         | None => ()
                         }
+                        // Then, the cuneiform and its phonetic value are added to the localStorage dictionary if they are not already present
+                        switch input {
+                        | Some(value) => {
+                            let trimmed_value = 
+                                value 
+                                |> Js.String.trim 
+                                |> Js.String.toLowerCase 
+                                |> Web_utils.Format.from_standard_to_phonetic;
+                            switch keyboard_dictionary {
+                            | Some(dictionary) => {
+                                // the dictionary exists, so we check if the word is already present
+                                switch (Js.Dict.get(dictionary, trimmed_value)) {
+                                | Some(cuneiforms) => {
+                                    switch active_cuneiform_selection {
+                                    | Some(active) => {
+                                        if (Array.mem(active.cuneiforms[0], cuneiforms)) {
+                                            // if the cuneiform doesn't exist in the value array, we add it
+                                            if (Array.mem(active.cuneiforms[0], cuneiforms)) {
+                                                Js.log("Cuneiform already exists in the dictionary.");
+                                                ()
+                                            } else {
+                                                let new_cuneiforms = Array.concat([cuneiforms, [|active.cuneiforms[0]|]]);
+                                                Js.Dict.set(dictionary, trimmed_value, new_cuneiforms);
+                                                let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(dictionary));
+                                                set_keyboard_dictionary(_ => Some(dictionary));
+                                                Js.log("Added cuneiform to the dictionary.");
+                                            }
+                                        } else {
+                                            let new_cuneiforms = Array.concat([cuneiforms, [|active.cuneiforms[0]|]]);
+                                            Js.Dict.set(dictionary, trimmed_value, new_cuneiforms);
+                                            let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(dictionary));
+                                            set_keyboard_dictionary(_ => Some(dictionary));
+                                            Js.log("Added cuneiform to the dictionary.");
+                                        }
+                                    }
+                                    | None => ()
+                                    }
+                                }
+                                | None => {
+                                    switch active_cuneiform_selection {
+                                    | Some(active) => {
+                                        Js.Dict.set(dictionary, trimmed_value, [|active.cuneiforms[0]|]);
+                                        let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(dictionary));
+                                        set_keyboard_dictionary(_ => Some(dictionary));
+                                        Js.log("Added new word and cuneiform to the dictionary.");
+                                    }
+                                    | None => ()
+                                    }
+                                }
+                            }
+                            }
+                            | None => {
+                                // the dictionary doesn't exist, so we create it and add the word and cuneiform
+                                let new_dictionary = Js.Dict.empty();
+                                switch active_cuneiform_selection {
+                                | Some(active) => { 
+                                    Js.Dict.set(new_dictionary, trimmed_value, [|active.cuneiforms[0]|]);
+                                    let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(new_dictionary));
+                                    set_keyboard_dictionary(_ => Some(new_dictionary));
+                                    Js.log("Created new dictionary and added word and cuneiform.");
+                                }
+                                | None => ()
+                                }
+                            }
+                        }
+                        }
+                        | None => ()
+                        }
                     } else if (React.Event.Keyboard.key(event) === " ") {
                         React.Event.Keyboard.preventDefault(event);
                         // returns if there is no value in cuneiform display and phonetic display
@@ -427,6 +630,13 @@ let make = () => {
                     }
                 }
             />
+            {dictionary_search ? 
+            <TablerReact.IconRefresh 
+                className={css##refreshIcon ++ " " ++ css##active}
+                size=20 
+                stroke=3.0 
+                /> : 
+            <TablerReact.IconRefresh className=css##refreshIcon size=20 stroke=3.0 />}
         </div>
     </div>
 }

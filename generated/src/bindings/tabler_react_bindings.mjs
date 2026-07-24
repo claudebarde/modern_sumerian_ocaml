@@ -5,8 +5,11 @@ const IconSearch = {};
 
 const IconRefresh = {};
 
+const IconCopy = {};
+
 export {
   IconSearch,
   IconRefresh,
+  IconCopy,
 }
 /* No side effect */

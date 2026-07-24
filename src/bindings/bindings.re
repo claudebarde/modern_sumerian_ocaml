@@ -21,5 +21,6 @@
  */
 module Browser = Browser;
 module Config = Config;
+module LocalStorage = Local_storage;
 module Supabase = Supabase;
 module TablerReact = Tabler_react_bindings;

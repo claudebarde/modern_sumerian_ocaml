@@ -99,6 +99,18 @@ module Filter = {
             |> Js.Array.join(~sep=",");
         query |> or_(~filters);
     };
+
+    /** Filters a query by columns that match any word that starts with the provided value case-insensitively. */
+    let starts_with_any = (~column, ~values, query) => {
+        let filters =
+            values
+            |> Array.map(value => {
+                let pattern = value ++ "%";
+                column ++ ".ilike." ++ quote_filter_value(pattern);
+            })
+            |> Js.Array.join(~sep=",");
+        query |> or_(~filters);
+    };
 }
 
 module Modifier = {
@@ -109,6 +121,10 @@ module Modifier = {
     type order_options = {ascending: bool};
     [@mel.send]
     external order: (~column: string, ~options: option(order_options), [@mel.this] Js.Promise.t(Js.Json.t)) => Js.Promise.t(Js.Json.t) = "order";
+
+    /** The "limit" modifier */
+    [@mel.send]
+    external limit: (~count: int, [@mel.this] Js.Promise.t(Js.Json.t)) => Js.Promise.t(Js.Json.t) = "limit";
 };
 
 module Response = {

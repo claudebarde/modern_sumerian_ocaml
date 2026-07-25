@@ -22,9 +22,18 @@ function ilike_any(column, values, contains, query) {
   return query.or(filters);
 }
 
+function starts_with_any(column, values, query) {
+  const filters = Stdlib__Array.map((function (value) {
+    const pattern = value + "%";
+    return column + (".ilike." + quote_filter_value(pattern));
+  }), values).join(",");
+  return query.or(filters);
+}
+
 const Filter = {
   quote_filter_value: quote_filter_value,
-  ilike_any: ilike_any
+  ilike_any: ilike_any,
+  starts_with_any: starts_with_any
 };
 
 const Modifier = {};

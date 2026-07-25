@@ -296,12 +296,16 @@ const EpsdDict = {
   get_epsd_link: get_epsd_link
 };
 
+function global_regexp(pattern) {
+  return new RegExp(pattern, "g");
+}
+
 function from_phonetic_to_standard(word) {
-  return word.replace(new RegExp("ʾ"), "ʔ").replace(new RegExp("š"), "sh").replace(new RegExp("ḫ"), "kh").replace(new RegExp("ŋ"), "ĝ");
+  return word.replace(new RegExp("ʾ", "g"), "ʔ").replace(new RegExp("š", "g"), "sh").replace(new RegExp("ḫ", "g"), "kh").replace(new RegExp("ŋ", "g"), "ĝ");
 }
 
 function from_standard_to_phonetic(word) {
-  return word.replace(new RegExp("ʔ"), "ʾ").replace(new RegExp("sh"), "š").replace(new RegExp("kh"), "ḫ").replace(new RegExp("ĝ"), "ŋ");
+  return word.replace(new RegExp("ʔ", "g"), "ʾ").replace(new RegExp("sh", "g"), "š").replace(new RegExp("kh", "g"), "ḫ").replace(new RegExp("ĝ", "g"), "ŋ");
 }
 
 function with_g_variants(word) {
@@ -322,6 +326,7 @@ function with_g_variants(word) {
 }
 
 const Format = {
+  global_regexp: global_regexp,
   from_phonetic_to_standard: from_phonetic_to_standard,
   from_standard_to_phonetic: from_standard_to_phonetic,
   with_g_variants: with_g_variants

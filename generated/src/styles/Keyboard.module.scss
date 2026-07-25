@@ -2,6 +2,7 @@
 
 $container-width: 60%;
 $container-padding: 5px;
+$border-radius: 10px;
 
 .keyboardContainer {
   height: 100%;
@@ -32,7 +33,7 @@ $container-padding: 5px;
       align-items: center;
       gap: 0px;
       border: solid 1px $proton-red;
-      border-radius: 10px;
+      border-radius: $border-radius;
       min-height: 70px;
       width: 100%;
       overflow-y: auto;
@@ -49,41 +50,69 @@ $container-padding: 5px;
     text-align: left;
     font-style: italic;
     border: solid 1px $proton-red;
-    border-radius: 10px;
+    border-radius: $border-radius;
     width: $container-width;
     padding: $container-padding;
     background-color: white;
   }
 
-  .cuneiformSelection {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 10px;
-    border: solid 1px $proton-red;
-    border-radius: 10px;
-    height: 70px;
+  .cuneiformSelectionContainer {
     width: $container-width;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: $container-padding;
-    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
 
-    .cuneiformSelectionItem {
+    .cuneiformSelection {
       display: flex;
-      justify-content: center;
+      flex-direction: row;
+      justify-content: flex-start;
       align-items: center;
-      border-radius: 10px;
+      gap: 10px;
       border: solid 1px $proton-red;
+      border-radius: $border-radius;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      border-bottom: none;
+      height: 70px;
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
       padding: $container-padding;
-      background-color: $silver-setting;
-      cursor: pointer;
+      background-color: white;
 
-      &[aria-selected="true"] {
-        background-color: $proton-red;
-        color: white;
+      .cuneiformSelectionItem {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: $border-radius;
+        border: solid 1px $proton-red;
+        padding: $container-padding;
+        background-color: $silver-setting;
+        cursor: pointer;
+
+        &[aria-selected="true"] {
+          background-color: $proton-red;
+          color: white;
+        }
       }
+    }
+
+    .cuneiformSelectionInfo {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      font-style: italic;
+      width: calc(100% - 2 * (15px - #{$container-padding}));
+      padding: $container-padding 15px;
+      background-color: white;
+      border: solid 1px $proton-red;
+      border-radius: $border-radius;
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      border-top: none;
     }
   }
 
@@ -115,6 +144,16 @@ $container-padding: 5px;
   &.active {
     animation: spin 1s linear infinite;
     opacity: 1;
+  }
+}
+
+.howToUse {
+  width: $container-width;
+  padding: $container-padding;
+  font-size: 0.8rem;
+
+  h2 {
+    margin-top: 0;
   }
 }
 

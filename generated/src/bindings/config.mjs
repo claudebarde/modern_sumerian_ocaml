@@ -5,8 +5,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
 const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+const max_keyboard_search_results = 30;
+
 export {
   supabaseUrl,
   supabasePublishableKey,
+  max_keyboard_search_results,
 }
 /* supabaseUrl Not a pure module */

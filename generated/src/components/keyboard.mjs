@@ -13,6 +13,7 @@ import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__List from "melange/list.mjs";
 import * as React from "react";
+import ReactSelect from "react-select";
 import * as JsxRuntime from "react/jsx-runtime";
 
 const css = KeyboardModuleScss;
@@ -21,7 +22,111 @@ const BrowserClipboard = {};
 
 const ScrollableElement = {};
 
+const Determinatives = {};
+
 function Keyboard(Props) {
+  const determinative_groups = [
+    {
+      label: "Front",
+      options: [
+        {
+          label: "𒀭 (diĝir)",
+          value: /* Digir */ 0,
+          symbol: "𒀭",
+          phonetic: "diĝir"
+        },
+        {
+          label: "𒄑 (ĝesh)",
+          value: /* Gesh */ 2,
+          symbol: "𒄑",
+          phonetic: "ĝesh"
+        },
+        {
+          label: "𒇽 (lu)",
+          value: /* Lu */ 10,
+          symbol: "𒇽",
+          phonetic: "lu"
+        },
+        {
+          label: "𒌷 (iri)",
+          value: /* Iri */ 3,
+          symbol: "𒌷",
+          phonetic: "iri"
+        },
+        {
+          label: "𒍏 (uruda)",
+          value: /* Uruda */ 5,
+          symbol: "𒍏",
+          phonetic: "uruda"
+        },
+        {
+          label: "𒉌𒌓 (na)",
+          value: /* Na */ 9,
+          symbol: "𒉌𒌓",
+          phonetic: "na"
+        },
+        {
+          label: "𒋢 (kush)",
+          value: /* Kush */ 4,
+          symbol: "𒋢",
+          phonetic: "kush"
+        },
+        {
+          label: "𒈲 (mush)",
+          value: /* Mush */ 6,
+          symbol: "𒈲",
+          phonetic: "mush"
+        },
+        {
+          label: "𒀯 (mul)",
+          value: /* Mul */ 7,
+          symbol: "𒀯",
+          phonetic: "mul"
+        },
+        {
+          label: "𒀀 (id)",
+          value: /* Id */ 8,
+          symbol: "𒀀",
+          phonetic: "id"
+        },
+        {
+          label: "𒌗 (iti)",
+          value: /* Iti */ 11,
+          symbol: "𒌗",
+          phonetic: "iti"
+        }
+      ]
+    },
+    {
+      label: "End",
+      options: [
+        {
+          label: "𒆠 (ki)",
+          value: /* Ki */ 1,
+          symbol: "𒆠",
+          phonetic: "ki"
+        },
+        {
+          label: "𒊬 (sar)",
+          value: /* Sar */ 12,
+          symbol: "𒊬",
+          phonetic: "sar"
+        },
+        {
+          label: "𒄩 (ku)",
+          value: /* Ku */ 13,
+          symbol: "𒄩",
+          phonetic: "ku"
+        },
+        {
+          label: "𒄷 (mushen)",
+          value: /* Mushen */ 14,
+          symbol: "𒄷",
+          phonetic: "mushen"
+        }
+      ]
+    }
+  ];
   const match = React.useState(function () {
     
   });
@@ -61,6 +166,10 @@ function Keyboard(Props) {
   });
   const set_keyboard_dictionary = match$7[1];
   const keyboard_dictionary = match$7[0];
+  const match$8 = React.useState(function () {
+    return null;
+  });
+  const set_selected_determinative = match$8[1];
   const latest_search_id = React.useRef(0);
   const cuneiform_selection_ref = React.useRef(null);
   const curate_cuneiforms = function (selections) {
@@ -328,11 +437,19 @@ function Keyboard(Props) {
             className: "phonetic"
           }, Key);
         }
-        const Key$1 = index.toString(undefined) + ("-" + phonetic);
+        if (phonetic.startsWith("D=", undefined)) {
+          const value = phonetic.replace("D=", "");
+          const Key$1 = index.toString(undefined) + ("-" + value);
+          return JsxRuntime.jsx("sup", {
+            children: Components__Web_utils.Format.from_phonetic_to_standard(value),
+            className: "phonetic"
+          }, Key$1);
+        }
+        const Key$2 = index.toString(undefined) + ("-" + phonetic);
         return JsxRuntime.jsx("span", {
           children: Components__Web_utils.Format.from_phonetic_to_standard(phonetic),
           className: "phonetic"
-        }, Key$1);
+        }, Key$2);
       }), phonetic_display) : "Nothing to show yet.";
   } else {
     tmp = "Nothing to show yet.";
@@ -487,6 +604,33 @@ function Keyboard(Props) {
               })
             ]
           }),
+          JsxRuntime.jsx(ReactSelect, {
+            options: determinative_groups,
+            value: match$8[0],
+            placeholder: "Determinatives",
+            onChange: (function (option) {
+              Curry._1(set_cuneiform_display, (function (prev) {
+                return prev !== undefined ? Stdlib__Array.concat({
+                    hd: prev,
+                    tl: {
+                      hd: [option.symbol],
+                      tl: /* [] */ 0
+                    }
+                  }) : [option.symbol];
+              }));
+              Curry._1(set_phonetic_display, (function (prev) {
+                return prev !== undefined ? Stdlib__Array.concat({
+                    hd: prev,
+                    tl: {
+                      hd: ["D=" + option.phonetic],
+                      tl: /* [] */ 0
+                    }
+                  }) : ["D=" + option.phonetic];
+              }));
+            }),
+            isDisabled: false,
+            isSearchable: false
+          }),
           JsxRuntime.jsx("button", {
             children: "Reset",
             onClick: (function (param) {
@@ -504,6 +648,9 @@ function Keyboard(Props) {
               }));
               Curry._1(set_active_cuneiform_selection, (function (param) {
                 
+              }));
+              Curry._1(set_selected_determinative, (function (param) {
+                return null;
               }));
             })
           })
@@ -819,6 +966,7 @@ export {
   css,
   BrowserClipboard,
   ScrollableElement,
+  Determinatives,
   make,
 }
 /* css Not a pure module */

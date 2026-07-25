@@ -28,6 +28,32 @@ module ScrollableElement = {
         => unit = "scrollIntoView";
 };
 
+module Determinatives = {
+    type determinative = Digir | Ki | Gesh | Iri | Kush | Uruda | Mush | Mul | Id | Na | Lu | Iti | Sar | Ku | Mushen;
+
+    type select_option = {
+        label: string,
+        value: determinative,
+        symbol: string,
+        phonetic: string,
+    };
+
+    type determinatives_group = {
+        label: string,
+        options: array(select_option),
+    };
+
+    [@mel.module "react-select"] [@react.component]
+    external make: (
+        ~options: array<determinatives_group>,
+        ~value: Js.Nullable.t(select_option),
+        ~placeholder: string,
+        ~onChange: select_option => unit,
+        ~isDisabled: bool,
+        ~isSearchable: bool,
+    ) => React.element = "default";
+};
+
 type cuneiform_selection = {
     id: string,
     cuneiforms: array(string),
@@ -38,6 +64,34 @@ type cuneiform_selection = {
 [@react.component]
 let make = () => {
     open Bindings;
+
+    let determinative_groups: array(Determinatives.determinatives_group) = [|
+        {
+            label: "Front",
+            options: [|
+                {label: {js|𒀭 (diĝir)|js}, value: Digir, symbol: {js|𒀭|js}, phonetic: {js|diĝir|js}},
+                {label: {js|𒄑 (ĝesh)|js}, value: Gesh, symbol: {js|𒄑|js}, phonetic: {js|ĝesh|js}},
+                {label: {js|𒇽 (lu)|js}, value: Lu, symbol: {js|𒇽|js}, phonetic: {js|lu|js}},
+                {label: {js|𒌷 (iri)|js}, value: Iri, symbol: {js|𒌷|js}, phonetic: {js|iri|js}},
+                {label: {js|𒍏 (uruda)|js}, value: Uruda, symbol: {js|𒍏|js}, phonetic: {js|uruda|js}},
+                {label: {js|𒉌𒌓 (na)|js}, value: Na, symbol: {js|𒉌𒌓|js}, phonetic: {js|na|js}},
+                {label: {js|𒋢 (kush)|js}, value: Kush, symbol: {js|𒋢|js}, phonetic: {js|kush|js}},
+                {label: {js|𒈲 (mush)|js}, value: Mush, symbol: {js|𒈲|js}, phonetic: {js|mush|js}},
+                {label: {js|𒀯 (mul)|js}, value: Mul, symbol: {js|𒀯|js}, phonetic: {js|mul|js}},
+                {label: {js|𒀀 (id)|js}, value: Id, symbol: {js|𒀀|js}, phonetic: {js|id|js}},
+                {label: {js|𒌗 (iti)|js}, value: Iti, symbol: {js|𒌗|js}, phonetic: {js|iti|js}},
+            |],
+        },
+        {
+            label: "End",
+            options: [|
+                {label: {js|𒆠 (ki)|js}, value: Ki, symbol: {js|𒆠|js}, phonetic: {js|ki|js}},
+                {label: {js|𒊬 (sar)|js}, value: Sar, symbol: {js|𒊬|js}, phonetic: {js|sar|js}},
+                {label: {js|𒄩 (ku)|js}, value: Ku, symbol: {js|𒄩|js}, phonetic: {js|ku|js}},
+                {label: {js|𒄷 (mushen)|js}, value: Mushen, symbol: {js|𒄷|js}, phonetic: {js|mushen|js}},
+            |],
+        },
+    |];
 
     // let dummy_cuneiform_selection: array(cuneiform_selection) = [|
     //     {
@@ -69,6 +123,8 @@ let make = () => {
     let (has_word_delimiter, set_has_word_delimiter) = React.useState(_ => true);
     let (dictionary_search, set_dictionary_search) = React.useState(_ => false);
     let (keyboard_dictionary, set_keyboard_dictionary) = React.useState(_ => (None: option(LocalStorage.keyboard)));
+    let (selected_determinative, set_selected_determinative) =
+        React.useState(_ => Js.Nullable.null);
 
     let latest_search_id = React.useRef(0);
     let cuneiform_selection_ref:
@@ -406,6 +462,17 @@ let make = () => {
                         |> Array.mapi((index, phonetic) => {
                             if (phonetic === "wd") {
                                 <span key={Js.Int.toString(index) ++ "-" ++ phonetic} className="phonetic">{React.string(" ")}</span>
+                            } else if (Js.String.startsWith(~prefix="D=", phonetic)) {
+                                let value = phonetic |> Js.String.replace(~search="D=", ~replacement="");
+                                <sup 
+                                    key={Js.Int.toString(index) ++ "-" ++ value} 
+                                    className="phonetic"
+                                >{
+                                    value 
+                                    |> Web_utils.Format.from_phonetic_to_standard 
+                                    |> React.string
+                                }
+                                </sup>
                             } else {
                                 <span 
                                     key={Js.Int.toString(index) ++ "-" ++ phonetic} 
@@ -501,12 +568,38 @@ let make = () => {
                 />
                 <label htmlFor="wordDelimiter">{"Add word delimiter" |> React.string}</label>
             </div>
+            <Determinatives 
+                options={determinative_groups}
+                value={selected_determinative}
+                placeholder="Determinatives"
+                onChange={option =>{
+                    // set_selected_determinative(_ => Js.Nullable.return(option))
+                    // adds the selected determinative to the cuneiform display area and the phonetic display area
+                    set_cuneiform_display(prev => {
+                        let new_display = switch prev {
+                            | Some(display) => Array.concat([display, [|option.symbol|]])
+                            | None => [|option.symbol|]
+                        };
+                        Some(new_display);
+                    }); 
+                    set_phonetic_display(prev => {
+                        let new_display = switch prev {
+                            | Some(display) => Array.concat([display, [|"D=" ++ option.phonetic|]])
+                            | None => [|"D=" ++ option.phonetic|]
+                        };
+                        Some(new_display);
+                    });
+                }}
+                isDisabled={false}
+                isSearchable={false}
+            />
             <button onClick={_ => {
                 set_cuneiform_display(_ => None);
                 set_phonetic_display(_ => None);
                 set_input(_ => None);
                 set_cuneiform_selection(_ => None);
                 set_active_cuneiform_selection(_ => None);
+                set_selected_determinative(_ => Js.Nullable.null);
             }}>
                 {"Reset" |> React.string}
             </button>

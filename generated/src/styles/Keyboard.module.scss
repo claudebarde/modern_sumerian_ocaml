@@ -117,11 +117,16 @@ $border-radius: 10px;
   }
 
   .controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    place-items: center;
+    gap: 10px;
     width: $container-width;
+
+    > :nth-child(2) {
+      justify-self: stretch;
+      width: 100%;
+    }
   }
 
   .typingArea {

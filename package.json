@@ -13,6 +13,9 @@
     "vite-dev": "vite _build/default"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^9.2.0",
     "@supabase/supabase-js": "^2.110.7",
     "@tabler/icons-react": "^3.45.0",
     "react": "^19.2.7",

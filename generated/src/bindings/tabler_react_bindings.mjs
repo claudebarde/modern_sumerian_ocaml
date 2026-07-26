@@ -7,9 +7,30 @@ const IconRefresh = {};
 
 const IconCopy = {};
 
+const IconTable = {};
+
+const IconKeyboard = {};
+
+const IconBook2 = {};
+
+const IconChevronDown = {};
+
+const IconBrandGithub = {};
+
+const IconBrandFacebook = {};
+
+const IconLink = {};
+
 export {
   IconSearch,
   IconRefresh,
   IconCopy,
+  IconTable,
+  IconKeyboard,
+  IconBook2,
+  IconChevronDown,
+  IconBrandGithub,
+  IconBrandFacebook,
+  IconLink,
 }
 /* No side effect */

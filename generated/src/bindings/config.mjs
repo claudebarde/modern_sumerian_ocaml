@@ -5,11 +5,23 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
 const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+const colors = {
+  protonRed: "#840804",
+  nycTaxi: "#f7b732",
+  whiteSmoke: "#f5f5f5",
+  silverSetting: "#d8dadb",
+  cerealFlake: "#efd7ab",
+  crustoseLichen: "#c04e01",
+  botanicalNight: "#12403c",
+  darkRift: "#060b14"
+};
+
 const max_keyboard_search_results = 30;
 
 export {
   supabaseUrl,
   supabasePublishableKey,
   max_keyboard_search_results,
+  colors,
 }
 /* supabaseUrl Not a pure module */

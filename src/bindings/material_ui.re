@@ -1,0 +1,351 @@
+/**
+ * Typed bindings for React components exported by @mui/material.
+ */
+
+// HELPERS
+
+type width = [
+    | `xs
+    | `sm
+    | `md
+    | `lg
+    | `xl
+];
+
+type originPosition = {
+    vertical: [`top | `center | `bottom],
+    horizontal: [`left | `center | `right],
+};
+
+module RootComponent = {
+    type t;
+
+    external htmlElement: string => t = "%identity";
+    external reactComponent: React.component('props) => t = "%identity";
+};
+
+module Color = {
+    type t;
+
+    external fromString: string => t = "%identity";
+
+    let inherit_ = fromString("inherit");
+    let primary = fromString("primary");
+    let secondary = fromString("secondary");
+    let success = fromString("success");
+    let error = fromString("error");
+    let info = fromString("info");
+    let warning = fromString("warning");
+    let transparent = fromString("transparent");
+};
+
+// MATERIAL UI COMPONENTS
+
+module AppBar = {
+    [@mel.module "@mui/material/AppBar"] [@react.component]
+    external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~elevation: int=?,
+    ~position: [`fixed | `absolute | `sticky | `static | `relative]=?,
+    ~enableColorOnDark: bool=?,
+    ~square: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+    ) => React.element = "default";
+};
+
+module Box = {
+    [@mel.module "@mui/material/Box"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~className: string=?,
+        ~component: RootComponent.t=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module Button = {
+    [@mel.module "@mui/material/Button"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~color: Color.t=?,
+        ~component: RootComponent.t=?,
+        ~disabled: bool=?,
+        ~disableElevation: bool=?,
+        ~disableFocusRipple: bool=?,
+        ~disableRipple: bool=?,
+        ~endIcon: React.element=?,
+        ~fullWidth: bool=?,
+        ~href: string=?,
+        ~onClick: (React.Event.Mouse.t => unit)=?,
+        ~rel: string=?,
+        ~size: [`small | `medium | `large]=?, // TODO: a string can be passed to size
+        ~startIcon: React.element=?,
+        ~target: string=?,
+        ~variant: [`text | `outlined | `contained]=?, // TODO: a string can be passed to variant
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module Card = {
+    [@mel.module "@mui/material/Card"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~raised: bool=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module CardActions = {
+    [@mel.module "@mui/material/CardActions"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~disableSpacing: bool=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module CardActionArea = {
+    [@mel.module "@mui/material/CardActionArea"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        // TODO: slots and slotProps are not supported yet
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module CardContent = {
+    [@mel.module "@mui/material/CardContent"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~component: RootComponent.t=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module CardHeader = {
+    [@mel.module "@mui/material/CardHeader"] [@react.component]
+    external make: (
+        ~action: React.element=?,
+        ~avatar: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~component: RootComponent.t=?,
+        ~disableTypography: bool=?,
+        // TODO: slots and slotProps are not supported yet
+        ~subheader: React.element=?,
+        ~sx: Js.t({..})=?,
+        ~title: React.element=?,
+        unit
+    ) => React.element = "default";
+};
+
+module CardMedia = {
+    [@mel.module "@mui/material/CardMedia"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~component: RootComponent.t=?,
+        ~image: string=?,
+        ~src: string=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module Container = {
+  [@mel.module "@mui/material/Container"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~disableGutters: bool=?,
+    ~fixed: bool=?,
+    ~maxWidth: (
+        [@mel.unwrap] [
+            | `Width(width)
+            | `Disabled(bool)
+        ]
+        )=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module ListItemIcon = {
+  [@mel.module "@mui/material/ListItemIcon"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module ListItemText = {
+  [@mel.module "@mui/material/ListItemText"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~disableTypography: bool=?,
+    ~primary: React.element=?,
+    ~inset: bool=?,
+    ~secondary: React.element=?,
+    ~sx: Js.t({..})=?,
+    // TODO: slots and slotProps are not supported yet
+    unit
+  ) => React.element = "default";
+};
+
+module Menu = {
+  [@mel.module "@mui/material/Menu"] [@react.component]
+  external make: (
+    ~anchorOrigin: originPosition=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~anchorEl: Js.Nullable.t(Js.t({..}))=?,
+    ~disableAutoFocusItem: bool=?,
+    ~onClose: (React.Event.Synthetic.t => unit)=?,
+    ~_open: bool=?,
+    ~_PopoverClasses: Js.t({..})=?,
+    ~slotProps: Js.t({..})=?,
+    ~slots: Js.t({..})=?,
+    ~sx: Js.t({..})=?,
+    ~transformOrigin: originPosition=?,
+    ~transitionDuration: [@mel.unwrap] [
+        | `auto
+        | `Number(int)
+        | `Object(Js.t({..}))
+    ]=?,
+    ~variant: [`menu | `selectedMenu]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module MenuItem = {
+  [@mel.module "@mui/material/MenuItem"] [@react.component]
+  external make: (
+    ~autoFocus: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~dense: bool=?,
+    ~disableGutters: bool=?,
+    ~divider: bool=?,
+    ~focusVisibleClassName: string=?,
+    ~onClick: (React.Event.Synthetic.t => unit)=?,
+    ~selected: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Toolbar = {
+    module Variant = {
+        type t;
+
+        external fromString: string => t = "%identity";
+
+        let dense = fromString("dense");
+        let regular = fromString("regular");
+    };
+
+  [@mel.module "@mui/material/Toolbar"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~disableGutters: bool=?,
+    ~variant: Variant.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Typography = {
+    module Variant = {
+        type t;
+
+        external fromString: string => t = "%identity";
+
+        let h1 = fromString("h1");
+        let h2 = fromString("h2");
+        let h3 = fromString("h3");
+        let h4 = fromString("h4");
+        let h5 = fromString("h5");
+        let h6 = fromString("h6");
+        let subtitle1 = fromString("subtitle1");
+        let subtitle2 = fromString("subtitle2");
+        let body1 = fromString("body1");
+        let body2 = fromString("body2");
+        let caption = fromString("caption");
+        let button = fromString("button");
+        let overline = fromString("overline");
+        let inherit_ = fromString("inherit");
+    };
+
+    module Color = {
+        type t;
+
+        external fromString: string => t = "%identity";
+
+        let primary = fromString("primary");
+        let secondary = fromString("secondary");
+        let textPrimary = fromString("textPrimary");
+        let textSecondary = fromString("textSecondary");
+        let success = fromString("success");
+        let error = fromString("error");
+        let info = fromString("info");
+        let warning = fromString("warning");
+        let textDisabled = fromString("textDisabled");
+    };
+
+  [@mel.module "@mui/material/Typography"] [@react.component]
+  external make: (
+    ~align: [@mel.string] [
+      | [@mel.as "inherit"] `inherit_
+      | `left
+      | `center
+      | `right
+      | `justify
+    ]=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~component: RootComponent.t=?,
+    ~display: string=?,
+    ~gutterBottom: bool=?,
+    ~noWrap: bool=?,
+    ~paragraph: bool=?,
+    ~variant: Variant.t=?,
+    ~variantMapping: Js.t({..})=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};

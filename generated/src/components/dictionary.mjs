@@ -3,7 +3,15 @@
 import DictionaryModuleScss from "../styles/Dictionary.module.scss";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
 import Select from "@mui/material/Select";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Supabase from "../bindings/supabase.mjs";
@@ -15,6 +23,11 @@ import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 const css = DictionaryModuleScss;
+
+function rows_for_page(page, rows_per_page, rows) {
+  const start = Math.imul(page, rows_per_page);
+  return rows.slice(start, start + rows_per_page | 0);
+}
 
 function Dictionary(Props) {
   const match = React.useState(function () {
@@ -42,10 +55,131 @@ function Dictionary(Props) {
   const set_searching = match$3[1];
   const searching = match$3[0];
   const match$4 = React.useState(function () {
-    
+    return 5;
   });
-  const set_search_results = match$4[1];
-  const search_results = match$4[0];
+  const setRowsPerPage = match$4[1];
+  const rowsPerPage = match$4[0];
+  const match$5 = React.useState(function () {
+    return 0;
+  });
+  const setPage = match$5[1];
+  const page = match$5[0];
+  const dummy_search_results = [
+    {
+      id: "dummy-1",
+      marker: /* A */ 0,
+      headword: "lugal",
+      word: "lugal",
+      translation: "king",
+      part_of_speech: "noun",
+      meanings: [
+        "king",
+        "ruler"
+      ],
+      forms: ["lugal"],
+      cuneiforms: ["\xf0\x92\x88\x97"],
+      dc_title: "lugal",
+      icount: 42
+    },
+    {
+      id: "dummy-2",
+      marker: /* E */ 1,
+      headword: "\xc3\xa9",
+      word: "\xc3\xa9",
+      translation: "house; temple",
+      part_of_speech: "noun",
+      meanings: [
+        "house",
+        "temple"
+      ],
+      forms: ["\xc3\xa9"],
+      cuneiforms: ["\xf0\x92\x82\x8d"],
+      dc_title: "e",
+      icount: 17
+    },
+    {
+      id: "dummy-3",
+      marker: /* N */ 2,
+      headword: "du\xe2\x82\x83",
+      word: "du\xe2\x82\x83",
+      translation: "to build",
+      part_of_speech: "verb",
+      meanings: [
+        "build",
+        "erect"
+      ],
+      forms: ["du\xe2\x82\x83"],
+      cuneiforms: ["\xf0\x92\x86\x95"],
+      dc_title: "du3",
+      icount: 5
+    },
+    {
+      id: "dummy-4",
+      marker: /* X */ 7,
+      headword: "gud",
+      word: "gud",
+      translation: "ox; bull",
+      part_of_speech: "noun",
+      meanings: [
+        "ox",
+        "bull"
+      ],
+      forms: ["gud"],
+      cuneiforms: ["\xf0\x92\x84\x96"],
+      dc_title: "gud",
+      icount: 3
+    },
+    {
+      id: "dummy-5",
+      marker: /* L_Akk */ 4,
+      headword: "\xc5\xa1arru",
+      word: "\xc5\xa1arru",
+      translation: "king (Akkadian loanword)",
+      part_of_speech: "noun",
+      meanings: [
+        "king",
+        "ruler"
+      ],
+      forms: ["\xc5\xa1arru"],
+      cuneiforms: ["\xf0\x92\x88\x97"],
+      dc_title: "sarru",
+      icount: 1
+    },
+    {
+      id: "dummy-6",
+      marker: /* C */ 3,
+      headword: "kur",
+      word: "kur",
+      translation: "mountain; foreign land (calque)",
+      part_of_speech: "noun",
+      meanings: [
+        "mountain",
+        "foreign land"
+      ],
+      forms: ["kur"],
+      cuneiforms: ["\xf0\x92\x86\xb3"],
+      dc_title: "kur",
+      icount: 0
+    },
+    {
+      id: "dummy-7",
+      marker: /* L_Mod */ 6,
+      headword: "computer",
+      word: "computer",
+      translation: "computer (modern loanword)",
+      part_of_speech: "noun",
+      meanings: ["computer"],
+      forms: ["computer"],
+      cuneiforms: [],
+      dc_title: "computer",
+      icount: 0
+    }
+  ];
+  const match$6 = React.useState(function () {
+    return dummy_search_results;
+  });
+  const set_search_results = match$6[1];
+  const search_results = match$6[0];
   const search_word = function (param) {
     if (word.trim().length === 0) {
       return Curry._1(set_search_results, (function (param) {
@@ -92,6 +226,9 @@ function Dictionary(Props) {
       Curry._1(set_search_results, (function (param) {
         return decoded.data;
       }));
+      Curry._1(setPage, (function (param) {
+        return 0;
+      }));
       Curry._1(set_searching, (function (param) {
         return false;
       }));
@@ -104,144 +241,23 @@ function Dictionary(Props) {
       return Promise.resolve(undefined);
     });
   };
+  const handleChangePage = function (_event, newPage) {
+    Curry._1(setPage, (function (param) {
+      return newPage;
+    }));
+  };
+  const handleChangeRowsPerPage = function ($$event) {
+    Curry._1(setRowsPerPage, (function (param) {
+      return $$event.target.value;
+    }));
+    Curry._1(setPage, (function (param) {
+      return 0;
+    }));
+  };
   let tmp;
   tmp = selected_lang === /* EngToSum */ 0 ? "English > Sumerian Dictionary" : "Sumerian > English Dictionary";
   let tmp$1;
   tmp$1 = selected_lang === /* EngToSum */ 0 ? "English Word" : "Sumerian Word";
-  let tmp$2;
-  let exit = 0;
-  if (search_results !== undefined && word.length !== 0) {
-    tmp$2 = search_results.length === 0 ? JsxRuntime.jsx("div", {
-        children: "No results found."
-      }) : JsxRuntime.jsxs("table", {
-        children: [
-          JsxRuntime.jsx("thead", {
-            children: JsxRuntime.jsxs("tr", {
-              children: [
-                JsxRuntime.jsx("th", {
-                  children: "Cuneiforms"
-                }),
-                JsxRuntime.jsx("th", {
-                  children: "Marker"
-                }),
-                JsxRuntime.jsx("th", {
-                  children: "Word"
-                }),
-                JsxRuntime.jsx("th", {
-                  children: "Translation"
-                }),
-                JsxRuntime.jsx("th", {
-                  children: "Part of Speech"
-                }),
-                JsxRuntime.jsx("th", {
-                  children: "Count"
-                }),
-                JsxRuntime.jsx("th", {
-                  children: "More info"
-                })
-              ]
-            })
-          }),
-          JsxRuntime.jsx("tbody", {
-            children: Stdlib__Array.map((function (result) {
-              const Key = result.id;
-              const match = result.marker;
-              let tmp;
-              switch (match) {
-                case /* A */ 0 :
-                  tmp = "Ancien Sumerian";
-                  break;
-                case /* E */ 1 :
-                  tmp = "Modern Extension";
-                  break;
-                case /* N */ 2 :
-                  tmp = "Native Neologism";
-                  break;
-                case /* C */ 3 :
-                  tmp = "Calque";
-                  break;
-                case /* L_Akk */ 4 :
-                  tmp = "Akkadian Loanword";
-                  break;
-                case /* L_Anc */ 5 :
-                  tmp = "Ancien Loanword";
-                  break;
-                case /* L_Mod */ 6 :
-                  tmp = "Modern Loanword";
-                  break;
-                case /* X */ 7 :
-                  tmp = "Uncertain";
-                  break;
-              }
-              const match$1 = result.part_of_speech;
-              let tmp$1;
-              switch (match$1) {
-                case "AJ" :
-                  tmp$1 = "Adjective";
-                  break;
-                case "N" :
-                  tmp$1 = "Noun";
-                  break;
-                case "V/i" :
-                  tmp$1 = "Intransitive Verb";
-                  break;
-                case "V/t" :
-                  tmp$1 = "Transitive Verb";
-                  break;
-                default:
-                  tmp$1 = result.part_of_speech;
-              }
-              const match$2 = result.marker;
-              let tmp$2;
-              tmp$2 = match$2 === /* A */ 0 ? JsxRuntime.jsx("a", {
-                  children: "EPSD2 link",
-                  href: "https://oracc.museum.upenn.edu/epsd2/sux/" + result.id,
-                  rel: "noopener noreferrer",
-                  target: "_blank"
-                }) : null;
-              return JsxRuntime.jsxs("tr", {
-                children: [
-                  JsxRuntime.jsx("td", {
-                    children: JsxRuntime.jsx("strong", {
-                      children: result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X",
-                      className: "cuneiforms small"
-                    })
-                  }),
-                  JsxRuntime.jsx("td", {
-                    children: tmp
-                  }),
-                  JsxRuntime.jsx("td", {
-                    children: JsxRuntime.jsx("strong", {
-                      children: Components__Web_utils.Format.from_phonetic_to_standard(result.word)
-                    })
-                  }),
-                  JsxRuntime.jsx("td", {
-                    children: result.translation
-                  }),
-                  JsxRuntime.jsx("td", {
-                    children: tmp$1
-                  }),
-                  JsxRuntime.jsx("td", {
-                    children: result.icount.toString(undefined)
-                  }),
-                  JsxRuntime.jsx("td", {
-                    children: tmp$2
-                  })
-                ]
-              }, Key);
-            }), search_results)
-          })
-        ],
-        className: css.resultsList
-      });
-  } else {
-    exit = 1;
-  }
-  if (exit === 1) {
-    tmp$2 = JsxRuntime.jsx("div", {
-      children: searching ? "Searching..." : "Enter a word to search."
-    });
-  }
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("h1", {
@@ -358,7 +374,157 @@ function Dictionary(Props) {
         className: css.searchBar
       }),
       JsxRuntime.jsx("div", {
-        children: tmp$2,
+        children: search_results !== undefined ? (
+            search_results.length === 0 ? JsxRuntime.jsx("div", {
+                children: "No results found."
+              }) : JsxRuntime.jsxs(TableContainer, {
+                children: [
+                  JsxRuntime.jsx("div", {
+                    children: JsxRuntime.jsxs(Table, {
+                      children: [
+                        JsxRuntime.jsx(TableHead, {
+                          children: JsxRuntime.jsxs(TableRow, {
+                            children: [
+                              JsxRuntime.jsx(TableCell, {
+                                children: "Cuneiforms"
+                              }),
+                              JsxRuntime.jsx(TableCell, {
+                                children: "Marker"
+                              }),
+                              JsxRuntime.jsx(TableCell, {
+                                children: "Word"
+                              }),
+                              JsxRuntime.jsx(TableCell, {
+                                children: "Translation"
+                              }),
+                              JsxRuntime.jsx(TableCell, {
+                                children: "Part of Speech"
+                              }),
+                              JsxRuntime.jsx(TableCell, {
+                                children: "Count"
+                              }),
+                              JsxRuntime.jsx(TableCell, {
+                                children: "More info"
+                              })
+                            ]
+                          })
+                        }),
+                        JsxRuntime.jsx(TableBody, {
+                          children: Stdlib__Array.map((function (result) {
+                            const Key = result.id;
+                            const match = result.marker;
+                            let tmp;
+                            switch (match) {
+                              case /* A */ 0 :
+                                tmp = "Ancien Sumerian";
+                                break;
+                              case /* E */ 1 :
+                                tmp = "Modern Extension";
+                                break;
+                              case /* N */ 2 :
+                                tmp = "Native Neologism";
+                                break;
+                              case /* C */ 3 :
+                                tmp = "Calque";
+                                break;
+                              case /* L_Akk */ 4 :
+                                tmp = "Akkadian Loanword";
+                                break;
+                              case /* L_Anc */ 5 :
+                                tmp = "Ancien Loanword";
+                                break;
+                              case /* L_Mod */ 6 :
+                                tmp = "Modern Loanword";
+                                break;
+                              case /* X */ 7 :
+                                tmp = "Uncertain";
+                                break;
+                            }
+                            const match$1 = result.part_of_speech;
+                            let tmp$1;
+                            switch (match$1) {
+                              case "AJ" :
+                                tmp$1 = "Adjective";
+                                break;
+                              case "N" :
+                                tmp$1 = "Noun";
+                                break;
+                              case "V/i" :
+                                tmp$1 = "Intransitive Verb";
+                                break;
+                              case "V/t" :
+                                tmp$1 = "Transitive Verb";
+                                break;
+                              default:
+                                tmp$1 = result.part_of_speech;
+                            }
+                            const match$2 = result.marker;
+                            let tmp$2;
+                            tmp$2 = match$2 === /* A */ 0 ? JsxRuntime.jsx("a", {
+                                children: "EPSD2 link",
+                                href: "https://oracc.museum.upenn.edu/epsd2/sux/" + result.id,
+                                rel: "noopener noreferrer",
+                                target: "_blank"
+                              }) : null;
+                            return JsxRuntime.jsxs(TableRow, {
+                              children: [
+                                JsxRuntime.jsx(TableCell, {
+                                  children: JsxRuntime.jsx("strong", {
+                                    children: result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X",
+                                    className: "cuneiforms small"
+                                  })
+                                }),
+                                JsxRuntime.jsx(TableCell, {
+                                  children: tmp
+                                }),
+                                JsxRuntime.jsx(TableCell, {
+                                  children: JsxRuntime.jsx("strong", {
+                                    children: Components__Web_utils.Format.from_phonetic_to_standard(result.word)
+                                  })
+                                }),
+                                JsxRuntime.jsx(TableCell, {
+                                  children: result.translation
+                                }),
+                                JsxRuntime.jsx(TableCell, {
+                                  children: tmp$1
+                                }),
+                                JsxRuntime.jsx(TableCell, {
+                                  children: result.icount.toString(undefined)
+                                }),
+                                JsxRuntime.jsx(TableCell, {
+                                  children: tmp$2
+                                })
+                              ]
+                            }, Key);
+                          }), rows_for_page(page, rowsPerPage, search_results))
+                        })
+                      ],
+                      className: css.resultsList,
+                      stickyHeader: true
+                    }),
+                    className: css.tableScroll
+                  }),
+                  JsxRuntime.jsx(TablePagination, {
+                    className: css.pagination,
+                    component: "div",
+                    count: search_results.length,
+                    onPageChange: handleChangePage,
+                    onRowsPerPageChange: handleChangeRowsPerPage,
+                    page: page,
+                    rowsPerPage: rowsPerPage,
+                    rowsPerPageOptions: [
+                      5,
+                      10,
+                      25
+                    ]
+                  })
+                ],
+                className: css.tableContainer,
+                component: Paper
+              })
+          ) : JsxRuntime.jsx("div", {
+            children: searching ? "Searching..." : "Enter a word to search."
+          }),
         className: css.resultsContainer
       })
     ],
@@ -370,6 +536,7 @@ const make = Dictionary;
 
 export {
   css,
+  rows_for_page,
   make,
 }
 /* css Not a pure module */

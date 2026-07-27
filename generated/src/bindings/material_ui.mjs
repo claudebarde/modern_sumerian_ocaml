@@ -52,11 +52,33 @@ const Menu = {};
 
 const MenuItem = {};
 
+const Paper = {};
+
 const Value = {};
 
 const Select = {
   Value: Value
 };
+
+const Table = {};
+
+const TableBody = {};
+
+const TableCell = {};
+
+const TableContainer = {};
+
+const TableFooter = {};
+
+const TableHead = {};
+
+const TablePagination = {};
+
+const TablePaginationActions = {};
+
+const TableRow = {};
+
+const TableSortLabel = {};
 
 const TextField = {};
 
@@ -125,7 +147,18 @@ export {
   ListItemText,
   Menu,
   MenuItem,
+  Paper,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TablePagination,
+  TablePaginationActions,
+  TableRow,
+  TableSortLabel,
   TextField,
   Toolbar,
   Typography,

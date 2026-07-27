@@ -192,8 +192,11 @@ function Header(Props) {
       variant: Bindings__Material_ui.Toolbar.Variant.regular
     }),
     className: css.appbar,
-    color: Bindings__Config.colors.cerealFlake,
-    position: "static"
+    color: Bindings__Material_ui.Color.transparent,
+    position: "static",
+    sx: {
+      backgroundColor: Bindings__Config.colors.cerealFlake
+    }
   });
 }
 

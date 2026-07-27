@@ -17,7 +17,8 @@ let make = () => {
 
     <AppBar 
         position=`static
-        color=Color.fromString(Config.colors##cerealFlake)
+        color=Color.transparent
+        sx={{"backgroundColor": Config.colors##cerealFlake}}
         className=css##appbar
     >
         <Toolbar variant=Toolbar.Variant.regular className=css##toolbar>

@@ -1,5 +1,14 @@
 [@mel.module "../styles/Dictionary.module.scss"] external css: Js.t({..}) = "default"; 
 
+let rows_for_page = (~page: int, ~rows_per_page: int, rows: array('a)): array('a) => {
+    let start = page * rows_per_page;
+    rows
+    |> Js.Array.slice(
+        ~start,
+        ~end_=start + rows_per_page,
+    );
+};
+
 type select_lang_options = EngToSum | SumToEng;
 type selected_search_shape = ExactWord | Contains;
 
@@ -33,47 +42,105 @@ let make = () => {
 
     let (word, set_word) = React.useState(_ => "");
     let (searching, set_searching) = React.useState(_ => false);
+    let (rowsPerPage, setRowsPerPage) = React.useState(_ => 5);
+    let (page, setPage) = React.useState(_ => 0);
     /* Temporary fixture rows for styling the search-results DOM. */
-    // let dummy_search_results: array(Supabase.dictionary_row) = [|
-    //     {
-    //         id: "dummy-1",
-    //         marker: Supabase.A,
-    //         headword: "lugal",
-    //         word: "lugal",
-    //         translation: "king",
-    //         part_of_speech: "noun",
-    //         meanings: [|"king", "ruler"|],
-    //         forms: [|"lugal"|],
-    //         cuneiforms: [|"𒈗"|],
-    //         dc_title: "lugal",
-    //     },
-    //     {
-    //         id: "dummy-2",
-    //         marker: Supabase.E,
-    //         headword: "é",
-    //         word: "é",
-    //         translation: "house; temple",
-    //         part_of_speech: "noun",
-    //         meanings: [|"house", "temple"|],
-    //         forms: [|"é"|],
-    //         cuneiforms: [|"𒂍"|],
-    //         dc_title: "e",
-    //     },
-    //     {
-    //         id: "dummy-3",
-    //         marker: Supabase.N,
-    //         headword: "du₃",
-    //         word: "du₃",
-    //         translation: "to build",
-    //         part_of_speech: "verb",
-    //         meanings: [|"build", "erect"|],
-    //         forms: [|"du₃"|],
-    //         cuneiforms: [|"𒆕"|],
-    //         dc_title: "du3",
-    //     },
-    // |];
+    let dummy_search_results: array(Supabase.dictionary_row) = [|
+        {
+            id: "dummy-1",
+            marker: Supabase.A,
+            headword: "lugal",
+            word: "lugal",
+            translation: "king",
+            part_of_speech: "noun",
+            meanings: [|"king", "ruler"|],
+            forms: [|"lugal"|],
+            cuneiforms: [|"𒈗"|],
+            dc_title: "lugal",
+            icount: 42,
+        },
+        {
+            id: "dummy-2",
+            marker: Supabase.E,
+            headword: "é",
+            word: "é",
+            translation: "house; temple",
+            part_of_speech: "noun",
+            meanings: [|"house", "temple"|],
+            forms: [|"é"|],
+            cuneiforms: [|"𒂍"|],
+            dc_title: "e",
+            icount: 17,
+        },
+        {
+            id: "dummy-3",
+            marker: Supabase.N,
+            headword: "du₃",
+            word: "du₃",
+            translation: "to build",
+            part_of_speech: "verb",
+            meanings: [|"build", "erect"|],
+            forms: [|"du₃"|],
+            cuneiforms: [|"𒆕"|],
+            dc_title: "du3",
+            icount: 5,
+        },
+        {
+            id: "dummy-4",
+            marker: Supabase.X,
+            headword: "gud",
+            word: "gud",
+            translation: "ox; bull",
+            part_of_speech: "noun",
+            meanings: [|"ox", "bull"|],
+            forms: [|"gud"|],
+            cuneiforms: [|"𒄖"|],
+            dc_title: "gud",
+            icount: 3,
+        },
+        {
+            id: "dummy-5",
+            marker: Supabase.L_Akk,
+            headword: "šarru",
+            word: "šarru",
+            translation: "king (Akkadian loanword)",
+            part_of_speech: "noun",
+            meanings: [|"king", "ruler"|],
+            forms: [|"šarru"|],
+            cuneiforms: [|"𒈗"|],
+            dc_title: "sarru",
+            icount: 1,
+        },
+        {
+            id: "dummy-6",
+            marker: Supabase.C,
+            headword: "kur",
+            word: "kur",
+            translation: "mountain; foreign land (calque)",
+            part_of_speech: "noun",
+            meanings: [|"mountain", "foreign land"|],
+            forms: [|"kur"|],
+            cuneiforms: [|"𒆳"|],
+            dc_title: "kur",
+            icount: 0,
+        },
+        {
+            id: "dummy-7",
+            marker: Supabase.L_Mod,
+            headword: "computer",
+            word: "computer",
+            translation: "computer (modern loanword)",
+            part_of_speech: "noun",
+            meanings: [|"computer"|],
+            forms: [|"computer"|],
+            cuneiforms: [||],
+            dc_title: "computer",
+            icount: 0,
+        }
+    |];
     let (search_results, set_search_results) =
-        React.useState(_ => (None: option(array(Supabase.dictionary_row))));
+        // React.useState(_ => (None: option(array(Supabase.dictionary_row))));
+        React.useState(_ => Some(dummy_search_results));
 
     let search_word = () => {
         if (word |> Js.String.trim |> Js.String.length === 0) {
@@ -118,6 +185,7 @@ let make = () => {
                     // Js.log("Search result: " ++ Js.Json.stringify(res));
                     let decoded = Supabase.Response.decode(res);
                     set_search_results(_ => Some(decoded.data));
+                    setPage(_ => 0);
                     set_searching(_ => false);
                     Js.Promise.resolve();
                 })
@@ -127,6 +195,19 @@ let make = () => {
                     Js.Promise.resolve();
                 });
         }
+    };
+
+    let handleChangePage = (_event, newPage) => {
+        setPage(_ => newPage);
+    };
+
+    let handleChangeRowsPerPage = event => {
+        setRowsPerPage(_ =>
+            event
+            |> React.Event.Form.target
+            |> target => target##value
+        );
+        setPage(_ => 0);
     };
 
     <div className=css##dictionary>
@@ -208,80 +289,104 @@ let make = () => {
         <div className=css##resultsContainer>
         {
             switch search_results {
-            | Some(results) when (word |> String.length > 0) =>
+            // | Some(results) when (word |> String.length > 0) =>
+            | Some(results) =>
                 if (Array.length(results) === 0) {
                     <div>{"No results found." |> React.string}</div>
                 } else {
-                    <table className=css##resultsList>
-                        <thead>
-                            <tr>
-                                <th>{"Cuneiforms" |> React.string}</th>
-                                <th>{"Marker" |> React.string}</th>
-                                <th>{"Word" |> React.string}</th>
-                                <th>{"Translation" |> React.string}</th>
-                                <th>{"Part of Speech" |> React.string}</th>
-                                <th>{"Count" |> React.string}</th>
-                                <th>{"More info" |> React.string}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {results
-                            |> Array.map((result: Supabase.dictionary_row) =>
-                                <tr key={result.id}>
-                                    <td>
-                                        <strong className="cuneiforms small">{
-                                            Array.length(result.cuneiforms) > 0
-                                            ? result.cuneiforms[0] |> React.string
-                                            : "X" |> React.string
-                                        }</strong>
-                                    </td>
-                                    <td>
-                                        {switch result.marker {
-                                        | Supabase.A => "Ancien Sumerian" |> React.string
-                                        | Supabase.E => "Modern Extension" |> React.string
-                                        | Supabase.N => "Native Neologism" |> React.string
-                                        | Supabase.C => "Calque" |> React.string
-                                        | Supabase.L_Akk => "Akkadian Loanword" |> React.string
-                                        | Supabase.L_Anc => "Ancien Loanword" |> React.string
-                                        | Supabase.L_Mod => "Modern Loanword" |> React.string
-                                        | Supabase.X => "Uncertain" |> React.string
-                                        }}
-                                    </td>
-                                    <td>
-                                        <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
-                                    </td>
-                                    <td>
-                                        {result.translation |> React.string}
-                                    </td>
-                                    <td>
-                                        {switch result.part_of_speech {
-                                            | "N" => "Noun" 
-                                            | "V/t" => "Transitive Verb"
-                                            | "V/i" => "Intransitive Verb"
-                                            | "AJ" => "Adjective"
-                                            | _ => result.part_of_speech
-                                        } |> React.string}
-                                    </td>
-                                    <td>
-                                        {result.icount |> Js.Int.toString |> React.string}
-                                    </td>
-                                    <td>
-                                        {
-                                            switch result.marker {
-                                                | Supabase.A => {
-                                                    <a href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id} target="_blank" rel="noopener noreferrer">
-                                                        {"EPSD2 link" |> React.string}
-                                                    </a>
+                    <TableContainer
+                        className=css##tableContainer
+                        component=RootComponent.reactComponent(Paper.make)
+                    >
+                        <div className=css##tableScroll>
+                            <Table stickyHeader=true className=css##resultsList>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>{"Cuneiforms" |> React.string}</TableCell>
+                                    <TableCell>{"Marker" |> React.string}</TableCell>
+                                    <TableCell>{"Word" |> React.string}</TableCell>
+                                    <TableCell>{"Translation" |> React.string}</TableCell>
+                                    <TableCell>{"Part of Speech" |> React.string}</TableCell>
+                                    <TableCell>{"Count" |> React.string}</TableCell>
+                                    <TableCell>{"More info" |> React.string}</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {
+                                results
+                                |> rows_for_page(
+                                    ~page,
+                                    ~rows_per_page=rowsPerPage,
+                                )
+                                |> Array.map((result: Supabase.dictionary_row) =>
+                                    <TableRow key={result.id}>
+                                        <TableCell>
+                                            <strong className="cuneiforms small">{
+                                                Array.length(result.cuneiforms) > 0
+                                                ? result.cuneiforms[0] |> React.string
+                                                : "X" |> React.string
+                                            }</strong>  
+                                        </TableCell>
+                                        <TableCell>
+                                            {switch result.marker {
+                                            | Supabase.A => "Ancien Sumerian" |> React.string
+                                            | Supabase.E => "Modern Extension" |> React.string
+                                            | Supabase.N => "Native Neologism" |> React.string
+                                            | Supabase.C => "Calque" |> React.string
+                                            | Supabase.L_Akk => "Akkadian Loanword" |> React.string
+                                            | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                            | Supabase.L_Mod => "Modern Loanword" |> React.string
+                                            | Supabase.X => "Uncertain" |> React.string
+                                            }}
+                                        </TableCell>
+                                        <TableCell>
+                                            <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
+                                        </TableCell>
+                                        <TableCell>
+                                            {result.translation |> React.string}
+                                        </TableCell>
+                                        <TableCell>
+                                            {switch result.part_of_speech {
+                                                | "N" => "Noun" 
+                                                | "V/t" => "Transitive Verb"
+                                                | "V/i" => "Intransitive Verb"
+                                                | "AJ" => "Adjective"   
+                                                | _ => result.part_of_speech
+                                            } |> React.string}
+                                        </TableCell>
+                                        <TableCell>
+                                            {result.icount |> Js.Int.toString |> React.string}
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                switch result.marker {
+                                                    | Supabase.A => {
+                                                        <a href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id} target="_blank" rel="noopener noreferrer">
+                                                            {"EPSD2 link" |> React.string}
+                                                        </a>
+                                                    }
+                                                    | _ => React.null
                                                 }
-                                                | _ => React.null
                                             }
-                                        }
-                                    </td>
-                                </tr>
-                            )
-                            |> React.array}
-                        </tbody>
-                    </table>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                                |> React.array
+                            }
+                            </TableBody>
+                            </Table>
+                        </div>
+                        <TablePagination
+                            className=css##pagination
+                            rowsPerPageOptions={[|5, 10, 25|]}
+                            component={RootComponent.htmlElement("div")}
+                            count={Array.length(results)}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </TableContainer>
                 }
             | _ => <div>{searching ? "Searching..." |> React.string : "Enter a word to search." |> React.string}</div>
             }

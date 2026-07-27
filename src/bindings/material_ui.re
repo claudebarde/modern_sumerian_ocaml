@@ -357,6 +357,21 @@ module MenuItem = {
   ) => React.element = "default";
 };
 
+module Paper = {
+  [@mel.module "@mui/material/Paper"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~elevation: int=?,
+    ~square: bool=?,
+    ~sx: Js.t({..})=?,
+    ~variant: [`elevation | `outlined]=?,
+    unit
+  ) => React.element = "default";
+};
+
 module Select = {
   module Value = {
     type t;
@@ -393,6 +408,159 @@ module Select = {
     ~_SelectDisplayProps: Js.t({..})=?,
     ~value: Value.t,
     ~variant: [`standard | `outlined | `filled]=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Table = {
+  [@mel.module "@mui/material/Table"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~padding: [`checkbox | `none | `normal]=?,
+    ~size: [`small | `medium]=?,
+    ~stickyHeader: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableBody = {
+  [@mel.module "@mui/material/TableBody"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableCell = {
+  [@mel.module "@mui/material/TableCell"] [@react.component]
+  external make: (
+    ~align: [@mel.string] [
+      | [@mel.as "inherit"] `inherit_
+      | `left
+      | `center
+      | `right
+      | `justify
+    ]=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~padding: [`checkbox | `none | `normal]=?,
+    ~scope: string=?,
+    ~size: [`small | `medium]=?,
+    ~sortDirection: [`asc | `desc]=?,
+    ~sx: Js.t({..})=?,
+    ~variant: [`head | `body | `footer]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableContainer = {
+  [@mel.module "@mui/material/TableContainer"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableFooter = {
+  [@mel.module "@mui/material/TableFooter"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableHead = {
+  [@mel.module "@mui/material/TableHead"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TablePagination = {
+  [@mel.module "@mui/material/TablePagination"] [@react.component]
+  external make: (
+    ~_ActionsComponent: React.component('props)=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~count: int=?,
+    ~disabled: bool=?,
+    ~getItemAriaLabel: ([`first | `last | `next | `previous] => string)=?,
+    ~labelDisplayedRows: ({. "from": int, "to": int, "count": int} => React.element)=?,
+    ~labelRowsPerPage: React.element=?,
+    ~onPageChange: ((React.Event.Synthetic.t, int) => unit)=?,
+    ~onRowsPerPageChange: (React.Event.Form.t => unit)=?,
+    ~page: int=?,
+    ~rowsPerPage: int=?,
+    ~rowsPerPageOptions: array(int)=?,
+    ~showFirstButton: bool=?,
+    ~showLastButton: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TablePaginationActions = {
+  [@mel.module "@mui/material/TablePaginationActions"] [@react.component]
+  external make: (
+    ~getItemAriaLabel: ([`first | `last | `next | `previous] => string)=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~disabled: bool=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableRow = {
+  [@mel.module "@mui/material/TableRow"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~hover: bool=?,
+    ~selected: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TableSortLabel = {
+  [@mel.module "@mui/material/TableSortLabel"] [@react.component]
+  external make: (
+    ~active: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~direction: [`asc | `desc]=?,
+    ~hideSortIcon: bool=?,
+    ~_IconComponent: React.component('props)=?,
+    ~onClick: (React.Event.Synthetic.t => unit)=?,
+    // TODO: slots and slotProps are not supported yet
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";

@@ -1,56 +1,36 @@
 [@mel.module "../styles/Dictionary.module.scss"] external css: Js.t({..}) = "default"; 
 
-module SelectLang = {
-    type lang_option = EngToSum | SumToEng;
-
-    type select_option = {
-        label: string,
-        value: lang_option
-    };
-
-    [@mel.module "react-select"] [@react.component]
-    external make: (
-        ~options: array<select_option>,
-        ~value: select_option,
-        ~onChange: select_option => unit,
-        ~isDisabled: bool,
-        ~isSearchable: bool,
-    ) => React.element = "default";
-};
-
-module SelectSearchShape = {
-    type search_option = ExactWord | Contains;
-
-    type select_option = {
-        label: string,
-        value: search_option
-    };
-
-    [@mel.module "react-select"] [@react.component]
-    external make: (
-        ~options: array<select_option>,
-        ~value: select_option,
-        ~onChange: select_option => unit,
-        ~isDisabled: bool,
-        ~isSearchable: bool,
-    ) => React.element = "default";
-};
+type select_lang_options = EngToSum | SumToEng;
+type selected_search_shape = ExactWord | Contains;
 
 [@react.component]
 let make = () => {
     open Bindings;
+    open Mui;
 
-    let language_options: array(SelectLang.select_option) = [|
-        {label: "English-Sumerian", value: SelectLang.EngToSum},
-        {label: "Sumerian-English", value: SelectLang.SumToEng},
-    |];
+    let (selected_lang, set_selected_lang) = React.useState(_ => EngToSum);
+    let selected_lang_value =
+        switch selected_lang {
+        | EngToSum => Select.Value.fromString("eng-to-sum")
+        | SumToEng => Select.Value.fromString("sum-to-eng")
+        };
+    let select_lang_options_to_string = (option: select_lang_options): string =>
+        switch option {
+        | EngToSum => "eng-to-sum"
+        | SumToEng => "sum-to-eng"
+        };
+    let (selected_search_shape, set_selected_search_shape) = React.useState(_ => ExactWord);
+    let selected_search_shape_value =
+        switch selected_search_shape {
+        | ExactWord => Select.Value.fromString("exact-word")
+        | Contains => Select.Value.fromString("contains")
+        };
+    let selected_search_shape_to_string = (option: selected_search_shape): string =>
+        switch option {
+        | ExactWord => "exact-word"
+        | Contains => "contains"
+        };
 
-    let search_shape_options: array(SelectSearchShape.select_option) = [|
-        {label: "Exact Word", value: SelectSearchShape.ExactWord},
-        {label: "Contains", value: SelectSearchShape.Contains},
-    |];
-
-    let (selected_lang, set_selected_lang) = React.useState(_ => language_options[0]);
     let (word, set_word) = React.useState(_ => "");
     let (searching, set_searching) = React.useState(_ => false);
     /* Temporary fixture rows for styling the search-results DOM. */
@@ -94,7 +74,6 @@ let make = () => {
     // |];
     let (search_results, set_search_results) =
         React.useState(_ => (None: option(array(Supabase.dictionary_row))));
-    let (selected_search_shape, set_selected_search_shape) = React.useState(_ => search_shape_options[0]);
 
     let search_word = () => {
         if (word |> Js.String.trim |> Js.String.length === 0) {
@@ -109,25 +88,25 @@ let make = () => {
                 |> Web_utils.Format.from_standard_to_phonetic;
             Js.log("Searching for word: " ++ word_to_search);
             // Implement the search logic here, possibly using Supabase client
-            let column = switch selected_lang.value {
-                | SelectLang.EngToSum => "translation"
-                | SelectLang.SumToEng => "word"
+            let column = switch selected_lang {
+                | EngToSum => "translation"
+                | SumToEng => "word"
             };
-            let filter = switch (selected_lang.value, selected_search_shape.value) {
-                | (SelectLang.SumToEng, SelectSearchShape.ExactWord) =>
+            let filter = switch (selected_lang, selected_search_shape) {
+                | (SumToEng, ExactWord) =>
                     Supabase.Filter.ilike_any(
                         ~column,
                         ~values=Web_utils.Format.with_g_variants(word_to_search),
                         ~contains=false,
                     )
-                | (SelectLang.SumToEng, SelectSearchShape.Contains) =>
+                | (SumToEng, Contains) =>
                     Supabase.Filter.ilike_any(
                         ~column,
                         ~values=Web_utils.Format.with_g_variants(word_to_search),
                         ~contains=true,
                     )
-                | (_, SelectSearchShape.ExactWord) => Supabase.Filter.ilike(~column, ~value=word_to_search)
-                | (_, SelectSearchShape.Contains) => Supabase.Filter.ilike(~column, ~value=("%" ++ word_to_search ++ "%"))
+                | (_, ExactWord) => Supabase.Filter.ilike(~column, ~value=word_to_search)
+                | (_, Contains) => Supabase.Filter.ilike(~column, ~value=("%" ++ word_to_search ++ "%"))
             };
             let _ = 
                 Supabase.client 
@@ -152,22 +131,45 @@ let make = () => {
 
     <div className=css##dictionary>
         <h1>
-            {selected_lang.value === SelectLang.EngToSum 
-            ? "English > Sumerian Dictionary" |> React.string 
-            : "Sumerian > English Dictionary" |> React.string}
+            {
+                switch selected_lang {
+                | EngToSum => "English > Sumerian Dictionary" |> React.string
+                | SumToEng => "Sumerian > English Dictionary" |> React.string
+                }
+            }
         </h1>
-        <SelectLang 
-            options={language_options}
-            value={selected_lang} 
-            onChange={option => set_selected_lang(_previous => option)}
-            isDisabled={false}
-            isSearchable={false}
-        />
         <div className=css##searchBar>
-            <input 
-                type_="text" 
-                placeholder="Search a word..." 
-                value={word} 
+            <Select
+                autoWidth=true
+                value={selected_lang_value}
+                onChange={(event, _) => {
+                    let value = event##target##value;
+                    let new_lang = switch value {
+                        | "eng-to-sum" => EngToSum
+                        | "sum-to-eng" => SumToEng
+                        | _ => selected_lang
+                    };
+                    set_selected_lang(_ => new_lang);
+                }}
+                sx={{"backgroundColor": "white"}}
+            >
+                <MenuItem value={select_lang_options_to_string(EngToSum)}>
+                    {"English to Sumerian" |> React.string}
+                </MenuItem>
+                <MenuItem value={select_lang_options_to_string(SumToEng)}>
+                    {"Sumerian to English" |> React.string}
+                </MenuItem>
+            </Select>
+            <TextField
+                type_="text"
+                fullWidth=false
+                autoFocus=true
+                placeholder="Search a word..."
+                label={switch selected_lang {
+                    | EngToSum => "English Word" |> React.string
+                    | SumToEng => "Sumerian Word" |> React.string
+                }}
+                value={word}
                 onChange={event => set_word(_ => event -> React.Event.Form.target##value)}
                 onKeyDown={event =>
                     if (React.Event.Keyboard.key(event) === "Enter") {
@@ -175,23 +177,38 @@ let make = () => {
                         search_word();
                     }
                 }
+                sx={{"backgroundColor": "white", "width": "300px"}}
+                variant=`outlined
             />
-            <SelectSearchShape
-                options={search_shape_options}
-                value={selected_search_shape}
-                onChange={option => set_selected_search_shape(_previous => option)}
-                isDisabled={false}
-                isSearchable={false}
-            />
-            <button onClick={_ => search_word()}>
+            <Select
+                autoWidth=true
+                value={selected_search_shape_value}
+                onChange={(event, _) => {
+                    let value = event##target##value;
+                    let new_search_shape = switch value {
+                        | "exact-word" => ExactWord
+                        | "contains" => Contains
+                        | _ => selected_search_shape
+                    };
+                    set_selected_search_shape(_ => new_search_shape);
+                }}
+                sx={{"backgroundColor": "white"}}
+            >
+                <MenuItem value={selected_search_shape_to_string(ExactWord)}>
+                    {"Exact Word" |> React.string}
+                </MenuItem>
+                <MenuItem value={selected_search_shape_to_string(Contains)}>
+                    {"Contains" |> React.string}
+                </MenuItem>
+            </Select>
+            <Button className="button" onClick={_ => search_word()}>
                 {searching ? <TablerReact.IconRefresh className=css##refreshIcon size=20 /> : <TablerReact.IconSearch size=20 />}
-            </button>
+            </Button>
         </div>
         <div className=css##resultsContainer>
         {
             switch search_results {
-            | None => <div>{searching ? "Searching..." |> React.string : "Enter a word to search." |> React.string}</div>
-            | Some(results) => 
+            | Some(results) when (word |> String.length > 0) =>
                 if (Array.length(results) === 0) {
                     <div>{"No results found." |> React.string}</div>
                 } else {
@@ -266,6 +283,7 @@ let make = () => {
                         </tbody>
                     </table>
                 }
+            | _ => <div>{searching ? "Searching..." |> React.string : "Enter a word to search." |> React.string}</div>
             }
         }
         </div>

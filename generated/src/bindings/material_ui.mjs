@@ -34,6 +34,8 @@ const CardMedia = {};
 
 const Container = {};
 
+const InputLabel = {};
+
 const List = {};
 
 const ListItem = {};
@@ -49,6 +51,14 @@ const ListItemText = {};
 const Menu = {};
 
 const MenuItem = {};
+
+const Value = {};
+
+const Select = {
+  Value: Value
+};
+
+const TextField = {};
 
 const Variant = {
   dense: "dense",
@@ -106,6 +116,7 @@ export {
   CardHeader,
   CardMedia,
   Container,
+  InputLabel,
   List,
   ListItem,
   ListItemAvatar,
@@ -114,6 +125,8 @@ export {
   ListItemText,
   Menu,
   MenuItem,
+  Select,
+  TextField,
   Toolbar,
   Typography,
 }

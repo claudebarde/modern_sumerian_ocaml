@@ -193,6 +193,28 @@ module Container = {
   ) => React.element = "default";
 };
 
+module InputLabel = {
+  [@mel.module "@mui/material/InputLabel"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~disableAnimation: bool=?,
+    ~disabled: bool=?,
+    ~error: bool=?,
+    ~focused: bool=?,
+    ~id: string=?,
+    ~margin: [`dense | `none]=?,
+    ~required: bool=?,
+    ~shrink: bool=?,
+    ~size: [`small | `medium]=?, // TODO: a string can be passed to size
+    ~variant: [`standard | `outlined | `filled]=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
 module List = {
   [@mel.module "@mui/material/List"] [@react.component]
   external make: (
@@ -330,6 +352,87 @@ module MenuItem = {
     ~onClick: (React.Event.Synthetic.t => unit)=?,
     ~selected: bool=?,
     ~sx: Js.t({..})=?,
+    ~value: string=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Select = {
+  module Value = {
+    type t;
+
+    external fromString: string => t = "%identity";
+    external fromObject: Js.t({..}) => t = "%identity";
+  };
+
+  [@mel.module "@mui/material/Select"] [@react.component]
+  external make: (
+    ~autoWidth: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~defaultOpen: bool=?,
+    ~defaultValue: Js.t({..})=?,
+    ~displayEmpty: bool=?,
+    ~_IconComponent: React.component('props)=?,
+    ~id: string=?,
+    ~input: React.element=?,
+    ~inputProps: Js.t({..})=?,
+    ~label: React.element=?,
+    ~labelId: string=?,
+    ~_MenuProps: Js.t({..})=?,
+    ~multiple: bool=?,
+    ~native: bool=?,
+    ~onChange: (
+      (Js.t({..}), Js.Undefined.t(React.element)) => unit
+    )=?,
+    ~onClose: (React.Event.Synthetic.t => unit)=?,
+    ~onOpen: (React.Event.Synthetic.t => unit)=?,
+    ~_open: bool=?,
+    ~renderValue: (Js.t({..}) => React.element)=?,
+    ~_SelectDisplayProps: Js.t({..})=?,
+    ~value: Value.t,
+    ~variant: [`standard | `outlined | `filled]=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module TextField = {
+  [@mel.module "@mui/material/TextField"] [@react.component]
+  external make: (
+    ~autoComplete: string=?,
+    ~autoFocus: bool=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~defaultValue: string=?,
+    ~disabled: bool=?,
+    ~error: bool=?,
+    ~fullWidth: bool=?,
+    ~helperText: React.element=?,
+    ~id: string=?,
+    ~inputRef: React.ref(Js.Nullable.t(Dom.element))=?,
+    ~label: React.element=?,
+    ~margin: [`none | `dense | `normal]=?,
+    ~maxRows: int=?,
+    ~minRows: int=?,
+    ~multiline: bool=?,
+    ~name: string=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~onKeyDown: (React.Event.Keyboard.t => unit)=?,
+    ~onKeyUp: (React.Event.Keyboard.t => unit)=?,
+    ~onKeyEnter: (React.Event.Keyboard.t => unit)=?,
+    ~placeholder: string=?,
+    ~required: bool=?,
+    ~rows: int=?,
+    ~select: bool=?,
+    ~size: [`small | `medium]=?,
+    ~sx: Js.t({..})=?,
+    // TODO: slots and slotProps are not supported yet
+    ~type_: string=?,
+    ~value: string=?,
+    ~variant: [`standard | `outlined | `filled]=?,
     unit
   ) => React.element = "default";
 };

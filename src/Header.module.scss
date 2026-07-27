@@ -1,7 +1,7 @@
 @use "./styles/styles.scss" as *;
 
 .appbar {
-  background: $white-smoke;
+  background: $cereal-flake;
   align-self: start;
   height: 100%;
   z-index: 1;
@@ -12,4 +12,73 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.logo {
+  height: 70px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.rotatingTitle {
+  display: grid;
+  place-items: center;
+
+  .titlePrimary,
+  .titleSecondary {
+    grid-area: 1 / 1;
+  }
+
+  .titlePrimary {
+    animation: showPrimaryTitle 20s ease-in-out infinite;
+  }
+
+  .titleSecondary {
+    animation: showSecondaryTitle 20s ease-in-out infinite;
+  }
+}
+
+@keyframes showPrimaryTitle {
+  0%,
+  41.666% {
+    opacity: 1;
+  }
+
+  50%,
+  91.666% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes showSecondaryTitle {
+  0%,
+  41.666% {
+    opacity: 0;
+  }
+
+  50%,
+  91.666% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotatingTitle {
+    .titlePrimary,
+    .titleSecondary {
+      animation: none;
+    }
+
+    .titleSecondary {
+      display: none;
+    }
+  }
 }

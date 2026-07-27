@@ -112,6 +112,18 @@ module IconBrandFacebook = {
   ) => React.element = "IconBrandFacebook";
 };
 
+module IconBrandX = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBrandX";
+};
+
 module IconLink = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -122,4 +134,28 @@ module IconLink = {
     ~title: string=?,
     unit
   ) => React.element = "IconLink";
+};
+
+module IconList = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconList";
+};
+
+module IconFileText = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconFileText";
 };

@@ -4,20 +4,7 @@
   height: 100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  li {
-    margin: 5px 10px;
-
-    a {
-      text-decoration: none;
-      color: $botanical-night;
-      transition: all 0.3s ease-in-out;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
 }

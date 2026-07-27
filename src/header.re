@@ -1,6 +1,6 @@
 [@mel.module "./Header.module.scss"] external css: Js.t({..}) = "default"; 
 [@mel.scope ("process", "env")] external node_env: string = "NODE_ENV";
-// [@mel.module "./assets/beta-button-50.png"] external betaButtonImage: string = "default";
+[@mel.module "./assets/logo.png"] external logoImage: string = "default";
 
 [@react.component]
 let make = () => {
@@ -15,27 +15,42 @@ let make = () => {
         ReasonReactRouter.push(path);
     };
 
-    <AppBar position={`static} color=Color.transparent className=css##appbar>
+    <AppBar 
+        position=`static
+        color=Color.fromString(Config.colors##cerealFlake)
+        className=css##appbar
+    >
         <Toolbar variant=Toolbar.Variant.regular className=css##toolbar>
-            <Typography variant=Typography.Variant.h6>
-                {[|"eme", {js|ĝir15|js}, "u", "me", "e"|]
-                |> Components.Web_utils.display_cuneiforms
-                |> Array.mapi((i, (codePoint, word)) => {
-                    <span
-                        className="cuneiforms" 
-                        key={codePoint ++ word ++ Int.to_string(i)} 
-                    >
-                        {React.string(codePoint)}
-                    </span>
-                })
-                |> React.array}
-            </Typography>
-            <Box sx={{"display": "flex", "flex-direction": "row", "align-items": "center"}}>
-                <Typography variant=Typography.Variant.h6>
-                    {"Modern Sumerian" |> React.string}
+                <img 
+                    src=logoImage
+                    alt="logo"
+                    className=css##logo
+                />
+            <Box className={css##rotatingTitle}>
+                <Typography
+                    className={css##titlePrimary}
+                    variant=Typography.Variant.h6
+                >
+                    {[|"eme", {js|ĝir15|js}, "u", "me", "e"|]
+                    |> Components.Web_utils.display_cuneiforms
+                    |> Array.mapi((i, (codePoint, word)) => {
+                        <span
+                            className="cuneiforms" 
+                            key={codePoint ++ word ++ Int.to_string(i)} 
+                        >
+                            {React.string(codePoint)}
+                        </span>
+                    })
+                    |> React.array}
                 </Typography>
+                <Typography
+                    className={css##titleSecondary}
+                    variant=Typography.Variant.h6
+                >
+                    {"MODERN SUMERIAN"|>React.string}
+                </Typography>                
             </Box>
-            <Box sx={{"display": "flex", "flex-direction": "row", "align-items": "center", "gap": "1rem"}}>
+            <Box sx={{"display": "flex", "flexDirection": "row", "alignItems": "center", "gap": "1rem"}}>
                 <Button
                     variant=`text
                     color=Color.fromString(Config.colors##protonRed)

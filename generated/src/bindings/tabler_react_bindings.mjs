@@ -19,7 +19,13 @@ const IconBrandGithub = {};
 
 const IconBrandFacebook = {};
 
+const IconBrandX = {};
+
 const IconLink = {};
+
+const IconList = {};
+
+const IconFileText = {};
 
 export {
   IconSearch,
@@ -31,6 +37,9 @@ export {
   IconChevronDown,
   IconBrandGithub,
   IconBrandFacebook,
+  IconBrandX,
   IconLink,
+  IconList,
+  IconFileText,
 }
 /* No side effect */

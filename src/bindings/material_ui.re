@@ -193,6 +193,75 @@ module Container = {
   ) => React.element = "default";
 };
 
+module List = {
+  [@mel.module "@mui/material/List"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~dense: bool=?,
+    ~disablePadding: bool=?,
+    ~subheader: React.element=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module ListItem = {
+  [@mel.module "@mui/material/ListItem"] [@react.component]
+  external make: (
+    ~alignItems: [`flexStart | `center]=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~dense: bool=?,
+    ~disableGutters: bool=?,
+    ~disablePadding: bool=?,
+    ~divider: bool=?,
+    ~href: string=?,
+    ~onClick: (React.Event.Synthetic.t => unit)=?,
+    ~secondarAction: React.element=?,
+    // TODO: slots and slotProps are not supported yet
+    ~sx: Js.t({..})=?,
+    ~target: string=?,
+    unit
+  ) => React.element = "default";
+};
+
+module ListItemAvatar = {
+  [@mel.module "@mui/material/ListItemAvatar"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module ListItemButton = {
+  [@mel.module "@mui/material/ListItemButton"] [@react.component]
+  external make: (
+    ~alignItems: [`flexStart | `center]=?,
+    ~autoFocus: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~dense: bool=?,
+    ~disabled: bool=?,
+    ~disableGutters: bool=?,
+    ~divider: bool=?,
+    ~focusVisibleClassName: string=?,
+    ~onClick: (React.Event.Synthetic.t => unit)=?,
+    ~selected: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
 module ListItemIcon = {
   [@mel.module "@mui/material/ListItemIcon"] [@react.component]
   external make: (

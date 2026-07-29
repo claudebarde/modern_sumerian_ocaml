@@ -14,6 +14,14 @@ const Color = {
   transparent: "transparent"
 };
 
+const Accordion = {};
+
+const AccordionActions = {};
+
+const AccordionDetails = {};
+
+const AccordionSummary = {};
+
 const AppBar = {};
 
 const Box = {};
@@ -34,6 +42,8 @@ const CardMedia = {};
 
 const Container = {};
 
+const Drawer = {};
+
 const InputLabel = {};
 
 const List = {};
@@ -48,6 +58,8 @@ const ListItemIcon = {};
 
 const ListItemText = {};
 
+const ListSubheader = {};
+
 const Menu = {};
 
 const MenuItem = {};
@@ -59,6 +71,8 @@ const Value = {};
 const Select = {
   Value: Value
 };
+
+const Stack = {};
 
 const Table = {};
 
@@ -128,6 +142,10 @@ const Typography = {
 export {
   RootComponent,
   Color,
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
   AppBar,
   Box,
   Button,
@@ -138,6 +156,7 @@ export {
   CardHeader,
   CardMedia,
   Container,
+  Drawer,
   InputLabel,
   List,
   ListItem,
@@ -145,10 +164,12 @@ export {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
   Menu,
   MenuItem,
   Paper,
   Select,
+  Stack,
   Table,
   TableBody,
   TableCell,

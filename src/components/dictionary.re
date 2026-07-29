@@ -45,102 +45,102 @@ let make = () => {
     let (rowsPerPage, setRowsPerPage) = React.useState(_ => 5);
     let (page, setPage) = React.useState(_ => 0);
     /* Temporary fixture rows for styling the search-results DOM. */
-    let dummy_search_results: array(Supabase.dictionary_row) = [|
-        {
-            id: "dummy-1",
-            marker: Supabase.A,
-            headword: "lugal",
-            word: "lugal",
-            translation: "king",
-            part_of_speech: "noun",
-            meanings: [|"king", "ruler"|],
-            forms: [|"lugal"|],
-            cuneiforms: [|"𒈗"|],
-            dc_title: "lugal",
-            icount: 42,
-        },
-        {
-            id: "dummy-2",
-            marker: Supabase.E,
-            headword: "é",
-            word: "é",
-            translation: "house; temple",
-            part_of_speech: "noun",
-            meanings: [|"house", "temple"|],
-            forms: [|"é"|],
-            cuneiforms: [|"𒂍"|],
-            dc_title: "e",
-            icount: 17,
-        },
-        {
-            id: "dummy-3",
-            marker: Supabase.N,
-            headword: "du₃",
-            word: "du₃",
-            translation: "to build",
-            part_of_speech: "verb",
-            meanings: [|"build", "erect"|],
-            forms: [|"du₃"|],
-            cuneiforms: [|"𒆕"|],
-            dc_title: "du3",
-            icount: 5,
-        },
-        {
-            id: "dummy-4",
-            marker: Supabase.X,
-            headword: "gud",
-            word: "gud",
-            translation: "ox; bull",
-            part_of_speech: "noun",
-            meanings: [|"ox", "bull"|],
-            forms: [|"gud"|],
-            cuneiforms: [|"𒄖"|],
-            dc_title: "gud",
-            icount: 3,
-        },
-        {
-            id: "dummy-5",
-            marker: Supabase.L_Akk,
-            headword: "šarru",
-            word: "šarru",
-            translation: "king (Akkadian loanword)",
-            part_of_speech: "noun",
-            meanings: [|"king", "ruler"|],
-            forms: [|"šarru"|],
-            cuneiforms: [|"𒈗"|],
-            dc_title: "sarru",
-            icount: 1,
-        },
-        {
-            id: "dummy-6",
-            marker: Supabase.C,
-            headword: "kur",
-            word: "kur",
-            translation: "mountain; foreign land (calque)",
-            part_of_speech: "noun",
-            meanings: [|"mountain", "foreign land"|],
-            forms: [|"kur"|],
-            cuneiforms: [|"𒆳"|],
-            dc_title: "kur",
-            icount: 0,
-        },
-        {
-            id: "dummy-7",
-            marker: Supabase.L_Mod,
-            headword: "computer",
-            word: "computer",
-            translation: "computer (modern loanword)",
-            part_of_speech: "noun",
-            meanings: [|"computer"|],
-            forms: [|"computer"|],
-            cuneiforms: [||],
-            dc_title: "computer",
-            icount: 0,
-        }
-    |];
+    // let dummy_search_results: array(Supabase.dictionary_row) = [|
+    //     {
+    //         id: "dummy-1",
+    //         marker: Supabase.A,
+    //         headword: "lugal",
+    //         word: "lugal",
+    //         translation: "king",
+    //         part_of_speech: "noun",
+    //         meanings: [|"king", "ruler"|],
+    //         forms: [|"lugal"|],
+    //         cuneiforms: [|"𒈗"|],
+    //         dc_title: "lugal",
+    //         icount: 42,
+    //     },
+    //     {
+    //         id: "dummy-2",
+    //         marker: Supabase.E,
+    //         headword: "é",
+    //         word: "é",
+    //         translation: "house; temple",
+    //         part_of_speech: "noun",
+    //         meanings: [|"house", "temple"|],
+    //         forms: [|"é"|],
+    //         cuneiforms: [|"𒂍"|],
+    //         dc_title: "e",
+    //         icount: 17,
+    //     },
+    //     {
+    //         id: "dummy-3",
+    //         marker: Supabase.N,
+    //         headword: "du₃",
+    //         word: "du₃",
+    //         translation: "to build",
+    //         part_of_speech: "verb",
+    //         meanings: [|"build", "erect"|],
+    //         forms: [|"du₃"|],
+    //         cuneiforms: [|"𒆕"|],
+    //         dc_title: "du3",
+    //         icount: 5,
+    //     },
+    //     {
+    //         id: "dummy-4",
+    //         marker: Supabase.X,
+    //         headword: "gud",
+    //         word: "gud",
+    //         translation: "ox; bull",
+    //         part_of_speech: "noun",
+    //         meanings: [|"ox", "bull"|],
+    //         forms: [|"gud"|],
+    //         cuneiforms: [|"𒄖"|],
+    //         dc_title: "gud",
+    //         icount: 3,
+    //     },
+    //     {
+    //         id: "dummy-5",
+    //         marker: Supabase.L_Akk,
+    //         headword: "šarru",
+    //         word: "šarru",
+    //         translation: "king (Akkadian loanword)",
+    //         part_of_speech: "noun",
+    //         meanings: [|"king", "ruler"|],
+    //         forms: [|"šarru"|],
+    //         cuneiforms: [|"𒈗"|],
+    //         dc_title: "sarru",
+    //         icount: 1,
+    //     },
+    //     {
+    //         id: "dummy-6",
+    //         marker: Supabase.C,
+    //         headword: "kur",
+    //         word: "kur",
+    //         translation: "mountain; foreign land (calque)",
+    //         part_of_speech: "noun",
+    //         meanings: [|"mountain", "foreign land"|],
+    //         forms: [|"kur"|],
+    //         cuneiforms: [|"𒆳"|],
+    //         dc_title: "kur",
+    //         icount: 0,
+    //     },
+    //     {
+    //         id: "dummy-7",
+    //         marker: Supabase.L_Mod,
+    //         headword: "computer",
+    //         word: "computer",
+    //         translation: "computer (modern loanword)",
+    //         part_of_speech: "noun",
+    //         meanings: [|"computer"|],
+    //         forms: [|"computer"|],
+    //         cuneiforms: [||],
+    //         dc_title: "computer",
+    //         icount: 0,
+    //     }
+    // |];
     let (search_results, set_search_results) =
-        // React.useState(_ => (None: option(array(Supabase.dictionary_row))));
-        React.useState(_ => Some(dummy_search_results));
+        React.useState(_ => (None: option(array(Supabase.dictionary_row))));
+        // React.useState(_ => Some(dummy_search_results));
 
     let search_word = () => {
         if (word |> Js.String.trim |> Js.String.length === 0) {
@@ -289,8 +289,7 @@ let make = () => {
         <div className=css##resultsContainer>
         {
             switch search_results {
-            // | Some(results) when (word |> String.length > 0) =>
-            | Some(results) =>
+            | Some(results) when (word |> String.length > 0) =>
                 if (Array.length(results) === 0) {
                     <div>{"No results found." |> React.string}</div>
                 } else {

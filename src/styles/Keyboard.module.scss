@@ -17,129 +17,138 @@ $border-radius: 10px;
   gap: 20px;
   padding: 50px;
 
-  .cuneiformDisplayContainer {
-    width: $container-width;
+  //   .cuneiformDisplayContainer {
+  //     width: $container-width;
+  //     display: flex;
+  //     flex-direction: row;
+  //     justify-content: space-between;
+  //     align-items: flex-start;
+  //     gap: 0px;
+  //     padding: 0px;
+
+  .cuneiformDisplay {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0px;
-    padding: 0px;
-
-    .cuneiformDisplay {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 0px;
-      border: solid 1px $proton-red;
-      border-radius: $border-radius;
-      min-height: 70px;
-      width: 100%;
-      overflow-y: auto;
-      background-color: white;
-      padding: $container-padding;
-    }
-
-    .cuneiformDisplayButtons {
-      padding: 5px 0px;
-    }
+    justify-content: center;
+    align-items: center;
+    // gap: 0px;
+    // border: solid 1px $proton-red;
+    // border-radius: $border-radius;
+    min-height: 70px;
+    width: calc(100% - 2 * #{$container-padding});
+    overflow-y: auto;
+    // background-color: white;
+    padding: $container-padding;
   }
+
+  .cuneiformDisplayButtons {
+    $padding: 5px;
+    height: calc(100% - 2 * #{$padding});
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 0px;
+  }
+  //   }
 
   .phoneticDisplay {
     text-align: left;
     font-style: italic;
-    border: solid 1px $proton-red;
-    border-radius: $border-radius;
-    width: $container-width;
-    padding: $container-padding;
-    background-color: white;
+    min-height: 30px;
+    // border: solid 1px $proton-red;
+    // border-radius: $border-radius;
+    // width: $container-width;
+    // padding: $container-padding;
+    // background-color: white;
   }
 
-  .cuneiformSelectionContainer {
-    width: $container-width;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0px;
+  //   .cuneiformSelectionContainer {
+  //     width: $container-width;
+  //     display: flex;
+  //     flex-direction: column;
+  //     justify-content: center;
+  //     align-items: center;
+  //     gap: 0px;
 
-    .cuneiformSelection {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 10px;
-      border: solid 1px $proton-red;
-      border-radius: $border-radius;
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 0px;
-      border-bottom: none;
-      height: 70px;
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: $container-padding;
-      background-color: white;
-
-      .cuneiformSelectionItem {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: $border-radius;
-        border: solid 1px $proton-red;
-        padding: $container-padding;
-        background-color: $silver-setting;
-        cursor: pointer;
-
-        &[aria-selected="true"] {
-          background-color: $proton-red;
-          color: white;
-        }
-      }
-    }
-
-    .cuneiformSelectionInfo {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      font-style: italic;
-      width: calc(100% - 2 * (15px - #{$container-padding}));
-      padding: $container-padding 15px;
-      background-color: white;
-      border: solid 1px $proton-red;
-      border-radius: $border-radius;
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
-      border-top: none;
-    }
-  }
-
-  .controls {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    place-items: center;
-    gap: 10px;
-    width: $container-width;
-
-    > :nth-child(2) {
-      justify-self: stretch;
-      width: 100%;
-    }
-  }
-
-  .typingArea {
-    width: $container-width;
+  .cuneiformSelection {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    gap: 10px;
+    // border: solid 1px $proton-red;
+    // border-radius: $border-radius;
+    // border-bottom-left-radius: 0px;
+    // border-bottom-right-radius: 0px;
+    // border-bottom: none;
+    height: 70px;
+    width: calc(100% - 2 * (15px - #{$container-padding}));
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: $container-padding;
+    margin: 0;
+    background-color: transparent;
 
-    input {
-      width: 50%;
+    .cuneiformSelectionItem {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: $border-radius;
+      border: solid 1px $proton-red;
+      padding: $container-padding;
+      background-color: $silver-setting;
+      cursor: pointer;
+      margin: 0;
+
+      &[aria-selected="true"] {
+        background-color: $proton-red;
+        color: white;
+      }
     }
   }
+
+  .cuneiformSelectionInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-style: italic;
+    width: calc(100% - 2 * 15px);
+    padding: $container-padding 15px;
+    background-color: transparent;
+    // border: solid 1px $proton-red;
+    // border-radius: $border-radius;
+    // border-top-left-radius: 0px;
+    // border-top-right-radius: 0px;
+    // border-top: none;
+  }
+  // }
+
+  //   .controls {
+  //     display: grid;
+  //     grid-template-columns: repeat(3, 1fr);
+  //     place-items: center;
+  //     gap: 10px;
+  //     width: $container-width;
+
+  //     > :nth-child(2) {
+  //       justify-self: stretch;
+  //       width: 100%;
+  //     }
+  //   }
+
+  //   .typingArea {
+  //     width: $container-width;
+  //     display: flex;
+  //     flex-direction: row;
+  //     justify-content: center;
+  //     align-items: center;
+
+  //     input {
+  //       width: 50%;
+  //     }
+  //   }
 }
 
 .refreshIcon {
@@ -153,12 +162,20 @@ $border-radius: 10px;
 }
 
 .howToUse {
-  width: $container-width;
-  padding: $container-padding;
-  font-size: 0.8rem;
+  padding: 40px;
 
-  h2 {
-    margin-top: 0;
+  ol li {
+    margin-bottom: 10px;
+  }
+}
+
+.paper {
+  width: $container-width;
+  min-height: 70px;
+  padding: 10px;
+
+  &.transparent {
+    background-color: transparent;
   }
 }
 

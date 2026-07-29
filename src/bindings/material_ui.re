@@ -2,6 +2,8 @@
  * Typed bindings for React components exported by @mui/material.
  */
 
+// TODO: once all the bindings are written, use AI to add default pops like "id" to all the components
+
 // HELPERS
 
 type width = [
@@ -40,6 +42,60 @@ module Color = {
 };
 
 // MATERIAL UI COMPONENTS
+
+module Accordion = {
+    [@mel.module "@mui/material/Accordion"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~defaultExpanded: bool=?,
+        ~disabled: bool=?,
+        ~disableGutters: bool=?,
+        ~expanded: bool=?,
+        ~onChange: (React.Event.Synthetic.t, bool) => unit=?,
+        // TODO: slots and slotProps are not supported yet
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module AccordionActions = {
+    [@mel.module "@mui/material/AccordionActions"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~disableSpacing: bool=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module AccordionDetails = {
+    [@mel.module "@mui/material/AccordionDetails"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module AccordionSummary = {
+    [@mel.module "@mui/material/AccordionSummary"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~expandIcon: React.element=?,
+        ~focusVisibleClassName: string=?,
+        // TODO: slots and slotProps are not supported yet
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
 
 module AppBar = {
     [@mel.module "@mui/material/AppBar"] [@react.component]
@@ -193,6 +249,30 @@ module Container = {
   ) => React.element = "default";
 };
 
+module Drawer = {
+  [@mel.module "@mui/material/Drawer"] [@react.component]
+  external make: (
+    ~anchor: [`left | `top | `right | `bottom]=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~elevation: int=?,
+    ~hideBackdrop: bool=?,
+    ~_ModalProps: Js.t({..})=?,
+    ~onClose: (React.Event.Synthetic.t => unit)=?,
+    ~_open: bool=?,
+    // TODO: slots and slotProps are not supported yet
+    ~sx: Js.t({..})=?,
+    ~transitionDuration: [@mel.unwrap] [
+        | `auto
+        | `Number(int)
+        | `Object(Js.t({..}))
+    ]=?,
+    ~variant: [`permanent | `persistent | `temporary]=?,
+    unit
+  ) => React.element = "default";
+};
+
 module InputLabel = {
   [@mel.module "@mui/material/InputLabel"] [@react.component]
   external make: (
@@ -311,6 +391,22 @@ module ListItemText = {
   ) => React.element = "default";
 };
 
+module ListSubheader = {
+  [@mel.module "@mui/material/ListSubheader"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: [`default | `primary | `inherit_]=?,
+    ~component: RootComponent.t=?,
+    ~disableGutters: bool=?,
+    ~disableSticky: bool=?,
+    ~inset: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
 module Menu = {
   [@mel.module "@mui/material/Menu"] [@react.component]
   external make: (
@@ -409,6 +505,32 @@ module Select = {
     ~value: Value.t,
     ~variant: [`standard | `outlined | `filled]=?,
     ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Stack = {
+  [@mel.module "@mui/material/Stack"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~direction: [@mel.unwrap] [
+        | `row
+        | `column
+        | `rowReverse
+        | `columnReverse
+        // TODO: an array of directions or an object can be passed to direction
+    ]=?,
+    ~divider: React.element=?,
+    ~spacing: [@mel.unwrap] [
+        | `number(int)
+        | `string(string)
+        // TODO: an array of numbers or strings or an object can be passed to spacing
+    ]=?,
+    ~sx: Js.t({..})=?,
+    ~useFlexGap: bool=?,
     unit
   ) => React.element = "default";
 };

@@ -19,7 +19,7 @@ const cuneiformCodePoints = Cuneiform_code_pointsJson;
 function search_cuneiforms(words) {
   const cuneiformData = JSON.parse(JSON.stringify(cuneiformCodePoints));
   return Stdlib__Array.map((function (word) {
-    const formattedWord = word.replace(new RegExp("ʔ"), "").toUpperCase();
+    const formattedWord = word.replace(new RegExp("ʔ"), "").replace(new RegExp("š", "g"), "sh").replace(new RegExp("ḫ", "g"), "h").toUpperCase();
     const codePointData = Stdlib__Array.find_opt((function (item) {
       return item.name === formattedWord;
     }), cuneiformData.codepoints);
@@ -214,10 +214,10 @@ function Web_utils$BuildResults(Props) {
       ],
       className: css.verbResult
     }, "verbResults"),
-    JsxRuntime.jsx("table", {
-      children: JsxRuntime.jsxs("tbody", {
-        children: [
-          JsxRuntime.jsx("tr", {
+    JsxRuntime.jsxs("table", {
+      children: [
+        JsxRuntime.jsx("thead", {
+          children: JsxRuntime.jsx("tr", {
             children: Stdlib__Array.map((function (param) {
               const output_type = param[0];
               let tmp;
@@ -246,8 +246,10 @@ function Web_utils$BuildResults(Props) {
                 children: tmp
               }, output_type);
             }), Conjugator__Verb_analysis.output(analysis))
-          }),
-          JsxRuntime.jsx("tr", {
+          })
+        }),
+        JsxRuntime.jsx("tbody", {
+          children: JsxRuntime.jsx("tr", {
             children: Stdlib__Array.mapi((function (i, param) {
               const value = param[1];
               const Key = value + Stdlib__Int.to_string(i);
@@ -256,8 +258,8 @@ function Web_utils$BuildResults(Props) {
               }, Key);
             }), Conjugator__Verb_analysis.output(analysis))
           })
-        ]
-      })
+        })
+      ]
     }, "verbAnalysis"),
     JsxRuntime.jsx("span", {
       children: "The cuneiforms are auto-generated and may not be historically accurate",

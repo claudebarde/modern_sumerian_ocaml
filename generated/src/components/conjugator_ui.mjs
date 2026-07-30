@@ -161,7 +161,7 @@ function Conjugator_ui(Props) {
     
   });
   const set_indirect_object = match$16[1];
-  const _indirect_object = match$16[0];
+  const indirect_object = match$16[0];
   const match$17 = React.useState(function () {
     return false;
   });
@@ -174,7 +174,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "ʔak"
-      }
+      },
+      transitive: true
     },
     {
       label: "ĝen (to go)",
@@ -182,7 +183,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "ĝen"
-      }
+      },
+      transitive: false
     },
     {
       label: "gu (to eat)",
@@ -190,7 +192,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "gu"
-      }
+      },
+      transitive: true
     },
     {
       label: "naĝ (to drink)",
@@ -198,7 +201,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "na-na"
-      }
+      },
+      transitive: true
     },
     {
       label: "sar (to write)",
@@ -206,7 +210,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "sar"
-      }
+      },
+      transitive: true
     },
     {
       label: "šum (to give)",
@@ -214,7 +219,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "šum"
-      }
+      },
+      transitive: true
     },
     {
       label: "tuku (to have)",
@@ -222,7 +228,8 @@ function Conjugator_ui(Props) {
       imperfective: {
         TAG: /* Other */ 0,
         _0: "tuku"
-      }
+      },
+      transitive: true
     }
   ];
   const pronoun_options = [
@@ -641,53 +648,64 @@ function Conjugator_ui(Props) {
       
     }));
   };
+  const set_new_verb_stem = function (value) {
+    reset(undefined);
+    Curry._1(set_verb_stem, (function (param) {
+      return value;
+    }));
+    if (value !== undefined) {
+      Curry._1(set_verb_form, (function (param) {
+        return Conjugator.create(value.value);
+      }));
+      return Curry._1(set_error, (function (param) {
+        
+      }));
+    }
+    
+  };
   let tmp;
+  if (verb_stem !== undefined) {
+    const link = Components__Web_utils.EpsdDict.get_epsd_link(verb_stem.value);
+    tmp = link !== undefined ? JsxRuntime.jsx("a", {
+        children: "EPSD Link",
+        className: css.epsdLink,
+        href: link,
+        target: "_blank"
+      }) : null;
+  } else {
+    tmp = null;
+  }
+  let tmp$1;
   if (preformative !== undefined) {
     switch (preformative) {
       case /* A */ 0 :
-        tmp = "preformative-a";
+        tmp$1 = "preformative-a";
         break;
       case /* I */ 1 :
-        tmp = "preformative-i";
+        tmp$1 = "preformative-i";
         break;
       case /* U */ 2 :
-        tmp = "preformative-u";
-        break;
-    }
-  } else {
-    tmp = "";
-  }
-  let tmp$1;
-  if (modal_prefix !== undefined) {
-    switch (modal_prefix) {
-      case /* HA */ 0 :
-        tmp$1 = "modal-ha";
-        break;
-      case /* NAN */ 1 :
-        tmp$1 = "modal-nan";
-        break;
-      case /* NU */ 2 :
-        tmp$1 = "modal-nu";
+        tmp$1 = "preformative-u";
         break;
     }
   } else {
     tmp$1 = "";
   }
   let tmp$2;
-  if (verb_stem !== undefined) {
-    const link = Components__Web_utils.EpsdDict.get_epsd_link(verb_stem.value);
-    tmp$2 = link !== undefined ? JsxRuntime.jsx("div", {
-        children: JsxRuntime.jsx("p", {
-          children: JsxRuntime.jsx("a", {
-            children: "EPSD Link",
-            className: css.epsdLink,
-            href: link,
-            target: "_blank"
-          })
-        })
-      }) : null;
+  if (modal_prefix !== undefined) {
+    switch (modal_prefix) {
+      case /* HA */ 0 :
+        tmp$2 = "modal-ha";
+        break;
+      case /* NAN */ 1 :
+        tmp$2 = "modal-nan";
+        break;
+      case /* NU */ 2 :
+        tmp$2 = "modal-nu";
+        break;
+    }
   } else {
-    tmp$2 = null;
+    tmp$2 = "";
   }
   return JsxRuntime.jsxs(Container, {
     children: [
@@ -698,48 +716,55 @@ function Conjugator_ui(Props) {
         children: [
           JsxRuntime.jsxs(Grid, {
             children: [
-              JsxRuntime.jsxs(FormControl, {
+              JsxRuntime.jsxs(Box, {
                 children: [
-                  JsxRuntime.jsx(InputLabel, {
-                    children: "Select a verb stem",
-                    id: "verb-stem-label"
-                  }),
-                  JsxRuntime.jsx(Select, {
-                    children: Stdlib__Array.map((function (verb) {
-                      const Key = verb.value;
-                      return JsxRuntime.jsx(MenuItem, {
-                        children: verb.label,
-                        value: verb.value
-                      }, Key);
-                    }), available_verbs),
-                    label: "Select a verb stem",
-                    labelId: "verb-stem-label",
-                    onChange: (function ($$event, param) {
-                      const selected_value = $$event.target.value;
-                      let value = Stdlib__Array.find_opt((function (verb) {
-                        return verb.value === selected_value;
-                      }), available_verbs);
-                      reset(undefined);
-                      Curry._1(set_verb_stem, (function (param) {
-                        return value;
-                      }));
-                      if (value !== undefined) {
-                        Curry._1(set_verb_form, (function (param) {
-                          return Conjugator.create(value.value);
-                        }));
-                        return Curry._1(set_error, (function (param) {
+                  JsxRuntime.jsxs(FormControl, {
+                    children: [
+                      JsxRuntime.jsx(InputLabel, {
+                        children: "Select a verb stem",
+                        id: "verb-stem-label"
+                      }),
+                      JsxRuntime.jsx(Select, {
+                        children: Stdlib__Array.map((function (verb) {
+                          const Key = verb.value;
+                          return JsxRuntime.jsx(MenuItem, {
+                            children: verb.label,
+                            value: verb.value
+                          }, Key);
+                        }), available_verbs),
+                        label: "Select a verb stem",
+                        labelId: "verb-stem-label",
+                        onChange: (function ($$event, param) {
+                          const selected_value = $$event.target.value;
+                          const selected_verb = Stdlib__Array.find_opt((function (verb) {
+                            return verb.value === selected_value;
+                          }), available_verbs);
+                          set_new_verb_stem(selected_verb);
+                          if (selected_verb !== undefined) {
+                            return Curry._1(set_is_transitive, (function (param) {
+                              return selected_verb.transitive;
+                            }));
+                          }
                           
-                        }));
-                      }
-                      
-                    }),
-                    value: verb_stem !== undefined ? verb_stem.value : "",
-                    sx: {
-                      backgroundColor: "white"
-                    }
+                        }),
+                        value: verb_stem !== undefined ? verb_stem.value : "",
+                        sx: {
+                          backgroundColor: "white"
+                        }
+                      })
+                    ],
+                    fullWidth: true
+                  }),
+                  JsxRuntime.jsx("span", {
+                    children: tmp,
+                    className: css.noWrap
                   })
                 ],
-                fullWidth: true
+                sx: {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px"
+                }
               }),
               JsxRuntime.jsxs(Grid, {
                 children: [
@@ -1006,7 +1031,7 @@ function Conjugator_ui(Props) {
                             }
                             
                           }),
-                          value: _indirect_object !== undefined ? person_param_to_option(_indirect_object).value : "",
+                          value: indirect_object !== undefined ? person_param_to_option(indirect_object).value : "",
                           sx: {
                             backgroundColor: "white"
                           }
@@ -1026,7 +1051,12 @@ function Conjugator_ui(Props) {
                   alignItems: "center",
                   marginTop: marginTop
                 }
-              }),
+              })
+            ],
+            size: 6
+          }),
+          JsxRuntime.jsxs(Grid, {
+            children: [
               JsxRuntime.jsxs(Grid, {
                 children: [
                   JsxRuntime.jsx(Grid, {
@@ -1064,7 +1094,7 @@ function Conjugator_ui(Props) {
                           sx: {
                             padding: "8px"
                           },
-                          value: tmp
+                          value: tmp$1
                         })
                       ]
                     }),
@@ -1109,7 +1139,7 @@ function Conjugator_ui(Props) {
                           sx: {
                             padding: "8px"
                           },
-                          value: tmp$1
+                          value: tmp$2
                         })
                       ]
                     }),
@@ -1117,16 +1147,8 @@ function Conjugator_ui(Props) {
                   })
                 ],
                 container: true,
-                spacing: 2,
-                sx: {
-                  marginTop: marginTop
-                }
-              })
-            ],
-            size: 6
-          }),
-          JsxRuntime.jsxs(Grid, {
-            children: [
+                spacing: 2
+              }),
               JsxRuntime.jsxs(Grid, {
                 children: [
                   JsxRuntime.jsx(Grid, {
@@ -1292,17 +1314,11 @@ function Conjugator_ui(Props) {
                 sx: {
                   marginTop: marginTop
                 }
-              }),
-              JsxRuntime.jsx(Box, {
-                children: tmp$2,
-                sx: {
-                  marginTop: marginTop
-                }
               })
             ],
             size: 6
           }),
-          JsxRuntime.jsxs(Grid, {
+          JsxRuntime.jsxs(Container, {
             children: [
               JsxRuntime.jsx("div", {
                 children: error !== undefined ? JsxRuntime.jsx("span", {
@@ -1345,7 +1361,12 @@ function Conjugator_ui(Props) {
                 className: css.buttons
               })
             ],
-            size: 12
+            sx: {
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: marginTop
+            }
           })
         ],
         container: true,

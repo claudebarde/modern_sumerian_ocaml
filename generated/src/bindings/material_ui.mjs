@@ -159,6 +159,12 @@ const Typography = {
   Color: Color$1
 };
 
+const Theme = {};
+
+const ThemeProvider = {};
+
+const CssBaseline = {};
+
 export {
   RootComponent,
   Color,
@@ -213,5 +219,8 @@ export {
   ToggleButtonGroup,
   Toolbar,
   Typography,
+  Theme,
+  ThemeProvider,
+  CssBaseline,
 }
 /* No side effect */

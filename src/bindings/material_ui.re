@@ -1026,3 +1026,29 @@ module Typography = {
     unit
   ) => React.element = "default";
 };
+
+// THEME BINDINGS
+
+module Theme = {
+  type t;
+
+  [@mel.module "@mui/material/styles"]
+  external create: Js.t({..}) => t = "createTheme";
+};
+
+module ThemeProvider = {
+  [@mel.module "@mui/material/styles"] [@react.component]
+  external make: (
+    ~theme: Theme.t,
+    ~children: React.element,
+    unit
+  ) => React.element = "ThemeProvider";
+};
+
+module CssBaseline = {
+  [@mel.module "@mui/material/CssBaseline"] [@react.component]
+  external make: (
+    ~enableColorScheme: bool=?,
+    unit
+  ) => React.element = "default";
+};

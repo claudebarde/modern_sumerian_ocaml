@@ -90,16 +90,6 @@ let make = () => {
                         </ListItemText>
                     </MenuItem>
                     <MenuItem
-                        onClick={_ => navigateFromToolsMenu("/keyboard")}
-                    >
-                        <ListItemIcon>
-                            <TablerReact.IconKeyboard color=Config.colors##botanicalNight />
-                        </ListItemIcon>
-                        <ListItemText>
-                            {"Keyboard" |> React.string}
-                        </ListItemText>
-                    </MenuItem>
-                    <MenuItem
                         onClick={_ => navigateFromToolsMenu("/dictionary")}
                     >
                         <ListItemIcon>
@@ -107,6 +97,16 @@ let make = () => {
                         </ListItemIcon>
                         <ListItemText>
                             {"Dictionary" |> React.string}
+                        </ListItemText>
+                    </MenuItem>
+                    <MenuItem
+                        onClick={_ => navigateFromToolsMenu("/keyboard")}
+                    >
+                        <ListItemIcon>
+                            <TablerReact.IconKeyboard color=Config.colors##botanicalNight />
+                        </ListItemIcon>
+                        <ListItemText>
+                            {"Keyboard" |> React.string}
                         </ListItemText>
                     </MenuItem>
                 </Menu>

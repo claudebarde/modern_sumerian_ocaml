@@ -117,24 +117,6 @@ function Header(Props) {
                 JsxRuntime.jsxs(MenuItem, {
                   children: [
                     JsxRuntime.jsx(ListItemIcon, {
-                      children: JsxRuntime.jsx(IconsReact.IconKeyboard, {
-                        color: Bindings__Config.colors.botanicalNight
-                      })
-                    }),
-                    JsxRuntime.jsx(ListItemText, {
-                      children: "Keyboard"
-                    })
-                  ],
-                  onClick: (function (param) {
-                    Curry._1(setToolsAnchor, (function (param) {
-                      return null;
-                    }));
-                    ReasonReactRouter.push("/keyboard");
-                  })
-                }),
-                JsxRuntime.jsxs(MenuItem, {
-                  children: [
-                    JsxRuntime.jsx(ListItemIcon, {
                       children: JsxRuntime.jsx(IconsReact.IconBook2, {
                         color: Bindings__Config.colors.botanicalNight
                       })
@@ -148,6 +130,24 @@ function Header(Props) {
                       return null;
                     }));
                     ReasonReactRouter.push("/dictionary");
+                  })
+                }),
+                JsxRuntime.jsxs(MenuItem, {
+                  children: [
+                    JsxRuntime.jsx(ListItemIcon, {
+                      children: JsxRuntime.jsx(IconsReact.IconKeyboard, {
+                        color: Bindings__Config.colors.botanicalNight
+                      })
+                    }),
+                    JsxRuntime.jsx(ListItemText, {
+                      children: "Keyboard"
+                    })
+                  ],
+                  onClick: (function (param) {
+                    Curry._1(setToolsAnchor, (function (param) {
+                      return null;
+                    }));
+                    ReasonReactRouter.push("/keyboard");
                   })
                 })
               ],

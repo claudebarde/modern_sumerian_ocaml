@@ -14,7 +14,7 @@ type prefix =
   
 type modal_prefix = HA | NAN | NU;
 
-type verb_data = { label: string, value: string, imperfective: Conjugator.ipfv_stem };
+type verb_data = { label: string, value: string, imperfective: Conjugator.ipfv_stem, transitive: bool };
 
 module Utils = {
     open Conjugator;
@@ -58,19 +58,19 @@ let make = () => {
     let (initial_person_prefix, set_initial_person_prefix) = React.useState(_ => Js.Nullable.null);
     let (subject, set_subject) = React.useState(_ => None);
     let (object_, set_object) = React.useState(_ => None);
-    let (_indirect_object, set_indirect_object) = React.useState(_ => None);
+    let (indirect_object, set_indirect_object) = React.useState(_ => None);
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
 
     let marginTop = "20px";
 
     let available_verbs: array(verb_data) = [|
-        {label: "ak (to do)", value: {js|ʔak|js}, imperfective: Other({js|ʔak|js}) },
-        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}, imperfective: Other({js|ĝen|js})},
-        {label: "gu (to eat)", value: "gu", imperfective: Other("gu")},
-        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}, imperfective: Other("na-na")},
-        {label: "sar (to write)", value: "sar", imperfective: Other("sar")},
-        {label: {js|šum (to give)|js}, value: {js|šum|js}, imperfective: Other({js|šum|js})},
-        {label: "tuku (to have)", value: "tuku", imperfective: Other("tuku")},
+        {label: "ak (to do)", value: {js|ʔak|js}, imperfective: Other({js|ʔak|js}), transitive: true},
+        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}, imperfective: Other({js|ĝen|js}), transitive: false},
+        {label: "gu (to eat)", value: "gu", imperfective: Other("gu"), transitive: true},
+        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}, imperfective: Other("na-na"), transitive: true},
+        {label: "sar (to write)", value: "sar", imperfective: Other("sar"), transitive: true},
+        {label: {js|šum (to give)|js}, value: {js|šum|js}, imperfective: Other({js|šum|js}), transitive: true},
+        {label: "tuku (to have)", value: "tuku", imperfective: Other("tuku"), transitive: true},
     |];
 
     let pronoun_options: array(Utils.select_option) = [|
@@ -391,42 +391,66 @@ let make = () => {
         <h1>{"Sumerian Verb Conjugator"|>React.string}</h1>
         <Grid container=true spacing=`Number(6) sx={{"marginTop": marginTop}}>
             <Grid size=`Number(6)>
-                <FormControl fullWidth=true>
-                    <InputLabel id="verb-stem-label">
-                        {"Select a verb stem" |> React.string}
-                    </InputLabel>
-                    <Select
-                        label={"Select a verb stem" |> React.string}
-                        labelId="verb-stem-label"
-                        value={
-                            switch verb_stem {
-                            | Some(verb) =>
-                                Select.Value.fromString(verb.value)
-                            | None => Select.Value.fromString("")
+                <Box sx={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
+                    <FormControl fullWidth=true>
+                        <InputLabel id="verb-stem-label">
+                            {"Select a verb stem" |> React.string}
+                        </InputLabel>
+                        <Select
+                            label={"Select a verb stem" |> React.string}
+                            labelId="verb-stem-label"
+                            value={
+                                switch verb_stem {
+                                | Some(verb) =>
+                                    Select.Value.fromString(verb.value)
+                                | None => Select.Value.fromString("")
+                                }
+                            }
+                            onChange={(event, _) => {
+                                let selected_value = event##target##value;
+                                let selected_verb =
+                                    available_verbs
+                                    |> Array.find_opt((verb: verb_data) =>
+                                        verb.value === selected_value
+                                    );
+                                set_new_verb_stem(selected_verb);
+                                switch selected_verb {
+                                | Some(verb) => {
+                                    set_is_transitive(_ => Some(verb.transitive));
+                                }
+                                | None => ()
+                                };
+                            }}
+                            sx={{"backgroundColor": "white"}}
+                        >
+                            {
+                                available_verbs
+                                |> Array.map((verb: verb_data) => {
+                                    <MenuItem value=verb.value key=verb.value>
+                                        {verb.label |> React.string}
+                                    </MenuItem>
+                                })
+                                |> React.array
+                            }
+                        </Select>
+                    </FormControl>
+                    <span className=css##noWrap>
+                        {
+                            switch (verb_stem) {
+                                | Some(stem) => {
+                                    switch (Web_utils.EpsdDict.get_epsd_link(stem.value)) {
+                                    | Some(link) => 
+                                        <a href={link} target="_blank" className=css##epsdLink>
+                                            {"EPSD Link" |> React.string}
+                                        </a>
+                                    | None => React.null
+                                }
+                                }
+                                | _ => React.null
                             }
                         }
-                        onChange={(event, _) => {
-                            let selected_value = event##target##value;
-                            let selected_verb =
-                                available_verbs
-                                |> Array.find_opt((verb: verb_data) =>
-                                    verb.value === selected_value
-                                );
-                            set_new_verb_stem(selected_verb);
-                        }}
-                        sx={{"backgroundColor": "white"}}
-                    >
-                        {
-                            available_verbs
-                            |> Array.map((verb: verb_data) => {
-                                <MenuItem value=verb.value key=verb.value>
-                                    {verb.label |> React.string}
-                                </MenuItem>
-                            })
-                            |> React.array
-                        }
-                    </Select>
-                </FormControl>
+                    </span>
+                </Box>
                 <Grid container=true spacing=`Number(2) sx={{"marginTop": marginTop}}>
                     <Grid size=`Number(6)>
                         <InputLabel id="transitivity-label">
@@ -672,7 +696,7 @@ let make = () => {
                                 label={"Indirect Object" |> React.string}
                                 labelId="indirect-object-label"
                                 value={
-                                    switch _indirect_object {
+                                    switch indirect_object {
                                     | Some(pp) =>
                                         pp
                                         |> Utils.person_param_to_option
@@ -710,7 +734,10 @@ let make = () => {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Grid container=true spacing=`Number(2)  sx={{"marginTop": marginTop}}>
+                
+            </Grid>
+            <Grid size=`Number(6)>
+                <Grid container=true spacing=`Number(2)>
                     <Grid size=`Number(6)>
                         <FormControl>
                             <FormLabel id="preformative-label">
@@ -822,8 +849,6 @@ let make = () => {
                         </FormControl>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid size=`Number(6)>
                 <Grid container=true spacing=`Number(0)>
                     <Grid size=`Number(8)>
                         <FormControl fullWidth=true>
@@ -1030,27 +1055,8 @@ let make = () => {
                         </FormGroup>
                     </FormControl>
                 </Box>
-                <Box sx={{"marginTop": marginTop}}>
-                    {
-                        switch (verb_stem) {
-                            | Some(stem) => {
-                                switch (Web_utils.EpsdDict.get_epsd_link(stem.value)) {
-                                | Some(link) => <div>
-                                    <p>
-                                        <a href={link} target="_blank" className=css##epsdLink>
-                                            {"EPSD Link" |> React.string}
-                                        </a>
-                                    </p>
-                                </div>
-                                | None => React.null
-                            }
-                            }
-                            | _ => React.null
-                        }
-                    }
-                </Box>
             </Grid>
-            <Grid size=`Number(12)>
+            <Container sx={{"display": "flex", "flexDirection": "column", "alignItems": "center", "marginTop": marginTop}}>
                 <div className=css##result>
                     {
                         switch ((verb_form), error) {
@@ -1093,19 +1099,8 @@ let make = () => {
                         {"Report an error" |> React.string}
                     </button>
                 </div>
-            </Grid>
+            </Container>
         </Grid>
-        // <div className=css##conjugator>
-        //     <div className=css##selectors>
-        //         <div className=css##firstColumn>
-                    
-        //         </div>
-        //         <div className=css##secondColumn>
-
-        //         </div>
-        //     </div>
-            
-        // </div>
         <Modal is_open={is_modal_open} close={() => set_is_modal_open(_ => false)} >
             <Verb_error_form verb={verb_form} />
         </Modal>

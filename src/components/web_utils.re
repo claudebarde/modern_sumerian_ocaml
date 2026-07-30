@@ -18,6 +18,14 @@ let search_cuneiforms = (words: array(string)): array((string, option(list(strin
         let formattedWord = 
             word
             |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ʔ|js}), ~replacement="")
+            |> Js.String.replaceByRe(
+                ~regexp=Js.Re.fromStringWithFlags({js|š|js}, ~flags="g"),
+                ~replacement="sh",
+            )
+            |> Js.String.replaceByRe(
+                ~regexp=Js.Re.fromStringWithFlags({js|ḫ|js}, ~flags="g"),
+                ~replacement="h",
+            )
             |> Js.String.toUpperCase;
         switch (Array.find_opt(item => item.name == formattedWord, cuneiformData.codepoints)) {
             | Some(codePointData) => (word, Some([codePointData.codepoint]))
@@ -187,7 +195,7 @@ module BuildResults = {
                     </span>
                 </div>,
                 <table key="verbAnalysis">
-                    <tbody>
+                    <thead>
                         <tr>
                             {analysis |> Conjugator__Verb_analysis.output |> Array.map(
                                 ((output_type, _)) => {
@@ -210,6 +218,8 @@ module BuildResults = {
                                 },
                             )|> React.array}
                         </tr>
+                    </thead>
+                    <tbody>
                         <tr>
                             {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
                                 (i, (_, value)) => {

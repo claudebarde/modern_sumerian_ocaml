@@ -16,7 +16,7 @@ type modal_prefix = HA | NAN | NU;
 
 type verb_data = { label: string, value: string, imperfective: Conjugator.ipfv_stem };
 
-module ReactSelect = {
+module Utils = {
     open Conjugator;
 
     type select_option = {
@@ -36,20 +36,14 @@ module ReactSelect = {
         | PersonParam.Third_plur_non_human => {label: "They (non-human)", value: "third-plur-nonhuman"}
         }
     };
-
-    [@mel.module "react-select"] [@react.component]
-    external make: (
-        ~options: array<select_option>,
-        ~value: Js.Nullable.t<select_option>,
-        ~onChange: select_option => unit,
-        ~isDisabled: bool
-    ) => React.element = "default";
 };
 
 [@react.component]
 let make = () => {
+    open Bindings.Mui;
+
     let (error, set_error) = React.useState(_ => None);
-    let (verb_stem, set_verb_stem) = React.useState(_ => Js.Nullable.null);
+    let (verb_stem, set_verb_stem) = React.useState(_ => None);
     let (verb_form, set_verb_form) = React.useState(_ => None);
     let (is_perfective, set_is_perfective) = React.useState(_ => None);
     let (is_transitive, set_is_transitive) = React.useState(_ => None);
@@ -62,10 +56,12 @@ let make = () => {
     let (locative, set_locative) = React.useState(_ => None);
     let (middle_prefix, set_middle_prefix) = React.useState(_ => false);
     let (initial_person_prefix, set_initial_person_prefix) = React.useState(_ => Js.Nullable.null);
-    let (subject, set_subject) = React.useState(_ => Js.Nullable.null);
-    let (object_, set_object) = React.useState(_ => Js.Nullable.null);
-    let (indirect_object, set_indirect_object) = React.useState(_ => Js.Nullable.null);
+    let (subject, set_subject) = React.useState(_ => None);
+    let (object_, set_object) = React.useState(_ => None);
+    let (_indirect_object, set_indirect_object) = React.useState(_ => None);
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
+
+    let marginTop = "20px";
 
     let available_verbs: array(verb_data) = [|
         {label: "ak (to do)", value: {js|ʔak|js}, imperfective: Other({js|ʔak|js}) },
@@ -77,14 +73,7 @@ let make = () => {
         {label: "tuku (to have)", value: "tuku", imperfective: Other("tuku")},
     |];
 
-    let verb_options: array(ReactSelect.select_option) = Array.map(
-        (verb: verb_data): ReactSelect.select_option => {
-            {label: verb.label, value: verb.value}
-        },
-        available_verbs
-    );
-
-    let pronoun_options: array(ReactSelect.select_option) = [|
+    let pronoun_options: array(Utils.select_option) = [|
         {label: "I", value: "first-sing"},
         {label: "You (sing)", value: "second-sing"},
         {label: "He/She", value: "third-sing-human"},
@@ -95,13 +84,7 @@ let make = () => {
         {label: "They (non-human)", value: "third-plur-nonhuman"},
     |];
 
-    let set_new_verb_stem = (value: ReactSelect.select_option): unit => {
-        set_verb_stem(_ => Js.Nullable.return(value));
-        set_verb_form(_ => Some(Conjugator.create(value.value)));
-        set_error(_ => None);
-    };
-
-    let change_pronoun = (value: ReactSelect.select_option, pronoun: string) => {
+    let change_pronoun = (value: Utils.select_option, pronoun: string) => {
         if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
             set_error(_ => Some("Aspect and transitivity must be selected"))
         } else {
@@ -123,7 +106,7 @@ let make = () => {
                         switch (prev_verb_form) {
                             | Some(verb) => {
                                 set_error(_ => None)
-                                set_subject(_ => person_param |> Js.Nullable.return)
+                                set_subject(_ => Some(person_param))
                                 try (
                                     Conjugator.set_subject(verb, person_param)
                                     ->Result.get_ok
@@ -144,7 +127,7 @@ let make = () => {
                         switch prev_verb_form {
                             | Some(verb) => {
                                 set_error(_ => None)
-                                set_object(_ => person_param |> Js.Nullable.return)
+                                set_object(_ => Some(person_param))
                                 Some(Conjugator.set_object(verb, person_param))
                             }
                             | None => None
@@ -156,7 +139,7 @@ let make = () => {
                         switch prev_verb_form {
                             | Some(verb) => {
                                 set_error(_ => None)
-                                set_indirect_object(_ => person_param |> Js.Nullable.return)
+                                set_indirect_object(_ => Some(person_param))
                                 Some(Conjugator.set_indirect_object(verb, person_param))
                             }
                             | None => None
@@ -198,7 +181,7 @@ let make = () => {
     };
 
     let change_prefix = (value: prefix, checked: bool) => {
-        if (Js.Nullable.isNullable(verb_stem)) {
+        if (Option.is_none(verb_stem)) {
             set_error(_ => Some("No verb stem selected"))
         } else if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
             set_error(_ => Some("Aspect and transitivity must be selected"))
@@ -373,701 +356,683 @@ let make = () => {
         }
     };
 
-    let reset_modal = () => {
-        set_error(_ => None)
+    let reset = () => {
+        set_verb_stem(_ => None)
+        set_verb_form(_ => None)
+        set_is_perfective(_ => None)
+        set_is_transitive(_ => None)
+        set_preformative(_ => None)
         set_modal_prefix(_ => None)
-        set_verb_form(prev_verb_form => {
-            switch prev_verb_form {
-                | Some(verb) => Some(Conjugator.reset_modal(verb))
-                | None => None
-            }
-        })
+        set_ventive(_ => false)
+        set_comitative(_ => false)
+        set_ablative(_ => false)
+        set_terminative(_ => false)
+        set_middle_prefix(_ => false)
+        set_initial_person_prefix(_ => Js.Nullable.null)
+        set_subject(_ => None)
+        set_object(_ => None)
+        set_indirect_object(_ => None)
+        set_error(_ => None)
     };
 
-    <>
-        <div className=css##conjugator>
-            <div className=css##selectors>
-                <div className=css##firstColumn>
-                    <div>
-                        <span>
-                            {"Verb Stem" |> React.string}
-                        </span>
-                        <ReactSelect 
-                            options={verb_options}
-                            value={verb_stem} 
-                            onChange={set_new_verb_stem} 
-                            isDisabled={false}
-                        />
-                    </div>
-                    <div>
-                        <p>
-                            {"Aspect" |> React.string}
-                        </p>
-                        <div className=css##withLabels>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="perfective" 
-                                    value="is_perfective" 
-                                    checked={switch is_perfective {
-                                        | Some(true) => true
-                                        | Some(false) => false
-                                        | None => false
-                                    }}
-                                    onChange={_ => {
-                                        set_verb_form(prev_verb_form => {
-                                            switch prev_verb_form {
-                                                | Some(verb) => {
-                                                    set_error(_ => None)
-                                                    set_is_perfective(_ => Some(true))
-                                                    // finds the perfective stem
-                                                    let stem = switch (verb_stem |> Js.Nullable.toOption,) {
-                                                        | Some(verb_data) => verb_data.value
-                                                        | None => ""
-                                                    }
+    let set_new_verb_stem = (value: option(verb_data)): unit => {
+        reset();
+        set_verb_stem(_ => value);
+        switch value {
+        | Some(verb_data) => {
+            set_verb_form(_ => Some(Conjugator.create(verb_data.value)));
+            set_error(_ => None);
+        }
+        | None => ()
+        };
+    };
 
-                                                    switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
-                                                        | (Some(subj), Some(obj)) => {
-                                                            try (verb
-                                                            ->Conjugator.set_stem(stem)
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_perfective
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        }
-                                                        | (Some(subj), _) => {
-                                                            try (verb
-                                                            ->Conjugator.set_stem(stem)
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_perfective
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        }
-                                                        | (_, Some(obj)) => 
-                                                            verb
-                                                            ->Conjugator.set_stem(stem)
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_perfective
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some
-                                                        | _ => verb
-                                                            ->Conjugator.set_stem(stem)
-                                                            ->Conjugator.is_perfective
-                                                            ->Some
-                                                    }
-                                                }
-                                                | None => None
-                                            }
-                                        })
-                                    }} 
-                                />
-                                {"Perfective" |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="perfective" 
-                                    value="isImperfective"
-                                    checked={switch is_perfective {
-                                        | Some(true) => false
-                                        | Some(false) => true
-                                        | None => false
-                                    }}
-                                    onChange={_ => {
-                                        set_verb_form(prev_verb_form => {
-                                            switch prev_verb_form {
-                                                | Some(verb) => {
-                                                    set_error(_ => None)
-                                                    set_is_perfective(_ => Some(false))
-                                                    // finds the imperfective stem
-                                                    let ipfv_stem = switch (Array.find_opt(
-                                                        av_verb => av_verb.value == verb.stem, 
-                                                        available_verbs
-                                                    )) {
-                                                        | Some(verb_data) => Some(verb_data.imperfective)
-                                                        | None => None
-                                                    }
-
-                                                    switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
-                                                        | (Some(subj), Some(obj)) => {
-                                                            try (verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_imperfective(ipfv_stem)
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        }
-                                                        | (Some(subj), _) => 
-                                                            try (verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_imperfective(ipfv_stem)
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        | (_, Some(obj)) => 
-                                                            verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_imperfective(ipfv_stem)
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some
-                                                        | _ => Some(Conjugator.is_imperfective(verb, ipfv_stem))
-                                                    }
-                                                }
-                                                | None => None
-                                            }
-                                        })
-                                    }} 
-                                />
-                                {"Imperfective" |> React.string}
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <p>
+    <Container className=css##mainContainer>
+        <h1>{"Sumerian Verb Conjugator"|>React.string}</h1>
+        <Grid container=true spacing=`Number(6) sx={{"marginTop": marginTop}}>
+            <Grid size=`Number(6)>
+                <FormControl fullWidth=true>
+                    <InputLabel id="verb-stem-label">
+                        {"Select a verb stem" |> React.string}
+                    </InputLabel>
+                    <Select
+                        label={"Select a verb stem" |> React.string}
+                        labelId="verb-stem-label"
+                        value={
+                            switch verb_stem {
+                            | Some(verb) =>
+                                Select.Value.fromString(verb.value)
+                            | None => Select.Value.fromString("")
+                            }
+                        }
+                        onChange={(event, _) => {
+                            let selected_value = event##target##value;
+                            let selected_verb =
+                                available_verbs
+                                |> Array.find_opt((verb: verb_data) =>
+                                    verb.value === selected_value
+                                );
+                            set_new_verb_stem(selected_verb);
+                        }}
+                        sx={{"backgroundColor": "white"}}
+                    >
+                        {
+                            available_verbs
+                            |> Array.map((verb: verb_data) => {
+                                <MenuItem value=verb.value key=verb.value>
+                                    {verb.label |> React.string}
+                                </MenuItem>
+                            })
+                            |> React.array
+                        }
+                    </Select>
+                </FormControl>
+                <Grid container=true spacing=`Number(2) sx={{"marginTop": marginTop}}>
+                    <Grid size=`Number(6)>
+                        <InputLabel id="transitivity-label">
                             {"Transitivity" |> React.string}
-                        </p>
-                        <div className=css##withLabels>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="transitivity" 
-                                    value="is_transitive" 
-                                    checked={switch is_transitive {
-                                        | Some(true) => true
-                                        | Some(false) => false
-                                        | None => false
-                                    }}
-                                    onChange={_ => {
-                                        set_verb_form(prev_verb_form => {
-                                            switch prev_verb_form {
-                                                | Some(verb) => {
-                                                    set_error(_ => None)
-                                                    set_is_transitive(_ => Some(true))
-                                                    switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
-                                                        | (Some(subj), Some(obj)) =>
-                                                            try (verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_transitive
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        | (Some(subj), _) => 
-                                                            try (verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_transitive
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        | (_, Some(obj)) => 
-                                                            verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_transitive
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some
-                                                        | _ => Some(Conjugator.is_transitive(verb))
+                        </InputLabel>
+                        <ToggleButtonGroup
+                            value=is_transitive
+                            exclusive=true
+                            onChange={(_event, checked) => {
+                                set_verb_form(prev_verb_form => {
+                                    switch prev_verb_form {
+                                    | Some(verb) => {
+                                        set_error(_ => None)
+                                        set_is_transitive(_ => checked)
+                                        switch (subject, object_) {
+                                            | (Some(subj), Some(obj)) =>
+                                                try (verb
+                                                ->Conjugator.reset_subject_object
+                                                ->Conjugator.is_transitive
+                                                ->Conjugator.set_subject(subj)
+                                                ->Result.get_ok
+                                                ->Conjugator.set_object(obj)
+                                                ->Some) {
+                                                    | Conjugator__Utils.Todo(err) => {
+                                                        set_error(_ => Some(err))
+                                                        prev_verb_form
                                                     }
                                                 }
-                                                | None => None
-                                            }
-                                        })
-                                    }} 
-                                />
+                                            | (Some(subj), _) => 
+                                                try (verb
+                                                ->Conjugator.reset_subject_object
+                                                ->Conjugator.is_transitive
+                                                ->Conjugator.set_subject(subj)
+                                                ->Result.get_ok
+                                                ->Some) {
+                                                    | Conjugator__Utils.Todo(err) => {
+                                                        set_error(_ => Some(err))
+                                                        prev_verb_form
+                                                    }
+                                                }
+                                            | (_, Some(obj)) => 
+                                                verb
+                                                ->Conjugator.reset_subject_object
+                                                ->Conjugator.is_transitive
+                                                ->Conjugator.set_object(obj)
+                                                ->Some
+                                            | _ => Some(Conjugator.is_transitive(verb))
+                                        }
+                                    }
+                                    | None => None
+                                    }
+                                })
+                            }} 
+                        >
+                            <ToggleButton value=Some(true) size=`small>
                                 {"Transitive" |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="transitivity" 
-                                    value="is_intransitive" 
-                                    checked={switch is_transitive {
-                                        | Some(true) => false
-                                        | Some(false) => true
-                                        | None => false
-                                    }}
-                                    onChange={_ => {
-                                        set_verb_form(prev_verb_form => {
-                                            switch prev_verb_form {
-                                                | Some(verb) => {
-                                                    set_error(_ => None)
-                                                    set_is_transitive(_ => Some(false))
-                                                    switch (subject |> Js.Nullable.toOption, object_ |> Js.Nullable.toOption) {
-                                                        | (Some(subj), Some(obj)) =>
-                                                            try (verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_intransitive
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        | (Some(subj), _) => 
-                                                            try (verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_intransitive
-                                                            ->Conjugator.set_subject(subj)
-                                                            ->Result.get_ok
-                                                            ->Some) {
-                                                                | Conjugator__Utils.Todo(err) => {
-                                                                    set_error(_ => Some(err))
-                                                                    prev_verb_form
-                                                                }
-                                                            }
-                                                        | (_, Some(obj)) => 
-                                                            verb
-                                                            ->Conjugator.reset_subject_object
-                                                            ->Conjugator.is_intransitive
-                                                            ->Conjugator.set_object(obj)
-                                                            ->Some
-                                                        | _ => Some(Conjugator.is_intransitive(verb))
-                                                    }
-                                                }
-                                                | None => None
-                                            }
-                                        })
-                                    }} 
-                                />
+                            </ToggleButton>
+                            <ToggleButton value=Some(false) size=`small>
                                 {"Intransitive" |> React.string}
-                            </label>
-                        </div>
-                    </div>
-                    <div className=css##selectColumn>
-                        <div className=css##withLabelsColumn>
-                            <span>
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Grid>
+                    <Grid size=`Number(6)>
+                        <InputLabel id="aspect-label">
+                            {"Aspect" |> React.string}
+                        </InputLabel>
+                        <ToggleButtonGroup
+                            value=is_perfective
+                            exclusive=true
+                            onChange={(_event, value) => {
+                                set_verb_form(prev_verb_form => {
+                                    switch prev_verb_form {
+                                    | Some(verb) => {
+                                        set_error(_ => None)
+                                        set_is_perfective(_ => value)
+                                        // finds the perfective stem
+                                        let stem = switch (verb_stem,) {
+                                            | Some(verb_data) => verb_data.value
+                                            | None => ""
+                                        }
+
+                                        switch (subject, object_) {
+                                            | (Some(subj), Some(obj)) => {
+                                                try (verb
+                                                ->Conjugator.set_stem(stem)
+                                                ->Conjugator.reset_subject_object
+                                                ->Conjugator.is_perfective
+                                                ->Conjugator.set_subject(subj)
+                                                ->Result.get_ok
+                                                ->Conjugator.set_object(obj)
+                                                ->Some) {
+                                                    | Conjugator__Utils.Todo(err) => {
+                                                        set_error(_ => Some(err))
+                                                        prev_verb_form
+                                                    }
+                                                }
+                                            }
+                                            | (Some(subj), _) => {
+                                                try (verb
+                                                ->Conjugator.set_stem(stem)
+                                                ->Conjugator.reset_subject_object
+                                                ->Conjugator.is_perfective
+                                                ->Conjugator.set_subject(subj)
+                                                ->Result.get_ok
+                                                ->Some) {
+                                                    | Conjugator__Utils.Todo(err) => {
+                                                        set_error(_ => Some(err))
+                                                        prev_verb_form
+                                                    }
+                                                }
+                                            }
+                                            | (_, Some(obj)) => 
+                                                verb
+                                                ->Conjugator.set_stem(stem)
+                                                ->Conjugator.reset_subject_object
+                                                ->Conjugator.is_perfective
+                                                ->Conjugator.set_object(obj)
+                                                ->Some
+                                            | _ => verb
+                                                ->Conjugator.set_stem(stem)
+                                                ->Conjugator.is_perfective
+                                                ->Some
+                                        }
+                                    }
+                                    | None => None
+                                    }
+                                })
+                            }}
+                        >
+                            <ToggleButton value=Some(true) size=`small>
+                                {"Perfective" |> React.string}
+                            </ToggleButton>
+                            <ToggleButton value=Some(false) size=`small>
+                                {"Imperfective" |> React.string}
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Grid>
+                </Grid>
+                <Grid 
+                    container=true 
+                    spacing=`Number(2) 
+                    direction=`row
+                    sx={{"width": "100%", "justifyContent": "space-between", "alignItems": "center", "marginTop": marginTop}}
+                >
+                    <Grid size=`Number(4)>
+                        <FormControl fullWidth=true>
+                            <InputLabel id="subject-label">
                                 {"Subject" |> React.string}
-                            </span>
-                            <ReactSelect 
-                                options={pronoun_options} 
+                            </InputLabel>
+                            <Select
+                                label={"Subject" |> React.string}
+                                labelId="subject-label"
                                 value={
-                                    switch (subject |> Js.Nullable.toOption) {
-                                        | Some(pp) => ReactSelect.person_param_to_option(pp) |> Js.Nullable.return
-                                        | _ => Js.Nullable.null
+                                    switch subject {
+                                    | Some(pp) =>
+                                        pp
+                                        |> Utils.person_param_to_option
+                                        |> option =>
+                                            Select.Value.fromString(option.value)
+                                    | None => Select.Value.fromString("")
                                     }
                                 }
-                                onChange={change_pronoun(_, "subject")}
-                                isDisabled={
-                                    is_transitive |> Option.is_none 
-                                    || is_perfective |> Option.is_none 
-                                    || Js.Nullable.isNullable(verb_stem)    
-                                } 
-                            />
-                        </div>
-                        <div className=css##withLabelsColumn>
-                            <span>
+                                onChange={(event, _) => {
+                                    let selected_value = event##target##value;
+                                    switch (
+                                        pronoun_options
+                                        |> Array.find_opt(
+                                            (option: Utils.select_option) =>
+                                                option.value === selected_value
+                                        )
+                                    ) {
+                                    | Some(option) =>
+                                        change_pronoun(option, "subject")
+                                    | None => ()
+                                    };
+                                }}
+                                sx={{"backgroundColor": "white"}}
+                            >
+                                {
+                                    pronoun_options
+                                    |> Array.map((option: Utils.select_option) => {
+                                        <MenuItem value=option.value key=option.value>
+                                            {option.label |> React.string}
+                                        </MenuItem>
+                                    })
+                                    |> React.array
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid size=`Number(4)>
+                        <FormControl fullWidth=true>
+                            <InputLabel id="object-label">
                                 {"Object" |> React.string}
-                            </span>
-                            <ReactSelect 
-                                options={pronoun_options} 
+                            </InputLabel>
+                            <Select
+                                label={"Object" |> React.string}
+                                labelId="object-label"
                                 value={
-                                    switch (object_ |> Js.Nullable.toOption) {
-                                        | Some(pp) => ReactSelect.person_param_to_option(pp) |> Js.Nullable.return
-                                        | _ => Js.Nullable.null
+                                    switch object_ {
+                                    | Some(pp) =>
+                                        pp
+                                        |> Utils.person_param_to_option
+                                        |> option =>
+                                            Select.Value.fromString(option.value)
+                                    | None => Select.Value.fromString("")
                                     }
                                 }
-                                onChange={change_pronoun(_, "object")}
-                                isDisabled={
-                                    is_transitive |> Option.is_none 
-                                    || is_perfective |> Option.is_none 
-                                    || Js.Nullable.isNullable(verb_stem)    
-                                } 
-                            />
-                        </div>
-                    </div>
-                    <div className=css##selectColumn>
-                        <div className=css##withLabelsColumn>
-                            <span>
-                                {"Preformative" |> React.string}
-                            </span>
-                            <div className=css##withLabels style={ReactDOM.Style.make(~padding="8px", ())}>
-                                <label>
-                                    <input 
-                                        type_="radio" 
-                                        name="preformative" 
-                                        value="preformative-a" 
-                                        checked={switch preformative {
-                                            | Some(Conjugator.Preformative.A) => true
-                                            | _ => false
-                                        }}
-                                        disabled={
-                                            is_transitive |> Option.is_none 
-                                            || is_perfective |> Option.is_none
-                                            || Js.Nullable.isNullable(verb_stem)    
-                                        }
-                                        onChange={change_preformative}
-                                        onClick={_ => {
-                                            set_verb_form(prev_verb_form => {
-                                                switch prev_verb_form {
-                                                    | Some(verb) when preformative == Some(Conjugator.Preformative.A) => {
-                                                        set_error(_ => None)
-                                                        set_preformative(_ => None)
-                                                        Some(Conjugator.reset_preformative(verb))
-                                                    }
-                                                    | _ => prev_verb_form
-                                                }
-                                            })
-                                        }}
-                                    />
-                                    {"A" |> React.string}
-                                </label>
-                                <label>
-                                    <input 
-                                        type_="radio" 
-                                        name="preformative" 
-                                        value="preformative-i" 
-                                        checked={switch preformative {
-                                            | Some(Conjugator.Preformative.I) => true
-                                            | _ => false
-                                        }}
-                                        disabled={
-                                            is_transitive |> Option.is_none 
-                                            || is_perfective |> Option.is_none
-                                            || Js.Nullable.isNullable(verb_stem)    
-                                        }
-                                        onChange={change_preformative}
-                                        onClick={_ => {
-                                            set_verb_form(prev_verb_form => {
-                                                switch prev_verb_form {
-                                                    | Some(verb) when preformative == Some(Conjugator.Preformative.I) => {
-                                                        set_error(_ => None)
-                                                        set_preformative(_ => None)
-                                                        Some(Conjugator.reset_preformative(verb))
-                                                    }
-                                                    | _ => prev_verb_form
-                                                }
-                                            })
-                                        }}
-                                    />
-                                    {"I" |> React.string}
-                                </label>
-                                <label>
-                                    <input 
-                                        type_="radio" 
-                                        name="preformative" 
-                                        value="preformative-u" 
-                                        checked={switch preformative {
-                                            | Some(Conjugator.Preformative.U) => true
-                                            | _ => false
-                                        }}
-                                        disabled={
-                                            is_transitive |> Option.is_none 
-                                            || is_perfective |> Option.is_none
-                                            || Js.Nullable.isNullable(verb_stem)    
-                                        }
-                                        onChange={change_preformative}
-                                        onClick={_ => {
-                                            set_verb_form(prev_verb_form => {
-                                                switch prev_verb_form {
-                                                    | Some(verb) when preformative == Some(Conjugator.Preformative.U) => {
-                                                        set_error(_ => None)
-                                                        set_preformative(_ => None)
-                                                        Some(Conjugator.reset_preformative(verb))
-                                                    }
-                                                    | _ => prev_verb_form
-                                                }
-                                            })
-                                        }}
-                                    />
-                                    {"U" |> React.string}
-                                </label>
-                            </div>
-                        </div>
-                        <div className=css##withLabelsColumn>
-                            <span>
+                                onChange={(event, _) => {
+                                    let selected_value = event##target##value;
+                                    switch (
+                                        pronoun_options
+                                        |> Array.find_opt(
+                                            (option: Utils.select_option) =>
+                                                option.value === selected_value
+                                        )
+                                    ) {
+                                    | Some(option) =>
+                                        change_pronoun(option, "object")
+                                    | None => ()
+                                    };
+                                }}
+                                sx={{"backgroundColor": "white"}}
+                            >
+                                {
+                                    pronoun_options
+                                    |> Array.map((option: Utils.select_option) => {
+                                        <MenuItem value=option.value key=option.value>
+                                            {option.label |> React.string}
+                                        </MenuItem>
+                                    })
+                                    |> React.array
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid size=`Number(4)>
+                        <FormControl fullWidth=true>
+                            <InputLabel id="indirect-object-label">
                                 {"Indirect Object" |> React.string}
-                            </span>
-                            <ReactSelect 
-                                options={pronoun_options}
+                            </InputLabel>
+                            <Select
+                                label={"Indirect Object" |> React.string}
+                                labelId="indirect-object-label"
                                 value={
-                                    switch (indirect_object |> Js.Nullable.toOption) {
-                                        | Some(pp) => ReactSelect.person_param_to_option(pp) |> Js.Nullable.return
-                                        | _ => Js.Nullable.null
+                                    switch _indirect_object {
+                                    | Some(pp) =>
+                                        pp
+                                        |> Utils.person_param_to_option
+                                        |> option =>
+                                            Select.Value.fromString(option.value)
+                                    | None => Select.Value.fromString("")
                                     }
                                 }
-                                onChange={change_pronoun(_, "indirect-object")}
-                                isDisabled={
-                                    is_transitive |> Option.is_none  
-                                    || is_perfective |> Option.is_none 
-                                    || Js.Nullable.isNullable(verb_stem)    
-                                } 
+                                onChange={(event, _) => {
+                                    let selected_value = event##target##value;
+                                    switch (
+                                        pronoun_options
+                                        |> Array.find_opt(
+                                            (option: Utils.select_option) =>
+                                                option.value === selected_value
+                                        )
+                                    ) {
+                                    | Some(option) =>
+                                        change_pronoun(option, "indirect-object")
+                                    | None => ()
+                                    };
+                                }}
+                                sx={{"backgroundColor": "white"}}
+                            >
+                                {
+                                    pronoun_options
+                                    |> Array.map((option: Utils.select_option) => {
+                                        <MenuItem value=option.value key=option.value>
+                                            {option.label |> React.string}
+                                        </MenuItem>
+                                    })
+                                    |> React.array
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Grid container=true spacing=`Number(2)  sx={{"marginTop": marginTop}}>
+                    <Grid size=`Number(6)>
+                        <FormControl>
+                            <FormLabel id="preformative-label">
+                                {"Preformative" |> React.string}
+                            </FormLabel>
+                            <RadioGroup
+                                row=true
+                                ariaLabelledby="preformative-label"
+                                name="preformative"
+                                value={
+                                    switch preformative {
+                                    | Some(Conjugator.Preformative.A) => "preformative-a"
+                                    | Some(Conjugator.Preformative.I) => "preformative-i"
+                                    | Some(Conjugator.Preformative.U) => "preformative-u"
+                                    | None => ""
+                                    }
+                                }
+                                onChange={change_preformative}
+                                sx={{"padding": "8px"}}
+                            >
+                                <FormControlLabel
+                                    value="preformative-a"
+                                    control={<Radio />}
+                                    label={"A" |> React.string}
+                                    disabled={
+                                        is_transitive |> Option.is_none 
+                                        || is_perfective |> Option.is_none
+                                        || Option.is_none(verb_stem)
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="preformative-i"
+                                    control={<Radio />}
+                                    label={"I" |> React.string}
+                                    disabled={
+                                        is_transitive |> Option.is_none 
+                                        || is_perfective |> Option.is_none
+                                        || Option.is_none(verb_stem)
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="preformative-u"
+                                    control={<Radio />}
+                                    label={"U" |> React.string}
+                                    disabled={
+                                        is_transitive |> Option.is_none 
+                                        || is_perfective |> Option.is_none
+                                        || Option.is_none(verb_stem)
+                                    }
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+                    <Grid size=`Number(6)>
+                        <FormControl>
+                            <FormLabel id="modal-prefix-label">
+                                {"Modal Prefix" |> React.string}
+                            </FormLabel>
+                            <RadioGroup
+                                row=true
+                                ariaLabelledby="modal-prefix-label"
+                                name="modal-prefix"
+                                value={
+                                    switch modal_prefix {
+                                    | Some(HA) => "modal-ha"
+                                    | Some(NU) => "modal-nu"
+                                    | Some(NAN) => "modal-nan"
+                                    | None => ""
+                                    }
+                                }
+                                onChange={ev => {
+                                    let target = React.Event.Form.target(ev)
+                                    let checked: bool = target##checked
+                                    change_prefix(Modal, checked)
+                                }}
+                                sx={{"padding": "8px"}}
+                            >
+                                <FormControlLabel
+                                    value="modal-ha"
+                                    control={<Radio />}
+                                    label={{js|ḪA|js} |> React.string}
+                                    disabled={
+                                        is_transitive |> Option.is_none 
+                                        || is_perfective |> Option.is_none
+                                        || Option.is_none(verb_stem)
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="modal-nu"
+                                    control={<Radio />}
+                                    label={"NU" |> React.string}
+                                    disabled={
+                                        is_transitive |> Option.is_none 
+                                        || is_perfective |> Option.is_none
+                                        || Option.is_none(verb_stem)
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="modal-nan"
+                                    control={<Radio />}
+                                    label={"NAN" |> React.string}
+                                    disabled={
+                                        is_transitive |> Option.is_none 
+                                        || is_perfective |> Option.is_none
+                                        || Option.is_none(verb_stem)
+                                    }
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid size=`Number(6)>
+                <Grid container=true spacing=`Number(0)>
+                    <Grid size=`Number(8)>
+                        <FormControl fullWidth=true>
+                            <FormLabel id="dimensional-prefixes">
+                                {"Dimensional Prefixes" |> React.string}
+                            </FormLabel>
+                            <FormGroup
+                                row=true
+                                ariaLabelledby="dimensional-prefixes"
+                            >
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={comitative}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(Comitative, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={"DA" |> React.string}
                             />
-                        </div>
-                    </div>
-                </div>
-                <div className=css##secondColumn>
-                    <div>
-                        <p>
-                            {"Dimensional Prefixes" |> React.string}
-                        </p>
-                        <div className=css##withLabels>
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="comitative" 
-                                    value="comitative" 
-                                    checked={comitative}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(Comitative, checked)
-                                    }}
-                                />
-                                {"DA" |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="ablative" 
-                                    value="ablative" 
-                                    checked={ablative}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(Ablative, checked)
-                                    }}
-                                />
-                                {"TA" |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="terminative" 
-                                    value="terminative" 
-                                    checked={terminative}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(Terminative, checked)
-                                    }}
-                                />
-                                {{js|ŠI|js} |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="locative-in" 
-                                    value="locative-in" 
-                                    checked={locative === Some("IN")}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(LocativeIn, checked)
-                                    }}
-                                />
-                                {"NI" |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="locative-on" 
-                                    value="locative-on" 
-                                    checked={locative === Some("ON")}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(LocativeOn, checked)
-                                    }}
-                                />
-                                {"E" |> React.string}
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <span>
-                            {"Initial Person Prefix" |> React.string}
-                        </span>
-                        <ReactSelect 
-                            options={pronoun_options} 
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={ablative}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(Ablative, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={"TA" |> React.string}
+                            />
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={terminative}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(Terminative, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={{js|ŠI|js} |> React.string}
+                            />
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={locative === Some("IN")}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(LocativeIn, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={"NI" |> React.string}
+                            />
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={locative === Some("ON")}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(LocativeOn, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={"E" |> React.string}
+                            />
+                            </FormGroup>
+                        </FormControl>
+                    </Grid>
+                    <Grid size=`Number(4)>
+                        <FormControl fullWidth=true>
+                            <InputLabel id="initial-person-prefix-label">
+                                {"Initial Person Prefix" |> React.string}
+                            </InputLabel>
+                            <Select
+                            label={"Initial Person Prefix" |> React.string}
+                            labelId="initial-person-prefix-label"
                             value={
                                 switch (initial_person_prefix |> Js.Nullable.toOption) {
-                                    | Some(pp) => ReactSelect.person_param_to_option(pp) |> Js.Nullable.return
-                                    | _ => Js.Nullable.null
+                                | Some(pp) =>
+                                    pp
+                                    |> Utils.person_param_to_option
+                                    |> option =>
+                                        Select.Value.fromString(option.value)
+                                | None => Select.Value.fromString("")
                                 }
                             }
-                            onChange={change_pronoun(_, "initial-person-prefix")}
-                            isDisabled={
+                            onChange={(event, _) => {
+                                let selected_value = event##target##value;
+                                switch (
+                                    pronoun_options
+                                    |> Array.find_opt(
+                                        (option: Utils.select_option) =>
+                                            option.value === selected_value
+                                    )
+                                ) {
+                                | Some(option) =>
+                                    change_pronoun(
+                                        option,
+                                        "initial-person-prefix",
+                                    )
+                                | None => ()
+                                };
+                            }}
+                            disabled={
                                 is_transitive |> Option.is_none 
                                 || is_perfective |> Option.is_none
-                                || Js.Nullable.isNullable(verb_stem)    
-                            } 
-                        />
-                    </div>
-                    <div>
-                        <p>
-                            {"Modal Prefixes" |> React.string}
-                        </p>
-                        <div className=css##withLabels>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="modalPrefixes" 
-                                    value="modal"
-                                    checked={modal_prefix == Some(HA)}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(Modal, checked)
-                                    }}
-                                    onClick={_ => reset_modal()}
-                                />
-                                {{js|ḪA|js} |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="modalPrefixes" 
-                                    value="negative-nan" 
-                                    checked={modal_prefix == Some(NAN)}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(NegativeNan, checked)
-                                    }}
-                                    onClick={_ => reset_modal()}
-                                />
-                                {"NAN" |> React.string}
-                            </label>
-                            <label>
-                                <input 
-                                    type_="radio" 
-                                    name="modalPrefixes" 
-                                    value="negative" 
-                                    checked={modal_prefix == Some(NU)}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(Negative, checked)
-                                    }}
-                                    onClick={_ => reset_modal()}
-                                />
-                                {"NU" |> React.string}
-                            </label>
-                        </div> 
-                    </div>
-                    <div>
-                        <p>
+                                || Option.is_none(verb_stem)    
+                            }
+                            sx={{"backgroundColor": "white"}}
+                            >
+                                {
+                                    pronoun_options
+                                    |> Array.map((option: Utils.select_option) => {
+                                        <MenuItem value=option.value key=option.value>
+                                            {option.label |> React.string}
+                                        </MenuItem>
+                                    })
+                                    |> React.array
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Box sx={{"marginTop": marginTop}}>
+                    <FormControl fullWidth=true>
+                        <FormLabel id="other-prefixes-label">
                             {"Other Prefixes" |> React.string}
-                        </p>                   
-                        <div className=css##withLabels>   
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="ventive" 
-                                    value="ventive" 
-                                    checked={ventive}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(Ventive, checked)
-                                    }}
-                                />
-                                {"MU" |> React.string}
-                            </label>                     
-                            <label>
-                                <input 
-                                    type_="checkbox" 
-                                    name="middle-prefix" 
-                                    value="middle-prefix" 
-                                    checked={middle_prefix}
-                                    disabled={
-                                        is_transitive |> Option.is_none 
-                                        || is_perfective |> Option.is_none
-                                        || Js.Nullable.isNullable(verb_stem)    
-                                    }
-                                    onChange={ev => {
-                                        let target = React.Event.Form.target(ev)
-                                        let checked: bool = target##checked
-                                        change_prefix(MiddlePrefix, checked)
-                                    }}
-                                />
-                                {"BA" |> React.string}
-                            </label>
-                        </div>
-                    </div>
+                        </FormLabel>
+                        <FormGroup
+                            row=true
+                            ariaLabelledby="other-prefixes-label"
+                        >
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={ventive}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(Ventive, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={"MU" |> React.string}
+                            />
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={middle_prefix}
+                                        onChange={ev => {
+                                            let target = React.Event.Form.target(ev)
+                                            let checked: bool = target##checked
+                                            change_prefix(MiddlePrefix, checked)
+                                        }}
+                                        disabled={
+                                            is_transitive |> Option.is_none 
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)    
+                                        }
+                                    />
+                                }
+                                label={"BA" |> React.string}
+                            />
+                        </FormGroup>
+                    </FormControl>
+                </Box>
+                <Box sx={{"marginTop": marginTop}}>
                     {
-                        switch (verb_stem |> Js.Nullable.toOption) {
+                        switch (verb_stem) {
                             | Some(stem) => {
                                 switch (Web_utils.EpsdDict.get_epsd_link(stem.value)) {
                                 | Some(link) => <div>
@@ -1083,69 +1048,66 @@ let make = () => {
                             | _ => React.null
                         }
                     }
-                </div>
-            </div>
-            <div className=css##result>
-                {
-                    switch ((verb_form), error) {
-                    | (_, Some(err)) => {
-                        <span className=css##error>
-                            {err |> React.string}
-                        </span>
-                    }
-                    | (Some(verb), None) => 
-                        <Web_utils.BuildResults
-                            verb={verb} 
-                            meaning={
-                                switch (verb_stem |> Js.Nullable.toOption) {
-                                    | Some(m) => Some(m.label)
-                                    | None => None
+                </Box>
+            </Grid>
+            <Grid size=`Number(12)>
+                <div className=css##result>
+                    {
+                        switch ((verb_form), error) {
+                        | (_, Some(err)) => {
+                            <span className=css##error>
+                                {err |> React.string}
+                            </span>
+                        }
+                        | (Some(verb), None) => 
+                            <Web_utils.BuildResults
+                                verb={verb} 
+                                meaning={
+                                    switch (verb_stem) {
+                                        | Some(m) => Some(m.label)
+                                        | None => None
+                                    }
                                 }
-                            }
-                        />
-                    | (None, None) => <span>{"No Selected Verb" |> React.string}</span>
+                            />
+                        | (None, None) => <span>{"No Selected Verb" |> React.string}</span>
+                        }
                     }
-                }
-            </div>
-            <div className=css##buttons>
-                <button onClick={_ => {
-                    set_verb_stem(_ => Js.Nullable.null)
-                    set_verb_form(_ => None)
-                    set_is_perfective(_ => None)
-                    set_is_transitive(_ => None)
-                    set_preformative(_ => None)
-                    set_modal_prefix(_ => None)
-                    set_ventive(_ => false)
-                    set_comitative(_ => false)
-                    set_ablative(_ => false)
-                    set_terminative(_ => false)
-                    set_middle_prefix(_ => false)
-                    set_initial_person_prefix(_ => Js.Nullable.null)
-                    set_subject(_ => Js.Nullable.null)
-                    set_object(_ => Js.Nullable.null)
-                    set_indirect_object(_ => Js.Nullable.null)
-                    set_error(_ => None)
-                }}>
-                    {"Clear" |> React.string}
-                </button>
-                <button>
-                    {"Copy" |> React.string}
-                </button>
-                <button 
-                    onClick={_ => 
-                    set_is_modal_open(_ => true)}
-                    disabled={
-                        is_transitive |> Option.is_none 
-                        || is_perfective |> Option.is_none
-                        || Js.Nullable.isNullable(verb_stem)    
-                    }
-                    >
-                    {"Report an error" |> React.string}
-                </button>
-            </div>
-        </div>
+                </div>
+                <div className=css##buttons>
+                    <button className="button" onClick={_ => reset()}>
+                        {"Clear" |> React.string}
+                    </button>
+                    <button className="button">
+                        {"Copy" |> React.string}
+                    </button>
+                    <button 
+                        className="button"
+                        onClick={_ => 
+                        set_is_modal_open(_ => true)}
+                        disabled={
+                            is_transitive |> Option.is_none 
+                            || is_perfective |> Option.is_none
+                            || Option.is_none(verb_stem)    
+                        }
+                        >
+                        {"Report an error" |> React.string}
+                    </button>
+                </div>
+            </Grid>
+        </Grid>
+        // <div className=css##conjugator>
+        //     <div className=css##selectors>
+        //         <div className=css##firstColumn>
+                    
+        //         </div>
+        //         <div className=css##secondColumn>
+
+        //         </div>
+        //     </div>
+            
+        // </div>
         <Modal is_open={is_modal_open} close={() => set_is_modal_open(_ => false)} >
             <Verb_error_form verb={verb_form} />
         </Modal>
-    </>
+    </Container>
 };

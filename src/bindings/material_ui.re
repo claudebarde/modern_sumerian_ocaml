@@ -229,6 +229,31 @@ module CardMedia = {
     ) => React.element = "default";
 };
 
+module Checkbox = {
+    [@mel.module "@mui/material/Checkbox"] [@react.component]
+    external make: (
+        ~checked: bool=?,
+        ~checkedIcon: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~color: Color.t=?,
+        ~defaultChecked: bool=?,
+        ~disabled: bool=?,
+        ~disableRipple: bool=?,
+        ~icon: React.element=?,
+        ~id: string=?,
+        ~indeterminate: bool=?,
+        ~indeterminateIcon: React.element=?,
+        ~onChange: (React.Event.Form.t => unit)=?,
+        ~required: bool=?,
+        ~size: [`small | `medium]=?, // TODO: a string can be passed to size
+        ~sx: Js.t({..})=?,
+        // TODO: slots and slotProps are not supported yet
+        ~value: 'value=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Container = {
   [@mel.module "@mui/material/Container"] [@react.component]
   external make: (
@@ -269,6 +294,115 @@ module Drawer = {
         | `Object(Js.t({..}))
     ]=?,
     ~variant: [`permanent | `persistent | `temporary]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module FormControl = {
+  [@mel.module "@mui/material/FormControl"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~component: RootComponent.t=?,
+    ~disabled: bool=?,
+    ~error: bool=?,
+    ~focused: bool=?,
+    ~fullWidth: bool=?,
+    ~hiddenLabel: bool=?,
+    ~margin: [`dense | `normal | `none]=?,
+    ~required: bool=?,
+    ~size: [`small | `medium]=?,
+    ~sx: Js.t({..})=?,
+    ~variant: [`standard | `outlined | `filled]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module FormControlLabel = {
+  [@mel.module "@mui/material/FormControlLabel"] [@react.component]
+  external make: (
+    ~checked: bool=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~control: React.element,
+    ~disabled: bool=?,
+    ~disableTypography: bool=?,
+    ~inputRef: React.ref(Js.Nullable.t(Dom.element))=?,
+    ~label: React.element,
+    ~labelPlacement: [[@mel.as "end"] `end_ | `start | `top | `bottom]=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~required: bool=?,
+    ~sx: Js.t({..})=?,
+    ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
+module FormGroup = {
+  [@mel.module "@mui/material/FormGroup"] [@react.component]
+  external make: (
+    ~ariaLabelledby: [@mel.as "aria-labelledby"] string=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~row: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module FormLabel = {
+  [@mel.module "@mui/material/FormLabel"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~component: RootComponent.t=?,
+    ~disabled: bool=?,
+    ~error: bool=?,
+    ~filled: bool=?,
+    ~focused: bool=?,
+    ~id: string=?,
+    ~required: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Grid = {
+  [@mel.module "@mui/material/Grid"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~columns: int=?,
+    ~columnSpacing: int=?,
+    ~component: RootComponent.t=?,
+    ~container: bool=?,
+    ~direction: [`row | `rowReverse | `column | `columnReverse]=?,
+    ~offset: [@mel.unwrap] [
+        | `String(string)
+        | `Number(int)
+        | `Object(Js.t({..}))
+    ]=?,
+    ~rowSpacing: int=?,
+    ~size: [@mel.unwrap] [
+        | `String(string)
+        | `Number(int)
+        | `Object(Js.t({..}))
+        | `Boolean(bool)
+    ]=?,
+    ~spacing: [@mel.unwrap] [
+        | `String(string)
+        | `Number(int)
+        | `Object(Js.t({..}))
+        // TODO: implement Array<string | number> support for spacing
+    ]=?,
+    ~sx: Js.t({..})=?,
+    ~wrap: [`nowrap | `wrap | `wrapReverse]=?,
     unit
   ) => React.element = "default";
 };
@@ -448,7 +582,7 @@ module MenuItem = {
     ~onClick: (React.Event.Synthetic.t => unit)=?,
     ~selected: bool=?,
     ~sx: Js.t({..})=?,
-    ~value: string=?,
+    ~value: 'value=?,
     unit
   ) => React.element = "default";
 };
@@ -468,12 +602,53 @@ module Paper = {
   ) => React.element = "default";
 };
 
+module Radio = {
+  [@mel.module "@mui/material/Radio"] [@react.component]
+  external make: (
+    ~checked: bool=?,
+    ~checkedIcon: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~disabled: bool=?,
+    ~disableRipple: bool=?,
+    ~icon: React.element=?,
+    ~id: string=?,
+    ~name: string=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~required: bool=?,
+    ~size: [`small | `medium]=?,
+    // TODO: slots and slotProps are not supported yet
+    ~sx: Js.t({..})=?,
+    ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
+module RadioGroup = {
+  [@mel.module "@mui/material/RadioGroup"] [@react.component]
+  external make: (
+    ~ariaLabelledby: [@mel.as "aria-labelledby"] string=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~defaultValue: 'value=?,
+    ~name: string=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~row: bool=?,
+    ~sx: Js.t({..})=?,
+    ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
 module Select = {
   module Value = {
     type t;
 
     external fromString: string => t = "%identity";
     external fromObject: Js.t({..}) => t = "%identity";
+    external fromOption: option('value) => t = "%identity";
   };
 
   [@mel.module "@mui/material/Select"] [@react.component]
@@ -484,6 +659,7 @@ module Select = {
     ~className: string=?,
     ~defaultOpen: bool=?,
     ~defaultValue: Js.t({..})=?,
+    ~disabled: bool=?,
     ~displayEmpty: bool=?,
     ~_IconComponent: React.component('props)=?,
     ~id: string=?,
@@ -723,6 +899,45 @@ module TextField = {
     ~type_: string=?,
     ~value: string=?,
     ~variant: [`standard | `outlined | `filled]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module ToggleButton = {
+  [@mel.module "@mui/material/ToggleButton"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~disabled: bool=?,
+    ~disableFocusRipple: bool=?,
+    ~fullWidth: bool=?,
+    ~onChange: ((React.Event.Mouse.t, 'value) => unit)=?,
+    ~onClick: ((React.Event.Mouse.t, 'value) => unit)=?,
+    ~selected: bool=?,
+    ~size: [`small | `medium | `large]=?,
+    ~sx: Js.t({..})=?,
+    ~value: 'value,
+    unit
+  ) => React.element = "default";
+};
+
+module ToggleButtonGroup = {
+  [@mel.module "@mui/material/ToggleButtonGroup"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~disabled: bool=?,
+    ~exclusive: bool=?,
+    ~fullWidth: bool=?,
+    ~onChange: ((React.Event.Mouse.t, 'value) => unit)=?,
+    ~orientation: [`horizontal | `vertical]=?,
+    ~size: [`small | `medium | `large]=?,
+    ~sx: Js.t({..})=?,
+    ~value: 'value,
     unit
   ) => React.element = "default";
 };

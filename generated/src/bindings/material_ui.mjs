@@ -40,9 +40,21 @@ const CardHeader = {};
 
 const CardMedia = {};
 
+const Checkbox = {};
+
 const Container = {};
 
 const Drawer = {};
+
+const FormControl = {};
+
+const FormControlLabel = {};
+
+const FormGroup = {};
+
+const FormLabel = {};
+
+const Grid = {};
 
 const InputLabel = {};
 
@@ -65,6 +77,10 @@ const Menu = {};
 const MenuItem = {};
 
 const Paper = {};
+
+const Radio = {};
+
+const RadioGroup = {};
 
 const Value = {};
 
@@ -95,6 +111,10 @@ const TableRow = {};
 const TableSortLabel = {};
 
 const TextField = {};
+
+const ToggleButton = {};
+
+const ToggleButtonGroup = {};
 
 const Variant = {
   dense: "dense",
@@ -155,8 +175,14 @@ export {
   CardContent,
   CardHeader,
   CardMedia,
+  Checkbox,
   Container,
   Drawer,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  Grid,
   InputLabel,
   List,
   ListItem,
@@ -168,6 +194,8 @@ export {
   Menu,
   MenuItem,
   Paper,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
   Table,
@@ -181,6 +209,8 @@ export {
   TableRow,
   TableSortLabel,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Toolbar,
   Typography,
 }

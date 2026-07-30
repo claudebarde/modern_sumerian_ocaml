@@ -3,7 +3,7 @@
 [@react.component]
 let make = () => {
     <footer>
-        <div>
+        <div className=css##footerText>
             <p>
                 {{js|© 2025 Modern Sumerian. All rights reserved.|js}|>React.string}
             </p>

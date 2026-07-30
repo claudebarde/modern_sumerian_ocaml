@@ -27,6 +27,10 @@ const IconList = {};
 
 const IconFileText = {};
 
+const IconMenu2 = {};
+
+const IconHome = {};
+
 export {
   IconSearch,
   IconRefresh,
@@ -41,5 +45,7 @@ export {
   IconLink,
   IconList,
   IconFileText,
+  IconMenu2,
+  IconHome,
 }
 /* No side effect */

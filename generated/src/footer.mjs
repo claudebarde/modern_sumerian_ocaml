@@ -11,7 +11,8 @@ function Footer(Props) {
       JsxRuntime.jsx("div", {
         children: JsxRuntime.jsx("p", {
           children: "© 2025 Modern Sumerian. All rights reserved."
-        })
+        }),
+        className: css.footerText
       }),
       JsxRuntime.jsxs("div", {
         children: [

@@ -274,6 +274,23 @@ module Container = {
   ) => React.element = "default";
 };
 
+module Divider = {
+  [@mel.module "@mui/material/Divider"] [@react.component]
+  external make: (
+    ~absolute: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~flexItem: bool=?,
+    ~orientation: [`horizontal | `vertical]=?,
+    ~sx: Js.t({..})=?,
+    ~textAlign: [`center | `right | `left]=?,
+    ~variant: [`fullWidth | `inset | `middle]=?,
+    unit
+  ) => React.element = "default";
+};
+
 module Drawer = {
   [@mel.module "@mui/material/Drawer"] [@react.component]
   external make: (
@@ -294,6 +311,28 @@ module Drawer = {
         | `Object(Js.t({..}))
     ]=?,
     ~variant: [`permanent | `persistent | `temporary]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Fab = {
+  [@mel.module "@mui/material/Fab"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~component: RootComponent.t=?,
+    ~disabled: bool=?,
+    ~disableFocusRipple: bool=?,
+    ~disableRipple: bool=?,
+    ~href: string=?,
+    ~onClick: (React.Event.Mouse.t => unit)=?,
+    ~rel: string=?,
+    ~size: [`small | `medium | `large]=?, // TODO: a string can be passed to size
+    ~sx: Js.t({..})=?,
+    ~target: string=?,
+    ~variant: [`circular | `extended]=?, // TODO: a string can be passed to variant
     unit
   ) => React.element = "default";
 };
@@ -378,7 +417,11 @@ module Grid = {
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,
-    ~columns: int=?,
+    ~columns: [@mel.unwrap] [
+        | `Number(int)
+        | `Array(array(int))
+        | `Object(Js.t({..}))
+    ]=?,
     ~columnSpacing: int=?,
     ~component: RootComponent.t=?,
     ~container: bool=?,
@@ -403,6 +446,35 @@ module Grid = {
     ]=?,
     ~sx: Js.t({..})=?,
     ~wrap: [`nowrap | `wrap | `wrapReverse]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module IconButton = {
+  [@mel.module "@mui/material/IconButton"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~component: RootComponent.t=?,
+    ~disabled: bool=?,
+    ~disableElevation: bool=?,
+    ~disableFocusRipple: bool=?,
+    ~disableRipple: bool=?,
+    ~edge: [`start | `end_ | `false_]=?,
+    ~endIcon: React.element=?,
+    ~fullWidth: bool=?,
+    ~href: string=?,
+    ~loading: bool=?,
+    ~loadingIndicator: React.element=?,
+    ~onClick: (React.Event.Mouse.t => unit)=?,
+    ~rel: string=?,
+    ~size: [`small | `medium | `large]=?, // TODO: a string can be passed to size
+    ~startIcon: React.element=?,
+    ~target: string=?,
+    ~variant: [`text | `outlined | `contained]=?, // TODO: a string can be passed to variant
+    ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";
 };

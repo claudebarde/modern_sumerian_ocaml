@@ -1,8 +1,9 @@
 @use "./styles/styles.scss" as *;
 
 .appbar {
+  flex: 0 0 auto;
   align-self: start;
-  height: 100%;
+  height: auto;
   z-index: 1;
   padding: 5px 0px;
 }
@@ -34,6 +35,25 @@
 
   .titleSecondary {
     animation: showSecondaryTitle 20s ease-in-out infinite;
+  }
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+
+  @media (max-width: 599px) {
+    display: none;
+  }
+}
+
+.hamburgerMenu {
+  display: none;
+
+  @media (max-width: 599px) {
+    display: block;
   }
 }
 

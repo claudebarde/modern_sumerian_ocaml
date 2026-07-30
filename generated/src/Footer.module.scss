@@ -1,19 +1,45 @@
-.buyMeACoffee {
-  height: 30px;
-  width: 120px;
+footer {
+  flex: 0 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-}
+  font-size: 0.8rem;
+  padding: 0px 20px;
 
-.donateLink {
-  text-decoration: none;
-  color: #f3f3f4;
-  background-color: #1034a6;
-  height: 30px;
-  width: 120px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @media (max-width: 599px) {
+    padding: 10px;
+  }
+
+  & > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .footerText {
+    @media (max-width: 599px) {
+      display: none;
+    }
+  }
+
+  .buyMeACoffee {
+    height: 30px;
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .donateLink {
+    text-decoration: none;
+    color: #f3f3f4;
+    background-color: #1034a6;
+    height: 30px;
+    width: 120px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

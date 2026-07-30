@@ -8,6 +8,8 @@ let make = () => {
     open Mui;
 
     let (toolsAnchor, setToolsAnchor) = React.useState(() => Js.Nullable.null);
+    let (mobileMenuOpen, setMobileMenuOpen) = React.useState(() => false);
+
     let openToolsMenu = !Js.Nullable.isNullable(toolsAnchor);
     let closeToolsMenu = () => setToolsAnchor(_ => Js.Nullable.null);
     let navigateFromToolsMenu = path => {
@@ -51,7 +53,8 @@ let make = () => {
                     {"MODERN SUMERIAN"|>React.string}
                 </Typography>                
             </Box>
-            <Box sx={{"display": "flex", "flexDirection": "row", "alignItems": "center", "gap": "1rem"}}>
+            // LARGER SCREEN MENU
+            <Box className=css##navMenu>
                 <Button
                     variant=`text
                     color=Color.fromString(Config.colors##protonRed)
@@ -125,117 +128,121 @@ let make = () => {
                     {"Links" |> React.string}
                 </Button>
             </Box>
+            // SMALLER SCREEN MENU
+            <Box className=css##hamburgerMenu>
+                <IconButton 
+                    color=Color.secondary
+                    onClick={_ => setMobileMenuOpen(_ => true)}
+                >
+                    <TablerReact.IconMenu2 />
+                </IconButton>
+                <Drawer
+                    anchor=`right
+                    _open=mobileMenuOpen
+                    onClose={_ => setMobileMenuOpen(_ => false)}
+                    sx={{
+                        "& .MuiDrawer-paper": {
+                        "width": "min(60vw, 360px)",
+                        "boxSizing": "border-box",
+                        },
+                    }}
+                >
+                    <List sx={{"height": "100%", "position": "relative"}}>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconHome color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Home" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListSubheader>
+                            {"Tools" |> React.string}
+                        </ListSubheader>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/conjugator");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>  
+                                <TablerReact.IconTable color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Conjugator" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/dictionary");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconBook2 color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Dictionary" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/keyboard");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconKeyboard color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Keyboard" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListSubheader>
+                            {"Learn" |> React.string}
+                        </ListSubheader>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/lessons");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>  
+                                <TablerReact.IconBook2 color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Lessons" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListSubheader>
+                            {"More" |> React.string}
+                        </ListSubheader>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/links");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconLink color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Links" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <Divider />
+                        <ListItemText sx={{"position": "absolute", "bottom": "0", "left": "0", "width": "100%", "textAlign": "left", "padding": "1rem"}}>
+                            <p>{{js|© 2025 Modern Sumerian.|js}|>React.string}</p>
+                            <p>{{js|All rights reserved.|js}|>React.string}</p>
+                        </ListItemText>
+                    </List>
+                </Drawer>
+            </Box>
         </Toolbar>
     </AppBar>
-
-    // <header>
-    //     <div>
-    //         <h1>
-    //             {[|"eme", {js|ĝir15|js}, "u", "me", "e"|]
-    //             |> Components.Web_utils.display_cuneiforms
-    //             |> Array.mapi((i, (codePoint, word)) => {
-    //                 <span
-    //                     className="cuneiforms" 
-    //                     key={codePoint ++ word ++ Int.to_string(i)} 
-    //                 >
-    //                     {React.string(codePoint)}
-    //                 </span>
-    //             })
-    //             |> React.array}
-    //         </h1>
-    //     </div>
-    //     <div className={css##title}>
-    //         <h1>{"Modern Sumerian"|>React.string}</h1>
-    //         <img 
-    //             src=betaButtonImage
-    //             alt="beta"
-    //         />
-    //     </div>
-    //     <div>
-    //             <nav className={css##navColumn} role="navigation">
-    //                 <ul>
-    //                     <li>
-    //                         <a
-    //                             className={
-    //                                 switch (List.nth_opt(url.path, 0)) {
-    //                                 | Some(_) => ""
-    //                                 | None => css##active
-    //                                 }
-    //                             }
-    //                             onClick={_ => {
-    //                                 ReasonReactRouter.push("/")
-    //                             }}>
-    //                             {"Home"|>React.string}
-    //                         </a>
-    //                     </li>
-    //                         <>
-    //                             <li>
-    //                                 <a
-    //                                     className={
-    //                                         switch (List.nth_opt(url.path, 0)) {
-    //                                         | Some(path) when path === "conjugator" => css##active
-    //                                         | Some(path) when path === "keyboard" => css##active
-    //                                         | Some(path) when path === "dictionary" => css##active
-    //                                         | _ => ""
-    //                                         }
-    //                                     }>
-    //                                     {"Tools"|>React.string}
-    //                                 </a>
-    //                                 <ul className={css##dropdown}>
-    //                                     <li>
-    //                                         <a 
-    //                                             onClick={_ => { ReasonReactRouter.push("conjugator") }}
-    //                                         >
-    //                                             {"Conjugator"|>React.string}
-    //                                         </a>
-    //                                     </li>
-    //                                     <li>
-    //                                         <a 
-    //                                             onClick={_ => { ReasonReactRouter.push("keyboard") }}
-    //                                         >
-    //                                             {"Keyboard"|>React.string}
-    //                                         </a>
-    //                                     </li>
-    //                                     <li>
-    //                                         <a 
-    //                                             onClick={_ => { ReasonReactRouter.push("dictionary") }}
-    //                                         >
-    //                                             {"Dictionary"|>React.string}
-    //                                         </a>
-    //                                     </li>
-    //                                 </ul>
-    //                             </li>
-    //                             <li>
-    //                                 <a
-    //                                     className={
-    //                                         switch (List.nth_opt(url.path, 0)) {
-    //                                         | Some(path) when path === "lessons" => css##active
-    //                                         | _ => ""
-    //                                         }
-    //                                     }
-    //                                     onClick={_ => {
-    //                                         ReasonReactRouter.push("lessons")
-    //                                     }}>
-    //                                     {"Lessons"|>React.string}
-    //                                 </a>
-    //                             </li>
-    //                         </>
-    //                     <li>
-    //                         <a
-    //                             className={
-    //                                 switch (List.nth_opt(url.path, 0)) {
-    //                                 | Some(path) when path === "links" => css##active
-    //                                 | _ => ""
-    //                                 }
-    //                             }
-    //                             onClick={_ => {
-    //                                 ReasonReactRouter.push("links")
-    //                             }}>
-    //                             {"Links"|>React.string}
-    //                         </a>
-    //                     </li>
-    //                 </ul>
-    //             </nav>
-    //     </div>
-    // </header>
 };

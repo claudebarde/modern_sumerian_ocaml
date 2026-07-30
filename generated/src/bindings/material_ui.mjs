@@ -44,7 +44,11 @@ const Checkbox = {};
 
 const Container = {};
 
+const Divider = {};
+
 const Drawer = {};
+
+const Fab = {};
 
 const FormControl = {};
 
@@ -55,6 +59,8 @@ const FormGroup = {};
 const FormLabel = {};
 
 const Grid = {};
+
+const IconButton = {};
 
 const InputLabel = {};
 
@@ -183,12 +189,15 @@ export {
   CardMedia,
   Checkbox,
   Container,
+  Divider,
   Drawer,
+  Fab,
   FormControl,
   FormControlLabel,
   FormGroup,
   FormLabel,
   Grid,
+  IconButton,
   InputLabel,
   List,
   ListItem,

@@ -5,8 +5,14 @@ import LogoPng from "./assets/logo.png";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
@@ -32,6 +38,10 @@ function Header(Props) {
   });
   const setToolsAnchor = match[1];
   const toolsAnchor = match[0];
+  const match$1 = React.useState(function () {
+    return false;
+  });
+  const setMobileMenuOpen = match$1[1];
   const openToolsMenu = !(toolsAnchor == null);
   return JsxRuntime.jsx(AppBar, {
     children: JsxRuntime.jsxs(Toolbar, {
@@ -180,12 +190,180 @@ function Header(Props) {
               variant: "text"
             })
           ],
-          sx: {
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "1rem"
-          }
+          className: css.navMenu
+        }),
+        JsxRuntime.jsxs(Box, {
+          children: [
+            JsxRuntime.jsx(IconButton, {
+              children: JsxRuntime.jsx(IconsReact.IconMenu2, {}),
+              color: Bindings__Material_ui.Color.secondary,
+              onClick: (function (param) {
+                Curry._1(setMobileMenuOpen, (function (param) {
+                  return true;
+                }));
+              })
+            }),
+            JsxRuntime.jsx(Drawer, {
+              anchor: "right",
+              children: JsxRuntime.jsxs(List, {
+                children: [
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconHome, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Home"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsx(ListSubheader, {
+                    children: "Tools"
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconTable, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Conjugator"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/conjugator");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconBook2, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Dictionary"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/dictionary");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconKeyboard, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Keyboard"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/keyboard");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsx(ListSubheader, {
+                    children: "Learn"
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconBook2, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Lessons"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/lessons");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsx(ListSubheader, {
+                    children: "More"
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconLink, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Links"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/links");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsx(Divider, {}),
+                  JsxRuntime.jsxs(ListItemText, {
+                    children: [
+                      JsxRuntime.jsx("p", {
+                        children: "© 2025 Modern Sumerian."
+                      }),
+                      JsxRuntime.jsx("p", {
+                        children: "All rights reserved."
+                      })
+                    ],
+                    sx: {
+                      position: "absolute",
+                      bottom: "0",
+                      left: "0",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "1rem"
+                    }
+                  })
+                ],
+                sx: {
+                  height: "100%",
+                  position: "relative"
+                }
+              }),
+              onClose: (function (param) {
+                Curry._1(setMobileMenuOpen, (function (param) {
+                  return false;
+                }));
+              }),
+              open: match$1[0],
+              sx: {
+                "& .MuiDrawer-paper": {
+                  width: "min(60vw, 360px)",
+                  boxSizing: "border-box"
+                }
+              }
+            })
+          ],
+          className: css.hamburgerMenu
         })
       ],
       className: css.toolbar,

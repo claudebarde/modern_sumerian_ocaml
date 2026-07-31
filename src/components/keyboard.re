@@ -425,7 +425,7 @@ let make = () => {
         <h1>{"Sumerian Keyboard"|>React.string}</h1>
         <Stack 
             direction=`column 
-            spacing={`number(2)} 
+            spacing={`Number(2)} 
             sx={{"width": "100%", "alignItems": "center"}} 
             useFlexGap=true
         >

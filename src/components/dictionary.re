@@ -219,9 +219,11 @@ let make = () => {
                 }
             }
         </h1>
-        <div className=css##searchBar>
+        <Stack 
+            spacing=`Object(Stack.ResponsiveSpacing.make(~xs=2, ~md=3, ()))
+            direction=`Object(Stack.ResponsiveDirection.make(~xs=`column, ~md=`row, ()))
+        >
             <Select
-                autoWidth=true
                 value={selected_lang_value}
                 onChange={(event, _) => {
                     let value = event##target##value;
@@ -282,10 +284,14 @@ let make = () => {
                     {"Contains" |> React.string}
                 </MenuItem>
             </Select>
-            <Button className="button" onClick={_ => search_word()}>
+            <Button 
+                variant=`contained 
+                size=`large
+                onClick={_ => search_word()}
+            >
                 {searching ? <TablerReact.IconRefresh className=css##refreshIcon size=20 /> : <TablerReact.IconSearch size=20 />}
             </Button>
-        </div>
+        </Stack>
         <div className=css##resultsContainer>
         {
             switch search_results {
@@ -293,99 +299,190 @@ let make = () => {
                 if (Array.length(results) === 0) {
                     <div>{"No results found." |> React.string}</div>
                 } else {
-                    <TableContainer
-                        className=css##tableContainer
-                        component=RootComponent.reactComponent(Paper.make)
-                    >
-                        <div className=css##tableScroll>
-                            <Table stickyHeader=true className=css##resultsList>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{"Cuneiforms" |> React.string}</TableCell>
-                                    <TableCell>{"Marker" |> React.string}</TableCell>
-                                    <TableCell>{"Word" |> React.string}</TableCell>
-                                    <TableCell>{"Translation" |> React.string}</TableCell>
-                                    <TableCell>{"Part of Speech" |> React.string}</TableCell>
-                                    <TableCell>{"Count" |> React.string}</TableCell>
-                                    <TableCell>{"More info" |> React.string}</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            {
-                                results
-                                |> rows_for_page(
-                                    ~page,
-                                    ~rows_per_page=rowsPerPage,
-                                )
-                                |> Array.map((result: Supabase.dictionary_row) =>
-                                    <TableRow key={result.id}>
-                                        <TableCell>
-                                            <strong className="cuneiforms small">{
-                                                Array.length(result.cuneiforms) > 0
-                                                ? result.cuneiforms[0] |> React.string
-                                                : "X" |> React.string
-                                            }</strong>  
-                                        </TableCell>
-                                        <TableCell>
-                                            {switch result.marker {
-                                            | Supabase.A => "Ancien Sumerian" |> React.string
-                                            | Supabase.E => "Modern Extension" |> React.string
-                                            | Supabase.N => "Native Neologism" |> React.string
-                                            | Supabase.C => "Calque" |> React.string
-                                            | Supabase.L_Akk => "Akkadian Loanword" |> React.string
-                                            | Supabase.L_Anc => "Ancien Loanword" |> React.string
-                                            | Supabase.L_Mod => "Modern Loanword" |> React.string
-                                            | Supabase.X => "Uncertain" |> React.string
-                                            }}
-                                        </TableCell>
-                                        <TableCell>
-                                            <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
-                                        </TableCell>
-                                        <TableCell>
-                                            {result.translation |> React.string}
-                                        </TableCell>
-                                        <TableCell>
-                                            {switch result.part_of_speech {
-                                                | "N" => "Noun" 
-                                                | "V/t" => "Transitive Verb"
-                                                | "V/i" => "Intransitive Verb"
-                                                | "AJ" => "Adjective"   
-                                                | _ => result.part_of_speech
-                                            } |> React.string}
-                                        </TableCell>
-                                        <TableCell>
-                                            {result.icount |> Js.Int.toString |> React.string}
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                switch result.marker {
-                                                    | Supabase.A => {
-                                                        <a href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id} target="_blank" rel="noopener noreferrer">
-                                                            {"EPSD2 link" |> React.string}
-                                                        </a>
-                                                    }
-                                                    | _ => React.null
-                                                }
-                                            }
-                                        </TableCell>
+                    <>
+                        <TableContainer
+                            className=css##tableContainer
+                            component=RootComponent.reactComponent(Paper.make)
+                        >
+                            <div className=css##tableScroll>
+                                <Table stickyHeader=true className=css##resultsList>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>{"Cuneiforms" |> React.string}</TableCell>
+                                        <TableCell>{"Marker" |> React.string}</TableCell>
+                                        <TableCell>{"Word" |> React.string}</TableCell>
+                                        <TableCell>{"Translation" |> React.string}</TableCell>
+                                        <TableCell>{"Part of Speech" |> React.string}</TableCell>
+                                        <TableCell>{"Count" |> React.string}</TableCell>
+                                        <TableCell>{"More info" |> React.string}</TableCell>
                                     </TableRow>
-                                )
-                                |> React.array
-                            }
-                            </TableBody>
-                            </Table>
+                                </TableHead>
+                                <TableBody>
+                                {
+                                    results
+                                    |> rows_for_page(
+                                        ~page,
+                                        ~rows_per_page=rowsPerPage,
+                                    )
+                                    |> Array.map((result: Supabase.dictionary_row) =>
+                                        <TableRow key={result.id}>
+                                            <TableCell>
+                                                <strong className="cuneiforms small">{
+                                                    Array.length(result.cuneiforms) > 0
+                                                    ? result.cuneiforms[0] |> React.string
+                                                    : "X" |> React.string
+                                                }</strong>  
+                                            </TableCell>
+                                            <TableCell>
+                                                {switch result.marker {
+                                                | Supabase.A => "Ancien Sumerian" |> React.string
+                                                | Supabase.E => "Modern Extension" |> React.string
+                                                | Supabase.N => "Native Neologism" |> React.string
+                                                | Supabase.C => "Calque" |> React.string
+                                                | Supabase.L_Akk => "Akkadian Loanword" |> React.string
+                                                | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                                | Supabase.L_Mod => "Modern Loanword" |> React.string
+                                                | Supabase.X => "Uncertain" |> React.string
+                                                }}
+                                            </TableCell>
+                                            <TableCell>
+                                                <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
+                                            </TableCell>
+                                            <TableCell>
+                                                {result.translation |> React.string}
+                                            </TableCell>
+                                            <TableCell>
+                                                {switch result.part_of_speech {
+                                                    | "N" => "Noun" 
+                                                    | "V/t" => "Transitive Verb"
+                                                    | "V/i" => "Intransitive Verb"
+                                                    | "AJ" => "Adjective"   
+                                                    | _ => result.part_of_speech
+                                                } |> React.string}
+                                            </TableCell>
+                                            <TableCell>
+                                                {result.icount |> Js.Int.toString |> React.string}
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    switch result.marker {
+                                                        | Supabase.A => {
+                                                            <a href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id} target="_blank" rel="noopener noreferrer">
+                                                                {"EPSD2 link" |> React.string}
+                                                            </a>
+                                                        }
+                                                        | _ => React.null
+                                                    }
+                                                }
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                    |> React.array
+                                }
+                                </TableBody>
+                                </Table>
+                            </div>
+                            <TablePagination
+                                className=css##pagination
+                                rowsPerPageOptions={[|5, 10, 25|]}
+                                component={RootComponent.htmlElement("div")}
+                                count={Array.length(results)}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </TableContainer>
+                        <div className=css##resultsMobile>
+                            <Stack 
+                                spacing=`Number(2)
+                                direction=`column
+                            >
+                                <Box>
+                                    {
+                                        Array.length(results) === 0
+                                        ? React.null
+                                        : (
+                                            <Typography variant=Typography.Variant.h6>
+                                                {(
+                                                    (Array.length(results) |> Js.Int.toString) 
+                                                    ++ " result" 
+                                                    ++ (Array.length(results) > 1 ? "s" : "")) |> React.string}
+                                            </Typography>
+                                        )
+                                    }
+                                </Box>
+                                {
+                                    results
+                                    |> Array.map((result: Supabase.dictionary_row) => 
+                                        <Card>
+                                            <CardHeader
+                                                avatar={
+                                                    <strong className="cuneiforms small">{
+                                                        Array.length(result.cuneiforms) > 0
+                                                        ? result.cuneiforms[0] |> React.string
+                                                        : "X" |> React.string
+                                                    }</strong>
+                                                }
+                                                title={
+                                                    <Typography variant=Typography.Variant.h6>
+                                                        {result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}
+                                                    </Typography>
+                                                }
+                                                subheader={(
+                                                    result.translation 
+                                                    ++ switch result.part_of_speech {
+                                                    | "N" => " (Noun)" 
+                                                    | "V/t" => " (Transitive Verb)"
+                                                    | "V/i" => " (Intransitive Verb)"
+                                                    | "AJ" => " (Adjective)"
+                                                    | _ => " (" ++ result.part_of_speech ++ ")"
+                                                }) |> React.string}
+                                            />
+                                            <CardContent sx={{"display": "flex", "justifyContent": "space-between"}}>
+                                                <div>
+                                                    {switch result.marker {
+                                                    | Supabase.A => "Ancien Sumerian" |> React.string
+                                                    | Supabase.E => "Modern Extension" |> React.string
+                                                    | Supabase.N => "Native Neologism" |> React.string
+                                                    | Supabase.C => "Calque" |> React.string
+                                                    | Supabase.L_Akk => "Akkadian Loanword" |> React.string
+                                                    | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                                    | Supabase.L_Mod => "Modern Loanword" |> React.string
+                                                    | Supabase.X => "Uncertain" |> React.string
+                                                    }}
+                                                </div>
+                                                <div>
+                                                    {(result.icount |> Js.Int.toString) 
+                                                    ++ " occurrence" 
+                                                    ++ (result.icount > 1 ? "s" : "")
+                                                    |> React.string}
+                                                </div>
+                                            </CardContent>
+                                            <CardActions>
+                                                {
+                                                    switch result.marker {
+                                                        | Supabase.A => {
+                                                            <Button
+                                                                size=`small
+                                                                href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                {"EPSD2 link" |> React.string}
+                                                            </Button>
+                                                        }
+                                                        | _ => React.null
+                                                    }
+                                                }
+                                            </CardActions>
+                                        </Card>
+                                    )
+                                    |> React.array
+                                }
+                            </Stack>
                         </div>
-                        <TablePagination
-                            className=css##pagination
-                            rowsPerPageOptions={[|5, 10, 25|]}
-                            component={RootComponent.htmlElement("div")}
-                            count={Array.length(results)}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                    </TableContainer>
+                    </>
                 }
             | _ => <div>{searching ? "Searching..." |> React.string : "Enter a word to search." |> React.string}</div>
             }

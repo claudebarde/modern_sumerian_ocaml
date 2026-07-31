@@ -94,7 +94,14 @@ const Select = {
   Value: Value
 };
 
-const Stack = {};
+const ResponsiveDirection = {};
+
+const ResponsiveSpacing = {};
+
+const Stack = {
+  ResponsiveDirection: ResponsiveDirection,
+  ResponsiveSpacing: ResponsiveSpacing
+};
 
 const Table = {};
 

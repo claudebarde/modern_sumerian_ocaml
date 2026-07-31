@@ -758,29 +758,57 @@ module Select = {
 };
 
 module Stack = {
-  [@mel.module "@mui/material/Stack"] [@react.component]
-  external make: (
-    ~children: React.element=?,
-    ~classes: Js.t({..})=?,
-    ~className: string=?,
-    ~component: RootComponent.t=?,
-    ~direction: [@mel.unwrap] [
-        | `row
-        | `column
-        | `rowReverse
-        | `columnReverse
-        // TODO: an array of directions or an object can be passed to direction
-    ]=?,
-    ~divider: React.element=?,
-    ~spacing: [@mel.unwrap] [
-        | `number(int)
-        | `string(string)
-        // TODO: an array of numbers or strings or an object can be passed to spacing
-    ]=?,
-    ~sx: Js.t({..})=?,
-    ~useFlexGap: bool=?,
-    unit
-  ) => React.element = "default";
+    module ResponsiveDirection = {
+        type t;
+
+        [@mel.obj]
+        external make: (
+            ~xs: [`row | `column]=?,
+            ~sm: [`row | `column]=?,
+            ~md: [`row | `column]=?,
+            ~lg: [`row | `column]=?,
+            ~xl: [`row | `column]=?,
+            unit
+        ) => t = "";
+    };
+
+    module ResponsiveSpacing = {
+        type t;
+
+        [@mel.obj]
+        external make: (
+            ~xs: int=?,
+            ~sm: int=?,
+            ~md: int=?,
+            ~lg: int=?,
+            ~xl: int=?,
+            unit
+        ) => t = "";
+    };
+
+    [@mel.module "@mui/material/Stack"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~component: RootComponent.t=?,
+        ~direction: [@mel.unwrap] [
+            | `row
+            | `column
+            | `rowReverse
+            | `columnReverse
+            | `Object(ResponsiveDirection.t)
+        ]=?,
+        ~divider: React.element=?,
+        ~spacing: [@mel.unwrap] [
+            | `Number(int)
+            | `String(string)
+            | `Object(ResponsiveSpacing.t)
+        ]=?,
+        ~sx: Js.t({..})=?,
+        ~useFlexGap: bool=?,
+        unit
+    ) => React.element = "default";
 };
 
 module Table = {

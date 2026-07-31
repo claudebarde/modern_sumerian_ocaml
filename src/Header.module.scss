@@ -44,7 +44,7 @@
   align-items: center;
   gap: 1rem;
 
-  @media (max-width: 599px) {
+  @media (max-width: $break-point) {
     display: none;
   }
 }
@@ -52,7 +52,7 @@
 .hamburgerMenu {
   display: none;
 
-  @media (max-width: 599px) {
+  @media (max-width: $break-point) {
     display: block;
   }
 }

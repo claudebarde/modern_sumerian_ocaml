@@ -12,14 +12,17 @@
   align-items: center;
   gap: 20px;
   padding: 50px;
-}
 
-.searchBar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 70%;
+  h1 {
+    text-align: center;
+  }
+
+  @media (max-width: $break-point) {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+    padding: 20px;
+  }
 }
 
 .refreshIcon {
@@ -35,6 +38,13 @@
   display: flex;
   justify-content: center;
   align-items: stretch;
+
+  @media (max-width: $break-point) {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+  }
 }
 
 .resultsList {
@@ -55,6 +65,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  @media (max-width: $break-point) {
+    display: none;
+  }
 }
 
 .tableScroll {
@@ -66,6 +80,15 @@
 .pagination {
   flex-shrink: 0;
   background-color: white;
+}
+
+.resultsMobile {
+  display: none;
+
+  @media (max-width: $break-point) {
+    display: block;
+    width: 100%;
+  }
 }
 
 @keyframes spin {

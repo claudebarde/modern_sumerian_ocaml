@@ -17,6 +17,11 @@ $border-radius: 10px;
   gap: 20px;
   padding: 50px;
 
+  h1 {
+    width: 100%;
+    text-align: center;
+  }
+
   //   .cuneiformDisplayContainer {
   //     width: $container-width;
   //     display: flex;
@@ -39,6 +44,12 @@ $border-radius: 10px;
     overflow-y: auto;
     // background-color: white;
     padding: $container-padding;
+
+    @media (max-width: $breakpoint) {
+      flex-direction: column;
+      align-items: flex-end;
+      padding: 0px;
+    }
   }
 
   .cuneiformDisplayButtons {
@@ -48,7 +59,15 @@ $border-radius: 10px;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 5px 0px;
+    padding: $padding;
+
+    @media (max-width: $breakpoint) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: auto;
+    }
   }
   //   }
 
@@ -149,11 +168,24 @@ $border-radius: 10px;
   //       width: 50%;
   //     }
   //   }
+
+  @media (max-width: $breakpoint) {
+    padding: 20px;
+  }
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+  gap: 10px;
+  width: $container-width;
 }
 
 .refreshIcon {
-  margin-left: 10px;
+  margin: 0px 10px;
   opacity: 0;
+  color: $proton-red;
 
   &.active {
     animation: spin 1s linear infinite;
@@ -167,6 +199,10 @@ $border-radius: 10px;
   ol li {
     margin-bottom: 10px;
   }
+
+  @media (max-width: $breakpoint) {
+    padding: 20px;
+  }
 }
 
 .paper {
@@ -174,8 +210,22 @@ $border-radius: 10px;
   min-height: 70px;
   padding: 10px;
 
-  &.transparent {
-    background-color: transparent;
+  @media (max-width: $breakpoint) {
+    width: 100%;
+  }
+}
+
+.onlyMobile {
+  @media (min-width: ($breakpoint + 1px)) {
+    display: none;
+  }
+}
+
+.onlyDesktop {
+  width: $container-width;
+
+  @media (max-width: $breakpoint) {
+    display: none;
   }
 }
 

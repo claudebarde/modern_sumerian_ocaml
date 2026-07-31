@@ -127,6 +127,7 @@ module Box = {
 module Button = {
     [@mel.module "@mui/material/Button"] [@react.component]
     external make: (
+        ~ariaLabel: string=?,
         ~children: React.element=?,
         ~classes: Js.t({..})=?,
         ~className: string=?,
@@ -318,6 +319,7 @@ module Drawer = {
 module Fab = {
   [@mel.module "@mui/material/Fab"] [@react.component]
   external make: (
+    ~ariaLabel: string=?,
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,
@@ -453,6 +455,7 @@ module Grid = {
 module IconButton = {
   [@mel.module "@mui/material/IconButton"] [@react.component]
   external make: (
+    ~ariaLabel: string=?,
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,
@@ -475,6 +478,49 @@ module IconButton = {
     ~target: string=?,
     ~variant: [`text | `outlined | `contained]=?, // TODO: a string can be passed to variant
     ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module InputBase = {
+  [@mel.module "@mui/material/InputBase"] [@react.component]
+  external make: (
+    ~autoComplete: string=?,
+    ~autoFocus: bool=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~defaultValue: 'value=?,
+    ~disabled: bool=?,
+    ~disableInjectingGlobalStyles: bool=?,
+    ~endAdornment: React.element=?,
+    ~error: bool=?,
+    ~fullWidth: bool=?,
+    ~id: string=?,
+    ~inputComponent: RootComponent.t=?,
+    ~inputProps: Js.t({..})=?,
+    ~inputRef: React.ref(Js.Nullable.t(Dom.element))=?,
+    ~margin: [`dense | `none]=?,
+    ~maxRows: int=?,
+    ~minRows: int=?,
+    ~multiline: bool=?,
+    ~name: string=?,
+    ~onBlur: (React.Event.Focus.t => unit)=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~onInvalid: (React.Event.Form.t => unit)=?,
+    ~onKeyDown: (React.Event.Keyboard.t => unit)=?,
+    ~onKeyUp: (React.Event.Keyboard.t => unit)=?,
+    ~onPaste: (React.Event.Clipboard.t => unit)=?,
+    ~placeholder: string=?,
+    ~readOnly: bool=?,
+    ~required: bool=?,
+    ~rows: int=?,
+    ~size: [`small | `medium]=?, // TODO: a string can be passed to size
+    // TODO: slots and slotProps are not supported yet
+    ~startAdornment: React.element=?,
+    ~sx: Js.t({..})=?,
+    ~type_: string=?,
+    ~value: 'value=?,
     unit
   ) => React.element = "default";
 };
@@ -811,6 +857,29 @@ module Stack = {
     ) => React.element = "default";
 };
 
+module Switch = {
+  [@mel.module "@mui/material/Switch"] [@react.component]
+  external make: (
+    ~checked: bool=?,
+    ~checkedIcon: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~defaultChecked: bool=?,
+    ~disabled: bool=?,
+    ~disableRipple: bool=?,
+    ~icon: React.element=?,
+    ~id: string=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~required: bool=?,
+    ~size: [`small | `medium]=?,
+    // TODO: slots and slotProps are not supported yet
+    ~sx: Js.t({..})=?,
+    ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
 module Table = {
   [@mel.module "@mui/material/Table"] [@react.component]
   external make: (
@@ -989,6 +1058,7 @@ module TextField = {
     ~onKeyDown: (React.Event.Keyboard.t => unit)=?,
     ~onKeyUp: (React.Event.Keyboard.t => unit)=?,
     ~onKeyEnter: (React.Event.Keyboard.t => unit)=?,
+    ~onPaste: (React.Event.Clipboard.t => unit)=?,
     ~placeholder: string=?,
     ~required: bool=?,
     ~rows: int=?,

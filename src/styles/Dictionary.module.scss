@@ -17,7 +17,7 @@
     text-align: center;
   }
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     height: auto;
     min-height: 100%;
     overflow: visible;
@@ -39,7 +39,7 @@
   justify-content: center;
   align-items: stretch;
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     flex: 0 0 auto;
     width: 100%;
     padding: 0;
@@ -66,7 +66,7 @@
   flex-direction: column;
   overflow: hidden;
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     display: none;
   }
 }
@@ -85,7 +85,7 @@
 .resultsMobile {
   display: none;
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     display: block;
     width: 100%;
   }

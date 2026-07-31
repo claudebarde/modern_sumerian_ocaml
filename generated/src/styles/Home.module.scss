@@ -60,7 +60,7 @@
   align-items: center;
   padding: 1rem;
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     display: none;
   }
 }
@@ -68,7 +68,7 @@
 .buttonGroupMobile {
   display: none;
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     display: flex;
     gap: 1rem;
     justify-content: center;

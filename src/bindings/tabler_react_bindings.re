@@ -4,7 +4,7 @@
  * Add another icon by copying the module below and changing both occurrences
  * of its JavaScript export name.
  */
-module IconSearch = {
+module IconArrowBarBoth = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
     ~size: int=?,
@@ -13,55 +13,7 @@ module IconSearch = {
     ~className: string=?,
     ~title: string=?,
     unit
-  ) => React.element = "IconSearch";
-};
-
-module IconRefresh = {
-  [@mel.module "@tabler/icons-react"] [@react.component]
-  external make: (
-    ~size: int=?,
-    ~stroke: float=?,
-    ~color: string=?,
-    ~className: string=?,
-    ~title: string=?,
-    unit
-  ) => React.element = "IconRefresh";
-};
-
-module IconCopy = {
-  [@mel.module "@tabler/icons-react"] [@react.component]
-  external make: (
-    ~size: int=?,
-    ~stroke: float=?,
-    ~color: string=?,
-    ~className: string=?,
-    ~title: string=?,
-    unit
-  ) => React.element = "IconCopy";
-};
-
-module IconTable = {
-  [@mel.module "@tabler/icons-react"] [@react.component]
-  external make: (
-    ~size: int=?,
-    ~stroke: float=?,
-    ~color: string=?,
-    ~className: string=?,
-    ~title: string=?,
-    unit
-  ) => React.element = "IconTable";
-};
-
-module IconKeyboard = {
-  [@mel.module "@tabler/icons-react"] [@react.component]
-  external make: (
-    ~size: int=?,
-    ~stroke: float=?,
-    ~color: string=?,
-    ~className: string=?,
-    ~title: string=?,
-    unit
-  ) => React.element = "IconKeyboard";
+  ) => React.element = "IconArrowBarBoth";
 };
 
 module IconBook2 = {
@@ -76,7 +28,7 @@ module IconBook2 = {
   ) => React.element = "IconBook2";
 };
 
-module IconChevronDown = {
+module IconBrandFacebook = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
     ~size: int=?,
@@ -85,7 +37,7 @@ module IconChevronDown = {
     ~className: string=?,
     ~title: string=?,
     unit
-  ) => React.element = "IconChevronDown";
+  ) => React.element = "IconBrandFacebook";
 };
 
 module IconBrandGithub = {
@@ -100,18 +52,6 @@ module IconBrandGithub = {
   ) => React.element = "IconBrandGithub";
 };
 
-module IconBrandFacebook = {
-  [@mel.module "@tabler/icons-react"] [@react.component]
-  external make: (
-    ~size: int=?,
-    ~stroke: float=?,
-    ~color: string=?,
-    ~className: string=?,
-    ~title: string=?,
-    unit
-  ) => React.element = "IconBrandFacebook";
-};
-
 module IconBrandX = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -122,6 +62,90 @@ module IconBrandX = {
     ~title: string=?,
     unit
   ) => React.element = "IconBrandX";
+};
+
+module IconChevronDown = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconChevronDown";
+};
+
+module IconCheck = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconCheck";
+};
+
+module IconCopy = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconCopy";
+};
+
+module IconCopyFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconCopyFilled";
+};
+
+module IconFileText = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconFileText";
+};
+
+module IconHome = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconHome";
+};
+
+module IconKeyboard = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconKeyboard";
 };
 
 module IconLink = {
@@ -148,18 +172,6 @@ module IconList = {
   ) => React.element = "IconList";
 };
 
-module IconFileText = {
-  [@mel.module "@tabler/icons-react"] [@react.component]
-  external make: (
-    ~size: int=?,
-    ~stroke: float=?,
-    ~color: string=?,
-    ~className: string=?,
-    ~title: string=?,
-    unit
-  ) => React.element = "IconFileText";
-};
-
 module IconMenu2 = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -172,7 +184,7 @@ module IconMenu2 = {
   ) => React.element = "IconMenu2";
 };
 
-module IconHome = {
+module IconPencilPlus = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
     ~size: int=?,
@@ -181,5 +193,65 @@ module IconHome = {
     ~className: string=?,
     ~title: string=?,
     unit
-  ) => React.element = "IconHome";
+  ) => React.element = "IconPencilPlus";
+};
+
+module IconRefresh = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconRefresh";
+};
+
+module IconSearch = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconSearch";
+};
+
+module IconTable = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconTable";
+};
+
+module IconTrashX = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconTrashX";
+};
+
+module IconTrashXFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconTrashXFilled";
 };

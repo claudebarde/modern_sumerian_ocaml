@@ -8,7 +8,7 @@ footer {
   font-size: 0.8rem;
   padding: 0px 20px;
 
-  @media (max-width: $break-point) {
+  @media (max-width: $breakpoint) {
     padding: 10px;
   }
 
@@ -20,7 +20,7 @@ footer {
   }
 
   .footerText {
-    @media (max-width: $break-point) {
+    @media (max-width: $breakpoint) {
       display: none;
     }
   }

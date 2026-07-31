@@ -62,6 +62,8 @@ const Grid = {};
 
 const IconButton = {};
 
+const InputBase = {};
+
 const InputLabel = {};
 
 const List = {};
@@ -102,6 +104,8 @@ const Stack = {
   ResponsiveDirection: ResponsiveDirection,
   ResponsiveSpacing: ResponsiveSpacing
 };
+
+const Switch = {};
 
 const Table = {};
 
@@ -205,6 +209,7 @@ export {
   FormLabel,
   Grid,
   IconButton,
+  InputBase,
   InputLabel,
   List,
   ListItem,
@@ -220,6 +225,7 @@ export {
   RadioGroup,
   Select,
   Stack,
+  Switch,
   Table,
   TableBody,
   TableCell,

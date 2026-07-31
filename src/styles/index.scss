@@ -53,6 +53,14 @@ body {
     &.small {
       font-size: 1.5rem;
     }
+
+    @media (max-width: $breakpoint) {
+      font-size: 1.5rem;
+
+      &.small {
+        font-size: 1.2rem;
+      }
+    }
   }
 
   .button {

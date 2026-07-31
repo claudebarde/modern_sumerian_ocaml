@@ -3,17 +3,23 @@
 import KeyboardModuleScss from "../styles/Keyboard.module.scss";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import InputBase from "@mui/material/InputBase";
 import ListSubheader from "@mui/material/ListSubheader";
+import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
+import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
+import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Bindings__Supabase from "../bindings/supabase.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
@@ -173,6 +179,7 @@ function Keyboard(Props) {
     return false;
   });
   const set_dictionary_search = match$6[1];
+  const dictionary_search = match$6[0];
   const match$7 = React.useState(function () {
     
   });
@@ -186,6 +193,12 @@ function Keyboard(Props) {
     return false;
   });
   const set_how_to_drawer = match$9[1];
+  const match$10 = React.useState(function () {
+    return null;
+  });
+  const set_determinatives_menu_anchor = match$10[1];
+  const determinatives_menu_anchor = match$10[0];
+  const determinatives_menu_open = !(determinatives_menu_anchor == null);
   const latest_search_id = React.useRef(0);
   const cuneiform_selection_ref = React.useRef(null);
   const curate_cuneiforms = function (selections) {
@@ -436,6 +449,299 @@ function Keyboard(Props) {
     }
     
   }), [active_cuneiform_selection]);
+  const reset = function (param) {
+    Curry._1(set_cuneiform_display, (function (param) {
+      
+    }));
+    Curry._1(set_phonetic_display, (function (param) {
+      
+    }));
+    Curry._1(set_input, (function (param) {
+      
+    }));
+    Curry._1(set_cuneiform_selection, (function (param) {
+      
+    }));
+    Curry._1(set_active_cuneiform_selection, (function (param) {
+      
+    }));
+    Curry._1(set_selected_determinative, (function (param) {
+      return "";
+    }));
+  };
+  const select_determinative = function (option) {
+    Curry._1(set_cuneiform_display, (function (prev) {
+      return prev !== undefined ? Stdlib__Array.concat({
+          hd: prev,
+          tl: {
+            hd: [option.symbol],
+            tl: /* [] */ 0
+          }
+        }) : [option.symbol];
+    }));
+    Curry._1(set_phonetic_display, (function (prev) {
+      return prev !== undefined ? Stdlib__Array.concat({
+          hd: prev,
+          tl: {
+            hd: ["D=" + option.phonetic],
+            tl: /* [] */ 0
+          }
+        }) : ["D=" + option.phonetic];
+    }));
+    Curry._1(set_selected_determinative, (function (param) {
+      return "";
+    }));
+    Curry._1(set_determinatives_menu_anchor, (function (param) {
+      return null;
+    }));
+  };
+  const confirmCuneiformSelection = function (param) {
+    if (active_cuneiform_selection !== undefined) {
+      Curry._1(set_cuneiform_display, (function (prev) {
+        return prev !== undefined ? Stdlib__Array.concat({
+            hd: prev,
+            tl: {
+              hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
+              tl: /* [] */ 0
+            }
+          }) : [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
+      }));
+      Curry._1(set_phonetic_display, (function (prev) {
+        return prev !== undefined ? Stdlib__Array.concat({
+            hd: prev,
+            tl: {
+              hd: [active_cuneiform_selection.word],
+              tl: /* [] */ 0
+            }
+          }) : [active_cuneiform_selection.word];
+      }));
+      Curry._1(set_input, (function (param) {
+        
+      }));
+      Curry._1(set_cuneiform_selection, (function (param) {
+        
+      }));
+      return Curry._1(set_active_cuneiform_selection, (function (param) {
+        
+      }));
+    }
+    
+  };
+  const handleKeyDown = function ($$event) {
+    if ($$event.key === "Enter") {
+      $$event.preventDefault();
+      confirmCuneiformSelection(undefined);
+      if (input === undefined) {
+        return;
+      }
+      const trimmed_value = Components__Web_utils.Format.from_standard_to_phonetic(input.trim().toLowerCase());
+      if (keyboard_dictionary !== undefined) {
+        const dictionary = Caml_option.valFromOption(keyboard_dictionary);
+        const cuneiforms = Js__Js_dict.get(dictionary, trimmed_value);
+        if (cuneiforms === undefined) {
+          if (active_cuneiform_selection !== undefined) {
+            dictionary[trimmed_value] = [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
+            localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
+            Curry._1(set_keyboard_dictionary, (function (param) {
+              return Caml_option.some(dictionary);
+            }));
+            console.log("Added new word and cuneiform to the dictionary.");
+            return;
+          } else {
+            return;
+          }
+        }
+        if (active_cuneiform_selection === undefined) {
+          return;
+        }
+        if (Stdlib__Array.mem(Caml_array.get(active_cuneiform_selection.cuneiforms, 0), cuneiforms)) {
+          if (Stdlib__Array.mem(Caml_array.get(active_cuneiform_selection.cuneiforms, 0), cuneiforms)) {
+            console.log("Cuneiform already exists in the dictionary.");
+            return;
+          }
+          const new_cuneiforms = Stdlib__Array.concat({
+            hd: cuneiforms,
+            tl: {
+              hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
+              tl: /* [] */ 0
+            }
+          });
+          dictionary[trimmed_value] = new_cuneiforms;
+          localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
+          Curry._1(set_keyboard_dictionary, (function (param) {
+            return Caml_option.some(dictionary);
+          }));
+          console.log("Added cuneiform to the dictionary.");
+          return;
+        }
+        const new_cuneiforms$1 = Stdlib__Array.concat({
+          hd: cuneiforms,
+          tl: {
+            hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
+            tl: /* [] */ 0
+          }
+        });
+        dictionary[trimmed_value] = new_cuneiforms$1;
+        localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
+        Curry._1(set_keyboard_dictionary, (function (param) {
+          return Caml_option.some(dictionary);
+        }));
+        console.log("Added cuneiform to the dictionary.");
+        return;
+      }
+      const new_dictionary = {};
+      if (active_cuneiform_selection !== undefined) {
+        new_dictionary[trimmed_value] = [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
+        localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(new_dictionary));
+        Curry._1(set_keyboard_dictionary, (function (param) {
+          return Caml_option.some(new_dictionary);
+        }));
+        console.log("Created new dictionary and added word and cuneiform.");
+        return;
+      } else {
+        return;
+      }
+    }
+    if ($$event.key !== " ") {
+      if ($$event.key === "ArrowLeft") {
+        $$event.preventDefault();
+        return Curry._1(set_active_cuneiform_selection, (function (prev) {
+          if (prev === undefined) {
+            if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
+              return Caml_array.get(cuneiform_selection, 0);
+            } else {
+              return;
+            }
+          }
+          if (cuneiform_selection === undefined) {
+            return;
+          }
+          const current_index = Stdlib__Array.find_index((function (sel) {
+            return sel.id === prev.id;
+          }), cuneiform_selection);
+          if (current_index !== undefined) {
+            if (current_index > 0) {
+              return Caml_array.get(cuneiform_selection, current_index - 1 | 0);
+            } else if (cuneiform_selection.length !== 0) {
+              return Caml_array.get(cuneiform_selection, cuneiform_selection.length - 1 | 0);
+            } else {
+              return;
+            }
+          } else {
+            return prev;
+          }
+        }));
+      } else if ($$event.key === "ArrowRight") {
+        $$event.preventDefault();
+        return Curry._1(set_active_cuneiform_selection, (function (prev) {
+          if (prev === undefined) {
+            if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
+              return Caml_array.get(cuneiform_selection, 0);
+            } else {
+              return;
+            }
+          }
+          if (cuneiform_selection === undefined) {
+            return;
+          }
+          const current_index = Stdlib__Array.find_index((function (sel) {
+            return sel.id === prev.id;
+          }), cuneiform_selection);
+          if (current_index !== undefined) {
+            if (current_index < (cuneiform_selection.length - 1 | 0)) {
+              return Caml_array.get(cuneiform_selection, current_index + 1 | 0);
+            } else if (cuneiform_selection.length !== 0) {
+              return Caml_array.get(cuneiform_selection, 0);
+            } else {
+              return;
+            }
+          } else {
+            return prev;
+          }
+        }));
+      } else {
+        return;
+      }
+    }
+    $$event.preventDefault();
+    if (cuneiform_display !== undefined) {
+      if (phonetic_display === undefined && input === undefined) {
+        return;
+      }
+      
+    } else if (input === undefined) {
+      return;
+    }
+    if (active_cuneiform_selection !== undefined) {
+      Curry._1(set_cuneiform_display, (function (prev) {
+        return prev !== undefined ? Stdlib__Array.concat({
+            hd: prev,
+            tl: {
+              hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
+              tl: {
+                hd: ["wd"],
+                tl: /* [] */ 0
+              }
+            }
+          }) : [
+            Caml_array.get(active_cuneiform_selection.cuneiforms, 0),
+            "wd"
+          ];
+      }));
+      Curry._1(set_phonetic_display, (function (prev) {
+        return prev !== undefined ? Stdlib__Array.concat({
+            hd: prev,
+            tl: {
+              hd: [active_cuneiform_selection.word],
+              tl: {
+                hd: ["wd"],
+                tl: /* [] */ 0
+              }
+            }
+          }) : [
+            active_cuneiform_selection.word,
+            "wd"
+          ];
+      }));
+      Curry._1(set_input, (function (param) {
+        
+      }));
+      Curry._1(set_cuneiform_selection, (function (param) {
+        
+      }));
+      return Curry._1(set_active_cuneiform_selection, (function (param) {
+        
+      }));
+    } else {
+      Curry._1(set_cuneiform_display, (function (prev) {
+        return prev !== undefined ? Stdlib__Array.concat({
+            hd: prev,
+            tl: {
+              hd: ["wd"],
+              tl: /* [] */ 0
+            }
+          }) : ["wd"];
+      }));
+      Curry._1(set_phonetic_display, (function (prev) {
+        return prev !== undefined ? Stdlib__Array.concat({
+            hd: prev,
+            tl: {
+              hd: ["wd"],
+              tl: /* [] */ 0
+            }
+          }) : ["wd"];
+      }));
+      Curry._1(set_input, (function (param) {
+        
+      }));
+      Curry._1(set_cuneiform_selection, (function (param) {
+        
+      }));
+      return Curry._1(set_active_cuneiform_selection, (function (param) {
+        
+      }));
+    }
+  };
   let tmp;
   if (phonetic_display !== undefined) {
     const blank_space_removed = Stdlib__Array.fold_left((function (acc, item) {
@@ -515,39 +821,82 @@ function Keyboard(Props) {
                   justifyContent: "flex-start"
                 }
               }),
-              JsxRuntime.jsx("div", {
-                children: JsxRuntime.jsx("button", {
-                  children: JsxRuntime.jsx(IconsReact.IconCopy, {
-                    size: 15,
-                    stroke: 3.0
-                  }),
-                  "aria-label": "Copy cuneiform text",
-                  className: "button small",
-                  title: "Copy cuneiform text",
-                  onClick: (function (param) {
-                    if (cuneiform_display === undefined) {
-                      return;
-                    }
-                    if (cuneiform_display.length === 0) {
-                      return;
-                    }
-                    const text = Stdlib__Array.map((function (value) {
-                      if (value === "wd") {
-                        if (has_word_delimiter) {
-                          return String.fromCodePoint(183);
-                        } else {
-                          return "";
-                        }
-                      } else {
-                        return value;
+              JsxRuntime.jsxs("div", {
+                children: [
+                  JsxRuntime.jsx(Button, {
+                    ariaLabel: "Copy cuneiform text",
+                    children: JsxRuntime.jsx(IconsReact.IconCopy, {
+                      size: 20,
+                      stroke: 2.0
+                    }),
+                    color: Bindings__Material_ui.Color.primary,
+                    onClick: (function (param) {
+                      if (cuneiform_display === undefined) {
+                        return;
                       }
-                    }), cuneiform_display).join("");
-                    navigator.clipboard.writeText(text).catch(function (error) {
-                      console.log("Could not copy the cuneiform text:", error);
-                      return Promise.resolve(undefined);
-                    });
+                      if (cuneiform_display.length === 0) {
+                        return;
+                      }
+                      const text = Stdlib__Array.map((function (value) {
+                        if (value === "wd") {
+                          if (has_word_delimiter) {
+                            return String.fromCodePoint(183);
+                          } else {
+                            return "";
+                          }
+                        } else {
+                          return value;
+                        }
+                      }), cuneiform_display).join("");
+                      navigator.clipboard.writeText(text).catch(function (error) {
+                        console.log("Could not copy the cuneiform text:", error);
+                        return Promise.resolve(undefined);
+                      });
+                    }),
+                    size: "small",
+                    variant: "contained",
+                    sx: {
+                      padding: "6px 8px",
+                      minWidth: "0"
+                    }
+                  }),
+                  JsxRuntime.jsx("span", {
+                    children: JsxRuntime.jsx(FormControlLabel, {
+                      control: JsxRuntime.jsx(Switch, {
+                        checked: has_word_delimiter,
+                        color: Bindings__Material_ui.Color.primary,
+                        onChange: (function ($$event) {
+                          Curry._1(set_has_word_delimiter, (function (param) {
+                            return $$event.target.checked;
+                          }));
+                        })
+                      }),
+                      label: "Word delimiter",
+                      labelPlacement: "end"
+                    }),
+                    className: css.onlyMobile
+                  }),
+                  JsxRuntime.jsx("span", {
+                    children: JsxRuntime.jsx(Button, {
+                      ariaLabel: "Reset cuneiform text",
+                      children: JsxRuntime.jsx(IconsReact.IconTrashX, {
+                        size: 20,
+                        stroke: 2.0
+                      }),
+                      color: Bindings__Material_ui.Color.primary,
+                      onClick: (function (param) {
+                        reset(undefined);
+                      }),
+                      size: "small",
+                      variant: "contained",
+                      sx: {
+                        padding: "6px 8px",
+                        minWidth: "0"
+                      }
+                    }),
+                    className: css.onlyMobile
                   })
-                }),
+                ],
                 className: css.cuneiformDisplayButtons
               })
             ],
@@ -606,7 +955,7 @@ function Keyboard(Props) {
             ],
             className: css.paper
           }),
-          JsxRuntime.jsxs(Paper, {
+          JsxRuntime.jsxs(Box, {
             children: [
               JsxRuntime.jsxs("div", {
                 children: [
@@ -658,27 +1007,7 @@ function Keyboard(Props) {
                     return option.phonetic === selected_value;
                   }), determinative_options);
                   if (option !== undefined) {
-                    Curry._1(set_cuneiform_display, (function (prev) {
-                      return prev !== undefined ? Stdlib__Array.concat({
-                          hd: prev,
-                          tl: {
-                            hd: [option.symbol],
-                            tl: /* [] */ 0
-                          }
-                        }) : [option.symbol];
-                    }));
-                    Curry._1(set_phonetic_display, (function (prev) {
-                      return prev !== undefined ? Stdlib__Array.concat({
-                          hd: prev,
-                          tl: {
-                            hd: ["D=" + option.phonetic],
-                            tl: /* [] */ 0
-                          }
-                        }) : ["D=" + option.phonetic];
-                    }));
-                    return Curry._1(set_selected_determinative, (function (param) {
-                      return "";
-                    }));
+                    return select_determinative(option);
                   }
                   
                 }),
@@ -690,40 +1019,15 @@ function Keyboard(Props) {
                   backgroundColor: "white"
                 }
               }),
-              JsxRuntime.jsx("button", {
+              JsxRuntime.jsx(Button, {
                 children: "Reset",
-                className: "button",
                 onClick: (function (param) {
-                  Curry._1(set_cuneiform_display, (function (param) {
-                    
-                  }));
-                  Curry._1(set_phonetic_display, (function (param) {
-                    
-                  }));
-                  Curry._1(set_input, (function (param) {
-                    
-                  }));
-                  Curry._1(set_cuneiform_selection, (function (param) {
-                    
-                  }));
-                  Curry._1(set_active_cuneiform_selection, (function (param) {
-                    
-                  }));
-                  Curry._1(set_selected_determinative, (function (param) {
-                    return "";
-                  }));
-                })
+                  reset(undefined);
+                }),
+                variant: "contained"
               })
             ],
-            className: css.paper + (" " + css.transparent),
-            elevation: 0,
-            sx: {
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              gap: "10px"
-            }
+            className: css.controls + (" " + css.onlyDesktop)
           }),
           JsxRuntime.jsxs(Paper, {
             children: [
@@ -736,249 +1040,7 @@ function Keyboard(Props) {
                     return value;
                   }));
                 }),
-                onKeyDown: (function ($$event) {
-                  if ($$event.key === "Enter") {
-                    $$event.preventDefault();
-                    if (active_cuneiform_selection !== undefined) {
-                      Curry._1(set_cuneiform_display, (function (prev) {
-                        return prev !== undefined ? Stdlib__Array.concat({
-                            hd: prev,
-                            tl: {
-                              hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
-                              tl: /* [] */ 0
-                            }
-                          }) : [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
-                      }));
-                      Curry._1(set_phonetic_display, (function (prev) {
-                        return prev !== undefined ? Stdlib__Array.concat({
-                            hd: prev,
-                            tl: {
-                              hd: [active_cuneiform_selection.word],
-                              tl: /* [] */ 0
-                            }
-                          }) : [active_cuneiform_selection.word];
-                      }));
-                      Curry._1(set_input, (function (param) {
-                        
-                      }));
-                      Curry._1(set_cuneiform_selection, (function (param) {
-                        
-                      }));
-                      Curry._1(set_active_cuneiform_selection, (function (param) {
-                        
-                      }));
-                    }
-                    if (input === undefined) {
-                      return;
-                    }
-                    const trimmed_value = Components__Web_utils.Format.from_standard_to_phonetic(input.trim().toLowerCase());
-                    if (keyboard_dictionary !== undefined) {
-                      const dictionary = Caml_option.valFromOption(keyboard_dictionary);
-                      const cuneiforms = Js__Js_dict.get(dictionary, trimmed_value);
-                      if (cuneiforms === undefined) {
-                        if (active_cuneiform_selection !== undefined) {
-                          dictionary[trimmed_value] = [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
-                          localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
-                          Curry._1(set_keyboard_dictionary, (function (param) {
-                            return Caml_option.some(dictionary);
-                          }));
-                          console.log("Added new word and cuneiform to the dictionary.");
-                          return;
-                        } else {
-                          return;
-                        }
-                      }
-                      if (active_cuneiform_selection === undefined) {
-                        return;
-                      }
-                      if (Stdlib__Array.mem(Caml_array.get(active_cuneiform_selection.cuneiforms, 0), cuneiforms)) {
-                        if (Stdlib__Array.mem(Caml_array.get(active_cuneiform_selection.cuneiforms, 0), cuneiforms)) {
-                          console.log("Cuneiform already exists in the dictionary.");
-                          return;
-                        }
-                        const new_cuneiforms = Stdlib__Array.concat({
-                          hd: cuneiforms,
-                          tl: {
-                            hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
-                            tl: /* [] */ 0
-                          }
-                        });
-                        dictionary[trimmed_value] = new_cuneiforms;
-                        localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
-                        Curry._1(set_keyboard_dictionary, (function (param) {
-                          return Caml_option.some(dictionary);
-                        }));
-                        console.log("Added cuneiform to the dictionary.");
-                        return;
-                      }
-                      const new_cuneiforms$1 = Stdlib__Array.concat({
-                        hd: cuneiforms,
-                        tl: {
-                          hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
-                          tl: /* [] */ 0
-                        }
-                      });
-                      dictionary[trimmed_value] = new_cuneiforms$1;
-                      localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
-                      Curry._1(set_keyboard_dictionary, (function (param) {
-                        return Caml_option.some(dictionary);
-                      }));
-                      console.log("Added cuneiform to the dictionary.");
-                      return;
-                    }
-                    const new_dictionary = {};
-                    if (active_cuneiform_selection !== undefined) {
-                      new_dictionary[trimmed_value] = [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
-                      localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(new_dictionary));
-                      Curry._1(set_keyboard_dictionary, (function (param) {
-                        return Caml_option.some(new_dictionary);
-                      }));
-                      console.log("Created new dictionary and added word and cuneiform.");
-                      return;
-                    } else {
-                      return;
-                    }
-                  }
-                  if ($$event.key !== " ") {
-                    if ($$event.key === "ArrowLeft") {
-                      $$event.preventDefault();
-                      return Curry._1(set_active_cuneiform_selection, (function (prev) {
-                        if (prev === undefined) {
-                          if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
-                            return Caml_array.get(cuneiform_selection, 0);
-                          } else {
-                            return;
-                          }
-                        }
-                        if (cuneiform_selection === undefined) {
-                          return;
-                        }
-                        const current_index = Stdlib__Array.find_index((function (sel) {
-                          return sel.id === prev.id;
-                        }), cuneiform_selection);
-                        if (current_index !== undefined) {
-                          if (current_index > 0) {
-                            return Caml_array.get(cuneiform_selection, current_index - 1 | 0);
-                          } else if (cuneiform_selection.length !== 0) {
-                            return Caml_array.get(cuneiform_selection, cuneiform_selection.length - 1 | 0);
-                          } else {
-                            return;
-                          }
-                        } else {
-                          return prev;
-                        }
-                      }));
-                    } else if ($$event.key === "ArrowRight") {
-                      $$event.preventDefault();
-                      return Curry._1(set_active_cuneiform_selection, (function (prev) {
-                        if (prev === undefined) {
-                          if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
-                            return Caml_array.get(cuneiform_selection, 0);
-                          } else {
-                            return;
-                          }
-                        }
-                        if (cuneiform_selection === undefined) {
-                          return;
-                        }
-                        const current_index = Stdlib__Array.find_index((function (sel) {
-                          return sel.id === prev.id;
-                        }), cuneiform_selection);
-                        if (current_index !== undefined) {
-                          if (current_index < (cuneiform_selection.length - 1 | 0)) {
-                            return Caml_array.get(cuneiform_selection, current_index + 1 | 0);
-                          } else if (cuneiform_selection.length !== 0) {
-                            return Caml_array.get(cuneiform_selection, 0);
-                          } else {
-                            return;
-                          }
-                        } else {
-                          return prev;
-                        }
-                      }));
-                    } else {
-                      return;
-                    }
-                  }
-                  $$event.preventDefault();
-                  if (cuneiform_display !== undefined) {
-                    if (phonetic_display === undefined && input === undefined) {
-                      return;
-                    }
-                    
-                  } else if (input === undefined) {
-                    return;
-                  }
-                  if (active_cuneiform_selection !== undefined) {
-                    Curry._1(set_cuneiform_display, (function (prev) {
-                      return prev !== undefined ? Stdlib__Array.concat({
-                          hd: prev,
-                          tl: {
-                            hd: [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)],
-                            tl: {
-                              hd: ["wd"],
-                              tl: /* [] */ 0
-                            }
-                          }
-                        }) : [
-                          Caml_array.get(active_cuneiform_selection.cuneiforms, 0),
-                          "wd"
-                        ];
-                    }));
-                    Curry._1(set_phonetic_display, (function (prev) {
-                      return prev !== undefined ? Stdlib__Array.concat({
-                          hd: prev,
-                          tl: {
-                            hd: [active_cuneiform_selection.word],
-                            tl: {
-                              hd: ["wd"],
-                              tl: /* [] */ 0
-                            }
-                          }
-                        }) : [
-                          active_cuneiform_selection.word,
-                          "wd"
-                        ];
-                    }));
-                    Curry._1(set_input, (function (param) {
-                      
-                    }));
-                    Curry._1(set_cuneiform_selection, (function (param) {
-                      
-                    }));
-                    return Curry._1(set_active_cuneiform_selection, (function (param) {
-                      
-                    }));
-                  } else {
-                    Curry._1(set_cuneiform_display, (function (prev) {
-                      return prev !== undefined ? Stdlib__Array.concat({
-                          hd: prev,
-                          tl: {
-                            hd: ["wd"],
-                            tl: /* [] */ 0
-                          }
-                        }) : ["wd"];
-                    }));
-                    Curry._1(set_phonetic_display, (function (prev) {
-                      return prev !== undefined ? Stdlib__Array.concat({
-                          hd: prev,
-                          tl: {
-                            hd: ["wd"],
-                            tl: /* [] */ 0
-                          }
-                        }) : ["wd"];
-                    }));
-                    Curry._1(set_input, (function (param) {
-                      
-                    }));
-                    Curry._1(set_cuneiform_selection, (function (param) {
-                      
-                    }));
-                    return Curry._1(set_active_cuneiform_selection, (function (param) {
-                      
-                    }));
-                  }
-                }),
+                onKeyDown: handleKeyDown,
                 placeholder: "Type here...",
                 sx: {
                   backgroundColor: "white",
@@ -987,7 +1049,7 @@ function Keyboard(Props) {
                 type_: "text",
                 value: input !== undefined ? input : ""
               }),
-              match$6[0] ? JsxRuntime.jsx(IconsReact.IconRefresh, {
+              dictionary_search ? JsxRuntime.jsx(IconsReact.IconRefresh, {
                   size: 20,
                   stroke: 3.0,
                   className: css.refreshIcon + (" " + css.active)
@@ -997,13 +1059,127 @@ function Keyboard(Props) {
                   className: css.refreshIcon
                 })
             ],
-            className: css.paper + (" " + css.transparent),
+            className: css.paper,
             elevation: 0,
             sx: {
-              display: "flex",
+              display: {
+                xs: "none",
+                sm: "flex"
+              },
               flexDirection: "row",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
+              backgroundColor: "transparent"
+            }
+          }),
+          JsxRuntime.jsxs(Paper, {
+            children: [
+              JsxRuntime.jsxs(Button, {
+                children: [
+                  "𒀭",
+                  JsxRuntime.jsx(IconsReact.IconChevronDown, {
+                    size: 20,
+                    stroke: 2.0
+                  })
+                ],
+                onClick: (function ($$event) {
+                  Curry._1(set_determinatives_menu_anchor, (function (param) {
+                    return $$event.currentTarget;
+                  }));
+                }),
+                variant: "text",
+                sx: {
+                  fontFamily: "CuneiformComposite",
+                  fontSize: "1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "5px"
+                }
+              }),
+              JsxRuntime.jsx(Divider, {
+                orientation: "vertical"
+              }),
+              JsxRuntime.jsx(InputBase, {
+                onChange: (function ($$event) {
+                  const value = $$event.target.value;
+                  Curry._1(set_input, (function (param) {
+                    return value;
+                  }));
+                }),
+                onKeyDown: handleKeyDown,
+                placeholder: "Search a word...",
+                value: input !== undefined ? input : ""
+              }),
+              JsxRuntime.jsx(Button, {
+                children: dictionary_search ? JsxRuntime.jsx(IconsReact.IconRefresh, {
+                    size: 20,
+                    stroke: 2.0,
+                    className: css.refreshIcon + (" " + css.active)
+                  }) : (
+                    cuneiform_selection !== undefined && cuneiform_selection.length !== 0 ? JsxRuntime.jsx(IconsReact.IconPencilPlus, {
+                        size: 20,
+                        stroke: 2.0
+                      }) : null
+                  ),
+                disabled: dictionary_search,
+                onClick: (function (param) {
+                  if (dictionary_search) {
+                    return;
+                  } else {
+                    return confirmCuneiformSelection(undefined);
+                  }
+                })
+              }),
+              JsxRuntime.jsxs(Menu, {
+                children: [
+                  JsxRuntime.jsx(ListSubheader, {
+                    children: "Front"
+                  }),
+                  Stdlib__Array.map((function (option) {
+                    const Key = option.symbol;
+                    return JsxRuntime.jsx(MenuItem, {
+                      children: option.label,
+                      onClick: (function (param) {
+                        select_determinative(option);
+                      }),
+                      value: option.phonetic
+                    }, Key);
+                  }), Caml_array.get(determinative_groups, 0).options),
+                  JsxRuntime.jsx(ListSubheader, {
+                    children: "End"
+                  }),
+                  Stdlib__Array.map((function (option) {
+                    const Key = option.symbol;
+                    return JsxRuntime.jsx(MenuItem, {
+                      children: option.label,
+                      onClick: (function (param) {
+                        select_determinative(option);
+                      }),
+                      value: option.phonetic
+                    }, Key);
+                  }), Caml_array.get(determinative_groups, 1).options)
+                ],
+                anchorEl: determinatives_menu_anchor,
+                onClose: (function (param) {
+                  Curry._1(set_determinatives_menu_anchor, (function (param) {
+                    return null;
+                  }));
+                }),
+                open: determinatives_menu_open
+              })
+            ],
+            elevation: 0,
+            sx: {
+              display: {
+                xs: "flex",
+                sm: "none"
+              },
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              gap: "10px"
             }
           }),
           JsxRuntime.jsx(Button, {
@@ -1031,7 +1207,7 @@ function Keyboard(Props) {
                     children: "Select a cuneiform from the selection area by clicking on it or using the arrow keys."
                   }),
                   JsxRuntime.jsx("li", {
-                    children: "Press Enter to add the selected cuneiform to the display area, or press Space to add a space."
+                    children: "Press Enter (or the pencil plus icon on mobile) to add the selected cuneiform to the display area, or press Space to add a space."
                   }),
                   JsxRuntime.jsx("li", {
                     children: "You can also copy the cuneiform text to your clipboard using the copy button."

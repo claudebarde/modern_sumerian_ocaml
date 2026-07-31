@@ -29,9 +29,9 @@ let make = () => {
                 <h2>{"Use our interactive tools" |> React.string}</h2>
                 <Grid 
                     container=true 
-                    spacing={`Number(2)} 
+                    spacing=`Number(2)
                 >
-                    <Grid size={`Object({"xs": 12, "md": 6, "xl": 3})}>
+                    <Grid size=`Object(Grid.ResponsiveSize.make(~xs=12, ~md=6, ~xl=3, ()))>
                         <Card className={css##toolCard}>
                             <CardHeader title={"The Conjugator" |> React.string} />
                             <CardContent className={css##toolCardContent}>
@@ -47,7 +47,7 @@ let make = () => {
                             </CardActions>
                         </Card>
                     </Grid>
-                    <Grid size={`Object({"xs": 12, "md": 6, "xl": 3})}>
+                    <Grid size=`Object(Grid.ResponsiveSize.make(~xs=12, ~md=6, ~xl=3, ()))>
                         <Card className={css##toolCard}>
                             <CardHeader title={"The Dictionary" |> React.string} />
                             <CardContent className={css##toolCardContent}>
@@ -67,7 +67,7 @@ let make = () => {
                             </CardActions>
                         </Card>
                     </Grid>
-                    <Grid size={`Object({"xs": 12, "md": 6, "xl": 3})}>
+                    <Grid size=`Object(Grid.ResponsiveSize.make(~xs=12, ~md=6, ~xl=3, ()))>
                         <Card className={css##toolCard}>
                             <CardHeader title={"The Keyboard" |> React.string} />
                             <CardContent className={css##toolCardContent}>
@@ -83,7 +83,7 @@ let make = () => {
                             </CardActions>
                         </Card>
                     </Grid>
-                    <Grid size={`Object({"xs": 12, "md": 6, "xl": 3})}>
+                    <Grid size=`Object(Grid.ResponsiveSize.make(~xs=12, ~md=6, ~xl=3, ()))>
                         <Card className={css##toolCard}>
                             <CardHeader title={"The Lessons" |> React.string} />
                             <CardContent className={css##toolCardContent}>

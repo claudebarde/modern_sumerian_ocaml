@@ -58,7 +58,11 @@ const FormGroup = {};
 
 const FormLabel = {};
 
-const Grid = {};
+const ResponsiveSize = {};
+
+const Grid = {
+  ResponsiveSize: ResponsiveSize
+};
 
 const IconButton = {};
 
@@ -176,6 +180,8 @@ const Typography = {
   Color: Color$1
 };
 
+const UseMediaQuery = {};
+
 const Theme = {};
 
 const ThemeProvider = {};
@@ -241,6 +247,7 @@ export {
   ToggleButtonGroup,
   Toolbar,
   Typography,
+  UseMediaQuery,
   Theme,
   ThemeProvider,
   CssBaseline,

@@ -3,6 +3,14 @@
 import ConjugatorModuleScss from "../styles/Conjugator.module.scss";
 import Cuneiform_code_pointsJson from "./cuneiform_code_points.json";
 import * as Epsd_linksJson from "./epsd_links.json";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Components__Cuneiform_char from "./cuneiform_char.mjs";
 import * as Components__Custom_dict from "./custom_dict.mjs";
@@ -189,77 +197,121 @@ function Web_utils$BuildResults(Props) {
   const analysis = match.analysis;
   const conjugatedVerb = match.verb;
   return [
-    JsxRuntime.jsxs("div", {
+    JsxRuntime.jsxs(Grid, {
       children: [
-        JsxRuntime.jsx("span", {
-          children: conjugatedVerb,
-          style: {
-            fontSize: "1.2rem"
+        JsxRuntime.jsx(Grid, {
+          children: JsxRuntime.jsx("span", {
+            children: conjugatedVerb,
+            className: css.noWrap,
+            style: {
+              fontSize: "1.2rem"
+            }
+          }, "verbForm"),
+          size: {
+            xs: 12,
+            sm: 12,
+            md: 3
           }
-        }, "verbForm"),
-        JsxRuntime.jsx("span", {
-          children: Stdlib__Array.mapi((function (i, param) {
-            const word = param[1];
-            const codePoint = param[0];
-            const Key = codePoint + (word + Stdlib__Int.to_string(i));
-            return JsxRuntime.jsx(Components__Cuneiform_char.make, {
-              codePoint: codePoint,
-              pronunciation: word
-            }, Key);
-          }), display_cuneiforms(parse_verb_syllables(conjugatedVerb, verb.stem)))
-        }, "cuneiforms"),
-        JsxRuntime.jsx("span", {
-          children: "(" + (match.translation + ")")
+        }),
+        JsxRuntime.jsx(Grid, {
+          children: JsxRuntime.jsx("span", {
+            children: Stdlib__Array.mapi((function (i, param) {
+              const word = param[1];
+              const codePoint = param[0];
+              const Key = codePoint + (word + Stdlib__Int.to_string(i));
+              return JsxRuntime.jsx(Components__Cuneiform_char.make, {
+                codePoint: codePoint,
+                pronunciation: word
+              }, Key);
+            }), display_cuneiforms(parse_verb_syllables(conjugatedVerb, verb.stem))),
+            className: css.noWrap
+          }, "cuneiforms"),
+          size: {
+            xs: 12,
+            sm: 12,
+            md: 6
+          }
+        }),
+        JsxRuntime.jsx(Grid, {
+          children: JsxRuntime.jsx("span", {
+            children: "(" + (match.translation + ")"),
+            className: css.noWrap
+          }),
+          size: {
+            xs: 12,
+            sm: 12,
+            md: 3
+          }
         })
       ],
-      className: css.verbResult
+      className: css.verbResult,
+      container: true,
+      spacing: 4,
+      sx: {
+        alignItems: "center",
+        justifyContent: "center"
+      }
     }, "verbResults"),
-    JsxRuntime.jsxs("table", {
-      children: [
-        JsxRuntime.jsx("thead", {
-          children: JsxRuntime.jsx("tr", {
-            children: Stdlib__Array.map((function (param) {
-              const output_type = param[0];
-              let tmp;
-              switch (output_type) {
-                case "edMarker" :
-                  tmp = "ED Marker";
-                  break;
-                case "finalPersonPrefix" :
-                  tmp = "Final Person Prefix";
-                  break;
-                case "finalPersonSuffix" :
-                  tmp = "Final Person Suffix";
-                  break;
-                case "initialPersonPrefix" :
-                  tmp = "Initial Person Prefix";
-                  break;
-                case "middlePrefix" :
-                  tmp = "Middle Prefix";
-                  break;
-                default:
-                  const first_char = output_type.charAt(0).toUpperCase();
-                  const rest = output_type.slice(1, undefined).toLowerCase();
-                  tmp = first_char + rest;
-              }
-              return JsxRuntime.jsx("th", {
-                children: tmp
-              }, output_type);
-            }), Conjugator__Verb_analysis.output(analysis))
+    JsxRuntime.jsx(TableContainer, {
+      children: JsxRuntime.jsxs(Table, {
+        children: [
+          JsxRuntime.jsx(TableHead, {
+            children: JsxRuntime.jsx(TableRow, {
+              children: Stdlib__Array.map((function (param) {
+                const output_type = param[0];
+                let tmp;
+                switch (output_type) {
+                  case "edMarker" :
+                    tmp = "ED Marker";
+                    break;
+                  case "finalPersonPrefix" :
+                    tmp = "Final Person Prefix";
+                    break;
+                  case "finalPersonSuffix" :
+                    tmp = "Final Person Suffix";
+                    break;
+                  case "initialPersonPrefix" :
+                    tmp = "Initial Person Prefix";
+                    break;
+                  case "middlePrefix" :
+                    tmp = "Middle Prefix";
+                    break;
+                  default:
+                    const first_char = output_type.charAt(0).toUpperCase();
+                    const rest = output_type.slice(1, undefined).toLowerCase();
+                    tmp = first_char + rest;
+                }
+                return JsxRuntime.jsx(TableCell, {
+                  children: tmp
+                }, output_type);
+              }), Conjugator__Verb_analysis.output(analysis))
+            })
+          }),
+          JsxRuntime.jsx(TableBody, {
+            children: JsxRuntime.jsx(TableRow, {
+              children: Stdlib__Array.mapi((function (i, param) {
+                const value = param[1];
+                const Key = value + Stdlib__Int.to_string(i);
+                return JsxRuntime.jsx(TableCell, {
+                  children: param[0] === "stem" ? JsxRuntime.jsx("strong", {
+                      children: value
+                    }) : value,
+                  sx: {
+                    textAlign: "center"
+                  }
+                }, Key);
+              }), Conjugator__Verb_analysis.output(analysis))
+            })
           })
-        }),
-        JsxRuntime.jsx("tbody", {
-          children: JsxRuntime.jsx("tr", {
-            children: Stdlib__Array.mapi((function (i, param) {
-              const value = param[1];
-              const Key = value + Stdlib__Int.to_string(i);
-              return JsxRuntime.jsx("td", {
-                children: value
-              }, Key);
-            }), Conjugator__Verb_analysis.output(analysis))
-          })
-        })
-      ]
+        ],
+        className: css.analysisTable
+      }),
+      component: Paper,
+      sx: {
+        width: "fit-content",
+        maxWidth: "100%",
+        overflowX: "auto"
+      }
     }, "verbAnalysis"),
     JsxRuntime.jsx("span", {
       children: "The cuneiforms are auto-generated and may not be historically accurate",

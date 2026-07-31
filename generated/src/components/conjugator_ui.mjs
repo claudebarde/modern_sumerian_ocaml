@@ -14,8 +14,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Select from "@mui/material/Select";
+import Switch from "@mui/material/Switch";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import UseMediaQuery from "@mui/material/useMediaQuery";
+import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_js_exceptions from "melange.js/caml_js_exceptions.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Components__Modal from "./modal.mjs";
@@ -125,14 +128,17 @@ function Conjugator_ui(Props) {
     return false;
   });
   const set_comitative = match$8[1];
+  const comitative = match$8[0];
   const match$9 = React.useState(function () {
     return false;
   });
   const set_ablative = match$9[1];
+  const ablative = match$9[0];
   const match$10 = React.useState(function () {
     return false;
   });
   const set_terminative = match$10[1];
+  const terminative = match$10[0];
   const match$11 = React.useState(function () {
     
   });
@@ -167,6 +173,7 @@ function Conjugator_ui(Props) {
   });
   const set_is_modal_open = match$17[1];
   const marginTop = "20px";
+  const is_mobile = UseMediaQuery("(max-width:599px)");
   const available_verbs = [
     {
       label: "ak (to do)",
@@ -272,91 +279,138 @@ function Conjugator_ui(Props) {
         return "Aspect and transitivity must be selected";
       }));
     }
-    const match = Components__Web_utils.pronoun_to_person_param(value.value);
-    switch (pronoun) {
-      case "indirect-object" :
-        if (match !== undefined) {
-          return Curry._1(set_verb_form, (function (prev_verb_form) {
-            if (prev_verb_form !== undefined) {
-              Curry._1(set_error, (function (param) {
-                
-              }));
-              Curry._1(set_indirect_object, (function (param) {
-                return match;
-              }));
-              return Conjugator.set_indirect_object(prev_verb_form, match);
-            }
-            
-          }));
-        } else {
-          return;
-        }
-      case "initial-person-prefix" :
-        if (match !== undefined) {
-          return Curry._1(set_verb_form, (function (prev_verb_form) {
-            if (prev_verb_form !== undefined) {
-              Curry._1(set_error, (function (param) {
-                
-              }));
-              Curry._1(set_initial_person_prefix, (function (param) {
-                return match;
-              }));
-              return Conjugator.set_initial_person_prefix(prev_verb_form, match);
-            }
-            
-          }));
-        } else {
-          return;
-        }
-      case "object" :
-        if (match !== undefined) {
-          return Curry._1(set_verb_form, (function (prev_verb_form) {
-            if (prev_verb_form !== undefined) {
-              Curry._1(set_error, (function (param) {
-                
-              }));
-              Curry._1(set_object, (function (param) {
-                return match;
-              }));
-              return Conjugator.set_object(prev_verb_form, match);
-            }
-            
-          }));
-        } else {
-          return;
-        }
-      case "subject" :
-        if (match !== undefined) {
-          return Curry._1(set_verb_form, (function (prev_verb_form) {
-            if (prev_verb_form === undefined) {
-              return;
-            }
-            Curry._1(set_error, (function (param) {
+    if (value !== undefined) {
+      const match = Components__Web_utils.pronoun_to_person_param(value.value);
+      switch (pronoun) {
+        case "indirect-object" :
+          if (match !== undefined) {
+            return Curry._1(set_verb_form, (function (prev_verb_form) {
+              if (prev_verb_form !== undefined) {
+                Curry._1(set_error, (function (param) {
+                  
+                }));
+                Curry._1(set_indirect_object, (function (param) {
+                  return match;
+                }));
+                return Conjugator.set_indirect_object(prev_verb_form, match);
+              }
               
             }));
-            Curry._1(set_subject, (function (param) {
-              return match;
-            }));
-            try {
-              return Stdlib__Result.get_ok(Conjugator.set_subject(prev_verb_form, match));
-            }
-            catch (raw_exn){
-              const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-              if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-                const err = exn._1;
+          } else {
+            return;
+          }
+        case "initial-person-prefix" :
+          if (match !== undefined) {
+            return Curry._1(set_verb_form, (function (prev_verb_form) {
+              if (prev_verb_form !== undefined) {
                 Curry._1(set_error, (function (param) {
-                  return err;
+                  
                 }));
-                return prev_verb_form;
+                Curry._1(set_initial_person_prefix, (function (param) {
+                  return match;
+                }));
+                return Conjugator.set_initial_person_prefix(prev_verb_form, match);
               }
-              throw exn;
-            }
-          }));
-        } else {
+              
+            }));
+          } else {
+            return;
+          }
+        case "object" :
+          if (match !== undefined) {
+            return Curry._1(set_verb_form, (function (prev_verb_form) {
+              if (prev_verb_form !== undefined) {
+                Curry._1(set_error, (function (param) {
+                  
+                }));
+                Curry._1(set_object, (function (param) {
+                  return match;
+                }));
+                return Conjugator.set_object(prev_verb_form, match);
+              }
+              
+            }));
+          } else {
+            return;
+          }
+        case "subject" :
+          if (match !== undefined) {
+            return Curry._1(set_verb_form, (function (prev_verb_form) {
+              if (prev_verb_form === undefined) {
+                return;
+              }
+              Curry._1(set_error, (function (param) {
+                
+              }));
+              Curry._1(set_subject, (function (param) {
+                return match;
+              }));
+              try {
+                return Stdlib__Result.get_ok(Conjugator.set_subject(prev_verb_form, match));
+              }
+              catch (raw_exn){
+                const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+                if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
+                  const err = exn._1;
+                  Curry._1(set_error, (function (param) {
+                    return err;
+                  }));
+                  return prev_verb_form;
+                }
+                throw exn;
+              }
+            }));
+          } else {
+            return;
+          }
+        default:
           return;
-        }
-      default:
-        return;
+      }
+    } else {
+      switch (pronoun) {
+        case "indirect-object" :
+          Curry._1(set_indirect_object, (function (param) {
+            
+          }));
+          return Curry._1(set_verb_form, (function (prev_verb_form) {
+            if (prev_verb_form !== undefined) {
+              return Conjugator.reset_indirect_object(prev_verb_form);
+            }
+            
+          }));
+        case "initial-person-prefix" :
+          Curry._1(set_initial_person_prefix, (function (param) {
+            return null;
+          }));
+          return Curry._1(set_verb_form, (function (prev_verb_form) {
+            if (prev_verb_form !== undefined) {
+              return Conjugator.reset_initial_person_prefix(prev_verb_form);
+            }
+            
+          }));
+        case "object" :
+          Curry._1(set_object, (function (param) {
+            
+          }));
+          return Curry._1(set_verb_form, (function (prev_verb_form) {
+            if (prev_verb_form !== undefined) {
+              return Conjugator.reset_object(prev_verb_form);
+            }
+            
+          }));
+        case "subject" :
+          Curry._1(set_subject, (function (param) {
+            
+          }));
+          return Curry._1(set_verb_form, (function (prev_verb_form) {
+            if (prev_verb_form !== undefined) {
+              return Conjugator.reset_subject(prev_verb_form);
+            }
+            
+          }));
+        default:
+          return;
+      }
     }
   };
   const change_preformative = function (ev) {
@@ -648,20 +702,119 @@ function Conjugator_ui(Props) {
       
     }));
   };
-  const set_new_verb_stem = function (value) {
-    reset(undefined);
-    Curry._1(set_verb_stem, (function (param) {
-      return value;
-    }));
-    if (value !== undefined) {
-      Curry._1(set_verb_form, (function (param) {
-        return Conjugator.create(value.value);
-      }));
-      return Curry._1(set_error, (function (param) {
+  const switch_transitive = function (checked) {
+    const apply_transitivity = function (verb) {
+      if (checked !== undefined) {
+        if (checked) {
+          return Conjugator.is_transitive(verb);
+        } else {
+          return Conjugator.is_intransitive(verb);
+        }
+      } else {
+        return verb;
+      }
+    };
+    Curry._1(set_verb_form, (function (prev_verb_form) {
+      if (prev_verb_form === undefined) {
+        return;
+      }
+      Curry._1(set_error, (function (param) {
         
       }));
-    }
-    
+      Curry._1(set_is_transitive, (function (param) {
+        return checked;
+      }));
+      if (subject === undefined) {
+        if (object_ !== undefined) {
+          return Conjugator.set_object(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), object_);
+        } else {
+          return apply_transitivity(prev_verb_form);
+        }
+      }
+      if (object_ !== undefined) {
+        try {
+          return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
+        }
+        catch (raw_exn){
+          const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+          if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
+            const err = exn._1;
+            Curry._1(set_error, (function (param) {
+              return err;
+            }));
+            return prev_verb_form;
+          }
+          throw exn;
+        }
+      } else {
+        try {
+          return Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject));
+        }
+        catch (raw_exn$1){
+          const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
+          if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
+            const err$1 = exn$1._1;
+            Curry._1(set_error, (function (param) {
+              return err$1;
+            }));
+            return prev_verb_form;
+          }
+          throw exn$1;
+        }
+      }
+    }));
+  };
+  const switch_perfective = function (value) {
+    Curry._1(set_verb_form, (function (prev_verb_form) {
+      if (prev_verb_form === undefined) {
+        return;
+      }
+      Curry._1(set_error, (function (param) {
+        
+      }));
+      Curry._1(set_is_perfective, (function (param) {
+        return value;
+      }));
+      const stem = verb_stem !== undefined ? verb_stem.value : "";
+      if (subject === undefined) {
+        if (object_ !== undefined) {
+          return Conjugator.set_object(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), object_);
+        } else {
+          return Conjugator.is_perfective(Conjugator.set_stem(prev_verb_form, stem));
+        }
+      }
+      if (object_ !== undefined) {
+        try {
+          return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), subject)), object_);
+        }
+        catch (raw_exn){
+          const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+          if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
+            const err = exn._1;
+            Curry._1(set_error, (function (param) {
+              return err;
+            }));
+            return prev_verb_form;
+          }
+          throw exn;
+        }
+      } else {
+        try {
+          return Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), subject));
+        }
+        catch (raw_exn$1){
+          const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
+          if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
+            const err$1 = exn$1._1;
+            Curry._1(set_error, (function (param) {
+              return err$1;
+            }));
+            return prev_verb_form;
+          }
+          throw exn$1;
+        }
+      }
+    }));
   };
   let tmp;
   if (verb_stem !== undefined) {
@@ -736,16 +889,31 @@ function Conjugator_ui(Props) {
                         labelId: "verb-stem-label",
                         onChange: (function ($$event, param) {
                           const selected_value = $$event.target.value;
-                          const selected_verb = Stdlib__Array.find_opt((function (verb) {
+                          let value = Stdlib__Array.find_opt((function (verb) {
                             return verb.value === selected_value;
                           }), available_verbs);
-                          set_new_verb_stem(selected_verb);
-                          if (selected_verb !== undefined) {
-                            return Curry._1(set_is_transitive, (function (param) {
-                              return selected_verb.transitive;
-                            }));
+                          reset(undefined);
+                          Curry._1(set_verb_stem, (function (param) {
+                            return value;
+                          }));
+                          if (value === undefined) {
+                            return;
                           }
-                          
+                          const new_verb = Conjugator.create(value.value);
+                          const new_verb$1 = value.transitive ? Conjugator.is_transitive(new_verb) : Conjugator.is_intransitive(new_verb);
+                          const new_verb$2 = Conjugator.is_perfective(new_verb$1);
+                          Curry._1(set_verb_form, (function (param) {
+                            return new_verb$2;
+                          }));
+                          Curry._1(set_is_transitive, (function (param) {
+                            return value.transitive;
+                          }));
+                          Curry._1(set_is_perfective, (function (param) {
+                            return true;
+                          }));
+                          Curry._1(set_error, (function (param) {
+                            
+                          }));
                         }),
                         value: verb_stem !== undefined ? verb_stem.value : "",
                         sx: {
@@ -753,7 +921,8 @@ function Conjugator_ui(Props) {
                         }
                       })
                     ],
-                    fullWidth: true
+                    fullWidth: true,
+                    size: "small"
                   }),
                   JsxRuntime.jsx("span", {
                     children: tmp,
@@ -787,61 +956,15 @@ function Conjugator_ui(Props) {
                             value: false
                           })
                         ],
+                        color: Bindings__Material_ui.Color.primary,
                         exclusive: true,
                         onChange: (function (_event, checked) {
-                          Curry._1(set_verb_form, (function (prev_verb_form) {
-                            if (prev_verb_form === undefined) {
-                              return;
-                            }
-                            Curry._1(set_error, (function (param) {
-                              
-                            }));
-                            Curry._1(set_is_transitive, (function (param) {
-                              return checked;
-                            }));
-                            if (subject === undefined) {
-                              if (object_ !== undefined) {
-                                return Conjugator.set_object(Conjugator.is_transitive(Conjugator.reset_subject_object(prev_verb_form)), object_);
-                              } else {
-                                return Conjugator.is_transitive(prev_verb_form);
-                              }
-                            }
-                            if (object_ !== undefined) {
-                              try {
-                                return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_transitive(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
-                              }
-                              catch (raw_exn){
-                                const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-                                if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-                                  const err = exn._1;
-                                  Curry._1(set_error, (function (param) {
-                                    return err;
-                                  }));
-                                  return prev_verb_form;
-                                }
-                                throw exn;
-                              }
-                            } else {
-                              try {
-                                return Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_transitive(Conjugator.reset_subject_object(prev_verb_form)), subject));
-                              }
-                              catch (raw_exn$1){
-                                const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
-                                if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
-                                  const err$1 = exn$1._1;
-                                  Curry._1(set_error, (function (param) {
-                                    return err$1;
-                                  }));
-                                  return prev_verb_form;
-                                }
-                                throw exn$1;
-                              }
-                            }
-                          }));
+                          switch_transitive(checked);
                         }),
                         value: is_transitive
                       })
                     ],
+                    className: css.onlyDesktop,
                     size: 6
                   }),
                   JsxRuntime.jsxs(Grid, {
@@ -863,62 +986,53 @@ function Conjugator_ui(Props) {
                             value: false
                           })
                         ],
+                        color: Bindings__Material_ui.Color.primary,
                         exclusive: true,
                         onChange: (function (_event, value) {
-                          Curry._1(set_verb_form, (function (prev_verb_form) {
-                            if (prev_verb_form === undefined) {
-                              return;
-                            }
-                            Curry._1(set_error, (function (param) {
-                              
-                            }));
-                            Curry._1(set_is_perfective, (function (param) {
-                              return value;
-                            }));
-                            const stem = verb_stem !== undefined ? verb_stem.value : "";
-                            if (subject === undefined) {
-                              if (object_ !== undefined) {
-                                return Conjugator.set_object(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), object_);
-                              } else {
-                                return Conjugator.is_perfective(Conjugator.set_stem(prev_verb_form, stem));
-                              }
-                            }
-                            if (object_ !== undefined) {
-                              try {
-                                return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), subject)), object_);
-                              }
-                              catch (raw_exn){
-                                const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-                                if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-                                  const err = exn._1;
-                                  Curry._1(set_error, (function (param) {
-                                    return err;
-                                  }));
-                                  return prev_verb_form;
-                                }
-                                throw exn;
-                              }
-                            } else {
-                              try {
-                                return Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), subject));
-                              }
-                              catch (raw_exn$1){
-                                const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
-                                if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
-                                  const err$1 = exn$1._1;
-                                  Curry._1(set_error, (function (param) {
-                                    return err$1;
-                                  }));
-                                  return prev_verb_form;
-                                }
-                                throw exn$1;
-                              }
-                            }
-                          }));
+                          switch_perfective(value);
                         }),
                         value: is_perfective
                       })
                     ],
+                    className: css.onlyDesktop,
+                    size: 6
+                  }),
+                  JsxRuntime.jsx(Grid, {
+                    children: JsxRuntime.jsx(FormGroup, {
+                      children: JsxRuntime.jsx(FormControlLabel, {
+                        control: JsxRuntime.jsx(Switch, {
+                          checked: Stdlib__Option.value(is_transitive, false),
+                          disabled: Stdlib__Option.is_none(verb_stem),
+                          onChange: (function ($$event) {
+                            const checked = $$event.target.checked;
+                            switch_transitive(checked);
+                          })
+                        }),
+                        label: is_transitive !== undefined ? (
+                            is_transitive ? "Transitive" : "Intransitive"
+                          ) : "Transitivity"
+                      })
+                    }),
+                    className: css.onlyMobile,
+                    size: 6
+                  }),
+                  JsxRuntime.jsx(Grid, {
+                    children: JsxRuntime.jsx(FormGroup, {
+                      children: JsxRuntime.jsx(FormControlLabel, {
+                        control: JsxRuntime.jsx(Switch, {
+                          checked: Stdlib__Option.value(is_perfective, false),
+                          disabled: Stdlib__Option.is_none(verb_stem),
+                          onChange: (function ($$event) {
+                            const checked = $$event.target.checked;
+                            switch_perfective(checked);
+                          })
+                        }),
+                        label: is_perfective !== undefined ? (
+                            is_perfective ? "Perfective" : "Imperfective"
+                          ) : "Aspect"
+                      })
+                    }),
+                    className: css.onlyMobile,
                     size: 6
                   })
                 ],
@@ -937,14 +1051,28 @@ function Conjugator_ui(Props) {
                           children: "Subject",
                           id: "subject-label"
                         }),
-                        JsxRuntime.jsx(Select, {
-                          children: Stdlib__Array.map((function (option) {
-                            const Key = option.value;
-                            return JsxRuntime.jsx(MenuItem, {
-                              children: option.label,
-                              value: option.value
-                            }, Key);
-                          }), pronoun_options),
+                        JsxRuntime.jsxs(Select, {
+                          children: [
+                            JsxRuntime.jsx(MenuItem, {
+                              children: JsxRuntime.jsx("i", {
+                                children: "None"
+                              }),
+                              onClick: (function (param) {
+                                Curry._1(set_subject, (function (param) {
+                                  
+                                }));
+                              }),
+                              value: ""
+                            }, "none"),
+                            Stdlib__Array.map((function (option) {
+                              const Key = option.value;
+                              return JsxRuntime.jsx(MenuItem, {
+                                children: option.label,
+                                value: option.value
+                              }, Key);
+                            }), pronoun_options)
+                          ],
+                          disabled: Stdlib__Option.is_none(verb_stem),
                           label: "Subject",
                           labelId: "subject-label",
                           onChange: (function ($$event, param) {
@@ -963,7 +1091,8 @@ function Conjugator_ui(Props) {
                           }
                         })
                       ],
-                      fullWidth: true
+                      fullWidth: true,
+                      size: "small"
                     }),
                     size: 4
                   }),
@@ -974,14 +1103,28 @@ function Conjugator_ui(Props) {
                           children: "Object",
                           id: "object-label"
                         }),
-                        JsxRuntime.jsx(Select, {
-                          children: Stdlib__Array.map((function (option) {
-                            const Key = option.value;
-                            return JsxRuntime.jsx(MenuItem, {
-                              children: option.label,
-                              value: option.value
-                            }, Key);
-                          }), pronoun_options),
+                        JsxRuntime.jsxs(Select, {
+                          children: [
+                            JsxRuntime.jsx(MenuItem, {
+                              children: JsxRuntime.jsx("i", {
+                                children: "None"
+                              }),
+                              onClick: (function (param) {
+                                Curry._1(set_object, (function (param) {
+                                  
+                                }));
+                              }),
+                              value: ""
+                            }, "none"),
+                            Stdlib__Array.map((function (option) {
+                              const Key = option.value;
+                              return JsxRuntime.jsx(MenuItem, {
+                                children: option.label,
+                                value: option.value
+                              }, Key);
+                            }), pronoun_options)
+                          ],
+                          disabled: Stdlib__Option.is_none(verb_stem),
                           label: "Object",
                           labelId: "object-label",
                           onChange: (function ($$event, param) {
@@ -1000,7 +1143,8 @@ function Conjugator_ui(Props) {
                           }
                         })
                       ],
-                      fullWidth: true
+                      fullWidth: true,
+                      size: "small"
                     }),
                     size: 4
                   }),
@@ -1011,14 +1155,28 @@ function Conjugator_ui(Props) {
                           children: "Indirect Object",
                           id: "indirect-object-label"
                         }),
-                        JsxRuntime.jsx(Select, {
-                          children: Stdlib__Array.map((function (option) {
-                            const Key = option.value;
-                            return JsxRuntime.jsx(MenuItem, {
-                              children: option.label,
-                              value: option.value
-                            }, Key);
-                          }), pronoun_options),
+                        JsxRuntime.jsxs(Select, {
+                          children: [
+                            JsxRuntime.jsx(MenuItem, {
+                              children: JsxRuntime.jsx("i", {
+                                children: "None"
+                              }),
+                              onClick: (function (param) {
+                                Curry._1(set_indirect_object, (function (param) {
+                                  
+                                }));
+                              }),
+                              value: ""
+                            }, "none"),
+                            Stdlib__Array.map((function (option) {
+                              const Key = option.value;
+                              return JsxRuntime.jsx(MenuItem, {
+                                children: option.label,
+                                value: option.value
+                              }, Key);
+                            }), pronoun_options)
+                          ],
+                          disabled: Stdlib__Option.is_none(verb_stem),
                           label: "Indirect Object",
                           labelId: "indirect-object-label",
                           onChange: (function ($$event, param) {
@@ -1037,7 +1195,8 @@ function Conjugator_ui(Props) {
                           }
                         })
                       ],
-                      fullWidth: true
+                      fullWidth: true,
+                      size: "small"
                     }),
                     size: 4
                   })
@@ -1053,7 +1212,11 @@ function Conjugator_ui(Props) {
                 }
               })
             ],
-            size: 6
+            size: {
+              xs: 12,
+              sm: 12,
+              md: 6
+            }
           }),
           JsxRuntime.jsxs(Grid, {
             children: [
@@ -1070,19 +1233,25 @@ function Conjugator_ui(Props) {
                           "aria-labelledby": "preformative-label",
                           children: [
                             JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {}),
+                              control: JsxRuntime.jsx(Radio, {
+                                size: is_mobile ? "small" : "medium"
+                              }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                               label: "A",
                               value: "preformative-a"
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {}),
+                              control: JsxRuntime.jsx(Radio, {
+                                size: is_mobile ? "small" : "medium"
+                              }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                               label: "I",
                               value: "preformative-i"
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {}),
+                              control: JsxRuntime.jsx(Radio, {
+                                size: is_mobile ? "small" : "medium"
+                              }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                               label: "U",
                               value: "preformative-u"
@@ -1111,19 +1280,25 @@ function Conjugator_ui(Props) {
                           "aria-labelledby": "modal-prefix-label",
                           children: [
                             JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {}),
+                              control: JsxRuntime.jsx(Radio, {
+                                size: is_mobile ? "small" : "medium"
+                              }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                               label: "ḪA",
                               value: "modal-ha"
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {}),
+                              control: JsxRuntime.jsx(Radio, {
+                                size: is_mobile ? "small" : "medium"
+                              }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                               label: "NU",
                               value: "modal-nu"
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {}),
+                              control: JsxRuntime.jsx(Radio, {
+                                size: is_mobile ? "small" : "medium"
+                              }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                               label: "NAN",
                               value: "modal-nan"
@@ -1163,37 +1338,40 @@ function Conjugator_ui(Props) {
                           children: [
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Checkbox, {
-                                checked: match$8[0],
+                                checked: comitative,
                                 disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
                                   change_prefix(/* Comitative */ 4, checked);
-                                })
+                                }),
+                                size: is_mobile ? "small" : "medium"
                               }),
                               label: "DA"
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Checkbox, {
-                                checked: match$9[0],
+                                checked: ablative,
                                 disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
                                   change_prefix(/* Ablative */ 5, checked);
-                                })
+                                }),
+                                size: is_mobile ? "small" : "medium"
                               }),
                               label: "TA"
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Checkbox, {
-                                checked: match$10[0],
+                                checked: terminative,
                                 disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
                                   change_prefix(/* Terminative */ 6, checked);
-                                })
+                                }),
+                                size: is_mobile ? "small" : "medium"
                               }),
                               label: "ŠI"
                             }),
@@ -1205,7 +1383,8 @@ function Conjugator_ui(Props) {
                                   const target = ev.target;
                                   const checked = target.checked;
                                   change_prefix(/* LocativeIn */ 8, checked);
-                                })
+                                }),
+                                size: is_mobile ? "small" : "medium"
                               }),
                               label: "NI"
                             }),
@@ -1217,7 +1396,8 @@ function Conjugator_ui(Props) {
                                   const target = ev.target;
                                   const checked = target.checked;
                                   change_prefix(/* LocativeOn */ 9, checked);
-                                })
+                                }),
+                                size: is_mobile ? "small" : "medium"
                               }),
                               label: "E"
                             })
@@ -1263,7 +1443,9 @@ function Conjugator_ui(Props) {
                           }
                         })
                       ],
-                      fullWidth: true
+                      error: (comitative || ablative || terminative || locative === "IN" || locative === "ON") && Stdlib__Option.is_none((initial_person_prefix == null) ? undefined : Caml_option.some(initial_person_prefix)),
+                      fullWidth: true,
+                      size: "small"
                     }),
                     size: 4
                   })
@@ -1289,7 +1471,8 @@ function Conjugator_ui(Props) {
                               const target = ev.target;
                               const checked = target.checked;
                               change_prefix(/* Ventive */ 3, checked);
-                            })
+                            }),
+                            size: is_mobile ? "small" : "medium"
                           }),
                           label: "MU"
                         }),
@@ -1301,7 +1484,8 @@ function Conjugator_ui(Props) {
                               const target = ev.target;
                               const checked = target.checked;
                               change_prefix(/* MiddlePrefix */ 7, checked);
-                            })
+                            }),
+                            size: is_mobile ? "small" : "medium"
                           }),
                           label: "BA"
                         })
@@ -1316,7 +1500,11 @@ function Conjugator_ui(Props) {
                 }
               })
             ],
-            size: 6
+            size: {
+              xs: 12,
+              sm: 12,
+              md: 6
+            }
           }),
           JsxRuntime.jsxs(Container, {
             children: [
@@ -1370,7 +1558,11 @@ function Conjugator_ui(Props) {
           })
         ],
         container: true,
-        spacing: 6,
+        spacing: {
+          xs: 2,
+          sm: 2,
+          md: 6
+        },
         sx: {
           marginTop: marginTop
         }

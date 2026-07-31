@@ -15,6 +15,10 @@
 
   h1 {
     text-align: center;
+
+    @media (max-width: $breakpoint) {
+      font-size: 1.3rem;
+    }
   }
 
   @media (max-width: $breakpoint) {

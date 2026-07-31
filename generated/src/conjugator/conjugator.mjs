@@ -283,6 +283,12 @@ function set_initial_person_prefix(verb, ipp) {
   return newrecord;
 }
 
+function reset_initial_person_prefix(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.initial_person_prefix = undefined;
+  return newrecord;
+}
+
 function set_final_person_prefix(verb, pp) {
   try {
     const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(pp);
@@ -334,6 +340,12 @@ function set_indirect_object(verb, ipp) {
   }
   const newrecord = Caml_obj.caml_obj_dup(verb);
   newrecord.indirect_object_prefix = prefix;
+  return newrecord;
+}
+
+function reset_indirect_object(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.indirect_object_prefix = undefined;
   return newrecord;
 }
 
@@ -521,6 +533,37 @@ function set_object(verb, person) {
   return newrecord$1;
 }
 
+function reset_subject(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.subject = /* None */ 0;
+  newrecord.final_person_suffix = undefined;
+  newrecord.final_person_prefix = undefined;
+  const match = verb.object_;
+  if (/* tag */ typeof match === "number" || typeof match === "string") {
+    return newrecord;
+  } else {
+    return set_object(newrecord, match._0);
+  }
+}
+
+function reset_object(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.object_ = /* None */ 0;
+  newrecord.final_person_suffix = undefined;
+  newrecord.final_person_prefix = undefined;
+  const match = verb.subject;
+  if (/* tag */ typeof match === "number" || typeof match === "string") {
+    return newrecord;
+  }
+  match.TAG === /* Subject_prefix */ 0;
+  const updated_verb = set_subject(newrecord, match._0);
+  if (updated_verb.TAG === /* Ok */ 0) {
+    return updated_verb._0;
+  } else {
+    return newrecord;
+  }
+}
+
 function reset_subject_object(verb) {
   const newrecord = Caml_obj.caml_obj_dup(verb);
   newrecord.final_person_suffix = undefined;
@@ -633,8 +676,10 @@ export {
   set_middle_prefix,
   reset_middle_prefix,
   set_initial_person_prefix,
+  reset_initial_person_prefix,
   set_final_person_prefix,
   set_indirect_object,
+  reset_indirect_object,
   set_comitative,
   reset_comitative,
   set_locative_in,
@@ -642,6 +687,8 @@ export {
   reset_locative,
   set_subject,
   set_object,
+  reset_subject,
+  reset_object,
   reset_subject_object,
   set_oblique_object,
   set_ed_marker,

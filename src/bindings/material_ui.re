@@ -414,6 +414,20 @@ module FormLabel = {
 };
 
 module Grid = {
+    module ResponsiveSize = {
+        type t;
+
+        [@mel.obj]
+        external make: (
+            ~xs: int=?,
+            ~sm: int=?,
+            ~md: int=?,
+            ~lg: int=?,
+            ~xl: int=?,
+            unit
+        ) => t = "";
+    };
+
   [@mel.module "@mui/material/Grid"] [@react.component]
   external make: (
     ~children: React.element=?,
@@ -437,13 +451,13 @@ module Grid = {
     ~size: [@mel.unwrap] [
         | `String(string)
         | `Number(int)
-        | `Object(Js.t({..}))
+        | `Object(ResponsiveSize.t)
         | `Boolean(bool)
     ]=?,
     ~spacing: [@mel.unwrap] [
         | `String(string)
         | `Number(int)
-        | `Object(Js.t({..}))
+        | `Object(ResponsiveSize.t)
         // TODO: implement Array<string | number> support for spacing
     ]=?,
     ~sx: Js.t({..})=?,
@@ -1195,6 +1209,11 @@ module Typography = {
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";
+};
+
+module UseMediaQuery = {
+  [@mel.module "@mui/material/useMediaQuery"]
+  external use: string => bool = "default";
 };
 
 // THEME BINDINGS

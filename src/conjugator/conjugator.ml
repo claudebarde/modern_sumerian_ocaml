@@ -147,6 +147,9 @@ let set_initial_person_prefix verb (ipp: PersonParam.t): t =
         | Third_plur_non_human -> Some Third_plur_non_human
     in { verb with initial_person_prefix = prefix }
 
+let reset_initial_person_prefix verb: t =
+    { verb with initial_person_prefix = None }
+
 let set_final_person_prefix verb (pp: PersonParam.t): (t, string) result =
     try
         let prefix = FinalPersonPrefix.from_person pp
@@ -166,6 +169,9 @@ let set_indirect_object verb (ipp: PersonParam.t): t =
     | Third_plur_human -> Some Third_plur_human
     | Third_plur_non_human -> Some Third_plur_non_human
     in { verb with indirect_object_prefix = prefix }
+
+let reset_indirect_object verb: t =
+    { verb with indirect_object_prefix = None }
 
 let set_comitative verb (person: PersonParam.t option): t =
     let open InitialPersonPrefix in
@@ -259,6 +265,32 @@ let set_object (verb: t) (person: PersonParam.t): t =
         TODO = may be worth throwing an error here
         but it will mess with the verb building with pipes *)
         verb
+
+let reset_subject (verb: t): t =
+    let reset_verb = {
+        verb with
+        subject = None;
+        final_person_prefix = None;
+        final_person_suffix = None;
+    } in
+    match verb.object_ with
+    | Object_prefix person | Object_suffix person ->
+        set_object reset_verb person
+    | None -> reset_verb
+
+let reset_object (verb: t): t =
+    let reset_verb = {
+        verb with
+        object_ = None;
+        final_person_prefix = None;
+        final_person_suffix = None;
+    } in
+    match verb.subject with
+    | Subject_prefix person | Subject_suffix person ->
+        (match set_subject reset_verb person with
+        | Ok updated_verb -> updated_verb
+        | Error _ -> reset_verb)
+    | None -> reset_verb
 
 (* reset_ting the subject and the object is useful
 when switching between transitive/intransitive and perfective/imperfective

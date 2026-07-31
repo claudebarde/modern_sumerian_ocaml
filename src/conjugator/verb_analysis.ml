@@ -13,11 +13,11 @@ type t = {
     (* Slot 5 Middle prefix or the 3.SG.NH pronominal prefix /b/ (specifying the person, *)
     (* gender and number of the first in the sequence of adverbial prefixes) *)
     slot5: string option;
-    (* Slot 6 Initial Pronominal Prefix (= IPP) (specifying the person, gender and number *)
+    (* Slot 6 Adverbial I: dative prefix *)
+    slot6: string option;
+    (* Slot 7 Initial Pronominal Prefix (= IPP) (specifying the person, gender and number *)
     (* of the first in the sequence of adverbial prefixes) *)
-    slot6: (InitialPersonPrefix.t * string) option;
-    (* Slot 7 Adverbial I: dative prefix *)
-    slot7: string option;
+    slot7: (InitialPersonPrefix.t * string) option;
     (* Slot 8 Adverbial II: comitative prefix *)
     slot8: string option;
     (* Slot 9 Adverbial III: ablative or terminative prefix *)
@@ -101,22 +101,22 @@ let rec analyse (verbArr: string array) (verbRec: Constructs.conjugated_verb) (v
              else 
                 analyse verbArr verbRec verb (start + 1)
         | (5, Some prefix) ->
-            (match verbRec.initial_person_prefix with
-            | Some ipp -> 
-                if String.length prefix > 0 
-                then
-                    let verb = { verb with slot6 = Some (ipp, prefix) } in
-                    analyse verbArr verbRec verb (start + 1)
-                 else 
-                    analyse verbArr verbRec verb (start + 1)
-            | _ -> analyse verbArr verbRec verb (start + 1))            
-        | (6, Some prefix) ->
             if String.length prefix > 0  
             then
-                let verb = { verb with slot7 = Some prefix } in
+                let verb = { verb with slot6 = Some prefix } in
                 analyse verbArr verbRec verb (start + 1)
-             else 
-                analyse verbArr verbRec verb (start + 1)            
+             else
+                analyse verbArr verbRec verb (start + 1)
+        | (6, Some prefix) ->
+            (match verbRec.initial_person_prefix with
+            | Some ipp ->
+                if String.length prefix > 0
+                then
+                    let verb = { verb with slot7 = Some (ipp, prefix) } in
+                    analyse verbArr verbRec verb (start + 1)
+                else
+                    analyse verbArr verbRec verb (start + 1)
+            | _ -> analyse verbArr verbRec verb (start + 1))
         | (7, Some prefix) ->
             if String.length prefix > 0  
             then
@@ -213,11 +213,11 @@ let output (verb: t): (string * string) array =
     in
     let slot6 = match verb.slot6 with 
         | None -> ("", "")
-        | Some((_, prefix)) -> ("initialPersonPrefix", prefix)
+        | Some prefix -> ("dative", prefix)
     in
     let slot7 = match verb.slot7 with 
         | None -> ("", "")
-        | Some prefix -> ("dative", prefix)
+        | Some((_, prefix)) -> ("initialPersonPrefix", prefix)
     in
     let slot8 = match verb.slot8 with 
         | None -> ("", "")
@@ -269,11 +269,11 @@ let print (verb: t): string =
     let slot3 = Option.value verb.slot3 ~default:"" in
     let slot4 = Option.value verb.slot4 ~default:"" in
     let slot5 = Option.value verb.slot5 ~default:"" in
-    let slot6 = match verb.slot6 with 
+    let slot6 = Option.value verb.slot6 ~default:"" in
+    let slot7 = match verb.slot7 with
         | None -> ""
         | Some((_, prefix)) -> prefix
     in
-    let slot7 = Option.value verb.slot7 ~default:"" in
     let slot8 = Option.value verb.slot8 ~default:"" in
     let slot9 = match verb.slot9 with 
         | None -> ""

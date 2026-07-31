@@ -168,69 +168,147 @@ let replace_with_unicode = (word: string): string => {
 
 module BuildResults = {
     [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default";
+    open Bindings.Mui;
+
     [@react.component]
     let make = (~verb: Conjugator.t, ~meaning: option(string)) => {
         switch (Conjugator.print(verb, meaning)) {
             | Ok({verb: conjugatedVerb, analysis, translation, _}) => {[|
-                <div className={css##verbResult} key="verbResults">
-                    <span style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
-                        {conjugatedVerb |> React.string}
-                    </span>
-                    <span key="cuneiforms">
-                        {
-                            parse_verb_syllables(conjugatedVerb, verb.stem)
-                            |> display_cuneiforms
-                            |> Array.mapi((i, (codePoint, word)) => {
-                                <Cuneiform_char
-                                    key={codePoint ++ word ++ Int.to_string(i)}
-                                    codePoint={codePoint}
-                                    pronunciation={word}
-                                />
-                            })
-                            |> React.array
-                        }
-                    </span>
-                    <span>
-                        {"(" ++ translation ++ ")" |> React.string}
-                    </span>
-                </div>,
-                <table key="verbAnalysis">
-                    <thead>
-                        <tr>
-                            {analysis |> Conjugator__Verb_analysis.output |> Array.map(
-                                ((output_type, _)) => {
-                                    <th key={output_type}>
-                                        {
-                                            switch output_type {
-                                                | "middlePrefix" => "Middle Prefix"
-                                                | "initialPersonPrefix" => "Initial Person Prefix"
-                                                | "finalPersonPrefix" => "Final Person Prefix"
-                                                | "edMarker" => "ED Marker"
-                                                | "finalPersonSuffix" => "Final Person Suffix"
-                                                | _ => {
-                                                    let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
-                                                    let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
-                                                    first_char ++ rest
+                <Grid  
+                    container=true
+                    spacing=`Number(4)
+                    sx={{"alignItems": "center", "justifyContent": "center"}}
+                    className={css##verbResult} 
+                    key="verbResults"
+                >
+                    <Grid
+                        size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=3, ()))
+                    >
+                        <span className=css##noWrap  style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
+                            {conjugatedVerb |> React.string}
+                        </span>
+                    </Grid>
+                    <Grid
+                        size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=6, ()))
+                    >
+                        <span className=css##noWrap key="cuneiforms">
+                            {
+                                parse_verb_syllables(conjugatedVerb, verb.stem)
+                                |> display_cuneiforms
+                                |> Array.mapi((i, (codePoint, word)) => {
+                                    <Cuneiform_char
+                                        key={codePoint ++ word ++ Int.to_string(i)}
+                                        codePoint={codePoint}
+                                        pronunciation={word}
+                                    />
+                                })
+                                |> React.array
+                            }
+                        </span>
+                    </Grid>
+                    <Grid
+                        size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=3, ()))
+                    >   
+                        <span className=css##noWrap >
+                            {"(" ++ translation ++ ")" |> React.string}
+                        </span>
+                    </Grid>
+                </Grid>,
+                // <table key="verbAnalysis">
+                //     <thead>
+                //         <tr>
+                //             {analysis |> Conjugator__Verb_analysis.output |> Array.map(
+                //                 ((output_type, _)) => {
+                //                     <th key={output_type}>
+                //                         {
+                //                             switch output_type {
+                //                                 | "middlePrefix" => "Middle Prefix"
+                //                                 | "initialPersonPrefix" => "Initial Person Prefix"
+                //                                 | "finalPersonPrefix" => "Final Person Prefix"
+                //                                 | "edMarker" => "ED Marker"
+                //                                 | "finalPersonSuffix" => "Final Person Suffix"
+                //                                 | _ => {
+                //                                     let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
+                //                                     let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
+                //                                     first_char ++ rest
+                //                                 }
+                //                             }|> React.string
+                //                         }
+                //                     </th>
+                //                 },
+                //             )|> React.array}
+                //         </tr>
+                //     </thead>
+                //     <tbody>
+                //         <tr>
+                //             {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
+                //                 (i, (_, value)) => {
+                //                     <td key={value ++ Int.to_string(i)}>
+                //                         {value |> React.string}
+                //                     </td>
+                //                 },
+                //             )|> React.array}
+                //         </tr>
+                //     </tbody>
+                // </table>,
+                <TableContainer
+                    key="verbAnalysis"
+                    component={RootComponent.reactComponent(Paper.make)}
+                    sx={{
+                        "width": "fit-content",
+                        "maxWidth": "100%",
+                        "overflowX": "auto",
+                    }}
+                >
+                    <Table className=css##analysisTable>
+                        <TableHead>
+                            <TableRow>
+                                {analysis |> Conjugator__Verb_analysis.output |> Array.map(
+                                    ((output_type, _)) => {
+                                        <TableCell key={output_type}>
+                                            {
+                                                switch output_type {
+                                                    | "middlePrefix" => "Middle Prefix"
+                                                    | "initialPersonPrefix" => "Initial Person Prefix"
+                                                    | "finalPersonPrefix" => "Final Person Prefix"
+                                                    | "edMarker" => "ED Marker"
+                                                    | "finalPersonSuffix" => "Final Person Suffix"
+                                                    | _ => {
+                                                        let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
+                                                        let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
+                                                        first_char ++ rest
+                                                    }
+                                                }|> React.string
+                                            }
+                                        </TableCell>
+                                    },
+                                )|> React.array}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
+                                    (i, (output_type, value)) => {
+                                        <TableCell 
+                                            key={value ++ Int.to_string(i)}
+                                            sx={{"textAlign": "center"}}
+                                        >
+                                            {
+                                                if (output_type == "stem") {
+                                                    <strong>
+                                                        {value |> React.string}
+                                                    </strong>
+                                                } else {
+                                                    value |> React.string
                                                 }
-                                            }|> React.string
-                                        }
-                                    </th>
-                                },
-                            )|> React.array}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
-                                (i, (_, value)) => {
-                                    <td key={value ++ Int.to_string(i)}>
-                                        {value |> React.string}
-                                    </td>
-                                },
-                            )|> React.array}
-                        </tr>
-                    </tbody>
-                </table>,
+                                            }
+                                        </TableCell>
+                                    },
+                                )|> React.array}
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>,
                 <span key="cuneiformWarning" style=(ReactDOM.Style.make(~fontSize="0.6rem", ~fontStyle="italic", ()))>
                     {"The cuneiforms are auto-generated and may not be historically accurate"|> React.string}
                 </span>

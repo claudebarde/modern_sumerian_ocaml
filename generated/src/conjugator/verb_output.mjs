@@ -145,7 +145,7 @@ function add_initial_person_prefix(verb, arr) {
   if (match !== undefined) {
     switch (match) {
       case /* First_sing */ 0 :
-        Caml_array.set(arr$1, Conjugator__Utils.initial_person_prefix_pos, "\xca\x94");
+        Caml_array.set(arr$1, Conjugator__Utils.initial_person_prefix_pos, "ʔ");
         break;
       case /* Second_sing */ 1 :
         Caml_array.set(arr$1, Conjugator__Utils.initial_person_prefix_pos, "e");

@@ -77,7 +77,7 @@ let add_initial_person_prefix (verb: Constructs.conjugated_verb) (arr: morphemes
         | Error(err) -> Error(err)
         | Ok(arr) ->
             let _ = match verb.initial_person_prefix with
-                | Some(First_sing) -> arr.(initial_person_prefix_pos) <- "ʔ"
+                | Some(First_sing) -> arr.(initial_person_prefix_pos) <- {js|ʔ|js}
                 | Some(Second_sing) -> arr.(initial_person_prefix_pos) <- "e"
                 | Some(Third_sing_human) -> arr.(initial_person_prefix_pos) <- "n"
                 | Some(Third_sing_non_human) -> arr.(initial_person_prefix_pos) <- "b"

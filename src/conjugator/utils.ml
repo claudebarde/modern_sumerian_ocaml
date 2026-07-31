@@ -6,8 +6,8 @@ let coordinator_pos = 2
 let first_prefix_pos = 0
 let ventive_pos = 3
 let middle_prefix_pos = 4
-let initial_person_prefix_pos = 5
-let indirect_object_prefix_pos = 6
+let indirect_object_prefix_pos = 5
+let initial_person_prefix_pos = 6
 let comitative_pos = 7
 let adverbial_pos = 8
 let locative_pos = 9
@@ -41,8 +41,8 @@ let marker_by_pos (pos: int): markerName option =
         | 2 -> Some(Coordinator)
         | 3 -> Some(Ventive)
         | 4 -> Some(MiddlePrefix)
-        | 5 -> Some(InitialPersonPrefix)
-        | 6 -> Some(IndirectObjectPrefix)
+        | 5 -> Some(IndirectObjectPrefix)
+        | 6 -> Some(InitialPersonPrefix)
         | 7 -> Some(Comitative)
         | 8 -> Some(Adverbial)
         | 9 -> Some(Locative)

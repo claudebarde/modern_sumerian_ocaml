@@ -1,11 +1,23 @@
 @use "../styles/styles.scss" as *;
 
 .mainContainer {
-  padding: 20px 10px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+
+  h1 {
+    text-align: center;
+
+    @media (max-width: $breakpoint) {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: $breakpoint) {
+    padding: 20px;
+  }
 }
 
 .formLabel {
@@ -176,6 +188,7 @@
   align-items: center;
   text-align: center;
   gap: 20px;
+  width: 100%;
 
   .cuneiforms {
     font-family: "CuneiformComposite", sans-serif;
@@ -189,12 +202,18 @@
     margin: 0px 5px;
   }
 
-  .verbResult {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
+  .analysisTable {
+    tr > :nth-child(even) {
+      background-color: $silver-setting;
+    }
   }
+
+  // .verbResult {
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   gap: 50px;
+  // }
 
   //     table {
   //       // border-collapse: collapse;
@@ -269,4 +288,16 @@
 .noWrap {
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.onlyMobile {
+  @media (min-width: $breakpoint) {
+    display: none;
+  }
+}
+
+.onlyDesktop {
+  @media (max-width: $breakpoint) {
+    display: none;
+  }
 }

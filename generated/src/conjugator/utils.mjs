@@ -30,9 +30,9 @@ function marker_by_pos(pos) {
     case 4 :
       return /* MiddlePrefix */ 4;
     case 5 :
-      return /* InitialPersonPrefix */ 5;
-    case 6 :
       return /* IndirectObjectPrefix */ 6;
+    case 6 :
+      return /* InitialPersonPrefix */ 5;
     case 7 :
       return /* Comitative */ 7;
     case 8 :
@@ -67,9 +67,9 @@ function marker_to_pos(marker) {
     case /* MiddlePrefix */ 4 :
       return 4;
     case /* InitialPersonPrefix */ 5 :
-      return 5;
-    case /* IndirectObjectPrefix */ 6 :
       return 6;
+    case /* IndirectObjectPrefix */ 6 :
+      return 5;
     case /* Comitative */ 7 :
       return 7;
     case /* Adverbial */ 8 :
@@ -287,9 +287,9 @@ const ventive_pos = 3;
 
 const middle_prefix_pos = 4;
 
-const initial_person_prefix_pos = 5;
+const indirect_object_prefix_pos = 5;
 
-const indirect_object_prefix_pos = 6;
+const initial_person_prefix_pos = 6;
 
 const comitative_pos = 7;
 
@@ -315,8 +315,8 @@ export {
   first_prefix_pos,
   ventive_pos,
   middle_prefix_pos,
-  initial_person_prefix_pos,
   indirect_object_prefix_pos,
+  initial_person_prefix_pos,
   comitative_pos,
   adverbial_pos,
   locative_pos,

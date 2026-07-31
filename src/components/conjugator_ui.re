@@ -62,6 +62,7 @@ let make = () => {
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
 
     let marginTop = "20px";
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let available_verbs: array(verb_data) = [|
         {label: "ak (to do)", value: {js|ʔak|js}, imperfective: Other({js|ʔak|js}), transitive: true},
@@ -84,69 +85,114 @@ let make = () => {
         {label: "They (non-human)", value: "third-plur-nonhuman"},
     |];
 
-    let change_pronoun = (value: Utils.select_option, pronoun: string) => {
+    let change_pronoun = (value: option(Utils.select_option), pronoun: string) => {
         if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
             set_error(_ => Some("Aspect and transitivity must be selected"))
         } else {
-            switch (pronoun, value.value |> Web_utils.pronoun_to_person_param) {
-                | ("initial-person-prefix", Some(person_param)) => {
-                    set_verb_form(prev_verb_form => {
-                        switch prev_verb_form {
-                            | Some(verb) => {
-                                set_error(_ => None)
-                                set_initial_person_prefix(_ => person_param |> Js.Nullable.return)
-                                Some(Conjugator.set_initial_person_prefix(verb, person_param))
+            switch value {
+                | None => {
+                    switch pronoun {
+                    | "initial-person-prefix" => {
+                        set_initial_person_prefix(_ => Js.Nullable.null)
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => Some(Conjugator.reset_initial_person_prefix(verb))
+                                | None => None
                             }
-                            | None => None
-                        }
-                    })
+                        })
+                    }
+                    | "subject" => {
+                        set_subject(_ => None)
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => Some(Conjugator.reset_subject(verb))
+                                | None => None
+                            }
+                        })
+                    }
+                    | "object" => {
+                        set_object(_ => None)
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => Some(Conjugator.reset_object(verb))
+                                | None => None
+                            }
+                        })
+                    }
+                    | "indirect-object" => {
+                        set_indirect_object(_ => None)
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => Some(Conjugator.reset_indirect_object(verb))
+                                | None => None
+                            }
+                        })
+                    }
+                    | _ => ()
+                    }
                 }
-                | ("subject", Some(person_param)) => {
-                    set_verb_form(prev_verb_form => {
-                        switch (prev_verb_form) {
-                            | Some(verb) => {
-                                set_error(_ => None)
-                                set_subject(_ => Some(person_param))
-                                try (
-                                    Conjugator.set_subject(verb, person_param)
-                                    ->Result.get_ok
-                                    ->Some
-                                ) {
-                                    | Conjugator__Utils.Todo(err) => {
-                                        set_error(_ => Some(err))
-                                        prev_verb_form
+                | Some(value) => {
+                    switch (pronoun, value.value |> Web_utils.pronoun_to_person_param) {
+                    | ("initial-person-prefix", Some(person_param)) => {
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => {
+                                    set_error(_ => None)
+                                    set_initial_person_prefix(_ => person_param |> Js.Nullable.return)
+                                    Some(Conjugator.set_initial_person_prefix(verb, person_param))
+                                }
+                                | None => None
+                            }
+                        })
+                    }
+                    | ("subject", Some(person_param)) => {
+                        set_verb_form(prev_verb_form => {
+                            switch (prev_verb_form) {
+                                | Some(verb) => {
+                                    set_error(_ => None)
+                                    set_subject(_ => Some(person_param))
+                                    try (
+                                        Conjugator.set_subject(verb, person_param)
+                                        ->Result.get_ok
+                                        ->Some
+                                    ) {
+                                        | Conjugator__Utils.Todo(err) => {
+                                            set_error(_ => Some(err))
+                                            prev_verb_form
+                                        }
                                     }
                                 }
+                                | None => None
                             }
-                            | None => None
-                        }
-                    })
-                }
-                | ("object", Some(person_param)) => {
-                    set_verb_form(prev_verb_form => {
-                        switch prev_verb_form {
-                            | Some(verb) => {
-                                set_error(_ => None)
-                                set_object(_ => Some(person_param))
-                                Some(Conjugator.set_object(verb, person_param))
+                        })
+                    }
+                    | ("object", Some(person_param)) => {
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => {
+                                    set_error(_ => None)
+                                    set_object(_ => Some(person_param))
+                                    Some(Conjugator.set_object(verb, person_param))
+                                }
+                                | None => None
                             }
-                            | None => None
-                        }
-                    })
-                }
-                | ("indirect-object", Some(person_param)) => {
-                    set_verb_form(prev_verb_form => {
-                        switch prev_verb_form {
-                            | Some(verb) => {
-                                set_error(_ => None)
-                                set_indirect_object(_ => Some(person_param))
-                                Some(Conjugator.set_indirect_object(verb, person_param))
+                        })
+                    }
+                    | ("indirect-object", Some(person_param)) => {
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => {
+                                    set_error(_ => None)
+                                    set_indirect_object(_ => Some(person_param))
+                                    Some(Conjugator.set_indirect_object(verb, person_param))
+                                }
+                                | None => None
                             }
-                            | None => None
-                        }
-                    })
+                        })
+                    }
+                    | _ => ()
                 }
-                | _ => ()
+                }
             }
         }
     };
@@ -380,19 +426,146 @@ let make = () => {
         set_verb_stem(_ => value);
         switch value {
         | Some(verb_data) => {
-            set_verb_form(_ => Some(Conjugator.create(verb_data.value)));
+            let new_verb = Conjugator.create(verb_data.value);
+            let new_verb =
+                verb_data.transitive
+                    ? Conjugator.is_transitive(new_verb)
+                    : Conjugator.is_intransitive(new_verb);
+            let new_verb = Conjugator.is_perfective(new_verb);
+            set_verb_form(_ => Some(new_verb));
+            set_is_transitive(_ => Some(verb_data.transitive));
+            set_is_perfective(_ => Some(true));
             set_error(_ => None);
         }
         | None => ()
         };
     };
 
+    let switch_transitive = (checked: option(bool)) => {
+        let apply_transitivity = verb =>
+            switch checked {
+            | Some(true) => Conjugator.is_transitive(verb)
+            | Some(false) => Conjugator.is_intransitive(verb)
+            | None => verb
+            };
+
+        set_verb_form(prev_verb_form => {
+            switch prev_verb_form {
+            | Some(verb) => {
+                set_error(_ => None)
+                set_is_transitive(_ => checked)
+                switch (subject, object_) {
+                    | (Some(subj), Some(obj)) =>
+                        try (verb
+                        ->Conjugator.reset_subject_object
+                        ->apply_transitivity
+                        ->Conjugator.set_subject(subj)
+                        ->Result.get_ok
+                        ->Conjugator.set_object(obj)
+                        ->Some) {
+                            | Conjugator__Utils.Todo(err) => {
+                                set_error(_ => Some(err))
+                                prev_verb_form
+                            }
+                        }
+                    | (Some(subj), _) => 
+                        try (verb
+                        ->Conjugator.reset_subject_object
+                        ->apply_transitivity
+                        ->Conjugator.set_subject(subj)
+                        ->Result.get_ok
+                        ->Some) {
+                            | Conjugator__Utils.Todo(err) => {
+                                set_error(_ => Some(err))
+                                prev_verb_form
+                            }
+                        }
+                    | (_, Some(obj)) => 
+                        verb
+                        ->Conjugator.reset_subject_object
+                        ->apply_transitivity
+                        ->Conjugator.set_object(obj)
+                        ->Some
+                    | _ => Some(apply_transitivity(verb))
+                }
+            }
+            | None => None
+            }
+        })
+    };
+
+    let switch_perfective = (value: option(bool)) => {
+        set_verb_form(prev_verb_form => {
+            switch prev_verb_form {
+            | Some(verb) => {
+                set_error(_ => None)
+                set_is_perfective(_ => value)
+                // finds the perfective stem
+                let stem = switch (verb_stem,) {
+                    | Some(verb_data) => verb_data.value
+                    | None => ""
+                }
+
+                switch (subject, object_) {
+                    | (Some(subj), Some(obj)) => {
+                        try (verb
+                        ->Conjugator.set_stem(stem)
+                        ->Conjugator.reset_subject_object
+                        ->Conjugator.is_perfective
+                        ->Conjugator.set_subject(subj)
+                        ->Result.get_ok
+                        ->Conjugator.set_object(obj)
+                        ->Some) {
+                            | Conjugator__Utils.Todo(err) => {
+                                set_error(_ => Some(err))
+                                prev_verb_form
+                            }
+                        }
+                    }
+                    | (Some(subj), _) => {
+                        try (verb
+                        ->Conjugator.set_stem(stem)
+                        ->Conjugator.reset_subject_object
+                        ->Conjugator.is_perfective
+                        ->Conjugator.set_subject(subj)
+                        ->Result.get_ok
+                        ->Some) {
+                            | Conjugator__Utils.Todo(err) => {
+                                set_error(_ => Some(err))
+                                prev_verb_form
+                            }
+                        }
+                    }
+                    | (_, Some(obj)) => 
+                        verb
+                        ->Conjugator.set_stem(stem)
+                        ->Conjugator.reset_subject_object
+                        ->Conjugator.is_perfective
+                        ->Conjugator.set_object(obj)
+                        ->Some
+                    | _ => verb
+                        ->Conjugator.set_stem(stem)
+                        ->Conjugator.is_perfective
+                        ->Some
+                }
+            }
+            | None => None
+            }
+        })
+    };
+
     <Container className=css##mainContainer>
         <h1>{"Sumerian Verb Conjugator"|>React.string}</h1>
-        <Grid container=true spacing=`Number(6) sx={{"marginTop": marginTop}}>
-            <Grid size=`Number(6)>
+        <Grid 
+            container=true
+            spacing=`Object(Grid.ResponsiveSize.make(~xs=2, ~sm=2, ~md=6, ()))  
+            sx={{"marginTop": marginTop}}
+        >
+            <Grid 
+                size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=6, ()))
+            >
                 <Box sx={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
-                    <FormControl fullWidth=true>
+                    <FormControl fullWidth=true size=`small>
                         <InputLabel id="verb-stem-label">
                             {"Select a verb stem" |> React.string}
                         </InputLabel>
@@ -414,12 +587,6 @@ let make = () => {
                                         verb.value === selected_value
                                     );
                                 set_new_verb_stem(selected_verb);
-                                switch selected_verb {
-                                | Some(verb) => {
-                                    set_is_transitive(_ => Some(verb.transitive));
-                                }
-                                | None => ()
-                                };
                             }}
                             sx={{"backgroundColor": "white"}}
                         >
@@ -452,58 +619,16 @@ let make = () => {
                     </span>
                 </Box>
                 <Grid container=true spacing=`Number(2) sx={{"marginTop": marginTop}}>
-                    <Grid size=`Number(6)>
+                    // DESKTOP VIEW
+                    <Grid size=`Number(6) className=css##onlyDesktop>
                         <InputLabel id="transitivity-label">
                             {"Transitivity" |> React.string}
                         </InputLabel>
                         <ToggleButtonGroup
                             value=is_transitive
                             exclusive=true
-                            onChange={(_event, checked) => {
-                                set_verb_form(prev_verb_form => {
-                                    switch prev_verb_form {
-                                    | Some(verb) => {
-                                        set_error(_ => None)
-                                        set_is_transitive(_ => checked)
-                                        switch (subject, object_) {
-                                            | (Some(subj), Some(obj)) =>
-                                                try (verb
-                                                ->Conjugator.reset_subject_object
-                                                ->Conjugator.is_transitive
-                                                ->Conjugator.set_subject(subj)
-                                                ->Result.get_ok
-                                                ->Conjugator.set_object(obj)
-                                                ->Some) {
-                                                    | Conjugator__Utils.Todo(err) => {
-                                                        set_error(_ => Some(err))
-                                                        prev_verb_form
-                                                    }
-                                                }
-                                            | (Some(subj), _) => 
-                                                try (verb
-                                                ->Conjugator.reset_subject_object
-                                                ->Conjugator.is_transitive
-                                                ->Conjugator.set_subject(subj)
-                                                ->Result.get_ok
-                                                ->Some) {
-                                                    | Conjugator__Utils.Todo(err) => {
-                                                        set_error(_ => Some(err))
-                                                        prev_verb_form
-                                                    }
-                                                }
-                                            | (_, Some(obj)) => 
-                                                verb
-                                                ->Conjugator.reset_subject_object
-                                                ->Conjugator.is_transitive
-                                                ->Conjugator.set_object(obj)
-                                                ->Some
-                                            | _ => Some(Conjugator.is_transitive(verb))
-                                        }
-                                    }
-                                    | None => None
-                                    }
-                                })
-                            }} 
+                            color=Color.primary
+                            onChange={(_event, checked) => switch_transitive(checked)} 
                         >
                             <ToggleButton value=Some(true) size=`small>
                                 {"Transitive" |> React.string}
@@ -513,72 +638,15 @@ let make = () => {
                             </ToggleButton>
                         </ToggleButtonGroup>
                     </Grid>
-                    <Grid size=`Number(6)>
+                    <Grid size=`Number(6) className=css##onlyDesktop>
                         <InputLabel id="aspect-label">
                             {"Aspect" |> React.string}
                         </InputLabel>
                         <ToggleButtonGroup
                             value=is_perfective
                             exclusive=true
-                            onChange={(_event, value) => {
-                                set_verb_form(prev_verb_form => {
-                                    switch prev_verb_form {
-                                    | Some(verb) => {
-                                        set_error(_ => None)
-                                        set_is_perfective(_ => value)
-                                        // finds the perfective stem
-                                        let stem = switch (verb_stem,) {
-                                            | Some(verb_data) => verb_data.value
-                                            | None => ""
-                                        }
-
-                                        switch (subject, object_) {
-                                            | (Some(subj), Some(obj)) => {
-                                                try (verb
-                                                ->Conjugator.set_stem(stem)
-                                                ->Conjugator.reset_subject_object
-                                                ->Conjugator.is_perfective
-                                                ->Conjugator.set_subject(subj)
-                                                ->Result.get_ok
-                                                ->Conjugator.set_object(obj)
-                                                ->Some) {
-                                                    | Conjugator__Utils.Todo(err) => {
-                                                        set_error(_ => Some(err))
-                                                        prev_verb_form
-                                                    }
-                                                }
-                                            }
-                                            | (Some(subj), _) => {
-                                                try (verb
-                                                ->Conjugator.set_stem(stem)
-                                                ->Conjugator.reset_subject_object
-                                                ->Conjugator.is_perfective
-                                                ->Conjugator.set_subject(subj)
-                                                ->Result.get_ok
-                                                ->Some) {
-                                                    | Conjugator__Utils.Todo(err) => {
-                                                        set_error(_ => Some(err))
-                                                        prev_verb_form
-                                                    }
-                                                }
-                                            }
-                                            | (_, Some(obj)) => 
-                                                verb
-                                                ->Conjugator.set_stem(stem)
-                                                ->Conjugator.reset_subject_object
-                                                ->Conjugator.is_perfective
-                                                ->Conjugator.set_object(obj)
-                                                ->Some
-                                            | _ => verb
-                                                ->Conjugator.set_stem(stem)
-                                                ->Conjugator.is_perfective
-                                                ->Some
-                                        }
-                                    }
-                                    | None => None
-                                    }
-                                })
-                            }}
+                            color=Color.primary
+                            onChange={(_event, value) => switch_perfective(value)}
                         >
                             <ToggleButton value=Some(true) size=`small>
                                 {"Perfective" |> React.string}
@@ -588,6 +656,55 @@ let make = () => {
                             </ToggleButton>
                         </ToggleButtonGroup>
                     </Grid>
+                    // MOBILE VIEW
+                    <Grid size=`Number(6) className=css##onlyMobile>
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={is_transitive |> Option.value(~default=false)}
+                                        disabled={verb_stem |> Option.is_none}
+                                        onChange={event => {
+                                            let checked =
+                                                React.Event.Form.target(event)##checked;
+                                            switch_transitive(Some(checked));
+                                        }}
+                                    />
+                                }
+                                label={
+                                    switch is_transitive {
+                                    | Some(true) => "Transitive"
+                                    | Some(false) => "Intransitive"
+                                    | None => "Transitivity"
+                                    } |> React.string
+                                }
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid size=`Number(6) className=css##onlyMobile>
+                        <FormGroup >
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={is_perfective |> Option.value(~default=false)}
+                                        disabled={verb_stem |> Option.is_none}
+                                        onChange={event => {
+                                            let checked =
+                                                React.Event.Form.target(event)##checked;
+                                            switch_perfective(Some(checked));
+                                        }}
+                                    />
+                                }
+                                label={
+                                    switch is_perfective {
+                                    | Some(true) => "Perfective"
+                                    | Some(false) => "Imperfective"
+                                    | None => "Aspect"
+                                    } |> React.string
+                                }
+                            />
+                        </FormGroup>
+                    </Grid>
                 </Grid>
                 <Grid 
                     container=true 
@@ -596,13 +713,14 @@ let make = () => {
                     sx={{"width": "100%", "justifyContent": "space-between", "alignItems": "center", "marginTop": marginTop}}
                 >
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true>
+                        <FormControl fullWidth=true size=`small>
                             <InputLabel id="subject-label">
                                 {"Subject" |> React.string}
                             </InputLabel>
                             <Select
                                 label={"Subject" |> React.string}
                                 labelId="subject-label"
+                                disabled={verb_stem |> Option.is_none}
                                 value={
                                     switch subject {
                                     | Some(pp) =>
@@ -623,12 +741,19 @@ let make = () => {
                                         )
                                     ) {
                                     | Some(option) =>
-                                        change_pronoun(option, "subject")
+                                        change_pronoun(Some(option), "subject")
                                     | None => ()
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
                             >
+                                <MenuItem 
+                                    value="" 
+                                    key="none"
+                                    onClick={_ => set_subject(_ => None)}
+                                >
+                                    <i>{"None" |> React.string}</i>
+                                </MenuItem>
                                 {
                                     pronoun_options
                                     |> Array.map((option: Utils.select_option) => {
@@ -642,13 +767,14 @@ let make = () => {
                         </FormControl>
                     </Grid>
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true>
+                        <FormControl fullWidth=true size=`small>
                             <InputLabel id="object-label">
                                 {"Object" |> React.string}
                             </InputLabel>
                             <Select
                                 label={"Object" |> React.string}
                                 labelId="object-label"
+                                disabled={verb_stem |> Option.is_none}
                                 value={
                                     switch object_ {
                                     | Some(pp) =>
@@ -669,12 +795,19 @@ let make = () => {
                                         )
                                     ) {
                                     | Some(option) =>
-                                        change_pronoun(option, "object")
+                                        change_pronoun(Some(option), "object")
                                     | None => ()
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
                             >
+                                <MenuItem 
+                                    value="" 
+                                    key="none"
+                                    onClick={_ => set_object(_ => None)}
+                                >
+                                    <i>{"None" |> React.string}</i>
+                                </MenuItem>
                                 {
                                     pronoun_options
                                     |> Array.map((option: Utils.select_option) => {
@@ -688,13 +821,14 @@ let make = () => {
                         </FormControl>
                     </Grid>
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true>
+                        <FormControl fullWidth=true size=`small>
                             <InputLabel id="indirect-object-label">
                                 {"Indirect Object" |> React.string}
                             </InputLabel>
                             <Select
                                 label={"Indirect Object" |> React.string}
                                 labelId="indirect-object-label"
+                                disabled={verb_stem |> Option.is_none}
                                 value={
                                     switch indirect_object {
                                     | Some(pp) =>
@@ -715,12 +849,19 @@ let make = () => {
                                         )
                                     ) {
                                     | Some(option) =>
-                                        change_pronoun(option, "indirect-object")
+                                        change_pronoun(Some(option), "indirect-object")
                                     | None => ()
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
                             >
+                                <MenuItem 
+                                    value="" 
+                                    key="none"
+                                    onClick={_ => set_indirect_object(_ => None)}
+                                >
+                                    <i>{"None" |> React.string}</i>
+                                </MenuItem>
                                 {
                                     pronoun_options
                                     |> Array.map((option: Utils.select_option) => {
@@ -736,7 +877,9 @@ let make = () => {
                 </Grid>
                 
             </Grid>
-            <Grid size=`Number(6)>
+            <Grid 
+                size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=6, ()))
+            >
                 <Grid container=true spacing=`Number(2)>
                     <Grid size=`Number(6)>
                         <FormControl>
@@ -760,8 +903,8 @@ let make = () => {
                             >
                                 <FormControlLabel
                                     value="preformative-a"
-                                    control={<Radio />}
-                                    label={"A" |> React.string}
+                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    label={"A" |> React.string}                                    
                                     disabled={
                                         is_transitive |> Option.is_none 
                                         || is_perfective |> Option.is_none
@@ -770,7 +913,7 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="preformative-i"
-                                    control={<Radio />}
+                                    control={<Radio size={is_mobile ? `small : `medium} />}
                                     label={"I" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -780,7 +923,7 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="preformative-u"
-                                    control={<Radio />}
+                                    control={<Radio size={is_mobile ? `small : `medium} />}
                                     label={"U" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -817,7 +960,7 @@ let make = () => {
                             >
                                 <FormControlLabel
                                     value="modal-ha"
-                                    control={<Radio />}
+                                    control={<Radio size={is_mobile ? `small : `medium} />}
                                     label={{js|ḪA|js} |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -827,7 +970,7 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="modal-nu"
-                                    control={<Radio />}
+                                    control={<Radio size={is_mobile ? `small : `medium} />}
                                     label={"NU" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -837,7 +980,7 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="modal-nan"
-                                    control={<Radio />}
+                                    control={<Radio size={is_mobile ? `small : `medium} />}
                                     label={"NAN" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -863,6 +1006,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={comitative}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked
@@ -881,6 +1025,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={ablative}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked
@@ -899,6 +1044,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={terminative}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked
@@ -917,6 +1063,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={locative === Some("IN")}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked
@@ -935,6 +1082,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={locative === Some("ON")}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked
@@ -953,46 +1101,53 @@ let make = () => {
                         </FormControl>
                     </Grid>
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true>
+                        <FormControl 
+                            fullWidth=true 
+                            size=`small 
+                            error={
+                                (comitative || ablative || terminative || locative === Some("IN") || locative === Some("ON"))
+                                && Js.Nullable.toOption(initial_person_prefix) |> Option.is_none
+                            }
+                        >
                             <InputLabel id="initial-person-prefix-label">
                                 {"Initial Person Prefix" |> React.string}
                             </InputLabel>
                             <Select
-                            label={"Initial Person Prefix" |> React.string}
-                            labelId="initial-person-prefix-label"
-                            value={
-                                switch (initial_person_prefix |> Js.Nullable.toOption) {
-                                | Some(pp) =>
-                                    pp
-                                    |> Utils.person_param_to_option
-                                    |> option =>
-                                        Select.Value.fromString(option.value)
-                                | None => Select.Value.fromString("")
+                                label={"Initial Person Prefix" |> React.string}
+                                labelId="initial-person-prefix-label"
+                                value={
+                                    switch (initial_person_prefix |> Js.Nullable.toOption) {
+                                    | Some(pp) =>
+                                        pp
+                                        |> Utils.person_param_to_option
+                                        |> option =>
+                                            Select.Value.fromString(option.value)
+                                    | None => Select.Value.fromString("")
+                                    }
                                 }
-                            }
-                            onChange={(event, _) => {
-                                let selected_value = event##target##value;
-                                switch (
-                                    pronoun_options
-                                    |> Array.find_opt(
-                                        (option: Utils.select_option) =>
-                                            option.value === selected_value
-                                    )
-                                ) {
-                                | Some(option) =>
-                                    change_pronoun(
-                                        option,
-                                        "initial-person-prefix",
-                                    )
-                                | None => ()
-                                };
-                            }}
-                            disabled={
-                                is_transitive |> Option.is_none 
-                                || is_perfective |> Option.is_none
-                                || Option.is_none(verb_stem)    
-                            }
-                            sx={{"backgroundColor": "white"}}
+                                onChange={(event, _) => {
+                                    let selected_value = event##target##value;
+                                    switch (
+                                        pronoun_options
+                                        |> Array.find_opt(
+                                            (option: Utils.select_option) =>
+                                                option.value === selected_value
+                                        )
+                                    ) {
+                                    | Some(option) =>
+                                        change_pronoun(
+                                            Some(option),
+                                            "initial-person-prefix",
+                                        )
+                                    | None => ()
+                                    };
+                                }}
+                                disabled={
+                                    is_transitive |> Option.is_none 
+                                    || is_perfective |> Option.is_none
+                                    || Option.is_none(verb_stem)    
+                                }
+                                sx={{"backgroundColor": "white"}}
                             >
                                 {
                                     pronoun_options
@@ -1020,6 +1175,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={ventive}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked
@@ -1038,6 +1194,7 @@ let make = () => {
                                 control={
                                     <Checkbox 
                                         checked={middle_prefix}
+                                        size={is_mobile ? `small : `medium}
                                         onChange={ev => {
                                             let target = React.Event.Form.target(ev)
                                             let checked: bool = target##checked

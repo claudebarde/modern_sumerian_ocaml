@@ -7,4 +7,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: $breakpoint) {
+    padding: 20px;
+    height: auto;
+  }
 }

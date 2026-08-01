@@ -24,6 +24,23 @@ const AccordionSummary = {};
 
 const AppBar = {};
 
+const BlurOnSelect = {
+  mouse: "mouse",
+  touch: "touch"
+};
+
+const ForcePopupIcon = {
+  auto: "auto"
+};
+
+const OptionKey = {};
+
+const Autocomplete = {
+  BlurOnSelect: BlurOnSelect,
+  ForcePopupIcon: ForcePopupIcon,
+  OptionKey: OptionKey
+};
+
 const Box = {};
 
 const Button = {};
@@ -196,6 +213,7 @@ export {
   AccordionDetails,
   AccordionSummary,
   AppBar,
+  Autocomplete,
   Box,
   Button,
   Card,

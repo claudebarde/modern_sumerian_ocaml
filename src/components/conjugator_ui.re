@@ -14,7 +14,13 @@ type prefix =
   
 type modal_prefix = HA | NAN | NU;
 
-type verb_data = { label: string, value: string, imperfective: Conjugator.ipfv_stem, transitive: bool };
+type verb_data = { 
+    label: string, 
+    value: string,
+    cuneiforms: array(string), 
+    imperfective: Conjugator.ipfv_stem, 
+    transitive: bool 
+};
 
 module Utils = {
     open Conjugator;
@@ -65,13 +71,23 @@ let make = () => {
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let available_verbs: array(verb_data) = [|
-        {label: "ak (to do)", value: {js|ʔak|js}, imperfective: Other({js|ʔak|js}), transitive: true},
-        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}, imperfective: Other({js|ĝen|js}), transitive: false},
-        {label: "gu (to eat)", value: "gu", imperfective: Other("gu"), transitive: true},
-        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}, imperfective: Other("na-na"), transitive: true},
-        {label: "sar (to write)", value: "sar", imperfective: Other("sar"), transitive: true},
-        {label: {js|šum (to give)|js}, value: {js|šum|js}, imperfective: Other({js|šum|js}), transitive: true},
-        {label: "tuku (to have)", value: "tuku", imperfective: Other("tuku"), transitive: true},
+        {label: "ak (to do)", value: {js|ʔak|js}, cuneiforms: [|{js|𒀝|js}|], imperfective: Other({js|ʔak|js}), transitive: true},
+        {label: "dab (to seize)", value: "dab", cuneiforms: [|{js|𒆪|js}|], imperfective: Other("dab"), transitive: true},
+        {label: "dug (to speak)", value: "dug", cuneiforms: [|{js|𒅗|js}|], imperfective: Other("e"), transitive: true},
+        {label: "e (to leave)", value: "e", cuneiforms: [|{js|𒌓|js}, {js|𒁺|js}|], imperfective: Other("e"), transitive: false},
+        {label: {js|ĝal (to exist)|js}, value: {js|ĝal|js}, cuneiforms: [|{js|𒅅|js}|], imperfective: Other({js|ŋal|js}), transitive: false},
+        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}, cuneiforms: [|{js|𒁺|js}|], imperfective: Other({js|ĝen|js}), transitive: false},
+        {label: "gu (to eat)", value: "gu", cuneiforms: [|{js|𒅥|js}|], imperfective: Other("gu"), transitive: true},
+        {label: "gub (to stand)", value: "gub", cuneiforms: [|{js|𒁺|js}|], imperfective: Other("gub"), transitive: false},
+        {label: "il (to raise)", value: "il", cuneiforms: [|{js|𒅍|js}|], imperfective: Other("il"), transitive: true},
+        {label: "kur (to enter)", value: "kur", cuneiforms: [|{js|𒆭|js}|], imperfective: Other("kur"), transitive: false},
+        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}, cuneiforms: [|{js|𒅘|js}|], imperfective: Other("na-na"), transitive: true},
+        {label: "sar (to write)", value: "sar", cuneiforms: [|{js|𒊬|js}|], imperfective: Other("sar"), transitive: true},
+        {label: "sig (to put)", value: "sig", cuneiforms: [|{js|𒋛|js}|], imperfective: Other("sig"), transitive: true},
+        {label: "shum (to give)", value: {js|šum|js}, cuneiforms: [|{js|𒋧|js}|], imperfective: Other({js|šum|js}), transitive: true},
+        {label: "tush (to sit)", value: {js|tuš|js}, cuneiforms: [|{js|𒆪|js}|], imperfective: Other({js|tuš|js}), transitive: false},
+        {label: "tuku (to have)", value: "tuku", cuneiforms: [|{js|𒌇|js}|], imperfective: Other("tuku"), transitive: true},
+        {label: "zu (to know)", value: "zu", cuneiforms: [|{js|𒍪|js}|], imperfective: Other("zu"), transitive: true},
     |];
 
     let pronoun_options: array(Utils.select_option) = [|
@@ -83,6 +99,17 @@ let make = () => {
         {label: "You (plur)", value: "second-plur"},
         {label: "They (human)", value: "third-plur-human"},
         {label: "They (non-human)", value: "third-plur-nonhuman"},
+    |];
+
+    let pronoun_object_options: array(Utils.select_option) = [|
+        {label: "Me", value: "first-sing"},
+        {label: "You (sing)", value: "second-sing"},
+        {label: "Him/Her", value: "third-sing-human"},
+        {label: "It", value: "third-sing-nonhuman"},
+        {label: "Us", value: "first-plur"},
+        {label: "You (plur)", value: "second-plur"},
+        {label: "Them (human)", value: "third-plur-human"},
+        {label: "Them (non-human)", value: "third-plur-nonhuman"},
     |];
 
     let change_pronoun = (value: option(Utils.select_option), pronoun: string) => {
@@ -565,42 +592,54 @@ let make = () => {
                 size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=6, ()))
             >
                 <Box sx={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
-                    <FormControl fullWidth=true size=`small>
-                        <InputLabel id="verb-stem-label">
-                            {"Select a verb stem" |> React.string}
-                        </InputLabel>
-                        <Select
-                            label={"Select a verb stem" |> React.string}
-                            labelId="verb-stem-label"
-                            value={
-                                switch verb_stem {
-                                | Some(verb) =>
-                                    Select.Value.fromString(verb.value)
-                                | None => Select.Value.fromString("")
-                                }
+                    <Autocomplete
+                        autoHighlight=true
+                        options=available_verbs
+                        getOptionLabel=(verb => verb.label)
+                        value={
+                            switch verb_stem {
+                            | Some(verb) => Js.Nullable.return(verb)
+                            | None => Js.Nullable.null
                             }
-                            onChange={(event, _) => {
-                                let selected_value = event##target##value;
-                                let selected_verb =
-                                    available_verbs
-                                    |> Array.find_opt((verb: verb_data) =>
-                                        verb.value === selected_value
-                                    );
-                                set_new_verb_stem(selected_verb);
-                            }}
-                            sx={{"backgroundColor": "white"}}
-                        >
-                            {
-                                available_verbs
-                                |> Array.map((verb: verb_data) => {
-                                    <MenuItem value=verb.value key=verb.value>
-                                        {verb.label |> React.string}
-                                    </MenuItem>
-                                })
-                                |> React.array
-                            }
-                        </Select>
-                    </FormControl>
+                        }
+                        onChange={(_event, newValue) =>
+                            set_new_verb_stem(
+                                newValue |> Js.Nullable.toOption,
+                            )
+                        }
+                        renderInput={params =>
+                            React.cloneElement(
+                                <TextField label={"Verb Stem" |> React.string} />,
+                                params,
+                            )
+                        }
+                        renderOption={(props, option, _state, _ownerState) =>
+                            React.cloneElement(
+                                <li key={option.value ++ option.label}>
+                                    {option.cuneiforms
+                                    |> Array.mapi((index, cuneiform) =>
+                                        <span
+                                            key={
+                                                option.value
+                                                ++ "-"
+                                                ++ Int.to_string(index)
+                                                ++ "-"
+                                                ++ cuneiform
+                                            }
+                                            className="cuneiforms x-small"
+                                        >
+                                            {cuneiform |> React.string}
+                                        </span>
+                                    )
+                                    |> React.array}
+                                    <span style={ReactDOM.Style.make(~marginLeft="15px", ())}>{option.label |> React.string}</span>
+                                </li>,
+                                props,
+                            )
+                        }
+                        sx={{"width": "100%", "backgroundColor": "white"}}
+                        size=`small
+                    />
                     <span className=css##noWrap>
                         {
                             switch (verb_stem) {
@@ -1128,7 +1167,7 @@ let make = () => {
                                 onChange={(event, _) => {
                                     let selected_value = event##target##value;
                                     switch (
-                                        pronoun_options
+                                        pronoun_object_options
                                         |> Array.find_opt(
                                             (option: Utils.select_option) =>
                                                 option.value === selected_value
@@ -1143,14 +1182,15 @@ let make = () => {
                                     };
                                 }}
                                 disabled={
-                                    is_transitive |> Option.is_none 
-                                    || is_perfective |> Option.is_none
-                                    || Option.is_none(verb_stem)    
+                                    (is_transitive |> Option.is_none) 
+                                    || (is_perfective |> Option.is_none)
+                                    || (verb_stem |> Option.is_none)
+                                    || (!comitative && !ablative && !terminative && (locative |> Option.is_none))
                                 }
                                 sx={{"backgroundColor": "white"}}
                             >
                                 {
-                                    pronoun_options
+                                    pronoun_object_options
                                     |> Array.map((option: Utils.select_option) => {
                                         <MenuItem value=option.value key=option.value>
                                             {option.label |> React.string}

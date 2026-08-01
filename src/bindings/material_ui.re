@@ -113,6 +113,118 @@ module AppBar = {
     ) => React.element = "default";
 };
 
+// https://mui.com/material-ui/api/autocomplete/
+module Autocomplete = {
+    module BlurOnSelect = {
+        type t;
+
+        external fromBool: bool => t = "%identity";
+        external fromString: string => t = "%identity";
+
+        let mouse = fromString("mouse");
+        let touch = fromString("touch");
+    };
+
+    module ForcePopupIcon = {
+        type t;
+
+        external fromBool: bool => t = "%identity";
+        external fromString: string => t = "%identity";
+
+        let auto = fromString("auto");
+    };
+
+    module OptionKey = {
+        type t;
+
+        external fromString: string => t = "%identity";
+        external fromInt: int => t = "%identity";
+    };
+
+    type renderOptionState = {
+        . "inputValue": string,
+        "index": int,
+        "selected": bool,
+    };
+
+    [@mel.module "@mui/material/Autocomplete"] [@react.component]
+    external make: (
+        ~autoComplete: bool=?,
+        ~autoHighlight: bool=?,
+        ~autoSelect: bool=?,
+        ~blurOnSelect: BlurOnSelect.t=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~clearIcon: React.element=?,
+        ~clearOnBlur: bool=?,
+        ~clearOnEscape: bool=?,
+        ~clearText: string=?,
+        ~closeText: string=?,
+        ~defaultValue: 'value=?,
+        ~disableClearable: bool=?,
+        ~disableCloseOnSelect: bool=?,
+        ~disabled: bool=?,
+        ~disabledItemsFocusable: bool=?,
+        ~disableListWrap: bool=?,
+        ~disablePortal: bool=?,
+        ~filterOptions: ('options, 'state) => array('option)=?,
+        ~filterSelectedOptions: bool=?,
+        ~forcePopupIcon: ForcePopupIcon.t=?,
+        ~freeSolo: bool=?,
+        ~fullWidth: bool=?,
+        ~getLimitTagsText: (int => React.element)=?,
+        ~getOptionDisabled: ('option => bool)=?,
+        ~getOptionKey: ('option => OptionKey.t)=?,
+        ~getOptionLabel: ('option => string)=?,
+        ~groupBy: ('option => string)=?,
+        ~handleHomeEndKeys: bool=?,
+        ~id: string=?,
+        ~includeInputInList: bool=?,
+        ~inputValue: string=?,
+        ~isOptionEqualToValue: ('value, 'value => bool)=?,
+        ~limitTags: int=?,
+        ~loading: bool=?,
+        ~loadingText: React.element=?,
+        ~multiple: bool=?,
+        ~noOptionsText: React.element=?,
+        ~onChange: (React.Event.Synthetic.t, Js.Nullable.t('value)) => unit=?,
+        ~onClose: (React.Event.Synthetic.t, string) => unit=?,
+        ~onHighlightChange: (
+            React.Event.Synthetic.t,
+            Js.Nullable.t('option),
+            [`keyboard | `mouse | `touch],
+        ) => unit=?,
+        ~onInputChange: (React.Event.Synthetic.t, string) => unit=?,
+        ~onOpen: (React.Event.Synthetic.t => unit)=?,
+        ~_open: bool=?,
+        ~openOnFocus: bool=?,
+        ~openText: string=?,
+        ~options: array('option)=?,
+        ~popupIcon: React.element=?,
+        ~readOnly: bool=?,
+        ~renderGroup: ('params => React.element)=?,
+        ~renderInput: ('params => React.element)=?,
+        ~renderOption: (
+            Js.t({..}),
+            'option,
+            renderOptionState,
+            Js.t({..}),
+        ) => React.element=?,
+        ~renderValue: (
+            'value,
+            Js.t({..}) => Js.t({..}),
+            Js.t({..}),
+        ) => React.element=?,
+        ~resetHighlightOnMouseLeave: bool=?,
+        ~selectOnFocus: bool=?,
+        ~size: [`small | `medium]=?, // TODO: a string can be passed to size
+        ~sx: Js.t({..})=?,
+        ~value: Js.Nullable.t('value)=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Box = {
     [@mel.module "@mui/material/Box"] [@react.component]
     external make: (

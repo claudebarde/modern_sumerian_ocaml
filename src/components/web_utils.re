@@ -166,14 +166,107 @@ let replace_with_unicode = (word: string): string => {
     |> Js.String.replaceByRe(~regexp=g_replacement, ~replacement={js|ĝ|js})
 }
 
+let build_result_cuneiforms = (
+    conjugatedVerb: string,
+    verbStem: string,
+    lexicalStem: string,
+    stemCuneiforms: array(string),
+    fixedElement: option((string, array(string))),
+): array(cuneiformData) => {
+    let fixedCuneiforms =
+        switch fixedElement {
+        | Some((value, cuneiforms)) =>
+            cuneiforms
+            |> Array.map(cuneiform => (cuneiform, value))
+        | None => [||]
+        };
+    let conjugatedCuneiforms =
+        parse_verb_syllables(conjugatedVerb, verbStem)
+        |> display_cuneiforms
+        |> Array.map(((codePoint, word)) => {
+            let displayedCodePoint =
+                if (
+                    word === verbStem
+                    && verbStem === lexicalStem
+                    && Array.length(stemCuneiforms) > 0
+                ) {
+                    stemCuneiforms |> Js.Array.join(~sep="")
+                } else {
+                    codePoint
+                };
+            (displayedCodePoint, word)
+        });
+    Array.concat([fixedCuneiforms, conjugatedCuneiforms])
+};
+
+let build_result_cuneiform_string = (
+    conjugatedVerb: string,
+    verbStem: string,
+    lexicalStem: string,
+    stemCuneiforms: array(string),
+    fixedElement: option((string, array(string))),
+): string =>
+    build_result_cuneiforms(
+        conjugatedVerb,
+        verbStem,
+        lexicalStem,
+        stemCuneiforms,
+        fixedElement,
+    )
+    |> Array.map(((codePoint, _)) => codePoint)
+    |> Js.Array.join(~sep="");
+
 module BuildResults = {
     [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default";
     open Bindings.Mui;
 
     [@react.component]
-    let make = (~verb: Conjugator.t, ~meaning: option(string)) => {
+    let make = (
+        ~verb: Conjugator.t,
+        ~meaning: option(string),
+        ~lexicalStem: string,
+        ~stemCuneiforms: array(string),
+        ~fixedElement: option((string, array(string))),
+    ) => {
         switch (Conjugator.print(verb, meaning)) {
-            | Ok({verb: conjugatedVerb, analysis, translation, _}) => {[|
+            | Ok({verb: conjugatedVerb, analysis, translation, _}) => {
+                let displayedVerb =
+                    switch fixedElement {
+                    | Some((value, _)) => value ++ " " ++ conjugatedVerb
+                    | None => conjugatedVerb
+                    };
+                let analysisOutput =
+                    analysis
+                    |> Conjugator__Verb_analysis.output
+                    |> output =>
+                        switch fixedElement {
+                        | Some((value, _)) =>
+                            Array.concat([
+                                [|("compoundElement", value)|],
+                                output,
+                            ])
+                        | None => output
+                        };
+                let cuneiformElements =
+                    build_result_cuneiforms(
+                        conjugatedVerb,
+                        verb.stem,
+                        lexicalStem,
+                        stemCuneiforms,
+                        fixedElement,
+                    )
+                    |> Array.mapi((i, (codePoint, word)) =>
+                        <Cuneiform_char
+                            key={
+                                codePoint
+                                ++ word
+                                ++ Int.to_string(i)
+                            }
+                            codePoint={codePoint}
+                            pronunciation={word}
+                        />
+                    );
+                {[|
                 <Grid  
                     container=true
                     spacing=`Number(4)
@@ -185,7 +278,7 @@ module BuildResults = {
                         size=`Object(Grid.ResponsiveSize.make(~xs=12, ~sm=12, ~md=3, ()))
                     >
                         <span className=css##noWrap  style=(ReactDOM.Style.make(~fontSize="1.2rem", ())) key="verbForm">
-                            {conjugatedVerb |> React.string}
+                            {displayedVerb |> React.string}
                         </span>
                     </Grid>
                     <Grid
@@ -193,16 +286,7 @@ module BuildResults = {
                     >
                         <span className=css##noWrap key="cuneiforms">
                             {
-                                parse_verb_syllables(conjugatedVerb, verb.stem)
-                                |> display_cuneiforms
-                                |> Array.mapi((i, (codePoint, word)) => {
-                                    <Cuneiform_char
-                                        key={codePoint ++ word ++ Int.to_string(i)}
-                                        codePoint={codePoint}
-                                        pronunciation={word}
-                                    />
-                                })
-                                |> React.array
+                                cuneiformElements |> React.array
                             }
                         </span>
                     </Grid>
@@ -263,11 +347,12 @@ module BuildResults = {
                     <Table className=css##analysisTable>
                         <TableHead>
                             <TableRow>
-                                {analysis |> Conjugator__Verb_analysis.output |> Array.map(
+                                {analysisOutput |> Array.map(
                                     ((output_type, _)) => {
                                         <TableCell key={output_type}>
                                             {
                                                 switch output_type {
+                                                    | "compoundElement" => "Compound Element"
                                                     | "middlePrefix" => "Middle Prefix"
                                                     | "initialPersonPrefix" => "Initial Person Prefix"
                                                     | "finalPersonPrefix" => "Final Person Prefix"
@@ -287,7 +372,7 @@ module BuildResults = {
                         </TableHead>
                         <TableBody>
                             <TableRow>
-                                {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
+                                {analysisOutput |> Array.mapi(
                                     (i, (output_type, value)) => {
                                         <TableCell 
                                             key={value ++ Int.to_string(i)}
@@ -312,7 +397,8 @@ module BuildResults = {
                 <span key="cuneiformWarning" style=(ReactDOM.Style.make(~fontSize="0.6rem", ~fontStyle="italic", ()))>
                     {"The cuneiforms are auto-generated and may not be historically accurate"|> React.string}
                 </span>
-            |] |> React.array}
+                |] |> React.array}
+            }
             | Error(err) => 
                 <span className=css##error>
                     {err |> React.string}

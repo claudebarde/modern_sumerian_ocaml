@@ -1,7 +1,6 @@
 [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default"; 
 
 type prefix =
-    Modal
   | Negative
   | NegativeNan
   | Ventive
@@ -14,13 +13,37 @@ type prefix =
   
 type modal_prefix = HA | NAN | NU;
 
+type fixed_element = {
+    value: string,
+    cuneiforms: array(string),
+};
+
+type verb_kind =
+    | Simple
+    | Compound(fixed_element);
+
 type verb_data = { 
     label: string, 
-    value: string,
-    cuneiforms: array(string), 
+    stem: string,
+    stem_cuneiforms: array(string),
+    kind: verb_kind,
     imperfective: Conjugator.ipfv_stem, 
     transitive: bool 
 };
+
+let verb_dictionary_value = (verb: verb_data): string =>
+    switch verb.kind {
+    | Simple => verb.stem
+    | Compound(element) => element.value ++ " " ++ verb.stem
+    };
+
+let verb_fixed_element = (
+    verb: verb_data,
+): option((string, array(string))) =>
+    switch verb.kind {
+    | Simple => None
+    | Compound(element) => Some((element.value, element.cuneiforms))
+    };
 
 module Utils = {
     open Conjugator;
@@ -71,23 +94,24 @@ let make = () => {
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let available_verbs: array(verb_data) = [|
-        {label: "ak (to do)", value: {js|ʔak|js}, cuneiforms: [|{js|𒀝|js}|], imperfective: Other({js|ʔak|js}), transitive: true},
-        {label: "dab (to seize)", value: "dab", cuneiforms: [|{js|𒆪|js}|], imperfective: Other("dab"), transitive: true},
-        {label: "dug (to speak)", value: "dug", cuneiforms: [|{js|𒅗|js}|], imperfective: Other("e"), transitive: true},
-        {label: "e (to leave)", value: "e", cuneiforms: [|{js|𒌓|js}, {js|𒁺|js}|], imperfective: Other("e"), transitive: false},
-        {label: {js|ĝal (to exist)|js}, value: {js|ĝal|js}, cuneiforms: [|{js|𒅅|js}|], imperfective: Other({js|ŋal|js}), transitive: false},
-        {label: {js|ĝen (to go)|js}, value: {js|ĝen|js}, cuneiforms: [|{js|𒁺|js}|], imperfective: Other({js|ĝen|js}), transitive: false},
-        {label: "gu (to eat)", value: "gu", cuneiforms: [|{js|𒅥|js}|], imperfective: Other("gu"), transitive: true},
-        {label: "gub (to stand)", value: "gub", cuneiforms: [|{js|𒁺|js}|], imperfective: Other("gub"), transitive: false},
-        {label: "il (to raise)", value: "il", cuneiforms: [|{js|𒅍|js}|], imperfective: Other("il"), transitive: true},
-        {label: "kur (to enter)", value: "kur", cuneiforms: [|{js|𒆭|js}|], imperfective: Other("kur"), transitive: false},
-        {label: {js|naĝ (to drink)|js}, value: {js|naĝ|js}, cuneiforms: [|{js|𒅘|js}|], imperfective: Other("na-na"), transitive: true},
-        {label: "sar (to write)", value: "sar", cuneiforms: [|{js|𒊬|js}|], imperfective: Other("sar"), transitive: true},
-        {label: "sig (to put)", value: "sig", cuneiforms: [|{js|𒋛|js}|], imperfective: Other("sig"), transitive: true},
-        {label: "shum (to give)", value: {js|šum|js}, cuneiforms: [|{js|𒋧|js}|], imperfective: Other({js|šum|js}), transitive: true},
-        {label: "tush (to sit)", value: {js|tuš|js}, cuneiforms: [|{js|𒆪|js}|], imperfective: Other({js|tuš|js}), transitive: false},
-        {label: "tuku (to have)", value: "tuku", cuneiforms: [|{js|𒌇|js}|], imperfective: Other("tuku"), transitive: true},
-        {label: "zu (to know)", value: "zu", cuneiforms: [|{js|𒍪|js}|], imperfective: Other("zu"), transitive: true},
+        {label: "ak (to do)", stem: {js|ʔak|js}, stem_cuneiforms: [|{js|𒀝|js}|], kind: Simple, imperfective: Other({js|ʔak|js}), transitive: true},
+        {label: "dab (to seize)", stem: "dab", stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("dab"), transitive: true},
+        {label: "dug (to speak)", stem: "dug", stem_cuneiforms: [|{js|𒅗|js}|], kind: Simple, imperfective: Other("e"), transitive: true},
+        {label: "e (to leave)", stem: "e", stem_cuneiforms: [|{js|𒌓|js}, {js|𒁺|js}|], kind: Simple, imperfective: Other("e"), transitive: false},
+        {label: {js|ĝal (to exist)|js}, stem: {js|ĝal|js}, stem_cuneiforms: [|{js|𒅅|js}|], kind: Simple, imperfective: Other({js|ĝal|js}), transitive: false},
+        {label: {js|ĝen (to go)|js}, stem: {js|ĝen|js}, stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other({js|ĝen|js}), transitive: false},
+        {label: "gu (to eat)", stem: "gu", stem_cuneiforms: [|{js|𒅥|js}|], kind: Simple, imperfective: Other("gu"), transitive: true},
+        {label: "gub (to stand)", stem: "gub", stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other("gub"), transitive: false},
+        {label: "il (to raise)", stem: "il", stem_cuneiforms: [|{js|𒅍|js}|], kind: Simple, imperfective: Other("il"), transitive: true},
+        {label: "kur (to enter)", stem: "kur", stem_cuneiforms: [|{js|𒆭|js}|], kind: Simple, imperfective: Other("kur"), transitive: false},
+        {label: {js|naĝ (to drink)|js}, stem: {js|naĝ|js}, stem_cuneiforms: [|{js|𒅘|js}|], kind: Simple, imperfective: Other("na-na"), transitive: true},
+        {label: "sar (to write)", stem: "sar", stem_cuneiforms: [|{js|𒊬|js}|], kind: Simple, imperfective: Other("sar"), transitive: true},
+        {label: "sig (to put)", stem: "sig", stem_cuneiforms: [|{js|𒋛|js}|], kind: Simple, imperfective: Other("sig"), transitive: true},
+        {label: "shag dab (to think)", stem: "dab", stem_cuneiforms: [|{js|𒁳|js}|], kind: Compound({value: "shag", cuneiforms: [|{js|𒊮|js}|]}), imperfective: Other("dab"), transitive: true},
+        {label: "shum (to give)", stem: {js|šum|js}, stem_cuneiforms: [|{js|𒋧|js}|], kind: Simple, imperfective: Other("shum"), transitive: true},
+        {label: "tush (to sit)", stem: {js|tuš|js}, stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("tush"), transitive: false},
+        {label: "tuku (to have)", stem: "tuku", stem_cuneiforms: [|{js|𒌇|js}|], kind: Simple, imperfective: Other("tuku"), transitive: true},
+        {label: "zu (to know)", stem: "zu", stem_cuneiforms: [|{js|𒍪|js}|], kind: Simple, imperfective: Other("zu"), transitive: true},
     |];
 
     let pronoun_options: array(Utils.select_option) = [|
@@ -253,6 +277,39 @@ let make = () => {
         }
     };
 
+    let change_modal = (value: option(modal_prefix)) => {
+        if (Option.is_none(verb_stem)) {
+            set_error(_ => Some("No verb stem selected"))
+        } else if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
+            set_error(_ => Some("Aspect and transitivity must be selected"))
+        } else {
+            set_verb_form(prev_verb_form => {
+                switch (prev_verb_form, value) {
+                    | (Some(verb), Some(modal_prefix)) => {
+                        set_error(_ => None)
+                        set_modal_prefix(_ => Some(modal_prefix))
+                        let selected_modal =
+                            switch modal_prefix {
+                            | HA => Conjugator.FirstPrefix.Modal
+                            | NU => Conjugator.FirstPrefix.Negative
+                            | NAN => Conjugator.FirstPrefix.Negative_nan
+                            };
+                        Some(Conjugator.set_modal(verb, selected_modal))
+                    }
+                    | (Some(verb), None) => {
+                        set_error(_ => None)
+                        set_modal_prefix(_ => None)
+                        Some(Conjugator.reset_modal(verb))
+                    }
+                    | (None, _) => {
+                        set_error(_ => Some("No verb stem selected"))
+                        None
+                    }
+                }
+            })
+        }
+    };
+
     let change_prefix = (value: prefix, checked: bool) => {
         if (Option.is_none(verb_stem)) {
             set_error(_ => Some("No verb stem selected"))
@@ -260,22 +317,6 @@ let make = () => {
             set_error(_ => Some("Aspect and transitivity must be selected"))
         } else {
             switch value {
-                | Modal => {
-                    set_modal_prefix(_ => Some(HA))
-                    set_verb_form(prev_verb_form => {
-                        switch prev_verb_form {
-                            | Some(verb) => {
-                                set_error(_ => None)
-                                if (checked) {
-                                    Some(Conjugator.set_modal(verb))
-                                } else {
-                                    Some(Conjugator.reset_modal(verb))
-                                }
-                            }
-                            | None => None
-                        }
-                    })
-                }
                 | Negative => {
                     set_modal_prefix(_ => Some(NU))
                     set_verb_form(prev_verb_form => {
@@ -453,7 +494,7 @@ let make = () => {
         set_verb_stem(_ => value);
         switch value {
         | Some(verb_data) => {
-            let new_verb = Conjugator.create(verb_data.value);
+            let new_verb = Conjugator.create(verb_data.stem);
             let new_verb =
                 verb_data.transitive
                     ? Conjugator.is_transitive(new_verb)
@@ -529,7 +570,7 @@ let make = () => {
                 set_is_perfective(_ => value)
                 // finds the perfective stem
                 let stem = switch (verb_stem,) {
-                    | Some(verb_data) => verb_data.value
+                    | Some(verb_data) => verb_data.stem
                     | None => ""
                 }
 
@@ -581,6 +622,42 @@ let make = () => {
         })
     };
 
+    let copy_result_cuneiforms = () => {
+        switch (verb_form, verb_stem) {
+        | (Some(verb), Some(selected_verb)) => {
+            switch (Conjugator.print(verb, None)) {
+            | Ok({verb: conjugated_verb, _}) => {
+                let cuneiforms =
+                    Web_utils.build_result_cuneiform_string(
+                        conjugated_verb,
+                        verb.stem,
+                        selected_verb.stem,
+                        selected_verb.stem_cuneiforms,
+                        verb_fixed_element(selected_verb),
+                    );
+                let _ =
+                    cuneiforms
+                    |> Bindings.Browser.Clipboard.write_text
+                    |> Js.Promise.catch(error => {
+                        Js.log2(
+                            "Could not copy the conjugated cuneiforms:",
+                            error,
+                        );
+                        Js.Promise.resolve();
+                    });
+                ()
+            }
+            | Error(error) =>
+                Js.log2(
+                    "Could not generate the conjugated cuneiforms:",
+                    error,
+                )
+            }
+        }
+        | _ => ()
+        }
+    };
+
     <Container className=css##mainContainer>
         <h1>{"Sumerian Verb Conjugator"|>React.string}</h1>
         <Grid 
@@ -615,12 +692,20 @@ let make = () => {
                         }
                         renderOption={(props, option, _state, _ownerState) =>
                             React.cloneElement(
-                                <li key={option.value ++ option.label}>
-                                    {option.cuneiforms
+                                <li key={verb_dictionary_value(option) ++ option.label}>
+                                    {
+                                    switch option.kind {
+                                    | Simple => option.stem_cuneiforms
+                                    | Compound(element) =>
+                                        Array.concat([
+                                            element.cuneiforms,
+                                            option.stem_cuneiforms,
+                                        ])
+                                    }
                                     |> Array.mapi((index, cuneiform) =>
                                         <span
                                             key={
-                                                option.value
+                                                verb_dictionary_value(option)
                                                 ++ "-"
                                                 ++ Int.to_string(index)
                                                 ++ "-"
@@ -644,7 +729,11 @@ let make = () => {
                         {
                             switch (verb_stem) {
                                 | Some(stem) => {
-                                    switch (Web_utils.EpsdDict.get_epsd_link(stem.value)) {
+                                    switch (
+                                        Web_utils.EpsdDict.get_epsd_link(
+                                            verb_dictionary_value(stem),
+                                        )
+                                    ) {
                                     | Some(link) => 
                                         <a href={link} target="_blank" className=css##epsdLink>
                                             {"EPSD Link" |> React.string}
@@ -752,14 +841,17 @@ let make = () => {
                     sx={{"width": "100%", "justifyContent": "space-between", "alignItems": "center", "marginTop": marginTop}}
                 >
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true size=`small>
+                        <FormControl 
+                            fullWidth=true 
+                            size=`small 
+                            disabled={verb_stem |> Option.is_none}
+                        >
                             <InputLabel id="subject-label">
                                 {"Subject" |> React.string}
                             </InputLabel>
                             <Select
                                 label={"Subject" |> React.string}
                                 labelId="subject-label"
-                                disabled={verb_stem |> Option.is_none}
                                 value={
                                     switch subject {
                                     | Some(pp) =>
@@ -781,7 +873,7 @@ let make = () => {
                                     ) {
                                     | Some(option) =>
                                         change_pronoun(Some(option), "subject")
-                                    | None => ()
+                                    | None => change_pronoun(None, "subject")
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
@@ -789,7 +881,6 @@ let make = () => {
                                 <MenuItem 
                                     value="" 
                                     key="none"
-                                    onClick={_ => set_subject(_ => None)}
                                 >
                                     <i>{"None" |> React.string}</i>
                                 </MenuItem>
@@ -806,14 +897,21 @@ let make = () => {
                         </FormControl>
                     </Grid>
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true size=`small>
+                        <FormControl 
+                            fullWidth=true 
+                            size=`small
+                            disabled={
+                                (verb_stem |> Option.is_none) 
+                                || (is_transitive |> Option.is_none) 
+                                || (is_transitive === Option.Some(false))
+                            }
+                        >
                             <InputLabel id="object-label">
                                 {"Object" |> React.string}
                             </InputLabel>
                             <Select
                                 label={"Object" |> React.string}
                                 labelId="object-label"
-                                disabled={verb_stem |> Option.is_none}
                                 value={
                                     switch object_ {
                                     | Some(pp) =>
@@ -835,7 +933,7 @@ let make = () => {
                                     ) {
                                     | Some(option) =>
                                         change_pronoun(Some(option), "object")
-                                    | None => ()
+                                    | None => change_pronoun(None, "object")
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
@@ -843,7 +941,6 @@ let make = () => {
                                 <MenuItem 
                                     value="" 
                                     key="none"
-                                    onClick={_ => set_object(_ => None)}
                                 >
                                     <i>{"None" |> React.string}</i>
                                 </MenuItem>
@@ -860,14 +957,17 @@ let make = () => {
                         </FormControl>
                     </Grid>
                     <Grid size=`Number(4)>
-                        <FormControl fullWidth=true size=`small>
+                        <FormControl 
+                            fullWidth=true 
+                            size=`small
+                            disabled={verb_stem |> Option.is_none}
+                        >
                             <InputLabel id="indirect-object-label">
                                 {"Indirect Object" |> React.string}
                             </InputLabel>
                             <Select
                                 label={"Indirect Object" |> React.string}
-                                labelId="indirect-object-label"
-                                disabled={verb_stem |> Option.is_none}
+                                labelId="indirect-object-label"                                
                                 value={
                                     switch indirect_object {
                                     | Some(pp) =>
@@ -889,7 +989,8 @@ let make = () => {
                                     ) {
                                     | Some(option) =>
                                         change_pronoun(Some(option), "indirect-object")
-                                    | None => ()
+                                    | None =>
+                                        change_pronoun(None, "indirect-object")
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
@@ -897,7 +998,6 @@ let make = () => {
                                 <MenuItem 
                                     value="" 
                                     key="none"
-                                    onClick={_ => set_indirect_object(_ => None)}
                                 >
                                     <i>{"None" |> React.string}</i>
                                 </MenuItem>
@@ -992,8 +1092,12 @@ let make = () => {
                                 }
                                 onChange={ev => {
                                     let target = React.Event.Form.target(ev)
-                                    let checked: bool = target##checked
-                                    change_prefix(Modal, checked)
+                                    switch target##value {
+                                    | "modal-ha" => change_modal(Some(HA))
+                                    | "modal-nu" => change_modal(Some(NU))
+                                    | "modal-nan" => change_modal(Some(NAN))
+                                    | _ => change_modal(None)
+                                    }
                                 }}
                                 sx={{"padding": "8px"}}
                             >
@@ -1147,6 +1251,12 @@ let make = () => {
                                 (comitative || ablative || terminative || locative === Some("IN") || locative === Some("ON"))
                                 && Js.Nullable.toOption(initial_person_prefix) |> Option.is_none
                             }
+                            disabled={
+                                (is_transitive |> Option.is_none) 
+                                || (is_perfective |> Option.is_none)
+                                || (verb_stem |> Option.is_none)
+                                || (!comitative && !ablative && !terminative && (locative |> Option.is_none))
+                            }
                         >
                             <InputLabel id="initial-person-prefix-label">
                                 {"Initial Person Prefix" |> React.string}
@@ -1181,12 +1291,6 @@ let make = () => {
                                     | None => ()
                                     };
                                 }}
-                                disabled={
-                                    (is_transitive |> Option.is_none) 
-                                    || (is_perfective |> Option.is_none)
-                                    || (verb_stem |> Option.is_none)
-                                    || (!comitative && !ablative && !terminative && (locative |> Option.is_none))
-                                }
                                 sx={{"backgroundColor": "white"}}
                             >
                                 {
@@ -1264,7 +1368,28 @@ let make = () => {
                         }
                         | (Some(verb), None) => 
                             <Web_utils.BuildResults
-                                verb={verb} 
+                                verb={verb}
+                                lexicalStem={
+                                    switch verb_stem {
+                                    | Some(selected_verb) =>
+                                        selected_verb.stem
+                                    | None => verb.stem
+                                    }
+                                }
+                                stemCuneiforms={
+                                    switch verb_stem {
+                                    | Some(selected_verb) =>
+                                        selected_verb.stem_cuneiforms
+                                    | None => [||]
+                                    }
+                                }
+                                fixedElement={
+                                    switch verb_stem {
+                                    | Some(selected_verb) =>
+                                        verb_fixed_element(selected_verb)
+                                    | None => None
+                                    }
+                                }
                                 meaning={
                                     switch (verb_stem) {
                                         | Some(m) => Some(m.label)
@@ -1277,16 +1402,23 @@ let make = () => {
                     }
                 </div>
                 <div className=css##buttons>
-                    <button className="button" onClick={_ => reset()}>
-                        {"Clear" |> React.string}
-                    </button>
-                    <button className="button">
+                    <Button 
+                        variant=`contained 
+                        onClick={_ => reset()}
+                        disabled={verb_form |> Option.is_none}
+                    >
+                        {"Reset" |> React.string}
+                    </Button>
+                    <Button 
+                        variant=`contained
+                        onClick={_ => copy_result_cuneiforms()}
+                        disabled={verb_form |> Option.is_none}
+                    >
                         {"Copy" |> React.string}
-                    </button>
-                    <button 
-                        className="button"
-                        onClick={_ => 
-                        set_is_modal_open(_ => true)}
+                    </Button>
+                    <Button
+                        variant=`contained
+                        onClick={_ => set_is_modal_open(_ => true)}
                         disabled={
                             is_transitive |> Option.is_none 
                             || is_perfective |> Option.is_none
@@ -1294,7 +1426,7 @@ let make = () => {
                         }
                         >
                         {"Report an error" |> React.string}
-                    </button>
+                    </Button>
                 </div>
             </Container>
         </Grid>

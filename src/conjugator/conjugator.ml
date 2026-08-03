@@ -68,19 +68,20 @@ let is_transitive verb: t = { verb with is_transitive = true }
 
 let is_intransitive verb: t = { verb with is_transitive = false }
 
-let set_modal verb: t = { verb with first_prefix = Some FirstPrefix.Modal }
+let set_modal (verb: t) (modal: FirstPrefix.t): t =
+    { verb with first_prefix = Some modal }
 
 let reset_modal verb: t = { verb with first_prefix = None }
 
-let set_modalGa verb: t = { verb with first_prefix = Some FirstPrefix.Modal_ga }
+let set_modalGa verb: t = set_modal verb FirstPrefix.Modal_ga
 
 let reset_modal_ga = reset_modal
 
-let set_negative verb: t = { verb with first_prefix = Some FirstPrefix.Negative}
+let set_negative verb: t = set_modal verb FirstPrefix.Negative
 
 let reset_negative = reset_modal
 
-let set_negative_nan verb: t = { verb with first_prefix = Some FirstPrefix.Negative_nan }
+let set_negative_nan verb: t = set_modal verb FirstPrefix.Negative_nan
 
 let reset_negative_nan = reset_modal
 

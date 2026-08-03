@@ -153,7 +153,6 @@ let make = () => {
                 |> Js.String.trim 
                 |> Js.String.toLowerCase 
                 |> Web_utils.Format.from_standard_to_phonetic;
-            Js.log("Searching for word: " ++ word_to_search);
             // Implement the search logic here, possibly using Supabase client
             let column = switch selected_lang {
                 | EngToSum => "translation"
@@ -415,7 +414,7 @@ let make = () => {
                                 {
                                     results
                                     |> Array.map((result: Supabase.dictionary_row) => 
-                                        <Card>
+                                        <Card key={result.id}>
                                             <CardHeader
                                                 avatar={
                                                     <strong className="cuneiforms small">{
@@ -475,6 +474,23 @@ let make = () => {
                                                         | _ => React.null
                                                     }
                                                 }
+                                                <Button
+                                                    size=`small
+                                                    onClick={_ => {
+                                                        let _ = 
+                                                            (Array.length(result.cuneiforms) > 0
+                                                            ? result.cuneiforms[0]
+                                                            : "X")
+                                                            |> Browser.Clipboard.write_text
+                                                            |> Js.Promise.catch(error => {
+                                                                Js.log2("Could not copy text:", error);
+                                                                Js.Promise.resolve();
+                                                            });
+                                                        ()
+                                                    }}
+                                                >
+                                                    {"Copy" |> React.string}
+                                                </Button>
                                             </CardActions>
                                         </Card>
                                     )

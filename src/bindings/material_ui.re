@@ -239,7 +239,7 @@ module Box = {
 module Button = {
     [@mel.module "@mui/material/Button"] [@react.component]
     external make: (
-        ~ariaLabel: string=?,
+        ~ariaLabel: [@mel.as "aria-label"] string=?,
         ~children: React.element=?,
         ~classes: Js.t({..})=?,
         ~className: string=?,
@@ -431,7 +431,7 @@ module Drawer = {
 module Fab = {
   [@mel.module "@mui/material/Fab"] [@react.component]
   external make: (
-    ~ariaLabel: string=?,
+    ~ariaLabel: [@mel.as "aria-label"] string=?,
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,
@@ -581,7 +581,7 @@ module Grid = {
 module IconButton = {
   [@mel.module "@mui/material/IconButton"] [@react.component]
   external make: (
-    ~ariaLabel: string=?,
+    ~ariaLabel: [@mel.as "aria-label"] string=?,
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,

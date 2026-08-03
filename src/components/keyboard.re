@@ -1,10 +1,5 @@
 [@mel.module "../styles/Keyboard.module.scss"] external css: Js.t({..}) = "default"; 
 
-module BrowserClipboard = {
-    [@mel.scope ("navigator", "clipboard")]
-    external write_text: string => Js.Promise.t(unit) = "writeText";
-};
-
 module ScrollableElement = {
     type scroll_options = {
         behavior: string,
@@ -415,7 +410,7 @@ let make = () => {
                 |> Js.Array.join(~sep="");
             let _ =
                 text
-                |> BrowserClipboard.write_text
+                |> Browser.Clipboard.write_text
                 |> Js.Promise.catch(error => {
                     Js.log2("Could not copy the cuneiform text:", error);
                     Js.Promise.resolve();

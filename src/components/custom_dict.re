@@ -2,6 +2,7 @@ type t = Js.Dict.t(list(string));
 
 let fallbackDict = Js.Dict.fromArray([|
     ({js|ʔak|js}, ["0x1201D"]), 
+    ("dab", ["0x121AA"]),
     ("eme", ["0x12174"]), 
     ({js|ĝal|js}, ["0x12145"]),
     ({js|ĝen|js}, ["0x1207A"]), 

@@ -82,9 +82,9 @@ function is_intransitive(verb) {
   return newrecord;
 }
 
-function set_modal(verb) {
+function set_modal(verb, modal) {
   const newrecord = Caml_obj.caml_obj_dup(verb);
-  newrecord.first_prefix = /* Modal */ 0;
+  newrecord.first_prefix = modal;
   return newrecord;
 }
 
@@ -95,21 +95,15 @@ function reset_modal(verb) {
 }
 
 function set_modalGa(verb) {
-  const newrecord = Caml_obj.caml_obj_dup(verb);
-  newrecord.first_prefix = /* Modal_ga */ 3;
-  return newrecord;
+  return set_modal(verb, /* Modal_ga */ 3);
 }
 
 function set_negative(verb) {
-  const newrecord = Caml_obj.caml_obj_dup(verb);
-  newrecord.first_prefix = /* Negative */ 1;
-  return newrecord;
+  return set_modal(verb, /* Negative */ 1);
 }
 
 function set_negative_nan(verb) {
-  const newrecord = Caml_obj.caml_obj_dup(verb);
-  newrecord.first_prefix = /* Negative_nan */ 2;
-  return newrecord;
+  return set_modal(verb, /* Negative_nan */ 2);
 }
 
 function set_preformative(verb, preformative) {

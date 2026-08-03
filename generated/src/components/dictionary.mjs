@@ -90,7 +90,6 @@ function Dictionary(Props) {
       
     }));
     const word_to_search = Components__Web_utils.Format.from_standard_to_phonetic(word.trim().toLowerCase());
-    console.log("Searching for word: " + word_to_search);
     let column;
     column = selected_lang === /* EngToSum */ 0 ? "translation" : "word";
     let filter;
@@ -319,6 +318,7 @@ function Dictionary(Props) {
                     })
                 }),
                 Stdlib__Array.map((function (result) {
+                  const Key = result.id;
                   const match = result.part_of_speech;
                   let tmp;
                   switch (match) {
@@ -403,11 +403,23 @@ function Dictionary(Props) {
                           justifyContent: "space-between"
                         }
                       }),
-                      JsxRuntime.jsx(CardActions, {
-                        children: tmp$2
+                      JsxRuntime.jsxs(CardActions, {
+                        children: [
+                          tmp$2,
+                          JsxRuntime.jsx(Button, {
+                            children: "Copy",
+                            onClick: (function (param) {
+                              navigator.clipboard.writeText(result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X").catch(function (error) {
+                                console.log("Could not copy text:", error);
+                                return Promise.resolve(undefined);
+                              });
+                            }),
+                            size: "small"
+                          })
+                        ]
                       })
                     ]
-                  });
+                  }, Key);
                 }), search_results)
               ],
               direction: "column",

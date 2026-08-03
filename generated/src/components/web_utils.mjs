@@ -181,11 +181,50 @@ function replace_with_unicode(word) {
   return word.replace(glottal_stop, "ʔ").replace(sh_replacement, "š").replace(h_replacement, "ḫ").replace(g_replacement, "ĝ");
 }
 
+function build_result_cuneiforms(conjugatedVerb, verbStem, lexicalStem, stemCuneiforms, fixedElement) {
+  let fixedCuneiforms;
+  if (fixedElement !== undefined) {
+    const value = fixedElement[0];
+    fixedCuneiforms = Stdlib__Array.map((function (cuneiform) {
+      return [
+        cuneiform,
+        value
+      ];
+    }), fixedElement[1]);
+  } else {
+    fixedCuneiforms = [];
+  }
+  const conjugatedCuneiforms = Stdlib__Array.map((function (param) {
+    const word = param[1];
+    const displayedCodePoint = word === verbStem && verbStem === lexicalStem && stemCuneiforms.length !== 0 ? stemCuneiforms.join("") : param[0];
+    return [
+      displayedCodePoint,
+      word
+    ];
+  }), display_cuneiforms(parse_verb_syllables(conjugatedVerb, verbStem)));
+  return Stdlib__Array.concat({
+    hd: fixedCuneiforms,
+    tl: {
+      hd: conjugatedCuneiforms,
+      tl: /* [] */ 0
+    }
+  });
+}
+
+function build_result_cuneiform_string(conjugatedVerb, verbStem, lexicalStem, stemCuneiforms, fixedElement) {
+  return Stdlib__Array.map((function (param) {
+    return param[0];
+  }), build_result_cuneiforms(conjugatedVerb, verbStem, lexicalStem, stemCuneiforms, fixedElement)).join("");
+}
+
 const css = ConjugatorModuleScss;
 
 function Web_utils$BuildResults(Props) {
   let verb = Props.verb;
   let meaning = Props.meaning;
+  let lexicalStem = Props.lexicalStem;
+  let stemCuneiforms = Props.stemCuneiforms;
+  let fixedElement = Props.fixedElement;
   const err = Conjugator.print(verb, meaning);
   if (err.TAG !== /* Ok */ 0) {
     return JsxRuntime.jsx("span", {
@@ -194,14 +233,34 @@ function Web_utils$BuildResults(Props) {
     });
   }
   const match = err._0;
-  const analysis = match.analysis;
   const conjugatedVerb = match.verb;
+  const displayedVerb = fixedElement !== undefined ? fixedElement[0] + (" " + conjugatedVerb) : conjugatedVerb;
+  const output = Conjugator__Verb_analysis.output(match.analysis);
+  const analysisOutput = fixedElement !== undefined ? Stdlib__Array.concat({
+      hd: [[
+          "compoundElement",
+          fixedElement[0]
+        ]],
+      tl: {
+        hd: output,
+        tl: /* [] */ 0
+      }
+    }) : output;
+  const cuneiformElements = Stdlib__Array.mapi((function (i, param) {
+    const word = param[1];
+    const codePoint = param[0];
+    const Key = codePoint + (word + Stdlib__Int.to_string(i));
+    return JsxRuntime.jsx(Components__Cuneiform_char.make, {
+      codePoint: codePoint,
+      pronunciation: word
+    }, Key);
+  }), build_result_cuneiforms(conjugatedVerb, verb.stem, lexicalStem, stemCuneiforms, fixedElement));
   return [
     JsxRuntime.jsxs(Grid, {
       children: [
         JsxRuntime.jsx(Grid, {
           children: JsxRuntime.jsx("span", {
-            children: conjugatedVerb,
+            children: displayedVerb,
             className: css.noWrap,
             style: {
               fontSize: "1.2rem"
@@ -215,15 +274,7 @@ function Web_utils$BuildResults(Props) {
         }),
         JsxRuntime.jsx(Grid, {
           children: JsxRuntime.jsx("span", {
-            children: Stdlib__Array.mapi((function (i, param) {
-              const word = param[1];
-              const codePoint = param[0];
-              const Key = codePoint + (word + Stdlib__Int.to_string(i));
-              return JsxRuntime.jsx(Components__Cuneiform_char.make, {
-                codePoint: codePoint,
-                pronunciation: word
-              }, Key);
-            }), display_cuneiforms(parse_verb_syllables(conjugatedVerb, verb.stem))),
+            children: cuneiformElements,
             className: css.noWrap
           }, "cuneiforms"),
           size: {
@@ -261,6 +312,9 @@ function Web_utils$BuildResults(Props) {
                 const output_type = param[0];
                 let tmp;
                 switch (output_type) {
+                  case "compoundElement" :
+                    tmp = "Compound Element";
+                    break;
                   case "edMarker" :
                     tmp = "ED Marker";
                     break;
@@ -284,7 +338,7 @@ function Web_utils$BuildResults(Props) {
                 return JsxRuntime.jsx(TableCell, {
                   children: tmp
                 }, output_type);
-              }), Conjugator__Verb_analysis.output(analysis))
+              }), analysisOutput)
             })
           }),
           JsxRuntime.jsx(TableBody, {
@@ -300,7 +354,7 @@ function Web_utils$BuildResults(Props) {
                     textAlign: "center"
                   }
                 }, Key);
-              }), Conjugator__Verb_analysis.output(analysis))
+              }), analysisOutput)
             })
           })
         ],
@@ -393,6 +447,8 @@ export {
   pronoun_to_person_param,
   parse_verb_syllables,
   replace_with_unicode,
+  build_result_cuneiforms,
+  build_result_cuneiform_string,
   BuildResults,
   EpsdDict,
   Format,

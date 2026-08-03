@@ -33,8 +33,6 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 const css = KeyboardModuleScss;
 
-const BrowserClipboard = {};
-
 const ScrollableElement = {};
 
 const Determinatives = {};
@@ -824,7 +822,7 @@ function Keyboard(Props) {
               JsxRuntime.jsxs("div", {
                 children: [
                   JsxRuntime.jsx(Button, {
-                    ariaLabel: "Copy cuneiform text",
+                    "aria-label": "Copy cuneiform text",
                     children: JsxRuntime.jsx(IconsReact.IconCopy, {
                       size: 20,
                       stroke: 2.0
@@ -878,7 +876,7 @@ function Keyboard(Props) {
                   }),
                   JsxRuntime.jsx("span", {
                     children: JsxRuntime.jsx(Button, {
-                      ariaLabel: "Reset cuneiform text",
+                      "aria-label": "Reset cuneiform text",
                       children: JsxRuntime.jsx(IconsReact.IconTrashX, {
                         size: 20,
                         stroke: 2.0
@@ -1241,7 +1239,6 @@ const make = Keyboard;
 
 export {
   css,
-  BrowserClipboard,
   ScrollableElement,
   Determinatives,
   make,

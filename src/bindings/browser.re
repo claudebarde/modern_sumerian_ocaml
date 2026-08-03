@@ -68,3 +68,8 @@ external get_element_by_id: string => option(Dom.element) = "getElementById";
 
 [@mel.set]
 external set_inner_html: (Dom.element, string) => unit = "innerHTML";
+
+module Clipboard = {
+  [@mel.scope ("navigator", "clipboard")]
+  external write_text: string => Js.Promise.t(unit) = "writeText";
+};

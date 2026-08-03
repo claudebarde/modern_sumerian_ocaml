@@ -39,6 +39,7 @@ function set_stem(verb, stem) {
 
 function is_perfective(verb) {
   const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.ed_marker = false;
   newrecord.is_perfective = true;
   return newrecord;
 }
@@ -59,12 +60,14 @@ function is_imperfective(verb, ipfv_stem) {
       return newrecord$1;
     } else {
       const newrecord$2 = Caml_obj.caml_obj_dup(verb);
+      newrecord$2.ed_marker = false;
       newrecord$2.is_perfective = false;
       newrecord$2.stem = ipfv_stem._0;
       return newrecord$2;
     }
   } else {
     const newrecord$3 = Caml_obj.caml_obj_dup(verb);
+    newrecord$3.ed_marker = false;
     newrecord$3.is_perfective = false;
     return newrecord$3;
   }

@@ -860,6 +860,7 @@ module Radio = {
     ~id: string=?,
     ~name: string=?,
     ~onChange: (React.Event.Form.t => unit)=?,
+    ~onClick: (React.Event.Mouse.t => unit)=?,
     ~required: bool=?,
     ~size: [`small | `medium]=?,
     // TODO: slots and slotProps are not supported yet

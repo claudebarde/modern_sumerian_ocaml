@@ -311,9 +311,7 @@ function Keyboard(Props) {
         } else {
           active_selection = undefined;
         }
-        console.log(active_selection);
         if (formatted_input.length === 1 && Stdlib__Array.mem(formatted_input, vowels) || formatted_input.length > 1) {
-          console.log("Searching for word: " + formatted_input);
           Bindings__Supabase.Filter.starts_with_any("word", Components__Web_utils.Format.with_g_variants(formatted_input), Bindings__Supabase.client.from("dictionary").select("*")).limit(Bindings__Config.max_keyboard_search_results).order("icount", {
             ascending: false
           }).then(function (res) {
@@ -554,7 +552,6 @@ function Keyboard(Props) {
         }
         if (Stdlib__Array.mem(Caml_array.get(active_cuneiform_selection.cuneiforms, 0), cuneiforms)) {
           if (Stdlib__Array.mem(Caml_array.get(active_cuneiform_selection.cuneiforms, 0), cuneiforms)) {
-            console.log("Cuneiform already exists in the dictionary.");
             return;
           }
           const new_cuneiforms = Stdlib__Array.concat({
@@ -566,11 +563,9 @@ function Keyboard(Props) {
           });
           dictionary[trimmed_value] = new_cuneiforms;
           localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
-          Curry._1(set_keyboard_dictionary, (function (param) {
+          return Curry._1(set_keyboard_dictionary, (function (param) {
             return Caml_option.some(dictionary);
           }));
-          console.log("Added cuneiform to the dictionary.");
-          return;
         }
         const new_cuneiforms$1 = Stdlib__Array.concat({
           hd: cuneiforms,
@@ -581,21 +576,17 @@ function Keyboard(Props) {
         });
         dictionary[trimmed_value] = new_cuneiforms$1;
         localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(dictionary));
-        Curry._1(set_keyboard_dictionary, (function (param) {
+        return Curry._1(set_keyboard_dictionary, (function (param) {
           return Caml_option.some(dictionary);
         }));
-        console.log("Added cuneiform to the dictionary.");
-        return;
       }
       const new_dictionary = {};
       if (active_cuneiform_selection !== undefined) {
         new_dictionary[trimmed_value] = [Caml_array.get(active_cuneiform_selection.cuneiforms, 0)];
         localStorage.setItem("keyboard", Bindings__Local_storage.encode_keyboard(new_dictionary));
-        Curry._1(set_keyboard_dictionary, (function (param) {
+        return Curry._1(set_keyboard_dictionary, (function (param) {
           return Caml_option.some(new_dictionary);
         }));
-        console.log("Created new dictionary and added word and cuneiform.");
-        return;
       } else {
         return;
       }

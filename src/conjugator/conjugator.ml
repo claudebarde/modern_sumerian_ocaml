@@ -55,14 +55,15 @@ let create (stem: string): t =
 
 let set_stem (verb: t) (stem: string): t = { verb with stem = stem }
 
-let is_perfective verb: t = { verb with is_perfective = true }
+let is_perfective verb: t =
+    { verb with is_perfective = true; ed_marker = false }
 
 let is_imperfective (verb: t) ipfv_stem: t =
     match ipfv_stem with
     | Some Reduplicate -> { verb with stem = verb.stem ^ "-" ^ verb.stem; is_perfective = false; ed_marker = false}
     | Some Ed_marker -> { verb with is_perfective = false; ed_marker = true}
-    | Some Other stem -> { verb with is_perfective = false; stem = stem}
-    | None -> { verb with is_perfective = false}
+    | Some Other stem -> { verb with is_perfective = false; stem = stem; ed_marker = false}
+    | None -> { verb with is_perfective = false; ed_marker = false}
 
 let is_transitive verb: t = { verb with is_transitive = true }
 

@@ -4,6 +4,7 @@ import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_obj from "melange.js/caml_obj.mjs";
 import * as Caml_string from "melange.js/caml_string.mjs";
 import * as Conjugator__Infixes from "./infixes.mjs";
+import * as Conjugator__Translation from "./translation.mjs";
 import * as Conjugator__Utils from "./utils.mjs";
 import * as Conjugator__Verb_analysis from "./verb_analysis.mjs";
 import * as Stdlib from "melange/stdlib.mjs";
@@ -572,7 +573,7 @@ function print(verb, meaning) {
         }
         if (exit === 1) {
           if (Conjugator__Utils.ends_with_vowel(morpheme$2)) {
-            const new_morpheme = morpheme$2.length === 1 ? morpheme$2 : Stdlib__String.sub(morpheme$2, morpheme$2.length - 1 | 0, morpheme$2.length);
+            const new_morpheme = morpheme$2.length === 1 ? morpheme$2 : Stdlib__String.sub(morpheme$2, morpheme$2.length - 1 | 0, 1);
             Caml_array.set(outputArr$3, Conjugator__Utils.locative_pos, new_morpheme);
             outputArr$4 = outputArr$3;
           } else {
@@ -645,7 +646,7 @@ function print(verb, meaning) {
         if (_marker !== undefined || !Conjugator__Utils.ends_with_vowel(verb.stem)) {
           outputArr$6 = outputArr$5;
         } else {
-          const last_vowel$2 = verb.stem.length !== 0 ? Stdlib__String.sub(verb.stem, verb.stem.length - 1 | 0, verb.stem.length) : Stdlib.failwith("Verb stem is missing");
+          const last_vowel$2 = verb.stem.length !== 0 ? Stdlib__String.sub(verb.stem, verb.stem.length - 1 | 0, 1) : Stdlib.failwith("Verb stem is missing");
           if (last_vowel$2 === "a") {
             Caml_array.set(outputArr$5, Conjugator__Utils.final_person_suffix_pos, last_vowel$2);
             outputArr$6 = outputArr$5;
@@ -968,7 +969,7 @@ function print(verb, meaning) {
     _0: {
       verb: final_verb,
       analysis: Conjugator__Verb_analysis.analyse(outputArr$9, verb, Conjugator__Verb_analysis.create(undefined), 0),
-      translation: Conjugator__Verb_analysis.Translation.translate(verb, meaning),
+      translation: Conjugator__Translation.translate(verb, meaning),
       warnings: warnings
     }
   };

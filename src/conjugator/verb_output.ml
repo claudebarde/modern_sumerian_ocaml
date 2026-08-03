@@ -373,7 +373,7 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                                     let new_morpheme = 
                                                         if String.length morpheme == 1
                                                         then morpheme
-                                                        else String.sub morpheme ((String.length morpheme) - 1) (String.length morpheme)
+                                                        else String.sub morpheme ((String.length morpheme) - 1) 1
                                                     in
                                                     let _ = outputArr.(locative_pos) <- new_morpheme in
                                                     outputArr
@@ -470,7 +470,7 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                         (* removes the first character of the suffix *)
                                         let last_vowel = 
                                             if String.length verb.stem > 0
-                                            then String.sub verb.stem ((String.length verb.stem) - 1) (String.length verb.stem)
+                                            then String.sub verb.stem ((String.length verb.stem) - 1) 1
                                             else failwith "Verb stem is missing"
                                         in
                                         (* // CHECK: the other vowels may assimilate the "e" too *)
@@ -697,6 +697,6 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                 Ok { 
                     verb = final_verb;
                     analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
-                    translation = Verb_analysis.Translation.translate verb meaning;
+                    translation = Translation.translate verb meaning;
                     warnings = warnings;
                 }

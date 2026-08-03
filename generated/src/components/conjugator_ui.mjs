@@ -201,7 +201,8 @@ function Conjugator_ui(Props) {
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const available_verbs = [
     {
-      label: "ak (to do)",
+      label: "ak",
+      meaning: "do",
       stem: "ʔak",
       stem_cuneiforms: ["𒀝"],
       kind: /* Simple */ 0,
@@ -212,7 +213,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "dab (to seize)",
+      label: "dab",
+      meaning: "seize",
       stem: "dab",
       stem_cuneiforms: ["𒆪"],
       kind: /* Simple */ 0,
@@ -223,7 +225,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "dug (to speak)",
+      label: "dug",
+      meaning: "speak",
       stem: "dug",
       stem_cuneiforms: ["𒅗"],
       kind: /* Simple */ 0,
@@ -234,7 +237,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "e (to leave)",
+      label: "e",
+      meaning: "leave",
       stem: "e",
       stem_cuneiforms: [
         "𒌓",
@@ -248,7 +252,8 @@ function Conjugator_ui(Props) {
       transitive: false
     },
     {
-      label: "ĝal (to exist)",
+      label: "ĝal",
+      meaning: "exist",
       stem: "ĝal",
       stem_cuneiforms: ["𒅅"],
       kind: /* Simple */ 0,
@@ -259,7 +264,8 @@ function Conjugator_ui(Props) {
       transitive: false
     },
     {
-      label: "ĝen (to go)",
+      label: "ĝen",
+      meaning: "go",
       stem: "ĝen",
       stem_cuneiforms: ["𒁺"],
       kind: /* Simple */ 0,
@@ -270,7 +276,8 @@ function Conjugator_ui(Props) {
       transitive: false
     },
     {
-      label: "gu (to eat)",
+      label: "gu",
+      meaning: "eat",
       stem: "gu",
       stem_cuneiforms: ["𒅥"],
       kind: /* Simple */ 0,
@@ -281,7 +288,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "gub (to stand)",
+      label: "gub",
+      meaning: "stand",
       stem: "gub",
       stem_cuneiforms: ["𒁺"],
       kind: /* Simple */ 0,
@@ -292,7 +300,8 @@ function Conjugator_ui(Props) {
       transitive: false
     },
     {
-      label: "il (to raise)",
+      label: "il",
+      meaning: "raise",
       stem: "il",
       stem_cuneiforms: ["𒅍"],
       kind: /* Simple */ 0,
@@ -303,7 +312,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "kur (to enter)",
+      label: "kur",
+      meaning: "enter",
       stem: "kur",
       stem_cuneiforms: ["𒆭"],
       kind: /* Simple */ 0,
@@ -314,7 +324,8 @@ function Conjugator_ui(Props) {
       transitive: false
     },
     {
-      label: "naĝ (to drink)",
+      label: "naĝ",
+      meaning: "drink",
       stem: "naĝ",
       stem_cuneiforms: ["𒅘"],
       kind: /* Simple */ 0,
@@ -325,7 +336,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "sar (to write)",
+      label: "sar",
+      meaning: "write",
       stem: "sar",
       stem_cuneiforms: ["𒊬"],
       kind: /* Simple */ 0,
@@ -336,7 +348,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "sig (to put)",
+      label: "sig",
+      meaning: "put",
       stem: "sig",
       stem_cuneiforms: ["𒋛"],
       kind: /* Simple */ 0,
@@ -347,7 +360,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "shag dab (to think)",
+      label: "shag dab",
+      meaning: "think",
       stem: "dab",
       stem_cuneiforms: ["𒁳"],
       kind: {
@@ -364,7 +378,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "shum (to give)",
+      label: "shum",
+      meaning: "give",
       stem: "šum",
       stem_cuneiforms: ["𒋧"],
       kind: /* Simple */ 0,
@@ -375,7 +390,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "tush (to sit)",
+      label: "tush",
+      meaning: "sit",
       stem: "tuš",
       stem_cuneiforms: ["𒆪"],
       kind: /* Simple */ 0,
@@ -386,7 +402,8 @@ function Conjugator_ui(Props) {
       transitive: false
     },
     {
-      label: "tuku (to have)",
+      label: "tuku",
+      meaning: "have",
       stem: "tuku",
       stem_cuneiforms: ["𒌇"],
       kind: /* Simple */ 0,
@@ -397,7 +414,8 @@ function Conjugator_ui(Props) {
       transitive: true
     },
     {
-      label: "zu (to know)",
+      label: "zu",
+      meaning: "know",
       stem: "zu",
       stem_cuneiforms: ["𒍪"],
       kind: /* Simple */ 0,
@@ -616,48 +634,43 @@ function Conjugator_ui(Props) {
       }
     }
   };
-  const change_preformative = function (ev) {
-    if (Stdlib__Option.is_none(is_perfective) && Stdlib__Option.is_none(is_transitive)) {
+  const change_preformative = function (value) {
+    if (Stdlib__Option.is_none(verb_stem)) {
+      return Curry._1(set_error, (function (param) {
+        return "No verb stem selected";
+      }));
+    } else if (Stdlib__Option.is_none(is_perfective) && Stdlib__Option.is_none(is_transitive)) {
       return Curry._1(set_error, (function (param) {
         return "Aspect and transitivity must be selected";
       }));
-    }
-    const target = ev.target;
-    const value = target.value;
-    let preformative;
-    switch (value) {
-      case "preformative-a" :
-        preformative = /* A */ 0;
-        break;
-      case "preformative-i" :
-        preformative = /* I */ 1;
-        break;
-      case "preformative-u" :
-        preformative = /* U */ 2;
-        break;
-      default:
-        preformative = undefined;
-    }
-    Curry._1(set_verb_form, (function (prev_verb_form) {
-      if (prev_verb_form !== undefined) {
-        if (preformative !== undefined) {
-          Curry._1(set_error, (function (param) {
-            
-          }));
-          Curry._1(set_preformative, (function (param) {
-            return preformative;
-          }));
-          return Conjugator.set_preformative(prev_verb_form, preformative);
+    } else {
+      return Curry._1(set_verb_form, (function (prev_verb_form) {
+        if (prev_verb_form !== undefined) {
+          if (value !== undefined) {
+            Curry._1(set_error, (function (param) {
+              
+            }));
+            Curry._1(set_preformative, (function (param) {
+              return value;
+            }));
+            return Conjugator.set_preformative(prev_verb_form, value);
+          } else {
+            Curry._1(set_error, (function (param) {
+              
+            }));
+            Curry._1(set_preformative, (function (param) {
+              
+            }));
+            return Conjugator.reset_preformative(prev_verb_form);
+          }
         } else {
+          Curry._1(set_error, (function (param) {
+            return "No verb stem selected";
+          }));
           return;
         }
-      } else {
-        Curry._1(set_error, (function (param) {
-          return "No verb stem selected";
-        }));
-        return;
-      }
-    }));
+      }));
+    }
   };
   const change_modal = function (value) {
     if (Stdlib__Option.is_none(verb_stem)) {
@@ -998,56 +1011,75 @@ function Conjugator_ui(Props) {
     }));
   };
   const switch_perfective = function (value) {
-    Curry._1(set_verb_form, (function (prev_verb_form) {
-      if (prev_verb_form === undefined) {
-        return;
-      }
-      Curry._1(set_error, (function (param) {
-        
-      }));
-      Curry._1(set_is_perfective, (function (param) {
-        return value;
-      }));
-      const stem = verb_stem !== undefined ? verb_stem.stem : "";
-      if (subject === undefined) {
+    if (value !== undefined) {
+      return Curry._1(set_verb_form, (function (prev_verb_form) {
+        if (prev_verb_form === undefined) {
+          return;
+        }
+        Curry._1(set_error, (function (param) {
+          
+        }));
+        Curry._1(set_is_perfective, (function (param) {
+          return value;
+        }));
+        const apply_aspect = function (verb) {
+          if (value !== undefined) {
+            if (value) {
+              if (verb_stem !== undefined) {
+                return Conjugator.is_perfective(Conjugator.set_stem(verb, verb_stem.stem));
+              } else {
+                return verb;
+              }
+            } else if (verb_stem !== undefined) {
+              return Conjugator.is_imperfective(Conjugator.set_stem(verb, verb_stem.stem), verb_stem.imperfective);
+            } else {
+              return verb;
+            }
+          } else {
+            return verb;
+          }
+        };
+        if (subject === undefined) {
+          if (object_ !== undefined) {
+            return Conjugator.set_object(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), object_);
+          } else {
+            return apply_aspect(prev_verb_form);
+          }
+        }
         if (object_ !== undefined) {
-          return Conjugator.set_object(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), object_);
+          try {
+            return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
+          }
+          catch (raw_exn){
+            const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+            if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
+              const err = exn._1;
+              Curry._1(set_error, (function (param) {
+                return err;
+              }));
+              return prev_verb_form;
+            }
+            throw exn;
+          }
         } else {
-          return Conjugator.is_perfective(Conjugator.set_stem(prev_verb_form, stem));
-        }
-      }
-      if (object_ !== undefined) {
-        try {
-          return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), subject)), object_);
-        }
-        catch (raw_exn){
-          const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-          if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-            const err = exn._1;
-            Curry._1(set_error, (function (param) {
-              return err;
-            }));
-            return prev_verb_form;
+          try {
+            return Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject));
           }
-          throw exn;
-        }
-      } else {
-        try {
-          return Stdlib__Result.get_ok(Conjugator.set_subject(Conjugator.is_perfective(Conjugator.reset_subject_object(Conjugator.set_stem(prev_verb_form, stem))), subject));
-        }
-        catch (raw_exn$1){
-          const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
-          if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
-            const err$1 = exn$1._1;
-            Curry._1(set_error, (function (param) {
-              return err$1;
-            }));
-            return prev_verb_form;
+          catch (raw_exn$1){
+            const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
+            if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
+              const err$1 = exn$1._1;
+              Curry._1(set_error, (function (param) {
+                return err$1;
+              }));
+              return prev_verb_form;
+            }
+            throw exn$1;
           }
-          throw exn$1;
         }
-      }
-    }));
+      }));
+    }
+    
   };
   let tmp;
   if (verb_stem !== undefined) {
@@ -1161,7 +1193,7 @@ function Conjugator_ui(Props) {
                             }, Key);
                           }), tmp),
                           JsxRuntime.jsx("span", {
-                            children: option.label,
+                            children: option.label + (" (to " + (option.meaning + ")")),
                             style: {
                               marginLeft: "15px"
                             }
@@ -1474,6 +1506,18 @@ function Conjugator_ui(Props) {
                           children: [
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Radio, {
+                                onClick: (function (param) {
+                                  if (preformative === undefined) {
+                                    return;
+                                  }
+                                  switch (preformative) {
+                                    case /* A */ 0 :
+                                      return change_preformative(undefined);
+                                    case /* I */ 1 :
+                                    case /* U */ 2 :
+                                      return;
+                                  }
+                                }),
                                 size: is_mobile ? "small" : "medium"
                               }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
@@ -1482,6 +1526,18 @@ function Conjugator_ui(Props) {
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Radio, {
+                                onClick: (function (param) {
+                                  if (preformative === undefined) {
+                                    return;
+                                  }
+                                  switch (preformative) {
+                                    case /* I */ 1 :
+                                      return change_preformative(undefined);
+                                    case /* A */ 0 :
+                                    case /* U */ 2 :
+                                      return;
+                                  }
+                                }),
                                 size: is_mobile ? "small" : "medium"
                               }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
@@ -1490,6 +1546,18 @@ function Conjugator_ui(Props) {
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Radio, {
+                                onClick: (function (param) {
+                                  if (preformative === undefined) {
+                                    return;
+                                  }
+                                  switch (preformative) {
+                                    case /* A */ 0 :
+                                    case /* I */ 1 :
+                                      return;
+                                    case /* U */ 2 :
+                                      return change_preformative(undefined);
+                                  }
+                                }),
                                 size: is_mobile ? "small" : "medium"
                               }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
@@ -1498,7 +1566,20 @@ function Conjugator_ui(Props) {
                             })
                           ],
                           name: "preformative",
-                          onChange: change_preformative,
+                          onChange: (function (ev) {
+                            const target = ev.target;
+                            const match = target.value;
+                            switch (match) {
+                              case "preformative-a" :
+                                return change_preformative(/* A */ 0);
+                              case "preformative-i" :
+                                return change_preformative(/* I */ 1);
+                              case "preformative-u" :
+                                return change_preformative(/* U */ 2);
+                              default:
+                                return;
+                            }
+                          }),
                           row: true,
                           sx: {
                             padding: "8px"
@@ -1521,6 +1602,18 @@ function Conjugator_ui(Props) {
                           children: [
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Radio, {
+                                onClick: (function (param) {
+                                  if (modal_prefix === undefined) {
+                                    return;
+                                  }
+                                  switch (modal_prefix) {
+                                    case /* HA */ 0 :
+                                      return change_modal(undefined);
+                                    case /* NAN */ 1 :
+                                    case /* NU */ 2 :
+                                      return;
+                                  }
+                                }),
                                 size: is_mobile ? "small" : "medium"
                               }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
@@ -1529,6 +1622,18 @@ function Conjugator_ui(Props) {
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Radio, {
+                                onClick: (function (param) {
+                                  if (modal_prefix === undefined) {
+                                    return;
+                                  }
+                                  switch (modal_prefix) {
+                                    case /* HA */ 0 :
+                                    case /* NAN */ 1 :
+                                      return;
+                                    case /* NU */ 2 :
+                                      return change_modal(undefined);
+                                  }
+                                }),
                                 size: is_mobile ? "small" : "medium"
                               }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
@@ -1537,6 +1642,18 @@ function Conjugator_ui(Props) {
                             }),
                             JsxRuntime.jsx(FormControlLabel, {
                               control: JsxRuntime.jsx(Radio, {
+                                onClick: (function (param) {
+                                  if (modal_prefix === undefined) {
+                                    return;
+                                  }
+                                  switch (modal_prefix) {
+                                    case /* NAN */ 1 :
+                                      return change_modal(undefined);
+                                    case /* HA */ 0 :
+                                    case /* NU */ 2 :
+                                      return;
+                                  }
+                                }),
                                 size: is_mobile ? "small" : "medium"
                               }),
                               disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
@@ -1556,7 +1673,7 @@ function Conjugator_ui(Props) {
                               case "modal-nu" :
                                 return change_modal(/* NU */ 2);
                               default:
-                                return change_modal(undefined);
+                                return;
                             }
                           }),
                           row: true,
@@ -1764,7 +1881,7 @@ function Conjugator_ui(Props) {
                   }) : (
                     verb_form !== undefined ? JsxRuntime.jsx(Components__Web_utils.BuildResults.make, {
                         verb: verb_form,
-                        meaning: verb_stem !== undefined ? verb_stem.label : undefined,
+                        meaning: verb_stem !== undefined ? verb_stem.meaning : undefined,
                         lexicalStem: verb_stem !== undefined ? verb_stem.stem : verb_form.stem,
                         stemCuneiforms: verb_stem !== undefined ? verb_stem.stem_cuneiforms : [],
                         fixedElement: verb_stem !== undefined ? verb_fixed_element(verb_stem) : undefined

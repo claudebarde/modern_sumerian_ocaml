@@ -24,6 +24,7 @@ type verb_kind =
 
 type verb_data = { 
     label: string, 
+    meaning: string,
     stem: string,
     stem_cuneiforms: array(string),
     kind: verb_kind,
@@ -94,24 +95,24 @@ let make = () => {
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let available_verbs: array(verb_data) = [|
-        {label: "ak (to do)", stem: {js|ʔak|js}, stem_cuneiforms: [|{js|𒀝|js}|], kind: Simple, imperfective: Other({js|ʔak|js}), transitive: true},
-        {label: "dab (to seize)", stem: "dab", stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("dab"), transitive: true},
-        {label: "dug (to speak)", stem: "dug", stem_cuneiforms: [|{js|𒅗|js}|], kind: Simple, imperfective: Other("e"), transitive: true},
-        {label: "e (to leave)", stem: "e", stem_cuneiforms: [|{js|𒌓|js}, {js|𒁺|js}|], kind: Simple, imperfective: Other("e"), transitive: false},
-        {label: {js|ĝal (to exist)|js}, stem: {js|ĝal|js}, stem_cuneiforms: [|{js|𒅅|js}|], kind: Simple, imperfective: Other({js|ĝal|js}), transitive: false},
-        {label: {js|ĝen (to go)|js}, stem: {js|ĝen|js}, stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other({js|ĝen|js}), transitive: false},
-        {label: "gu (to eat)", stem: "gu", stem_cuneiforms: [|{js|𒅥|js}|], kind: Simple, imperfective: Other("gu"), transitive: true},
-        {label: "gub (to stand)", stem: "gub", stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other("gub"), transitive: false},
-        {label: "il (to raise)", stem: "il", stem_cuneiforms: [|{js|𒅍|js}|], kind: Simple, imperfective: Other("il"), transitive: true},
-        {label: "kur (to enter)", stem: "kur", stem_cuneiforms: [|{js|𒆭|js}|], kind: Simple, imperfective: Other("kur"), transitive: false},
-        {label: {js|naĝ (to drink)|js}, stem: {js|naĝ|js}, stem_cuneiforms: [|{js|𒅘|js}|], kind: Simple, imperfective: Other("na-na"), transitive: true},
-        {label: "sar (to write)", stem: "sar", stem_cuneiforms: [|{js|𒊬|js}|], kind: Simple, imperfective: Other("sar"), transitive: true},
-        {label: "sig (to put)", stem: "sig", stem_cuneiforms: [|{js|𒋛|js}|], kind: Simple, imperfective: Other("sig"), transitive: true},
-        {label: "shag dab (to think)", stem: "dab", stem_cuneiforms: [|{js|𒁳|js}|], kind: Compound({value: "shag", cuneiforms: [|{js|𒊮|js}|]}), imperfective: Other("dab"), transitive: true},
-        {label: "shum (to give)", stem: {js|šum|js}, stem_cuneiforms: [|{js|𒋧|js}|], kind: Simple, imperfective: Other("shum"), transitive: true},
-        {label: "tush (to sit)", stem: {js|tuš|js}, stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("tush"), transitive: false},
-        {label: "tuku (to have)", stem: "tuku", stem_cuneiforms: [|{js|𒌇|js}|], kind: Simple, imperfective: Other("tuku"), transitive: true},
-        {label: "zu (to know)", stem: "zu", stem_cuneiforms: [|{js|𒍪|js}|], kind: Simple, imperfective: Other("zu"), transitive: true},
+        {label: "ak", meaning: "do", stem: {js|ʔak|js}, stem_cuneiforms: [|{js|𒀝|js}|], kind: Simple, imperfective: Other({js|ʔak|js}), transitive: true},
+        {label: "dab", meaning: "seize", stem: "dab", stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("dab"), transitive: true},
+        {label: "dug", meaning: "speak", stem: "dug", stem_cuneiforms: [|{js|𒅗|js}|], kind: Simple, imperfective: Other("e"), transitive: true},
+        {label: "e", meaning: "leave", stem: "e", stem_cuneiforms: [|{js|𒌓|js}, {js|𒁺|js}|], kind: Simple, imperfective: Other("e"), transitive: false},
+        {label: {js|ĝal|js}, meaning: "exist", stem: {js|ĝal|js}, stem_cuneiforms: [|{js|𒅅|js}|], kind: Simple, imperfective: Other({js|ĝal|js}), transitive: false},
+        {label: {js|ĝen|js}, meaning: "go", stem: {js|ĝen|js}, stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other({js|ĝen|js}), transitive: false},
+        {label: "gu", meaning: "eat", stem: "gu", stem_cuneiforms: [|{js|𒅥|js}|], kind: Simple, imperfective: Other("gu"), transitive: true},
+        {label: "gub", meaning: "stand", stem: "gub", stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other("gub"), transitive: false},
+        {label: "il", meaning: "raise", stem: "il", stem_cuneiforms: [|{js|𒅍|js}|], kind: Simple, imperfective: Other("il"), transitive: true},
+        {label: "kur", meaning: "enter", stem: "kur", stem_cuneiforms: [|{js|𒆭|js}|], kind: Simple, imperfective: Other("kur"), transitive: false},
+        {label: {js|naĝ|js}, meaning: "drink", stem: {js|naĝ|js}, stem_cuneiforms: [|{js|𒅘|js}|], kind: Simple, imperfective: Other("na-na"), transitive: true},
+        {label: "sar", meaning: "write", stem: "sar", stem_cuneiforms: [|{js|𒊬|js}|], kind: Simple, imperfective: Other("sar"), transitive: true},
+        {label: "sig", meaning: "put", stem: "sig", stem_cuneiforms: [|{js|𒋛|js}|], kind: Simple, imperfective: Other("sig"), transitive: true},
+        {label: "shag dab", meaning: "think", stem: "dab", stem_cuneiforms: [|{js|𒁳|js}|], kind: Compound({value: "shag", cuneiforms: [|{js|𒊮|js}|]}), imperfective: Other("dab"), transitive: true},
+        {label: "shum", meaning: "give", stem: {js|šum|js}, stem_cuneiforms: [|{js|𒋧|js}|], kind: Simple, imperfective: Other("shum"), transitive: true},
+        {label: "tush", meaning: "sit", stem: {js|tuš|js}, stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("tush"), transitive: false},
+        {label: "tuku", meaning: "have", stem: "tuku", stem_cuneiforms: [|{js|𒌇|js}|], kind: Simple, imperfective: Other("tuku"), transitive: true},
+        {label: "zu", meaning: "know", stem: "zu", stem_cuneiforms: [|{js|𒍪|js}|], kind: Simple, imperfective: Other("zu"), transitive: true},
     |];
 
     let pronoun_options: array(Utils.select_option) = [|
@@ -248,30 +249,28 @@ let make = () => {
         }
     };
 
-    let change_preformative = (ev: React.Event.Form.t) => {
-        if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
+    let change_preformative = value => {
+        if (Option.is_none(verb_stem)) {
+            set_error(_ => Some("No verb stem selected"))
+        } else if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
             set_error(_ => Some("Aspect and transitivity must be selected"))
         } else {
-            let target = React.Event.Form.target(ev)
-            let value: string = target##value
-            let preformative = switch value {
-                | "preformative-a" => Some(Conjugator.Preformative.A)
-                | "preformative-i" => Some(Conjugator.Preformative.I)
-                | "preformative-u" => Some(Conjugator.Preformative.U)
-                | _ => None
-            }
             set_verb_form(prev_verb_form => {
-                switch (prev_verb_form, preformative) {
-                    | (Some(verb), Some(preformative)) => {
+                switch (prev_verb_form, value) {
+                    | (Some(verb), Some(selected_preformative)) => {
                         set_error(_ => None)     
-                        set_preformative(_ => Some(preformative))
-                        Some(Conjugator.set_preformative(verb, preformative))
+                        set_preformative(_ => Some(selected_preformative))
+                        Some(Conjugator.set_preformative(verb, selected_preformative))
+                    }
+                    | (Some(verb), None) => {
+                        set_error(_ => None)
+                        set_preformative(_ => None)
+                        Some(Conjugator.reset_preformative(verb))
                     }
                     | (None, _) => {
                         set_error(_ => Some("No verb stem selected"))
                         None
                     }
-                    | _ => None
                 }
             })
         }
@@ -562,65 +561,74 @@ let make = () => {
         })
     };
 
-    let switch_perfective = (value: option(bool)) => {
-        set_verb_form(prev_verb_form => {
-            switch prev_verb_form {
-            | Some(verb) => {
-                set_error(_ => None)
-                set_is_perfective(_ => value)
-                // finds the perfective stem
-                let stem = switch (verb_stem,) {
-                    | Some(verb_data) => verb_data.stem
-                    | None => ""
-                }
+    let switch_perfective = (value: option(bool)) =>
+        switch value {
+        // An exclusive ToggleButtonGroup returns None when its selected button
+        // is clicked again. Keep the current aspect in that case.
+        | None => ()
+        | Some(_) =>
+            set_verb_form(prev_verb_form => {
+                switch prev_verb_form {
+                | Some(verb) => {
+                    set_error(_ => None)
+                    set_is_perfective(_ => value)
 
-                switch (subject, object_) {
-                    | (Some(subj), Some(obj)) => {
-                        try (verb
-                        ->Conjugator.set_stem(stem)
-                        ->Conjugator.reset_subject_object
-                        ->Conjugator.is_perfective
-                        ->Conjugator.set_subject(subj)
-                        ->Result.get_ok
-                        ->Conjugator.set_object(obj)
-                        ->Some) {
-                            | Conjugator__Utils.Todo(err) => {
-                                set_error(_ => Some(err))
-                                prev_verb_form
+                    let apply_aspect = verb =>
+                        switch (value, verb_stem) {
+                        | (Some(true), Some(verb_data)) =>
+                            verb
+                            ->Conjugator.set_stem(verb_data.stem)
+                            ->Conjugator.is_perfective
+                        | (Some(false), Some(verb_data)) =>
+                            verb
+                            ->Conjugator.set_stem(verb_data.stem)
+                            ->Conjugator.is_imperfective(Some(verb_data.imperfective))
+                        | _ => verb
+                        };
+
+                    switch (subject, object_) {
+                        | (Some(subj), Some(obj)) => {
+                            try (verb
+                            ->Conjugator.reset_subject_object
+                            ->apply_aspect
+                            ->Conjugator.set_subject(subj)
+                            ->Result.get_ok
+                            ->Conjugator.set_object(obj)
+                            ->Some) {
+                                | Conjugator__Utils.Todo(err) => {
+                                    set_error(_ => Some(err))
+                                    prev_verb_form
+                                }
                             }
                         }
-                    }
-                    | (Some(subj), _) => {
-                        try (verb
-                        ->Conjugator.set_stem(stem)
-                        ->Conjugator.reset_subject_object
-                        ->Conjugator.is_perfective
-                        ->Conjugator.set_subject(subj)
-                        ->Result.get_ok
-                        ->Some) {
-                            | Conjugator__Utils.Todo(err) => {
-                                set_error(_ => Some(err))
-                                prev_verb_form
+                        | (Some(subj), _) => {
+                            try (verb
+                            ->Conjugator.reset_subject_object
+                            ->apply_aspect
+                            ->Conjugator.set_subject(subj)
+                            ->Result.get_ok
+                            ->Some) {
+                                | Conjugator__Utils.Todo(err) => {
+                                    set_error(_ => Some(err))
+                                    prev_verb_form
+                                }
                             }
                         }
+                        | (_, Some(obj)) =>
+                            verb
+                            ->Conjugator.reset_subject_object
+                            ->apply_aspect
+                            ->Conjugator.set_object(obj)
+                            ->Some
+                        | _ => verb
+                            ->apply_aspect
+                            ->Some
                     }
-                    | (_, Some(obj)) => 
-                        verb
-                        ->Conjugator.set_stem(stem)
-                        ->Conjugator.reset_subject_object
-                        ->Conjugator.is_perfective
-                        ->Conjugator.set_object(obj)
-                        ->Some
-                    | _ => verb
-                        ->Conjugator.set_stem(stem)
-                        ->Conjugator.is_perfective
-                        ->Some
                 }
-            }
-            | None => None
-            }
-        })
-    };
+                | None => None
+                }
+            })
+        };
 
     let copy_result_cuneiforms = () => {
         switch (verb_form, verb_stem) {
@@ -717,7 +725,9 @@ let make = () => {
                                         </span>
                                     )
                                     |> React.array}
-                                    <span style={ReactDOM.Style.make(~marginLeft="15px", ())}>{option.label |> React.string}</span>
+                                    <span style={ReactDOM.Style.make(~marginLeft="15px", ())}>
+                                        {(option.label ++ " (to " ++ option.meaning ++ ")") |> React.string}
+                                    </span>
                                 </li>,
                                 props,
                             )
@@ -1037,12 +1047,34 @@ let make = () => {
                                     | None => ""
                                     }
                                 }
-                                onChange={change_preformative}
+                                onChange={ev => {
+                                    let target = React.Event.Form.target(ev)
+                                    switch target##value {
+                                    | "preformative-a" =>
+                                        change_preformative(Some(Conjugator.Preformative.A))
+                                    | "preformative-i" =>
+                                        change_preformative(Some(Conjugator.Preformative.I))
+                                    | "preformative-u" =>
+                                        change_preformative(Some(Conjugator.Preformative.U))
+                                    | _ => ()
+                                    }
+                                }}
                                 sx={{"padding": "8px"}}
                             >
                                 <FormControlLabel
                                     value="preformative-a"
-                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    control={
+                                        <Radio
+                                            size={is_mobile ? `small : `medium}
+                                            onClick={_ =>
+                                                switch preformative {
+                                                | Some(Conjugator.Preformative.A) =>
+                                                    change_preformative(None)
+                                                | _ => ()
+                                                }
+                                            }
+                                        />
+                                    }
                                     label={"A" |> React.string}                                    
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -1052,7 +1084,18 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="preformative-i"
-                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    control={
+                                        <Radio
+                                            size={is_mobile ? `small : `medium}
+                                            onClick={_ =>
+                                                switch preformative {
+                                                | Some(Conjugator.Preformative.I) =>
+                                                    change_preformative(None)
+                                                | _ => ()
+                                                }
+                                            }
+                                        />
+                                    }
                                     label={"I" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -1062,7 +1105,18 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="preformative-u"
-                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    control={
+                                        <Radio
+                                            size={is_mobile ? `small : `medium}
+                                            onClick={_ =>
+                                                switch preformative {
+                                                | Some(Conjugator.Preformative.U) =>
+                                                    change_preformative(None)
+                                                | _ => ()
+                                                }
+                                            }
+                                        />
+                                    }
                                     label={"U" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -1096,14 +1150,24 @@ let make = () => {
                                     | "modal-ha" => change_modal(Some(HA))
                                     | "modal-nu" => change_modal(Some(NU))
                                     | "modal-nan" => change_modal(Some(NAN))
-                                    | _ => change_modal(None)
+                                    | _ => ()
                                     }
                                 }}
                                 sx={{"padding": "8px"}}
                             >
                                 <FormControlLabel
                                     value="modal-ha"
-                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    control={
+                                        <Radio
+                                            size={is_mobile ? `small : `medium}
+                                            onClick={_ =>
+                                                switch modal_prefix {
+                                                | Some(HA) => change_modal(None)
+                                                | _ => ()
+                                                }
+                                            }
+                                        />
+                                    }
                                     label={{js|ḪA|js} |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -1113,7 +1177,17 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="modal-nu"
-                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    control={
+                                        <Radio
+                                            size={is_mobile ? `small : `medium}
+                                            onClick={_ =>
+                                                switch modal_prefix {
+                                                | Some(NU) => change_modal(None)
+                                                | _ => ()
+                                                }
+                                            }
+                                        />
+                                    }
                                     label={"NU" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -1123,7 +1197,17 @@ let make = () => {
                                 />
                                 <FormControlLabel
                                     value="modal-nan"
-                                    control={<Radio size={is_mobile ? `small : `medium} />}
+                                    control={
+                                        <Radio
+                                            size={is_mobile ? `small : `medium}
+                                            onClick={_ =>
+                                                switch modal_prefix {
+                                                | Some(NAN) => change_modal(None)
+                                                | _ => ()
+                                                }
+                                            }
+                                        />
+                                    }
                                     label={"NAN" |> React.string}
                                     disabled={
                                         is_transitive |> Option.is_none 
@@ -1392,7 +1476,7 @@ let make = () => {
                                 }
                                 meaning={
                                     switch (verb_stem) {
-                                        | Some(m) => Some(m.label)
+                                        | Some(verb) => Some(verb.meaning)
                                         | None => None
                                     }
                                 }

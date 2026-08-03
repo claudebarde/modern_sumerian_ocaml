@@ -232,12 +232,10 @@ let make = () => {
             }
             | None => None
             };
-        Js.log(active_selection)
         // Then a request is made to the Supabase database to fetch the cuneiforms for the word.
         let word_to_search = formatted_input;
         if ((word_to_search |> Js.String.length === 1 && Array.mem(word_to_search, vowels)) 
             || (word_to_search |> Js.String.length > 1)) {
-            Js.log("Searching for word: " ++ word_to_search);
             let _ = 
                 Supabase.client 
                 |> Supabase.Query.from("dictionary")
@@ -503,21 +501,21 @@ let make = () => {
                             if (Array.mem(active.cuneiforms[0], cuneiforms)) {
                                 // if the cuneiform doesn't exist in the value array, we add it
                                 if (Array.mem(active.cuneiforms[0], cuneiforms)) {
-                                    Js.log("Cuneiform already exists in the dictionary.");
+                                    // Js.log("Cuneiform already exists in the dictionary.");
                                     ()
                                 } else {
                                     let new_cuneiforms = Array.concat([cuneiforms, [|active.cuneiforms[0]|]]);
                                     Js.Dict.set(dictionary, trimmed_value, new_cuneiforms);
                                     let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(dictionary));
                                     set_keyboard_dictionary(_ => Some(dictionary));
-                                    Js.log("Added cuneiform to the dictionary.");
+                                    // Js.log("Added cuneiform to the dictionary.");
                                 }
                             } else {
                                 let new_cuneiforms = Array.concat([cuneiforms, [|active.cuneiforms[0]|]]);
                                 Js.Dict.set(dictionary, trimmed_value, new_cuneiforms);
                                 let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(dictionary));
                                 set_keyboard_dictionary(_ => Some(dictionary));
-                                Js.log("Added cuneiform to the dictionary.");
+                                // Js.log("Added cuneiform to the dictionary.");
                             }
                         }
                         | None => ()
@@ -544,7 +542,7 @@ let make = () => {
                         Js.Dict.set(new_dictionary, trimmed_value, [|active.cuneiforms[0]|]);
                         let _ = LocalStorage.set_item("keyboard", LocalStorage.encode_keyboard(new_dictionary));
                         set_keyboard_dictionary(_ => Some(new_dictionary));
-                        Js.log("Created new dictionary and added word and cuneiform.");
+                        // Js.log("Created new dictionary and added word and cuneiform.");
                     }
                     | None => ()
                     }

@@ -1,0 +1,72 @@
+@use "./styles.scss" as *;
+
+.gamesContainer {
+  height: 100%;
+}
+
+.gamesMenuContainer {
+  height: 100%;
+  padding: 40px;
+}
+
+.gameplayContainer {
+  height: 100%;
+  padding: 40px;
+}
+
+.memoryGameContainer {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 40px;
+}
+
+.cardsGrid {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.cardScene {
+  width: 100%;
+  height: 120px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 600ms ease;
+  transform-style: preserve-3d;
+
+  &.revealed {
+    transform: rotateY(180deg);
+  }
+}
+
+.memoryCard {
+  width: 100%;
+  height: 100%;
+}
+
+.cardFace {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.cardCover {
+  display: grid;
+  place-items: center;
+  color: $white-smoke;
+  background-color: $proton-red;
+  font-size: 2rem;
+}
+
+.cardValues {
+  transform: rotateY(180deg);
+}

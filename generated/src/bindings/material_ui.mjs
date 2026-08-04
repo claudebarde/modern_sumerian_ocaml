@@ -87,6 +87,8 @@ const InputBase = {};
 
 const InputLabel = {};
 
+const Link = {};
+
 const List = {};
 
 const ListItem = {};
@@ -235,6 +237,7 @@ export {
   IconButton,
   InputBase,
   InputLabel,
+  Link,
   List,
   ListItem,
   ListItemAvatar,

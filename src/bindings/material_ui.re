@@ -673,6 +673,40 @@ module InputLabel = {
   ) => React.element = "default";
 };
 
+module Link = {
+    type variant = [
+        | `inherit_
+        | `body1
+        | `body2
+        | `button
+        | `caption
+        | `h1
+        | `h2
+        | `h3
+        | `h4
+        | `h5
+        | `h6
+        | `overline
+        | `subtitle1
+        | `subtitle2
+    ];
+
+  [@mel.module "@mui/material/Link"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~component: RootComponent.t=?,
+    ~href: string=?,
+    ~_TypographyClasses: Js.t({..})=?,
+    ~underline: [`none | `hover | `always]=?,
+    ~sx: Js.t({..})=?,
+    ~variant: variant=?,
+    unit
+  ) => React.element = "default";
+};
+
 module List = {
   [@mel.module "@mui/material/List"] [@react.component]
   external make: (

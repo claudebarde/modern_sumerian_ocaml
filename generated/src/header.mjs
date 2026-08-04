@@ -49,7 +49,10 @@ function Header(Props) {
         JsxRuntime.jsx("img", {
           className: css.logo,
           alt: "logo",
-          src: logoImage
+          src: logoImage,
+          onClick: (function (param) {
+            ReasonReactRouter.push("/");
+          })
         }),
         JsxRuntime.jsxs(Box, {
           children: [
@@ -81,14 +84,6 @@ function Header(Props) {
         }),
         JsxRuntime.jsxs(Box, {
           children: [
-            JsxRuntime.jsx(Button, {
-              children: "Home",
-              color: Bindings__Config.colors.protonRed,
-              onClick: (function (param) {
-                ReasonReactRouter.push("/");
-              }),
-              variant: "text"
-            }),
             JsxRuntime.jsx(Button, {
               children: "Tools",
               color: Bindings__Config.colors.protonRed,
@@ -172,6 +167,14 @@ function Header(Props) {
                 vertical: "top",
                 horizontal: "right"
               }
+            }),
+            JsxRuntime.jsx(Button, {
+              children: "Games",
+              color: Bindings__Config.colors.protonRed,
+              onClick: (function (param) {
+                ReasonReactRouter.push("/games");
+              }),
+              variant: "text"
             }),
             JsxRuntime.jsx(Button, {
               children: "Lessons",

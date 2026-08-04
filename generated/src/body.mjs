@@ -3,6 +3,7 @@
 import BodyModuleScss from "./Body.module.scss";
 import * as Components__Conjugator_ui from "./components/conjugator_ui.mjs";
 import * as Components__Dictionary from "./components/dictionary.mjs";
+import * as Components__Games from "./components/games.mjs";
 import * as Components__Home from "./components/home.mjs";
 import * as Components__Keyboard from "./components/keyboard.mjs";
 import * as Components__Lessons from "./components/lessons.mjs";
@@ -32,6 +33,13 @@ function Body(Props) {
           exit = 1;
         } else {
           tmp = JsxRuntime.jsx(Components__Dictionary.make, {});
+        }
+        break;
+      case "games" :
+        if (match.tl) {
+          exit = 1;
+        } else {
+          tmp = JsxRuntime.jsx(Components__Games.make, {});
         }
         break;
       case "home" :

@@ -24,11 +24,12 @@ let make = () => {
         className=css##appbar
     >
         <Toolbar variant=Toolbar.Variant.regular className=css##toolbar>
-                <img 
-                    src=logoImage
-                    alt="logo"
-                    className=css##logo
-                />
+            <img 
+                src=logoImage
+                alt="logo"
+                className=css##logo
+                onClick={_ => ReasonReactRouter.push("/")}
+            />
             <Box className={css##rotatingTitle}>
                 <Typography
                     className={css##titlePrimary}
@@ -55,13 +56,6 @@ let make = () => {
             </Box>
             // LARGER SCREEN MENU
             <Box className=css##navMenu>
-                <Button
-                    variant=`text
-                    color=Color.fromString(Config.colors##protonRed)
-                    onClick={_ => ReasonReactRouter.push("/")}
-                >
-                    {"Home" |> React.string}
-                </Button>
                 <Button
                     variant=`text
                     color=Color.fromString(Config.colors##protonRed)
@@ -113,6 +107,13 @@ let make = () => {
                         </ListItemText>
                     </MenuItem>
                 </Menu>
+                <Button
+                    variant=`text
+                    color=Color.fromString(Config.colors##protonRed)
+                    onClick={_ => ReasonReactRouter.push("/games")}
+                >
+                    {"Games" |> React.string}
+                </Button>
                 <Button
                     variant=`text
                     color=Color.fromString(Config.colors##protonRed)

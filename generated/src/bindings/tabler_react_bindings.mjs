@@ -11,9 +11,17 @@ const IconBrandGithub = {};
 
 const IconBrandX = {};
 
+const IconChevronUp = {};
+
 const IconChevronDown = {};
 
 const IconCheck = {};
+
+const IconCircleNumber1 = {};
+
+const IconCircleNumber2 = {};
+
+const IconCircleNumber3 = {};
 
 const IconCopy = {};
 
@@ -49,8 +57,12 @@ export {
   IconBrandFacebook,
   IconBrandGithub,
   IconBrandX,
+  IconChevronUp,
   IconChevronDown,
   IconCheck,
+  IconCircleNumber1,
+  IconCircleNumber2,
+  IconCircleNumber3,
   IconCopy,
   IconCopyFilled,
   IconFileText,

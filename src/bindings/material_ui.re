@@ -367,6 +367,31 @@ module Checkbox = {
     ) => React.element = "default";
 };
 
+module Collapse = {
+    [@mel.module "@mui/material/Collapse"] [@react.component]
+    external make: (
+        ~addEndListener: (unit => unit)=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~collapsedSize: [@mel.unwrap] [
+            | `String(string)
+            | `Number(int)
+        ]=?,
+        ~component: RootComponent.t=?,
+        ~disablePrefersReducedMotion: bool=?,
+        ~orientation: [`horizontal | `vertical]=?,
+        ~in_: [@mel.as "in"] bool=?,
+        ~sx: Js.t({..})=?,
+        ~timeout: [@mel.unwrap] [
+            | `auto
+            | `Number(int)
+            | `Object(Js.t({..}))
+        ]=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Container = {
   [@mel.module "@mui/material/Container"] [@react.component]
   external make: (

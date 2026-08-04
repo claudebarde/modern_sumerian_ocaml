@@ -7,11 +7,21 @@
 .gamesMenuContainer {
   height: 100%;
   padding: 40px;
+
+  @media (max-width: $breakpoint) {
+    padding: 20px;
+    height: auto;
+    display: none;
+  }
 }
 
 .gameplayContainer {
   height: 100%;
   padding: 40px;
+
+  @media (max-width: $breakpoint) {
+    padding: 20px;
+  }
 }
 
 .memoryGameContainer {
@@ -21,6 +31,21 @@
   justify-content: flex-start;
   align-items: center;
   padding-bottom: 40px;
+
+  .gameDescription {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 10px;
+
+    @media (max-width: $breakpoint) {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
 }
 
 .cardsGrid {
@@ -69,4 +94,9 @@
 
 .cardValues {
   transform: rotateY(180deg);
+
+  &.matched {
+    color: $white-smoke;
+    background-color: $proton-red;
+  }
 }

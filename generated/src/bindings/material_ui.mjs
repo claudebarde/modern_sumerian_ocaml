@@ -59,6 +59,8 @@ const CardMedia = {};
 
 const Checkbox = {};
 
+const Collapse = {};
+
 const Container = {};
 
 const Divider = {};
@@ -225,6 +227,7 @@ export {
   CardHeader,
   CardMedia,
   Checkbox,
+  Collapse,
   Container,
   Divider,
   Drawer,

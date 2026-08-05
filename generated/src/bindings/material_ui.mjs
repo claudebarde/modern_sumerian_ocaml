@@ -41,6 +41,8 @@ const Autocomplete = {
   OptionKey: OptionKey
 };
 
+const Avatar = {};
+
 const Box = {};
 
 const Button = {};
@@ -58,6 +60,8 @@ const CardHeader = {};
 const CardMedia = {};
 
 const Checkbox = {};
+
+const Chip = {};
 
 const Collapse = {};
 
@@ -110,6 +114,12 @@ const Menu = {};
 const MenuItem = {};
 
 const Paper = {};
+
+const Actions = {};
+
+const Popover = {
+  Actions: Actions
+};
 
 const Radio = {};
 
@@ -218,6 +228,7 @@ export {
   AccordionSummary,
   AppBar,
   Autocomplete,
+  Avatar,
   Box,
   Button,
   Card,
@@ -227,6 +238,7 @@ export {
   CardHeader,
   CardMedia,
   Checkbox,
+  Chip,
   Collapse,
   Container,
   Divider,
@@ -251,6 +263,7 @@ export {
   Menu,
   MenuItem,
   Paper,
+  Popover,
   Radio,
   RadioGroup,
   Select,

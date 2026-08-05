@@ -9,6 +9,9 @@ let make = () => {
             </p>
         </div>
         <div>
+            <Components.Meteo_widget />
+        </div>
+        <div>
             <a href="https://www.buymeacoffee.com/8jJNf1zyp" target="_blank">
                 <img 
                     src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 

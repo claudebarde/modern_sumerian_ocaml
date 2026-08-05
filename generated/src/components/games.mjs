@@ -99,7 +99,7 @@ function Games$MemoryGame(Props) {
     },
     {
       symbol: "𒆠",
-      translation: "earth",
+      translation: "place",
       word: "ki"
     },
     {

@@ -1,4 +1,5 @@
 [@mel.module "../styles/Keyboard.module.scss"] external css: Js.t({..}) = "default"; 
+external dom_element_from_event_target: Js.t({..}) => Dom.element = "%identity";
 
 module ScrollableElement = {
     type scroll_options = {
@@ -130,7 +131,9 @@ let make = () => {
         React.useState(_ => "");
     let (how_to_drawer, set_how_to_drawer) = React.useState(_ => false);
     let (determinatives_menu_anchor, set_determinatives_menu_anchor) =
-        React.useState(() => Js.Nullable.null);
+        React.useState(() =>
+            (Js.Nullable.null: Js.Nullable.t(Dom.element))
+        );
     let determinatives_menu_open =
         !Js.Nullable.isNullable(determinatives_menu_anchor);
 
@@ -977,6 +980,7 @@ let make = () => {
                     onClick={event =>
                         set_determinatives_menu_anchor(_ =>
                             React.Event.Mouse.currentTarget(event)
+                            |> dom_element_from_event_target
                             |> Js.Nullable.return
                         )
                     }

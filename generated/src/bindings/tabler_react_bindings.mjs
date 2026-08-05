@@ -3,6 +3,8 @@
 
 const IconArrowBarBoth = {};
 
+const IconBolt = {};
+
 const IconBook2 = {};
 
 const IconBrandFacebook = {};
@@ -10,6 +12,8 @@ const IconBrandFacebook = {};
 const IconBrandGithub = {};
 
 const IconBrandX = {};
+
+const IconBrightnessHalf = {};
 
 const IconChevronUp = {};
 
@@ -22,6 +26,14 @@ const IconCircleNumber1 = {};
 const IconCircleNumber2 = {};
 
 const IconCircleNumber3 = {};
+
+const IconCloud = {};
+
+const IconCloudFog = {};
+
+const IconCloudRain = {};
+
+const IconCloudSnow = {};
 
 const IconCopy = {};
 
@@ -41,9 +53,15 @@ const IconMenu2 = {};
 
 const IconPencilPlus = {};
 
+const IconQuestionMark = {};
+
 const IconRefresh = {};
 
 const IconSearch = {};
+
+const IconSnowflake = {};
+
+const IconSun = {};
 
 const IconTable = {};
 
@@ -51,18 +69,26 @@ const IconTrashX = {};
 
 const IconTrashXFilled = {};
 
+const IconWind = {};
+
 export {
   IconArrowBarBoth,
+  IconBolt,
   IconBook2,
   IconBrandFacebook,
   IconBrandGithub,
   IconBrandX,
+  IconBrightnessHalf,
   IconChevronUp,
   IconChevronDown,
   IconCheck,
   IconCircleNumber1,
   IconCircleNumber2,
   IconCircleNumber3,
+  IconCloud,
+  IconCloudFog,
+  IconCloudRain,
+  IconCloudSnow,
   IconCopy,
   IconCopyFilled,
   IconFileText,
@@ -72,10 +98,14 @@ export {
   IconList,
   IconMenu2,
   IconPencilPlus,
+  IconQuestionMark,
   IconRefresh,
   IconSearch,
+  IconSnowflake,
+  IconSun,
   IconTable,
   IconTrashX,
   IconTrashXFilled,
+  IconWind,
 }
 /* No side effect */

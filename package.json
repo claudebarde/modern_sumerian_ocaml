@@ -19,6 +19,7 @@
     "@supabase/supabase-js": "^2.110.7",
     "@tabler/icons-react": "^3.45.0",
     "canvas-confetti": "^1.9.4",
+    "openmeteo": "^1.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-select": "^5.10.2",

@@ -77,7 +77,7 @@ module MemoryGame = {
         {symbol: {js|𒀀|js}, translation: "water", word: "a"},
         {symbol: {js|𒀭|js}, translation: "god", word: {js|diĝir|js}},
         {symbol: {js|𒂍|js}, translation: "house", word: "e"},
-        {symbol: {js|𒆠|js}, translation: "earth", word: "ki"},
+        {symbol: {js|𒆠|js}, translation: "place", word: "ki"},
         {symbol: {js|𒈗|js}, translation: "king", word: "lugal"},
         {symbol: {js|𒊩|js}, translation: "woman", word: "munus"},
         {symbol: {js|𒌓|js}, translation: "sun", word: "ud"},

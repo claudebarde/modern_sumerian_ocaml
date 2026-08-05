@@ -225,6 +225,24 @@ module Autocomplete = {
     ) => React.element = "default";
 };
 
+module Avatar = {
+    [@mel.module "@mui/material/Avatar"] [@react.component]
+    external make: (
+        ~alt: string=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~component: RootComponent.t=?,
+        ~sizes: string=?,
+        ~src: string=?,
+        ~srcSet: string=?,
+        ~variant: [`circular | `rounded | `square]=?, // TODO: a string can be passed to variant
+        // TODO: slots and slotProps are not supported yet
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Box = {
     [@mel.module "@mui/material/Box"] [@react.component]
     external make: (
@@ -363,6 +381,32 @@ module Checkbox = {
         ~sx: Js.t({..})=?,
         // TODO: slots and slotProps are not supported yet
         ~value: 'value=?,
+        unit
+    ) => React.element = "default";
+};
+
+module Chip = {
+    [@mel.module "@mui/material/Chip"] [@react.component]
+    external make: (
+        ~avatar: React.element=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~clickable: bool=?,
+        ~color: Color.t=?,
+        ~component: RootComponent.t=?,
+        ~deleteIcon: React.element=?,
+        ~disabled: bool=?,
+        ~icon: React.element=?,
+        ~label: string=?,
+        ~nativeButton: bool=?,
+        ~onClick: (React.Event.Mouse.t => unit)=?,
+        ~onDelete: (React.Event.Mouse.t => unit)=?,
+        ~size: [`small | `medium]=?, // TODO: a string can be passed to size
+        ~skipFocusWhenDisabled: bool=?,
+        // TODO: slots and slotProps are not supported yet
+        ~sx: Js.t({..})=?,
+        ~variant: [`filled | `outlined]=?, // TODO: a string can be passed to variant
         unit
     ) => React.element = "default";
 };
@@ -851,7 +895,7 @@ module Menu = {
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,
-    ~anchorEl: Js.Nullable.t(Js.t({..}))=?,
+    ~anchorEl: Js.Nullable.t(Dom.element)=?,
     ~disableAutoFocusItem: bool=?,
     ~onClose: (React.Event.Synthetic.t => unit)=?,
     ~_open: bool=?,
@@ -903,6 +947,48 @@ module Paper = {
     ~variant: [`elevation | `outlined]=?,
     unit
   ) => React.element = "default";
+};
+
+module Popover = {
+    type anchorPos = { left: int, top: int };
+
+    module Actions = {
+        type t;
+
+        [@mel.send]
+        external update_position: ([@mel.this] t) => unit = "updatePosition";
+    };
+
+    [@mel.module "@mui/material/Popover"] [@react.component]
+    external make: (
+        ~action: React.ref(Js.Nullable.t(Actions.t))=?,
+        ~anchorEl: Js.Nullable.t(Dom.element)=?,
+        ~anchorOrigin: originPosition=?,
+        ~anchorPosition: anchorPos=?,
+        ~anchorReference: [`anchorEl | `anchorPosition | `none]=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~container: Dom.element=?,
+        ~disableAutoFocus: bool=?,
+        ~disableScrollLock: bool=?,
+        ~elevation: int=?,
+        ~marginThreshold: int=?,
+        ~onClose: (React.Event.Synthetic.t => unit)=?,
+        ~_open: bool=?,
+        ~_PaperProps: Js.t({..})=?,
+        ~_PopoverClasses: Js.t({..})=?,
+        ~slotProps: Js.t({..})=?,
+        ~slots: Js.t({..})=?,
+        ~sx: Js.t({..})=?,
+        ~transformOrigin: originPosition=?,
+        ~transitionDuration: [@mel.unwrap] [
+            | `auto
+            | `Number(int)
+            | `Object(Js.t({..}))
+        ]=?,
+        unit
+    ) => React.element = "default";
 };
 
 module Radio = {

@@ -1,13 +1,17 @@
 [@mel.module "./Header.module.scss"] external css: Js.t({..}) = "default"; 
 [@mel.scope ("process", "env")] external node_env: string = "NODE_ENV";
 [@mel.module "./assets/logo.png"] external logoImage: string = "default";
+external dom_element_from_event_target: Js.t({..}) => Dom.element = "%identity";
 
 [@react.component]
 let make = () => {
     open Bindings;
     open Mui;
 
-    let (toolsAnchor, setToolsAnchor) = React.useState(() => Js.Nullable.null);
+    let (toolsAnchor, setToolsAnchor) =
+        React.useState(() =>
+            (Js.Nullable.null: Js.Nullable.t(Dom.element))
+        );
     let (mobileMenuOpen, setMobileMenuOpen) = React.useState(() => false);
 
     let openToolsMenu = !Js.Nullable.isNullable(toolsAnchor);
@@ -63,6 +67,7 @@ let make = () => {
                     onClick={event =>
                         setToolsAnchor(_ =>
                             React.Event.Mouse.currentTarget(event)
+                            |> dom_element_from_event_target
                             |> Js.Nullable.return
                         )
                     }

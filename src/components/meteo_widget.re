@@ -8,6 +8,7 @@
 [@mel.module "../assets/weather/icons8-snow.gif"] external snowGif: string = "default";
 [@mel.module "../assets/weather/icons8-cloud-lightning.gif"] external thunderstormGif: string = "default";
 [@mel.module "../assets/weather/icons8-rainbow-96.png"] external rainbowPng: string = "default";
+[@mel.module "../assets/weather/icons8-thermometer-96.png"] external thermometerPng: string = "default";
 
 [@mel.module "../styles/MeteoWidget.module.scss"] external css: Js.t({..}) = "default"; 
 external dom_element_from_event_target: Js.t({..}) => Dom.element = "%identity";
@@ -105,13 +106,19 @@ external fetchWeatherApi: (
   weather_api_params,
 ) => Js.Promise.t(array(weather_api_response)) = "fetchWeatherApi";
 
-// Central point of Ur Archaeological City, Dhi Qar, Iraq.
-type city_lat_long = { ur: (float, float) };
+// Central coordinates for the archaeological cities.
+type city_lat_long = Js.dict((float, float));
 type city_cuneiform = Js.dict(string);
-let default_cities: city_lat_long = {
-    ur: (30.963056, 46.103056),
-};
-let cities_cuneiform: city_cuneiform = Js.Dict.fromList([("ur", {js|𒋀𒀊𒆠|js})]);
+let default_cities: city_lat_long = Js.Dict.fromList([
+    ("ur", (30.963056, 46.103056)),
+    ("nippur", (32.126944, 45.230832)),
+    ("lagash", (31.4025, 46.4025)),
+]);
+let cities_cuneiform: city_cuneiform = Js.Dict.fromList([
+    ("ur", {js|𒋀𒀊𒆠|js}),
+    ("nippur", {js|𒂗𒆤𒆠|js}),
+    ("lagash", {js|𒉢𒁓𒆷𒆠|js}),
+]);
 
 let capitalize = value =>
     if (Js.String.length(value) === 0) {
@@ -125,20 +132,30 @@ let capitalize = value =>
         first_character ++ remaining_characters;
     };
 
+type language = English | Sumerian;
+
 [@react.component]
 let make = () => {
     open Bindings;
     open Mui;
 
-    let (current_city, _set_current_city) = React.useState(() => Some("ur"));
-    let (lat_long, _set_lat_long) = React.useState(() => Some(default_cities.ur));
+
+    let (current_city, set_current_city) = React.useState(() => None);
+    let (lat_long, set_lat_long) =
+        React.useState(() => None);
     let (weather_code, set_weather_code) = React.useState(() => None);
-    let (_temperature, set_temperature) = React.useState(() => None);
+    let (temperature, set_temperature) = React.useState(() => None);
     let (anchor_el, set_anchor_el) =
         React.useState(() =>
             (Js.Nullable.null: Js.Nullable.t(Dom.element))
         );
     let (open_popover, set_open_popover) = React.useState(() => false);
+    let (language, set_language) = React.useState(() => Sumerian);
+    let (cities_menu_open, set_cities_menu_open) = React.useState(() => false);
+    let (city_menu_anchor_el, set_city_menu_anchor_el) =
+        React.useState(() =>
+            (Js.Nullable.null: Js.Nullable.t(Dom.element))
+        );
 
     let show_popover = (event: React.Event.Mouse.t) => {
         set_anchor_el(_ =>
@@ -149,9 +166,58 @@ let make = () => {
         set_open_popover(_ => true);
     };
 
-    React.useEffect0(() => {
-        switch lat_long {
-            | Some((lat, long)) => {
+    let get_current_location = () => {
+        Browser.Geolocation.get_current_position(
+            ~success=(position => {
+                let coordinates =
+                Browser.Geolocation.coordinates(position);
+
+                let latitude =
+                Browser.Geolocation.latitude(coordinates);
+
+                let longitude =
+                Browser.Geolocation.longitude(coordinates);
+
+                set_lat_long(_ => Some((latitude, longitude)));
+                set_current_city(_ => Some("your city"));
+
+                // saves the user's current location in local storage
+                LocalStorage.set_location({
+                    city: "your city",
+                    cuneiforms: "𒌷𒍝",
+                    lat_long: (latitude, longitude),
+                });
+            }),
+            ~error=(error => {
+                Js.log(Browser.Geolocation.error_message(error));
+            }),
+            ~options=Browser.Geolocation.make_options(
+                ~enableHighAccuracy=true,
+                ~timeout=10000,
+                ~maximumAge=0,
+                (),
+            ),
+            (),
+        );
+    };
+
+    React.useEffect1(() => {
+        switch (current_city, lat_long) {
+            | (None, None) => {
+                // checks if there is no location stored in local storage
+                // if not, it initializes the city and lat_long with Ur's coordinates
+                switch (LocalStorage.get_location()) {
+                | Some(location) => {
+                    set_current_city(_ => Some(location.city));
+                    set_lat_long(_ => Some(location.lat_long));
+                }
+                | None => {
+                    set_current_city(_ => Some("ur"));
+                    set_lat_long(_ => Js.Dict.get(default_cities, "ur"));
+                }
+                };
+            }
+            | (Some(_city), Some((lat, long))) => {
                 let params = make_weather_api_params(
                     ~latitude=lat,
                     ~longitude=long,
@@ -200,8 +266,6 @@ let make = () => {
 
                                 set_temperature(_ => temperature);
                                 set_weather_code(_ => weather_code);
-                                
-                                Js.log2(temperature, weather_code);
                             | None => Js.log("Current weather is unavailable")
                             };
                        };
@@ -209,11 +273,11 @@ let make = () => {
                    })
                 |> ignore;
             }
-            | None => ();
+            | _ => ();
         };
 
         None
-    });
+    }, [|lat_long|]);
 
     {
         switch (current_city, lat_long) {
@@ -225,6 +289,11 @@ let make = () => {
                     size=`medium
                     clickable=true
                     onClick={show_popover}
+                    sx={{
+                        "& .MuiChip-avatar": {
+                            "backgroundColor": "transparent",
+                        },
+                    }}
                     avatar={
                         <Avatar 
                             src={
@@ -249,23 +318,29 @@ let make = () => {
                                 | Some(Rain) => "Rain"
                                 | Some(Snow) => "Snow"
                                 | Some(Thunderstorm) => "Thunderstorm"
-                                | _ => "Full Moon"
+                                | _ => "Rainbow"
                                 }
                             } 
+                            sx={{"backgroundColor": "white"}}
                             className=css##meteoWidgetIcon 
                         />
                     }
                     label={
                         switch weather_code {
-                        | Some(Clear) => {js|𒌓|js}
-                        | Some(Cloudy) => {js|𒅎𒋛𒀀|js}
-                        | Some(Fog) => {js|𒁇𒀀𒀭|js}
-                        | Some(Rain) => {js|𒀀𒀭|js}
+                        | Some(Clear) => {js|𒌓𒁕·|js}
+                        | Some(Cloudy) => {js|𒅎𒋛𒀀𒁕·|js}
+                        | Some(Fog) => {js|𒁇𒀀𒀭𒁕·|js}
+                        | Some(Rain) => {js|𒀀𒀭𒁕·|js}
                         | _ => ""
                         } ++ " " ++
                         switch (Js.Dict.get(cities_cuneiform, city)) {
                         | Some(cuneiform) => cuneiform ++ {js|𒀀|js}
-                        | None => city |> capitalize
+                        | None when city === "your city" => 
+                            switch language {
+                            | English => "your city"
+                            | Sumerian => {js|𒌷𒍝|js}
+                            }
+                        | _ => city |> capitalize
                     }}
                     className=css##meteoWidget
                 />
@@ -285,10 +360,252 @@ let make = () => {
                         set_anchor_el(_ => Js.Nullable.null);
                     }}
                 >
-                    <Paper>
-                        <Typography sx={{"padding": "1rem"}} variant=Typography.Variant.body1>
-                            {"Weather details" |> React.string}
-                        </Typography>
+                    <Paper className=css##meteoWidgetPopover>
+                        <Stack>
+                            {
+                                let city_in_cuneiform =
+                                    switch (Js.Dict.get(cities_cuneiform, city)) {
+                                    | Some(cuneiform) => cuneiform ++ {js|𒀀|js}
+                                    | None when city === "your city" => 
+                                        switch language {
+                                        | English => "your city"
+                                        | Sumerian => {js|𒌷𒍝|js}
+                                        }
+                                    | _ => city |> capitalize
+                                    };
+
+                                <Typography 
+                                    variant=Typography.Variant.h6 
+                                    sx={{"marginBottom": "0.5rem"}}
+                                    align=`center                                    
+                                >
+                                    {
+                                        switch language {
+                                        | English => (("Weather in " ++ (city |> capitalize)) |> React.string)
+                                        | Sumerian => 
+                                            <span className="cuneiforms small">
+                                                ({js|𒀭·|js} ++ city_in_cuneiform |> React.string)
+                                            </span>
+                                        }}
+                                </Typography>
+                            }
+                            <Divider sx={{"marginBottom": "0.5rem"}} />
+                            <Typography 
+                                variant=Typography.Variant.body1 
+                                sx={{"display": "flex", "alignItems": "center", "padding": "0.5rem 0"}}
+                            >
+                                <img src={
+                                    switch weather_code {
+                                    | Some(Clear) => sunGif
+                                    | Some(PartlyCloudy) => partlyCloudyGif
+                                    | Some(Cloudy) => cloudyPng
+                                    | Some(Fog) => fogGif
+                                    | Some(Drizzle) => drizzleGif
+                                    | Some(Rain) => rainGif
+                                    | Some(Snow) => snowGif
+                                    | Some(Thunderstorm) => thunderstormGif
+                                    | _ => rainbowPng
+                                }}
+                                alt={
+                                    switch weather_code {
+                                    | Some(Clear) => "Sun"
+                                    | Some(PartlyCloudy) => "Partly Cloudy"
+                                    | Some(Cloudy) => "Cloudy"
+                                    | Some(Fog) => "Fog"
+                                    | Some(Drizzle) => "Drizzle"
+                                    | Some(Rain) => "Rain"
+                                    | Some(Snow) => "Snow"
+                                    | Some(Thunderstorm) => "Thunderstorm"
+                                    | _ => "Full Moon"
+                                    } 
+                                }
+                                />
+                                <span className="cuneiforms x-small">
+                                    {
+                                        switch weather_code {
+                                        | Some(Clear) => {
+                                            switch language {
+                                            | English => "Sunny"
+                                            | Sumerian => {js|𒌓𒁕|js}
+                                            }
+                                        }
+                                        | Some(Cloudy) => {
+                                            switch language {
+                                            | English => "Cloudy"
+                                            | Sumerian => {js|𒅎𒋛𒀀𒁕|js}
+                                            }
+                                        }
+                                        | Some(Fog) => {
+                                            switch language {
+                                            | English => "Foggy"
+                                            | Sumerian => {js|𒁇𒀀𒀭𒁕|js}
+                                            }
+                                        }
+                                        | Some(Rain) => {
+                                            switch language {
+                                            | English => "Rainy"
+                                            | Sumerian => {js|𒀀𒀭𒁕|js}
+                                            }
+                                        }
+                                        | Some(PartlyCloudy) => {
+                                            switch language {
+                                            | English => "Partly Cloudy"
+                                            | Sumerian => {js|𒌓·𒅎𒋛𒀀𒁕|js}
+                                            }
+                                        }
+                                        | Some(Drizzle) => {
+                                            switch language {
+                                            | English => "Drizzle"
+                                            | Sumerian => {js|𒅎𒂂𒁕|js}
+                                            }
+                                        }
+                                        | Some(Snow) => {
+                                            switch language {
+                                            | English => "Snowy"
+                                            | Sumerian => {js|𒊾𒁕|js}
+                                            }
+                                        }
+                                        | Some(Thunderstorm) => {
+                                            switch language {
+                                            | English => "Thunderstorm"
+                                            | Sumerian => {js|𒅗𒀭𒉌𒋛𒁕|js}
+                                            }
+                                        }
+                                        | _ => {
+                                            switch language {
+                                            | English => "No data"
+                                            | Sumerian => {js|𒃻𒈾𒈨·𒉡𒌋𒅅|js}
+                                            }
+                                        }
+                                        } |> React.string
+                                    }
+                                </span>
+                            </Typography>
+                            <Typography 
+                                variant=Typography.Variant.body1 
+                                sx={{"display": "flex", "alignItems": "center", "padding": "0.5rem 0"}}
+                            >
+                                <img src=thermometerPng alt="Thermometer" />
+                                {
+                                    switch temperature {
+                                    | Some(temp) => string_of_int(temp) ++ {js|°C|js}
+                                    | None => "N/A"
+                                    } |> React.string
+                                }
+                            </Typography>
+                            <div className="buttons-group">
+                                <Button 
+                                    variant=`outlined
+                                    color=Color.primary
+                                    sx={{"marginTop": "0.5rem", "marginRight": "0.5rem", "fontSize": "0.75rem"}}
+                                    onClick={_ => {
+                                        set_language(prev_language =>
+                                            switch prev_language {
+                                            | English => Sumerian
+                                            | Sumerian => English
+                                            }
+                                        );
+                                    }}
+                                >
+                                    {
+                                        switch language {
+                                        | English => 
+                                            <span className="cuneiforms" style={ReactDOM.Style.make(~fontSize="0.75rem", ())}>
+                                                ({js|𒅴𒄀|js} |> React.string)
+                                            </span>
+                                        | Sumerian => "English" |> React.string
+                                        }
+                                    }
+                                </Button>
+                                <Button 
+                                    variant=`contained
+                                    color=Color.primary
+                                    endIcon={<TablerReact.IconChevronUp />}
+                                    sx={{"marginTop": "0.5rem"}}
+                                    onClick={event => {
+                                        set_city_menu_anchor_el(_ =>
+                                            React.Event.Mouse.currentTarget(event)
+                                            |> dom_element_from_event_target
+                                            |> Js.Nullable.return
+                                        );
+                                        set_cities_menu_open(_ => true);
+                                    }}
+                                >
+                                    {
+                                        switch language {
+                                        | English => 
+                                            <span>
+                                                {"Other cities" |> React.string}
+                                            </span>
+                                        | Sumerian => 
+                                            <span className="cuneiforms" style={ReactDOM.Style.make(~fontSize="0.75rem", ())}>
+                                                ({js|𒌷·𒉽𒊏|js} |> React.string)                                                
+                                            </span>
+                                        }
+                                    }
+                                </Button>
+                                <Menu
+                                    anchorEl=city_menu_anchor_el
+                                    _open=cities_menu_open
+                                    anchorOrigin={{
+                                        vertical: `top,
+                                        horizontal: `center,
+                                    }}
+                                    transformOrigin={{
+                                        vertical: `bottom,
+                                        horizontal: `center,
+                                    }}
+                                    onClose={_ => set_cities_menu_open(_ => false)}
+                                >
+                                    {
+                                        Js.Dict.entries(cities_cuneiform)
+                                        |> Array.map(((city_key, city_cuneiform)) => {
+                                            <MenuItem
+                                                key=city_key
+                                                onClick={_ => {
+                                                    set_current_city(_ => Some(city_key));
+                                                    set_lat_long(_ => 
+                                                        switch (Js.Dict.get(default_cities, city_key)) {
+                                                        | Some(lat_long) => Some(lat_long)
+                                                        | None => None
+                                                        }
+                                                    );
+                                                    set_cities_menu_open(_ => false);
+                                                }}
+                                            >
+                                                {
+                                                    switch language {
+                                                    | English => city_key |> capitalize |> React.string
+                                                    | Sumerian => 
+                                                        <span className="cuneiforms x-small">
+                                                            ({city_cuneiform} |> React.string)
+                                                        </span>
+                                                    }
+                                                }
+                                            </MenuItem>
+                                        })
+                                        |> React.array
+                                    }
+                                    <Divider />
+                                    <MenuItem
+                                        onClick={_ => {
+                                            get_current_location()
+                                            set_cities_menu_open(_ => false);
+                                        }}
+                                    >
+                                        {
+                                            switch language {
+                                            | English => "Use my location" |> React.string
+                                            | Sumerian => 
+                                                <span className="cuneiforms x-small">
+                                                    ({js|𒀭·𒌷𒂷|js} |> React.string)
+                                                </span>
+                                            }
+                                        }
+                                    </MenuItem>
+                                </Menu>
+                            </div>
+                        </Stack>
                     </Paper>
                 </Popover>
             </>

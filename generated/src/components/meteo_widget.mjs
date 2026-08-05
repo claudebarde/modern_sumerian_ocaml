@@ -9,17 +9,25 @@ import Icons8RainGif from "../assets/weather/icons8-rain.gif";
 import Icons8RainbowPng from "../assets/weather/icons8-rainbow-96.png";
 import Icons8SnowGif from "../assets/weather/icons8-snow.gif";
 import Icons8SummerGif from "../assets/weather/icons8-summer.gif";
+import Icons8ThermometerPng from "../assets/weather/icons8-thermometer-96.png";
 import MeteoWidgetModuleScss from "../styles/MeteoWidget.module.scss";
 import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Popover from "@mui/material/Popover";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
+import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
+import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Option from "melange/option.mjs";
 import * as Openmeteo from "openmeteo";
 import * as React from "react";
@@ -42,6 +50,8 @@ const snowGif = Icons8SnowGif;
 const thunderstormGif = Icons8CloudLightningGif;
 
 const rainbowPng = Icons8RainbowPng;
+
+const thermometerPng = Icons8ThermometerPng;
 
 const css = MeteoWidgetModuleScss;
 
@@ -94,12 +104,53 @@ function weather_condition_from_code(code) {
   }
 }
 
+const default_cities = Js__Js_dict.fromList({
+  hd: [
+    "ur",
+    [
+      30.963056,
+      46.103056
+    ]
+  ],
+  tl: {
+    hd: [
+      "nippur",
+      [
+        32.126944,
+        45.230832
+      ]
+    ],
+    tl: {
+      hd: [
+        "lagash",
+        [
+          31.4025,
+          46.4025
+        ]
+      ],
+      tl: /* [] */ 0
+    }
+  }
+});
+
 const cities_cuneiform = Js__Js_dict.fromList({
   hd: [
     "ur",
     "𒋀𒀊𒆠"
   ],
-  tl: /* [] */ 0
+  tl: {
+    hd: [
+      "nippur",
+      "𒂗𒆤𒆠"
+    ],
+    tl: {
+      hd: [
+        "lagash",
+        "𒉢𒁓𒆷𒆠"
+      ],
+      tl: /* [] */ 0
+    }
+  }
 });
 
 function capitalize(value) {
@@ -113,15 +164,14 @@ function capitalize(value) {
 
 function Meteo_widget(Props) {
   const match = React.useState(function () {
-    return "ur";
+    
   });
+  const set_current_city = match[1];
   const current_city = match[0];
   const match$1 = React.useState(function () {
-    return [
-      30.963056,
-      46.103056
-    ];
+    
   });
+  const set_lat_long = match$1[1];
   const lat_long = match$1[0];
   const match$2 = React.useState(function () {
     
@@ -132,6 +182,7 @@ function Meteo_widget(Props) {
     
   });
   const set_temperature = match$3[1];
+  const temperature = match$3[0];
   const match$4 = React.useState(function () {
     return null;
   });
@@ -140,6 +191,19 @@ function Meteo_widget(Props) {
     return false;
   });
   const set_open_popover = match$5[1];
+  const match$6 = React.useState(function () {
+    return /* Sumerian */ 1;
+  });
+  const set_language = match$6[1];
+  const language = match$6[0];
+  const match$7 = React.useState(function () {
+    return false;
+  });
+  const set_cities_menu_open = match$7[1];
+  const match$8 = React.useState(function () {
+    return null;
+  });
+  const set_city_menu_anchor_el = match$8[1];
   const show_popover = function ($$event) {
     Curry._1(set_anchor_el, (function (param) {
       return $$event.currentTarget;
@@ -148,38 +212,87 @@ function Meteo_widget(Props) {
       return true;
     }));
   };
-  React.useEffect((function () {
-    if (lat_long !== undefined) {
-      const params = {
-        latitude: lat_long[0],
-        longitude: lat_long[1],
-        current: "temperature_2m,weather_code"
-      };
-      Openmeteo.fetchWeatherApi("https://api.open-meteo.com/v1/forecast", params).then(function (response) {
-        if (response.length !== 0) {
-          const first_entry = Caml_array.get(response, 0);
-          const current = first_entry.current();
-          if (current == null) {
-            console.log("Current weather is unavailable");
-          } else {
-            const temperature_variable = current.variables(0);
-            const temperature = !(temperature_variable == null) ? Stdlib__Option.some(temperature_variable.value() | 0) : undefined;
-            const weather_code_variable = current.variables(1);
-            const weather_code = !(weather_code_variable == null) ? Stdlib__Option.some(weather_condition_from_code(weather_code_variable.value() | 0)) : undefined;
-            Curry._1(set_temperature, (function (param) {
-              return temperature;
-            }));
-            Curry._1(set_weather_code, (function (param) {
-              return weather_code;
-            }));
-            console.log(temperature, weather_code);
-          }
-        }
-        return Promise.resolve(undefined);
+  const get_current_location = function (param) {
+    navigator.geolocation.getCurrentPosition((function (position) {
+      const coordinates = position.coords;
+      const latitude = coordinates.latitude;
+      const longitude = coordinates.longitude;
+      Curry._1(set_lat_long, (function (param) {
+        return [
+          latitude,
+          longitude
+        ];
+      }));
+      Curry._1(set_current_city, (function (param) {
+        return "your city";
+      }));
+      Bindings__Local_storage.set_location({
+        city: "your city",
+        cuneiforms: "\xf0\x92\x8c\xb7\xf0\x92\x8d\x9d",
+        lat_long: [
+          latitude,
+          longitude
+        ]
       });
+    }), (function (error) {
+      console.log(error.message);
+    }), {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    });
+  };
+  React.useEffect((function () {
+    if (current_city !== undefined) {
+      if (lat_long !== undefined) {
+        const params = {
+          latitude: lat_long[0],
+          longitude: lat_long[1],
+          current: "temperature_2m,weather_code"
+        };
+        Openmeteo.fetchWeatherApi("https://api.open-meteo.com/v1/forecast", params).then(function (response) {
+          if (response.length !== 0) {
+            const first_entry = Caml_array.get(response, 0);
+            const current = first_entry.current();
+            if (current == null) {
+              console.log("Current weather is unavailable");
+            } else {
+              const temperature_variable = current.variables(0);
+              const temperature = !(temperature_variable == null) ? Stdlib__Option.some(temperature_variable.value() | 0) : undefined;
+              const weather_code_variable = current.variables(1);
+              const weather_code = !(weather_code_variable == null) ? Stdlib__Option.some(weather_condition_from_code(weather_code_variable.value() | 0)) : undefined;
+              Curry._1(set_temperature, (function (param) {
+                return temperature;
+              }));
+              Curry._1(set_weather_code, (function (param) {
+                return weather_code;
+              }));
+            }
+          }
+          return Promise.resolve(undefined);
+        });
+      }
+      
+    } else if (lat_long === undefined) {
+      const $$location = Bindings__Local_storage.get_location(undefined);
+      if ($$location !== undefined) {
+        Curry._1(set_current_city, (function (param) {
+          return $$location.city;
+        }));
+        Curry._1(set_lat_long, (function (param) {
+          return $$location.lat_long;
+        }));
+      } else {
+        Curry._1(set_current_city, (function (param) {
+          return "ur";
+        }));
+        Curry._1(set_lat_long, (function (param) {
+          return Js__Js_dict.get(default_cities, "ur");
+        }));
+      }
     }
     
-  }), []);
+  }), [lat_long]);
   if (current_city !== undefined && lat_long !== undefined) {
     let tmp;
     if (weather_code !== undefined) {
@@ -209,11 +322,11 @@ function Meteo_widget(Props) {
           tmp = "Thunderstorm";
           break;
         case /* Unknown */ 8 :
-          tmp = "Full Moon";
+          tmp = "Rainbow";
           break;
       }
     } else {
-      tmp = "Full Moon";
+      tmp = "Rainbow";
     }
     let tmp$1;
     if (weather_code !== undefined) {
@@ -253,16 +366,16 @@ function Meteo_widget(Props) {
     if (weather_code !== undefined) {
       switch (weather_code) {
         case /* Clear */ 0 :
-          tmp$2 = "𒌓";
+          tmp$2 = "𒌓𒁕·";
           break;
         case /* Cloudy */ 2 :
-          tmp$2 = "𒅎𒋛𒀀";
+          tmp$2 = "𒅎𒋛𒀀𒁕·";
           break;
         case /* Fog */ 3 :
-          tmp$2 = "𒁇𒀀𒀭";
+          tmp$2 = "𒁇𒀀𒀭𒁕·";
           break;
         case /* Rain */ 5 :
-          tmp$2 = "𒀀𒀭";
+          tmp$2 = "𒀀𒀭𒁕·";
           break;
         default:
           tmp$2 = "";
@@ -271,22 +384,174 @@ function Meteo_widget(Props) {
       tmp$2 = "";
     }
     const cuneiform = Js__Js_dict.get(cities_cuneiform, current_city);
+    let tmp$3;
+    tmp$3 = cuneiform !== undefined ? cuneiform + "𒀀" : (
+        current_city === "your city" ? (
+            language === /* English */ 0 ? "your city" : "𒌷𒍝"
+          ) : capitalize(current_city)
+      );
+    const cuneiform$1 = Js__Js_dict.get(cities_cuneiform, current_city);
+    const city_in_cuneiform = cuneiform$1 !== undefined ? cuneiform$1 + "𒀀" : (
+        current_city === "your city" ? (
+            language === /* English */ 0 ? "your city" : "𒌷𒍝"
+          ) : capitalize(current_city)
+      );
+    let tmp$4;
+    tmp$4 = language === /* English */ 0 ? "Weather in " + capitalize(current_city) : JsxRuntime.jsx("span", {
+        children: "𒀭·" + city_in_cuneiform,
+        className: "cuneiforms small"
+      });
+    let tmp$5;
+    if (weather_code !== undefined) {
+      switch (weather_code) {
+        case /* Clear */ 0 :
+          tmp$5 = "Sun";
+          break;
+        case /* PartlyCloudy */ 1 :
+          tmp$5 = "Partly Cloudy";
+          break;
+        case /* Cloudy */ 2 :
+          tmp$5 = "Cloudy";
+          break;
+        case /* Fog */ 3 :
+          tmp$5 = "Fog";
+          break;
+        case /* Drizzle */ 4 :
+          tmp$5 = "Drizzle";
+          break;
+        case /* Rain */ 5 :
+          tmp$5 = "Rain";
+          break;
+        case /* Snow */ 6 :
+          tmp$5 = "Snow";
+          break;
+        case /* Thunderstorm */ 7 :
+          tmp$5 = "Thunderstorm";
+          break;
+        case /* Unknown */ 8 :
+          tmp$5 = "Full Moon";
+          break;
+      }
+    } else {
+      tmp$5 = "Full Moon";
+    }
+    let tmp$6;
+    if (weather_code !== undefined) {
+      switch (weather_code) {
+        case /* Clear */ 0 :
+          tmp$6 = sunGif;
+          break;
+        case /* PartlyCloudy */ 1 :
+          tmp$6 = partlyCloudyGif;
+          break;
+        case /* Cloudy */ 2 :
+          tmp$6 = cloudyPng;
+          break;
+        case /* Fog */ 3 :
+          tmp$6 = fogGif;
+          break;
+        case /* Drizzle */ 4 :
+          tmp$6 = drizzleGif;
+          break;
+        case /* Rain */ 5 :
+          tmp$6 = rainGif;
+          break;
+        case /* Snow */ 6 :
+          tmp$6 = snowGif;
+          break;
+        case /* Thunderstorm */ 7 :
+          tmp$6 = thunderstormGif;
+          break;
+        case /* Unknown */ 8 :
+          tmp$6 = rainbowPng;
+          break;
+      }
+    } else {
+      tmp$6 = rainbowPng;
+    }
+    let tmp$7;
+    let exit = 0;
+    if (weather_code !== undefined) {
+      switch (weather_code) {
+        case /* Clear */ 0 :
+          tmp$7 = language === /* English */ 0 ? "Sunny" : "𒌓𒁕";
+          break;
+        case /* PartlyCloudy */ 1 :
+          tmp$7 = language === /* English */ 0 ? "Partly Cloudy" : "𒌓·𒅎𒋛𒀀𒁕";
+          break;
+        case /* Cloudy */ 2 :
+          tmp$7 = language === /* English */ 0 ? "Cloudy" : "𒅎𒋛𒀀𒁕";
+          break;
+        case /* Fog */ 3 :
+          tmp$7 = language === /* English */ 0 ? "Foggy" : "𒁇𒀀𒀭𒁕";
+          break;
+        case /* Drizzle */ 4 :
+          tmp$7 = language === /* English */ 0 ? "Drizzle" : "𒅎𒂂𒁕";
+          break;
+        case /* Rain */ 5 :
+          tmp$7 = language === /* English */ 0 ? "Rainy" : "𒀀𒀭𒁕";
+          break;
+        case /* Snow */ 6 :
+          tmp$7 = language === /* English */ 0 ? "Snowy" : "𒊾𒁕";
+          break;
+        case /* Thunderstorm */ 7 :
+          tmp$7 = language === /* English */ 0 ? "Thunderstorm" : "𒅗𒀭𒉌𒋛𒁕";
+          break;
+        case /* Unknown */ 8 :
+          exit = 2;
+          break;
+      }
+    } else {
+      exit = 2;
+    }
+    if (exit === 2) {
+      tmp$7 = language === /* English */ 0 ? "No data" : "𒃻𒈾𒈨·𒉡𒌋𒅅";
+    }
+    let tmp$8;
+    tmp$8 = language === /* English */ 0 ? JsxRuntime.jsx("span", {
+        children: "𒅴𒄀",
+        className: "cuneiforms",
+        style: {
+          fontSize: "0.75rem"
+        }
+      }) : "English";
+    let tmp$9;
+    tmp$9 = language === /* English */ 0 ? JsxRuntime.jsx("span", {
+        children: "Other cities"
+      }) : JsxRuntime.jsx("span", {
+        children: "𒌷·𒉽𒊏",
+        className: "cuneiforms",
+        style: {
+          fontSize: "0.75rem"
+        }
+      });
+    let tmp$10;
+    tmp$10 = language === /* English */ 0 ? "Use my location" : JsxRuntime.jsx("span", {
+        children: "𒀭·𒌷𒂷",
+        className: "cuneiforms x-small"
+      });
     return JsxRuntime.jsxs(JsxRuntime.Fragment, {
       children: [
         JsxRuntime.jsx(Chip, {
           avatar: JsxRuntime.jsx(Avatar, {
             alt: tmp,
             className: css.meteoWidgetIcon,
-            src: tmp$1
+            src: tmp$1,
+            sx: {
+              backgroundColor: "white"
+            }
           }),
           className: css.meteoWidget,
           clickable: true,
           color: Bindings__Material_ui.Color.primary,
-          label: tmp$2 + (" " + (
-            cuneiform !== undefined ? cuneiform + "𒀀" : capitalize(current_city)
-          )),
+          label: tmp$2 + (" " + tmp$3),
           onClick: show_popover,
           size: "medium",
+          sx: {
+            "& .MuiChip-avatar": {
+              backgroundColor: "transparent"
+            }
+          },
           variant: "outlined"
         }),
         JsxRuntime.jsx(Popover, {
@@ -296,13 +561,153 @@ function Meteo_widget(Props) {
             horizontal: "center"
           },
           children: JsxRuntime.jsx(Paper, {
-            children: JsxRuntime.jsx(Typography, {
-              children: "Weather details",
-              variant: Bindings__Material_ui.Typography.Variant.body1,
-              sx: {
-                padding: "1rem"
-              }
-            })
+            children: JsxRuntime.jsxs(Stack, {
+              children: [
+                JsxRuntime.jsx(Typography, {
+                  align: "center",
+                  children: tmp$4,
+                  variant: Bindings__Material_ui.Typography.Variant.h6,
+                  sx: {
+                    marginBottom: "0.5rem"
+                  }
+                }),
+                JsxRuntime.jsx(Divider, {
+                  sx: {
+                    marginBottom: "0.5rem"
+                  }
+                }),
+                JsxRuntime.jsxs(Typography, {
+                  children: [
+                    JsxRuntime.jsx("img", {
+                      alt: tmp$5,
+                      src: tmp$6
+                    }),
+                    JsxRuntime.jsx("span", {
+                      children: tmp$7,
+                      className: "cuneiforms x-small"
+                    })
+                  ],
+                  variant: Bindings__Material_ui.Typography.Variant.body1,
+                  sx: {
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "0.5rem 0"
+                  }
+                }),
+                JsxRuntime.jsxs(Typography, {
+                  children: [
+                    JsxRuntime.jsx("img", {
+                      alt: "Thermometer",
+                      src: thermometerPng
+                    }),
+                    temperature !== undefined ? String(temperature) + "°C" : "N/A"
+                  ],
+                  variant: Bindings__Material_ui.Typography.Variant.body1,
+                  sx: {
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "0.5rem 0"
+                  }
+                }),
+                JsxRuntime.jsxs("div", {
+                  children: [
+                    JsxRuntime.jsx(Button, {
+                      children: tmp$8,
+                      color: Bindings__Material_ui.Color.primary,
+                      onClick: (function (param) {
+                        Curry._1(set_language, (function (prev_language) {
+                          if (prev_language === /* English */ 0) {
+                            return /* Sumerian */ 1;
+                          } else {
+                            return /* English */ 0;
+                          }
+                        }));
+                      }),
+                      variant: "outlined",
+                      sx: {
+                        marginTop: "0.5rem",
+                        marginRight: "0.5rem",
+                        fontSize: "0.75rem"
+                      }
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: tmp$9,
+                      color: Bindings__Material_ui.Color.primary,
+                      endIcon: JsxRuntime.jsx(IconsReact.IconChevronUp, {}),
+                      onClick: (function ($$event) {
+                        Curry._1(set_city_menu_anchor_el, (function (param) {
+                          return $$event.currentTarget;
+                        }));
+                        Curry._1(set_cities_menu_open, (function (param) {
+                          return true;
+                        }));
+                      }),
+                      variant: "contained",
+                      sx: {
+                        marginTop: "0.5rem"
+                      }
+                    }),
+                    JsxRuntime.jsxs(Menu, {
+                      anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "center"
+                      },
+                      children: [
+                        Stdlib__Array.map((function (param) {
+                          const city_key = param[0];
+                          let tmp;
+                          tmp = language === /* English */ 0 ? capitalize(city_key) : JsxRuntime.jsx("span", {
+                              children: param[1],
+                              className: "cuneiforms x-small"
+                            });
+                          return JsxRuntime.jsx(MenuItem, {
+                            children: tmp,
+                            onClick: (function (param) {
+                              Curry._1(set_current_city, (function (param) {
+                                return city_key;
+                              }));
+                              Curry._1(set_lat_long, (function (param) {
+                                const lat_long = Js__Js_dict.get(default_cities, city_key);
+                                if (lat_long !== undefined) {
+                                  return lat_long;
+                                }
+                                
+                              }));
+                              Curry._1(set_cities_menu_open, (function (param) {
+                                return false;
+                              }));
+                            })
+                          }, city_key);
+                        }), Js__Js_dict.entries(cities_cuneiform)),
+                        JsxRuntime.jsx(Divider, {}),
+                        JsxRuntime.jsx(MenuItem, {
+                          children: tmp$10,
+                          onClick: (function (param) {
+                            get_current_location(undefined);
+                            Curry._1(set_cities_menu_open, (function (param) {
+                              return false;
+                            }));
+                          })
+                        })
+                      ],
+                      anchorEl: match$8[0],
+                      onClose: (function (param) {
+                        Curry._1(set_cities_menu_open, (function (param) {
+                          return false;
+                        }));
+                      }),
+                      open: match$7[0],
+                      transformOrigin: {
+                        vertical: "bottom",
+                        horizontal: "center"
+                      }
+                    })
+                  ],
+                  className: "buttons-group"
+                })
+              ]
+            }),
+            className: css.meteoWidgetPopover
           }),
           onClose: (function (param) {
             Curry._1(set_open_popover, (function (param) {
@@ -328,13 +733,6 @@ function Meteo_widget(Props) {
   });
 }
 
-const default_cities = {
-  ur: [
-    30.963056,
-    46.103056
-  ]
-};
-
 const make = Meteo_widget;
 
 export {
@@ -347,6 +745,7 @@ export {
   snowGif,
   thunderstormGif,
   rainbowPng,
+  thermometerPng,
   css,
   WeatherApiResponse,
   VariablesWithTime,

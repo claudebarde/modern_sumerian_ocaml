@@ -71,3 +71,88 @@ let decode_keyboard = (value: string): option(keyboard) =>
             |> Js.Dict.fromArray
         )
     };
+
+/**
+ * The value stored under the "location" key.
+ *
+ * The coordinate tuple is encoded in JSON as a two-item array:
+ * {
+ *   "city": "ur",
+ *   "cuneiforms": "𒋀𒀊𒆠",
+ *   "lat_long": [30.963056, 46.103056]
+ * }
+ */
+type location = {
+    city: string,
+    cuneiforms: string,
+    lat_long: (float, float),
+};
+
+let encode_location = (location: location): string =>
+    switch (Js.Json.stringifyAny(location)) {
+    | Some(json) => json
+    | None => "{}"
+    };
+
+let decode_lat_long = (json: Js.Json.t): option((float, float)) =>
+    switch (Js.Json.decodeArray(json)) {
+    | Some(values) when Array.length(values) === 2 =>
+        switch (
+            Js.Json.decodeNumber(Array.get(values, 0)),
+            Js.Json.decodeNumber(Array.get(values, 1)),
+        ) {
+        | (Some(latitude), Some(longitude)) =>
+            Some((latitude, longitude))
+        | _ => None
+        }
+    | _ => None
+    };
+
+let decode_object_field = (object_, key, decode) =>
+    switch (Js.Dict.get(object_, key)) {
+    | Some(json) => decode(json)
+    | None => None
+    };
+
+/** Decode and validate a value read from the "location" key. */
+let decode_location = (value: string): option(location) =>
+    try (
+        switch (value |> Js.Json.parseExn |> Js.Json.decodeObject) {
+        | Some(object_) =>
+            switch (
+                decode_object_field(
+                    object_,
+                    "city",
+                    Js.Json.decodeString,
+                ),
+                decode_object_field(
+                    object_,
+                    "cuneiforms",
+                    Js.Json.decodeString,
+                ),
+                decode_object_field(
+                    object_,
+                    "lat_long",
+                    decode_lat_long,
+                ),
+            ) {
+            | (Some(city), Some(cuneiforms), Some(lat_long)) =>
+                Some({city, cuneiforms, lat_long})
+            | _ => None
+            }
+        | None => None
+        }
+    ) {
+    | _ => None
+    };
+
+/** Return the decoded location stored under "location", when valid. */
+let get_location = (): option(location) =>
+    switch (get_item("location")) {
+    | Some(value) => decode_location(value)
+    | None => None
+    };
+
+/** Encode and store a location under the fixed "location" key. */
+let set_location = (location: location): unit =>
+    set_item("location", encode_location(location));

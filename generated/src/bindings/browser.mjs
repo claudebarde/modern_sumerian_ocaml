@@ -3,7 +3,10 @@
 
 const Clipboard = {};
 
+const $$Geolocation = {};
+
 export {
   Clipboard,
+  $$Geolocation,
 }
 /* No side effect */

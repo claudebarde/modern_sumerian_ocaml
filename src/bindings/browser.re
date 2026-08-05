@@ -73,3 +73,60 @@ module Clipboard = {
   [@mel.scope ("navigator", "clipboard")]
   external write_text: string => Js.Promise.t(unit) = "writeText";
 };
+
+module Geolocation = {
+  type coordinates;
+  type position;
+  type error;
+  type options;
+
+  [@mel.get]
+  external coordinates: position => coordinates = "coords";
+
+  [@mel.get]
+  external latitude: coordinates => float = "latitude";
+
+  [@mel.get]
+  external longitude: coordinates => float = "longitude";
+
+  [@mel.get]
+  external accuracy: coordinates => float = "accuracy";
+
+  [@mel.get]
+  external altitude: coordinates => Js.Nullable.t(float) = "altitude";
+
+  [@mel.get]
+  external altitude_accuracy:
+    coordinates => Js.Nullable.t(float) = "altitudeAccuracy";
+
+  [@mel.get]
+  external heading: coordinates => Js.Nullable.t(float) = "heading";
+
+  [@mel.get]
+  external speed: coordinates => Js.Nullable.t(float) = "speed";
+
+  [@mel.get]
+  external timestamp: position => float = "timestamp";
+
+  [@mel.get]
+  external error_code: error => int = "code";
+
+  [@mel.get]
+  external error_message: error => string = "message";
+
+  [@mel.obj]
+  external make_options: (
+    ~enableHighAccuracy: bool=?,
+    ~timeout: int=?,
+    ~maximumAge: int=?,
+    unit,
+  ) => options = "";
+
+  [@mel.scope ("navigator", "geolocation")]
+  external get_current_position: (
+    ~success: position => unit,
+    ~error: (error => unit)=?,
+    ~options: options=?,
+    unit,
+  ) => unit = "getCurrentPosition";
+};

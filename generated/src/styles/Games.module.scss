@@ -128,4 +128,19 @@
   text-transform: uppercase;
   text-align: center;
   font-size: 2rem;
+
+  &.success {
+    color: $white-smoke;
+    background-color: $proton-red;
+  }
+
+  &.partial {
+    color: $white-smoke;
+    background-color: $nyc-taxi;
+  }
+
+  &.incorrect {
+    color: $white-smoke;
+    background-color: $botanical-night;
+  }
 }

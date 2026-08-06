@@ -443,6 +443,11 @@ function Games$Wordle(Props) {
   });
   const set_previous_guesses = match$3[1];
   const previous_guesses = match$3[0];
+  const match$4 = React.useState(function () {
+    return false;
+  });
+  const set_success = match$4[1];
+  const celebration_launched = React.useRef(false);
   React.useEffect((function () {
     const random_index = Js__Js_math.random_int(0, words_to_guess.length - 1 | 0);
     const word = Caml_array.get(words_to_guess, random_index);
@@ -454,7 +459,6 @@ function Games$Wordle(Props) {
   React.useEffect((function () {
     const handle_keydown = function ($$event) {
       const key = $$event.key;
-      console.log("Key pressed: " + key);
       if (key.length === 1) {
         return Curry._1(set_current_guess, (function (current_guess) {
           if (current_guess !== undefined) {
@@ -463,18 +467,54 @@ function Games$Wordle(Props) {
             return key;
           }
         }));
-      } else if (key === "Enter" && current_guess !== undefined) {
-        Curry._1(set_previous_guesses, (function (previous_guesses) {
-          return Stdlib__Array.append(previous_guesses, [current_guess]);
-        }));
-        Curry._1(set_current_row, (function (current_row) {
-          if (current_row < 6) {
-            return current_row + 1 | 0;
+      } else if (key === "Enter") {
+        if (current_guess !== undefined && wordle_word !== undefined) {
+          Curry._1(set_previous_guesses, (function (previous_guesses) {
+            return Stdlib__Array.append(previous_guesses, [current_guess]);
+          }));
+          Curry._1(set_current_row, (function (current_row) {
+            if (current_row < 6) {
+              return current_row + 1 | 0;
+            } else {
+              return current_row;
+            }
+          }));
+          Curry._1(set_current_guess, (function (param) {
+            
+          }));
+          if (current_guess === wordle_word && !celebration_launched.current) {
+            celebration_launched.current = true;
+            Curry._1(set_success, (function (param) {
+              return true;
+            }));
+            CanvasConfetti({
+              particleCount: 180,
+              spread: 120,
+              startVelocity: 45,
+              origin: {
+                x: 0.5,
+                y: 0.6
+              },
+              colors: [
+                Bindings__Config.colors.protonRed,
+                Bindings__Config.colors.nycTaxi,
+                Bindings__Config.colors.cerealFlake,
+                Bindings__Config.colors.botanicalNight
+              ],
+              disableForReducedMotion: true
+            });
+            return;
           } else {
-            return current_row;
+            return;
           }
-        }));
-        return Curry._1(set_current_guess, (function (param) {
+        } else {
+          return;
+        }
+      } else if (key === "Backspace") {
+        return Curry._1(set_current_guess, (function (current_guess) {
+          if (current_guess !== undefined && current_guess.length > 0) {
+            return current_guess.slice(0, current_guess.length - 1 | 0);
+          }
           
         }));
       } else {
@@ -503,10 +543,20 @@ function Games$Wordle(Props) {
           } else {
             tmp = null;
           }
+          let tmp$1;
+          if (row_index < current_row) {
+            const previous_guess$1 = Caml_array.get(previous_guesses, row_index);
+            const guessed_letter = previous_guess$1[letter_index];
+            tmp$1 = guessed_letter === letter ? css.success : (
+                wordle_word.includes(guessed_letter, undefined) ? css.partial : css.incorrect
+              );
+          } else {
+            tmp$1 = "";
+          }
           return JsxRuntime.jsx(Paper, {
             "aria-label": letter,
             children: tmp,
-            className: css.wordleBlock
+            className: css.wordleBlock + (" " + tmp$1)
           }, Key);
         }), letters),
         className: css.wordleRow
@@ -539,25 +589,64 @@ function Games$Wordle(Props) {
         children: tmp,
         className: css.wordleGrid
       }),
-      JsxRuntime.jsxs(Typography, {
-        children: [
-          JsxRuntime.jsx("span", {
-            children: "Grey = Incorrect letter"
-          }),
-          JsxRuntime.jsx("span", {
-            children: "Green = Correct letter in the correct position"
-          }),
-          JsxRuntime.jsx("span", {
-            children: "Yellow = Correct letter in the wrong position"
-          })
-        ],
-        variant: Bindings__Material_ui.Typography.Variant.body2,
-        sx: {
-          marginTop: "10px",
-          display: "flex",
-          flexDirection: "column"
-        }
-      })
+      match$4[0] ? JsxRuntime.jsxs(Typography, {
+          children: [
+            "Congratulations! You've guessed the word!",
+            JsxRuntime.jsx(Button, {
+              children: "Play Again",
+              onClick: (function (param) {
+                Curry._1(set_current_row, (function (param) {
+                  return 0;
+                }));
+                Curry._1(set_current_guess, (function (param) {
+                  
+                }));
+                Curry._1(set_previous_guesses, (function (param) {
+                  return [];
+                }));
+                Curry._1(set_success, (function (param) {
+                  return false;
+                }));
+                celebration_launched.current = false;
+                Curry._1(set_wordle_word, (function (param) {
+                  
+                }));
+                const random_index = Js__Js_math.random_int(0, words_to_guess.length - 1 | 0);
+                const word = Caml_array.get(words_to_guess, random_index);
+                console.log("Wordle word selected: " + word);
+                Curry._1(set_wordle_word, (function (param) {
+                  return word;
+                }));
+              }),
+              variant: "contained"
+            })
+          ],
+          className: css.successMessage,
+          variant: Bindings__Material_ui.Typography.Variant.h6,
+          sx: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }
+        }) : JsxRuntime.jsxs(Typography, {
+          children: [
+            JsxRuntime.jsx("span", {
+              children: "Dark green = Incorrect letter"
+            }),
+            JsxRuntime.jsx("span", {
+              children: "Yellow = Correct letter in the wrong position"
+            }),
+            JsxRuntime.jsx("span", {
+              children: "Dark red = Correct letter in the correct position"
+            })
+          ],
+          variant: Bindings__Material_ui.Typography.Variant.body2,
+          sx: {
+            marginTop: "10px",
+            display: "flex",
+            flexDirection: "column"
+          }
+        })
     ],
     className: css.memoryGameContainer
   });

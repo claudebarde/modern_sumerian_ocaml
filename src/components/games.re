@@ -346,6 +346,40 @@ module Wordle = {
     let (current_row, set_current_row) = React.useState(() => 0);
     let (current_guess, set_current_guess) = React.useState(() => None);
     let (previous_guesses, set_previous_guesses) = React.useState(() => [||]);
+    let (success, set_success) = React.useState(() => false);
+    let celebration_launched = React.useRef(false);
+
+    let launch_confetti = () =>
+        Confetti.launch(
+            Confetti.make_options(
+                ~particleCount=180,
+                ~spread=120,
+                ~startVelocity=45,
+                ~origin=Confetti.make_origin(~x=0.5, ~y=0.6, ()),
+                ~colors=[|
+                    Config.colors##protonRed,
+                    Config.colors##nycTaxi,
+                    Config.colors##cerealFlake,
+                    Config.colors##botanicalNight,
+                |],
+                ~disableForReducedMotion=true,
+                (),
+            ),
+        );
+
+    let reset = () => {
+        set_current_row(_ => 0);
+        set_current_guess(_ => None);
+        set_previous_guesses(_ => [||]);
+        set_success(_ => false);
+        celebration_launched.current = false;
+        set_wordle_word(_ => None);
+        // selects a new word to guess
+        let random_index = Js.Math.random_int(0, Array.length(words_to_guess) - 1);
+        let word = Array.get(words_to_guess, random_index);
+        Js.log("Wordle word selected: " ++ word);
+        set_wordle_word(_ => Some(word));
+    }
 
     React.useEffect0(() => {
         // selects the word to guess randomly from the list of words
@@ -361,8 +395,6 @@ module Wordle = {
         let handle_keydown = event => {
             let key = Browser.Window.key(event);
 
-            Js.log("Key pressed: " ++ key);
-
             if (Js.String.length(key) === 1) {
                 set_current_guess(current_guess => {
                     switch current_guess {
@@ -371,8 +403,10 @@ module Wordle = {
                     }
                 });
             } else if (key === "Enter") {
-                switch current_guess {
-                | Some(guess) => {
+                switch (current_guess, wordle_word) {
+                | (Some(guess), Some(word)) => {
+                    // updates the UI
+                    // and checks if the user guessed the word correctly
                     set_previous_guesses(previous_guesses =>
                         Array.append(previous_guesses, [|guess|])
                     );
@@ -382,9 +416,30 @@ module Wordle = {
                             : current_row
                     );
                     set_current_guess(_ => None);
+                    
+                    if (
+                        guess === word
+                        && !celebration_launched.current
+                    ) {
+                        celebration_launched.current = true;
+                        set_success(_ => true);
+                        launch_confetti();
+                    }
                 }
-                | None => ()
+                | _ => ()
                 };
+            } else if(key === "Backspace") {
+                set_current_guess(current_guess => {
+                    switch current_guess {
+                    | Some(guess) =>
+                        if (Js.String.length(guess) > 0) {
+                            Some(Js.String.slice(~start=0, ~end_=Js.String.length(guess) - 1, guess))
+                        } else {
+                            None
+                        }
+                    | None => None
+                    }
+                });
             };
         };
 
@@ -435,7 +490,25 @@ module Wordle = {
                                             ++ "-"
                                             ++ Js.Int.toString(letter_index)
                                         }
-                                        className=css##wordleBlock
+                                        className={
+                                            css##wordleBlock
+                                            ++ " "
+                                            ++ (
+                                                if (row_index < current_row) {
+                                                    let previous_guess = Array.get(previous_guesses, row_index);
+                                                    let guessed_letter = Js.String.get(previous_guess, letter_index);
+                                                    if (guessed_letter === letter) {
+                                                        css##success
+                                                    } else if (Js.String.includes(~search=guessed_letter, word)) {
+                                                        css##partial
+                                                    } else {
+                                                        css##incorrect
+                                                    }
+                                                } else {
+                                                    ""
+                                                }
+                                            )
+                                        }
                                         ariaLabel={letter}
                                     >
                                         {
@@ -472,14 +545,32 @@ module Wordle = {
                 }}
             }
         </div>
-        <Typography 
-            variant=Typography.Variant.body2
-            sx={{"marginTop": "10px", "display": "flex", "flexDirection": "column"}}
-        >
-            <span>{"Grey = Incorrect letter" |> React.string}</span>
-            <span>{"Green = Correct letter in the correct position" |> React.string}</span>
-            <span>{"Yellow = Correct letter in the wrong position" |> React.string}</span>
-        </Typography>
+        {
+            if (success) {
+                <Typography 
+                    variant=Typography.Variant.h6 
+                    className=css##successMessage
+                    sx={{"display": "flex", "flexDirection": "column", "alignItems": "center"}}
+                >
+                    {"Congratulations! You've guessed the word!" |> React.string}
+                    <Button 
+                        variant=`contained
+                        onClick={_ => reset()}
+                    >
+                        {"Play Again" |> React.string}
+                    </Button>
+                </Typography>
+            } else {
+                <Typography 
+                    variant=Typography.Variant.body2
+                    sx={{"marginTop": "10px", "display": "flex", "flexDirection": "column"}}
+                >
+                    <span>{"Dark green = Incorrect letter" |> React.string}</span>
+                    <span>{"Yellow = Correct letter in the wrong position" |> React.string}</span>
+                    <span>{"Dark red = Correct letter in the correct position" |> React.string}</span>
+                </Typography>
+            }
+        }
     </Container>
   }
 };

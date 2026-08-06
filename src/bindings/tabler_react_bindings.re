@@ -4,6 +4,18 @@
  * Add another icon by copying the module below and changing both occurrences
  * of its JavaScript export name.
  */
+module IconArrowBackUpDouble = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconArrowBackUpDouble";
+};
+
 module IconArrowBarBoth = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -38,6 +50,30 @@ module IconBook2 = {
     ~title: string=?,
     unit
   ) => React.element = "IconBook2";
+};
+
+module IconBorderAll = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBorderAll";
+};
+
+module IconBrain = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBrain";
 };
 
 module IconBrandFacebook = {

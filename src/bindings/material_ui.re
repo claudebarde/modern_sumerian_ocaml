@@ -937,6 +937,7 @@ module MenuItem = {
 module Paper = {
   [@mel.module "@mui/material/Paper"] [@react.component]
   external make: (
+    ~ariaLabel: [@mel.as "aria-label"] string=?,
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,

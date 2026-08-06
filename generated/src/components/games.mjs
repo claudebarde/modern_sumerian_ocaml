@@ -14,6 +14,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Config from "../bindings/config.mjs";
@@ -412,13 +413,168 @@ const MemoryGame = {
   make: Games$MemoryGame
 };
 
+function Games$Wordle(Props) {
+  const words_to_guess = [
+    "dumu",
+    "lugal",
+    "urim",
+    "anshe",
+    "mushen",
+    "guza",
+    "dungu"
+  ];
+  const match = React.useState(function () {
+    
+  });
+  const set_wordle_word = match[1];
+  const wordle_word = match[0];
+  const match$1 = React.useState(function () {
+    return 0;
+  });
+  const set_current_row = match$1[1];
+  const current_row = match$1[0];
+  const match$2 = React.useState(function () {
+    
+  });
+  const set_current_guess = match$2[1];
+  const current_guess = match$2[0];
+  const match$3 = React.useState(function () {
+    return [];
+  });
+  const set_previous_guesses = match$3[1];
+  const previous_guesses = match$3[0];
+  React.useEffect((function () {
+    const random_index = Js__Js_math.random_int(0, words_to_guess.length - 1 | 0);
+    const word = Caml_array.get(words_to_guess, random_index);
+    console.log("Wordle word selected: " + word);
+    Curry._1(set_wordle_word, (function (param) {
+      return word;
+    }));
+  }), []);
+  React.useEffect((function () {
+    const handle_keydown = function ($$event) {
+      const key = $$event.key;
+      console.log("Key pressed: " + key);
+      if (key.length === 1) {
+        return Curry._1(set_current_guess, (function (current_guess) {
+          if (current_guess !== undefined) {
+            return current_guess + key;
+          } else {
+            return key;
+          }
+        }));
+      } else if (key === "Enter" && current_guess !== undefined) {
+        Curry._1(set_previous_guesses, (function (previous_guesses) {
+          return Stdlib__Array.append(previous_guesses, [current_guess]);
+        }));
+        Curry._1(set_current_row, (function (current_row) {
+          if (current_row < 6) {
+            return current_row + 1 | 0;
+          } else {
+            return current_row;
+          }
+        }));
+        return Curry._1(set_current_guess, (function (param) {
+          
+        }));
+      } else {
+        return;
+      }
+    };
+    window.addEventListener("keydown", handle_keydown);
+    return (function (param) {
+      window.removeEventListener("keydown", handle_keydown);
+    });
+  }), [current_guess]);
+  let tmp;
+  if (wordle_word !== undefined) {
+    const letters = wordle_word.split("", undefined);
+    tmp = Stdlib__Array.init(6, (function (row_index) {
+      const Key = "row-" + row_index.toString(undefined);
+      return JsxRuntime.jsx("div", {
+        children: Stdlib__Array.mapi((function (letter_index, letter) {
+          const Key = row_index.toString(undefined) + ("-" + letter_index.toString(undefined));
+          let tmp;
+          if (current_row === row_index) {
+            tmp = current_guess !== undefined && current_guess.length > letter_index ? current_guess[letter_index] : null;
+          } else if (row_index < current_row) {
+            const previous_guess = Caml_array.get(previous_guesses, row_index);
+            tmp = previous_guess[letter_index];
+          } else {
+            tmp = null;
+          }
+          return JsxRuntime.jsx(Paper, {
+            "aria-label": letter,
+            children: tmp,
+            className: css.wordleBlock
+          }, Key);
+        }), letters),
+        className: css.wordleRow
+      }, Key);
+    }));
+  } else {
+    tmp = JsxRuntime.jsx("div", {
+      children: "Loading..."
+    });
+  }
+  return JsxRuntime.jsxs(Container, {
+    children: [
+      JsxRuntime.jsx(Typography, {
+        children: "Wordle",
+        className: css.gameTitle,
+        variant: Bindings__Material_ui.Typography.Variant.h4
+      }),
+      JsxRuntime.jsxs(Typography, {
+        children: [
+          JsxRuntime.jsx("span", {}),
+          JsxRuntime.jsx("span", {
+            children: "Guess the Sumerian word based on the given clues!"
+          }),
+          JsxRuntime.jsx("span", {})
+        ],
+        className: css.gameDescription,
+        variant: Bindings__Material_ui.Typography.Variant.h6
+      }),
+      JsxRuntime.jsx("div", {
+        children: tmp,
+        className: css.wordleGrid
+      }),
+      JsxRuntime.jsxs(Typography, {
+        children: [
+          JsxRuntime.jsx("span", {
+            children: "Grey = Incorrect letter"
+          }),
+          JsxRuntime.jsx("span", {
+            children: "Green = Correct letter in the correct position"
+          }),
+          JsxRuntime.jsx("span", {
+            children: "Yellow = Correct letter in the wrong position"
+          })
+        ],
+        variant: Bindings__Material_ui.Typography.Variant.body2,
+        sx: {
+          marginTop: "10px",
+          display: "flex",
+          flexDirection: "column"
+        }
+      })
+    ],
+    className: css.memoryGameContainer
+  });
+}
+
+const Wordle = {
+  make: Games$Wordle
+};
+
 function Games(Props) {
   const match = React.useState(function () {
-    return /* Memory */ 0;
+    return /* Wordle */ 1;
   });
+  const set_game_choice = match[1];
   const game_choice = match[0];
   const match$1 = React.useState(function () {
-    return true;
+    return false;
   });
   const set_memory_game_open = match$1[1];
   const memory_game_open = match$1[0];
@@ -433,9 +589,7 @@ function Games(Props) {
       const Key = match$2[0].toString(undefined);
       tmp = JsxRuntime.jsx(Games$MemoryGame, {}, Key);
     } else {
-      tmp = JsxRuntime.jsx("div", {
-        children: "Other Game"
-      });
+      tmp = JsxRuntime.jsx(Games$Wordle, {});
     }
   } else {
     tmp = JsxRuntime.jsx("div", {
@@ -449,8 +603,11 @@ function Games(Props) {
           children: [
             JsxRuntime.jsxs(ListItemButton, {
               children: [
+                JsxRuntime.jsx(ListItemIcon, {
+                  children: JsxRuntime.jsx(IconsReact.IconBrain, {})
+                }),
                 JsxRuntime.jsx(ListItemText, {
-                  primary: "Memory Game"
+                  primary: "Memory"
                 }),
                 memory_game_open ? JsxRuntime.jsx(IconsReact.IconChevronUp, {}) : JsxRuntime.jsx(IconsReact.IconChevronDown, {})
               ],
@@ -474,6 +631,9 @@ function Games(Props) {
                       })
                     ],
                     onClick: (function (param) {
+                      Curry._1(set_game_choice, (function (param) {
+                        return /* Memory */ 0;
+                      }));
                       Curry._1(set_memory_game_generation, (function (generation) {
                         return generation + 1 | 0;
                       }));
@@ -483,10 +643,15 @@ function Games(Props) {
                     }
                   }),
                   JsxRuntime.jsx(Divider, {}),
-                  JsxRuntime.jsx(ListItemButton, {
-                    children: JsxRuntime.jsx(ListItemText, {
-                      primary: "Reset"
-                    }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconArrowBackUpDouble, {})
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        primary: "Reset"
+                      })
+                    ],
                     onClick: (function (param) {
                       Curry._1(set_memory_game_generation, (function (generation) {
                         return generation + 1 | 0;
@@ -504,6 +669,25 @@ function Games(Props) {
                 backgroundColor: "white"
               },
               timeout: "auto"
+            }),
+            JsxRuntime.jsxs(ListItemButton, {
+              children: [
+                JsxRuntime.jsx(ListItemIcon, {
+                  children: JsxRuntime.jsx(IconsReact.IconBorderAll, {})
+                }),
+                JsxRuntime.jsx(ListItemText, {
+                  primary: "Wordle"
+                })
+              ],
+              onClick: (function (param) {
+                Curry._1(set_game_choice, (function (param) {
+                  return /* Wordle */ 1;
+                }));
+                Curry._1(set_memory_game_open, (function (param) {
+                  return false;
+                }));
+              }),
+              selected: game_choice === /* Wordle */ 1
             })
           ],
           component: "nav",
@@ -543,6 +727,7 @@ export {
   css,
   Timer,
   MemoryGame,
+  Wordle,
   make,
 }
 /* css Not a pure module */

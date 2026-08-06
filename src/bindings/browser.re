@@ -130,3 +130,18 @@ module Geolocation = {
     unit,
   ) => unit = "getCurrentPosition";
 };
+
+module Window = {
+  type keyboard_event;
+
+  [@mel.get]
+  external key: keyboard_event => string = "key";
+
+  [@mel.scope "window"]
+  external add_keydown_listener:
+    (string, keyboard_event => unit) => unit = "addEventListener";
+
+  [@mel.scope "window"]
+  external remove_keydown_listener:
+    (string, keyboard_event => unit) => unit = "removeEventListener";
+};

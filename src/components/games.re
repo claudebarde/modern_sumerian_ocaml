@@ -2,7 +2,7 @@
 
 type game_choice =
   | Memory
-  | Other;
+  | Wordle;
 
 module Timer = {
   [@react.component]
@@ -335,14 +335,163 @@ module MemoryGame = {
   }
 };
 
+module Wordle = {
+  [@react.component]
+  let make = () => {
+    open Bindings;
+    open Mui;
+
+    let words_to_guess = [|"dumu", "lugal", "urim", "anshe", "mushen", "guza", "dungu"|];
+    let (wordle_word, set_wordle_word) = React.useState(() => None);
+    let (current_row, set_current_row) = React.useState(() => 0);
+    let (current_guess, set_current_guess) = React.useState(() => None);
+    let (previous_guesses, set_previous_guesses) = React.useState(() => [||]);
+
+    React.useEffect0(() => {
+        // selects the word to guess randomly from the list of words
+        let random_index = Js.Math.random_int(0, Array.length(words_to_guess) - 1);
+        let word = Array.get(words_to_guess, random_index);
+        Js.log("Wordle word selected: " ++ word);
+        set_wordle_word(_ => Some(word));
+        None;
+    });
+
+    React.useEffect1(() => {
+        // listens to keyboard events for user input
+        let handle_keydown = event => {
+            let key = Browser.Window.key(event);
+
+            Js.log("Key pressed: " ++ key);
+
+            if (Js.String.length(key) === 1) {
+                set_current_guess(current_guess => {
+                    switch current_guess {
+                    | None => Some(key)
+                    | Some(guess) => Some(guess ++ key)
+                    }
+                });
+            } else if (key === "Enter") {
+                switch current_guess {
+                | Some(guess) => {
+                    set_previous_guesses(previous_guesses =>
+                        Array.append(previous_guesses, [|guess|])
+                    );
+                    set_current_row(current_row =>
+                        current_row < 6
+                            ? current_row + 1
+                            : current_row
+                    );
+                    set_current_guess(_ => None);
+                }
+                | None => ()
+                };
+            };
+        };
+
+        Browser.Window.add_keydown_listener("keydown", handle_keydown);
+
+        Some(() =>
+            Browser.Window.remove_keydown_listener("keydown", handle_keydown)
+        );
+    }, [|current_guess|]);
+
+    <Container className=css##memoryGameContainer>
+        <Typography 
+            variant=Typography.Variant.h4 
+            className=css##gameTitle
+        >
+            {"Wordle" |> React.string}
+        </Typography>
+        <Typography 
+            variant=Typography.Variant.h6 
+            className=css##gameDescription
+        >
+            <span></span>
+            <span>{"Guess the Sumerian word based on the given clues!" |> React.string}</span>
+            <span></span>
+        </Typography>
+        <div 
+            className=css##wordleGrid
+        >
+            {
+                switch wordle_word {
+                | None => <div>{"Loading..." |> React.string}</div>
+                | Some(word) => {
+                    let letters = word |> Js.String.split(~sep="");
+
+                    Array.init(6, row_index => {
+                        <div
+                            key={"row-" ++ Js.Int.toString(row_index)}
+                            className=css##wordleRow
+                        >
+                            {
+                                // The number of blocks in each row is equal to
+                                // the length of the word.
+                                letters
+                                |> Array.mapi((letter_index, letter) =>
+                                    <Paper
+                                        key={
+                                            Js.Int.toString(row_index)
+                                            ++ "-"
+                                            ++ Js.Int.toString(letter_index)
+                                        }
+                                        className=css##wordleBlock
+                                        ariaLabel={letter}
+                                    >
+                                        {
+                                            if (current_row === row_index) {
+                                                switch current_guess {
+                                                | None => React.null
+                                                | Some(guess) =>
+                                                    if (Js.String.length(guess) > letter_index) {
+                                                        Js.String.get(
+                                                            guess,
+                                                            letter_index,
+                                                        )
+                                                        |> React.string
+                                                    } else {
+                                                        React.null
+                                                    }
+                                                }
+                                            } else if (row_index < current_row) {
+                                                // Display the letter from the previous guesses.
+                                                let previous_guess = Array.get(previous_guesses, row_index);
+                                                Js.String.get(previous_guess, letter_index)
+                                                |> React.string
+                                            } else {
+                                                React.null
+                                            }
+                                        }
+                                    </Paper>
+                                )
+                                |> React.array
+                            }
+                        </div>
+                    })
+                    |> React.array
+                }}
+            }
+        </div>
+        <Typography 
+            variant=Typography.Variant.body2
+            sx={{"marginTop": "10px", "display": "flex", "flexDirection": "column"}}
+        >
+            <span>{"Grey = Incorrect letter" |> React.string}</span>
+            <span>{"Green = Correct letter in the correct position" |> React.string}</span>
+            <span>{"Yellow = Correct letter in the wrong position" |> React.string}</span>
+        </Typography>
+    </Container>
+  }
+};
+
 [@react.component]
 let make = () => {
     open Bindings;
     open Mui;
 
     // let (game_choice, _set_game_choice) = React.useState(() => (None: option(game_choice)));
-    let (game_choice, _set_game_choice) = React.useState(() => Some(Memory));
-    let (memory_game_open, set_memory_game_open) = React.useState(() => true);
+    let (game_choice, set_game_choice) = React.useState(() => Some(Wordle));
+    let (memory_game_open, set_memory_game_open) = React.useState(() => false);
     let (memory_game_generation, set_memory_game_generation) =
         React.useState(() => 0);
 
@@ -366,9 +515,14 @@ let make = () => {
             >
                 <ListItemButton
                     selected={game_choice === Some(Memory)}
-                    onClick={_ => set_memory_game_open(prev => !prev)}
+                    onClick={_ => {
+                        set_memory_game_open(prev => !prev);                        
+                    }}
                 >
-                    <ListItemText primary={"Memory Game" |> React.string} />
+                    <ListItemIcon>
+                        <TablerReact.IconBrain />
+                    </ListItemIcon>
+                    <ListItemText primary={"Memory" |> React.string} />
                     {memory_game_open ? <TablerReact.IconChevronUp /> : <TablerReact.IconChevronDown />}
                 </ListItemButton>
                 <Collapse in_={memory_game_open} timeout=`auto sx={{"backgroundColor": "white"}}>
@@ -378,11 +532,12 @@ let make = () => {
                         <List component=RootComponent.htmlElement("div")>
                             <ListItemButton
                                 sx={{"paddingLeft": paddingLeft}}
-                                onClick={_ =>
+                                onClick={_ => {
+                                    set_game_choice(_ => Some(Memory));
                                     set_memory_game_generation(generation =>
                                         generation + 1
                                     )
-                                }
+                                }}
                             >
                                 <ListItemIcon>
                                     <TablerReact.IconCircleNumber1 />
@@ -410,11 +565,26 @@ let make = () => {
                                     )
                                 }
                             >
+                                <ListItemIcon>
+                                    <TablerReact.IconArrowBackUpDouble />
+                                </ListItemIcon>
                                 <ListItemText primary={"Reset" |> React.string} />
                             </ListItemButton>
                         </List>
                     }
                 </Collapse>
+                <ListItemButton
+                    selected={game_choice === Some(Wordle)}
+                    onClick={_ => {
+                        set_game_choice(_ => Some(Wordle));
+                        set_memory_game_open(_ => false);
+                    }}
+                >
+                    <ListItemIcon>
+                        <TablerReact.IconBorderAll />
+                    </ListItemIcon>
+                    <ListItemText primary={"Wordle" |> React.string} />
+                </ListItemButton>
             </List>
         </Grid>
         <Grid 
@@ -428,7 +598,7 @@ let make = () => {
                     <MemoryGame
                         key={memory_game_generation |> Js.Int.toString}
                     />
-                | Some(Other) => <div>{"Other Game" |> React.string}</div>
+                | Some(Wordle) => <Wordle />
                 }
             }
         </Grid>

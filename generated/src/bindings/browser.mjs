@@ -5,8 +5,11 @@ const Clipboard = {};
 
 const $$Geolocation = {};
 
+const $$Window = {};
+
 export {
   Clipboard,
   $$Geolocation,
+  $$Window,
 }
 /* No side effect */

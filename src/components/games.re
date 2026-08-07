@@ -341,12 +341,13 @@ module Wordle = {
     open Bindings;
     open Mui;
 
-    let words_to_guess = [|"dumu", "lugal", "urim", "anshe", "mushen", "guza", "dungu"|];
+    let words_to_guess = [|"dumu", "lugal", "urim", "anshe", "mushen", "guza", "dungu", "urgir", "dubsar", "digir"|];
     let (wordle_word, set_wordle_word) = React.useState(() => None);
     let (current_row, set_current_row) = React.useState(() => 0);
     let (current_guess, set_current_guess) = React.useState(() => None);
     let (previous_guesses, set_previous_guesses) = React.useState(() => [||]);
     let (success, set_success) = React.useState(() => false);
+    let (failure, set_failure) = React.useState(() => false);
     let celebration_launched = React.useRef(false);
 
     let launch_confetti = () =>
@@ -377,7 +378,6 @@ module Wordle = {
         // selects a new word to guess
         let random_index = Js.Math.random_int(0, Array.length(words_to_guess) - 1);
         let word = Array.get(words_to_guess, random_index);
-        Js.log("Wordle word selected: " ++ word);
         set_wordle_word(_ => Some(word));
     }
 
@@ -385,7 +385,6 @@ module Wordle = {
         // selects the word to guess randomly from the list of words
         let random_index = Js.Math.random_int(0, Array.length(words_to_guess) - 1);
         let word = Array.get(words_to_guess, random_index);
-        Js.log("Wordle word selected: " ++ word);
         set_wordle_word(_ => Some(word));
         None;
     });
@@ -416,7 +415,10 @@ module Wordle = {
                             : current_row
                     );
                     set_current_guess(_ => None);
-                    
+                    if (current_row + 1 === 6 && guess !== word) {
+                        set_failure(_ => true);
+                    };
+
                     if (
                         guess === word
                         && !celebration_launched.current
@@ -548,11 +550,23 @@ module Wordle = {
         {
             if (success) {
                 <Typography 
-                    variant=Typography.Variant.h6 
-                    className=css##successMessage
-                    sx={{"display": "flex", "flexDirection": "column", "alignItems": "center"}}
+                    variant=Typography.Variant.h6
+                    sx={{"display": "flex", "flexDirection": "column", "alignItems": "center", "marginTop": "10px"}}
                 >
                     {"Congratulations! You've guessed the word!" |> React.string}
+                    <Button 
+                        variant=`contained
+                        onClick={_ => reset()}
+                    >
+                        {"Play Again" |> React.string}
+                    </Button>
+                </Typography>
+            } else if (failure) {
+                <Typography 
+                    variant=Typography.Variant.h6 
+                    sx={{"display": "flex", "flexDirection": "column", "alignItems": "center", "marginTop": "10px"}}
+                >
+                    {"Sorry! You've failed to guess the word." |> React.string}
                     <Button 
                         variant=`contained
                         onClick={_ => reset()}

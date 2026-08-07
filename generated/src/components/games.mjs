@@ -421,7 +421,10 @@ function Games$Wordle(Props) {
     "anshe",
     "mushen",
     "guza",
-    "dungu"
+    "dungu",
+    "urgir",
+    "dubsar",
+    "digir"
   ];
   const match = React.useState(function () {
     
@@ -447,11 +450,37 @@ function Games$Wordle(Props) {
     return false;
   });
   const set_success = match$4[1];
+  const match$5 = React.useState(function () {
+    return false;
+  });
+  const set_failure = match$5[1];
   const celebration_launched = React.useRef(false);
+  const reset = function (param) {
+    Curry._1(set_current_row, (function (param) {
+      return 0;
+    }));
+    Curry._1(set_current_guess, (function (param) {
+      
+    }));
+    Curry._1(set_previous_guesses, (function (param) {
+      return [];
+    }));
+    Curry._1(set_success, (function (param) {
+      return false;
+    }));
+    celebration_launched.current = false;
+    Curry._1(set_wordle_word, (function (param) {
+      
+    }));
+    const random_index = Js__Js_math.random_int(0, words_to_guess.length - 1 | 0);
+    const word = Caml_array.get(words_to_guess, random_index);
+    Curry._1(set_wordle_word, (function (param) {
+      return word;
+    }));
+  };
   React.useEffect((function () {
     const random_index = Js__Js_math.random_int(0, words_to_guess.length - 1 | 0);
     const word = Caml_array.get(words_to_guess, random_index);
-    console.log("Wordle word selected: " + word);
     Curry._1(set_wordle_word, (function (param) {
       return word;
     }));
@@ -482,6 +511,11 @@ function Games$Wordle(Props) {
           Curry._1(set_current_guess, (function (param) {
             
           }));
+          if ((current_row + 1 | 0) === 6 && current_guess !== wordle_word) {
+            Curry._1(set_failure, (function (param) {
+              return true;
+            }));
+          }
           if (current_guess === wordle_word && !celebration_launched.current) {
             celebration_launched.current = true;
             Curry._1(set_success, (function (param) {
@@ -595,58 +629,57 @@ function Games$Wordle(Props) {
             JsxRuntime.jsx(Button, {
               children: "Play Again",
               onClick: (function (param) {
-                Curry._1(set_current_row, (function (param) {
-                  return 0;
-                }));
-                Curry._1(set_current_guess, (function (param) {
-                  
-                }));
-                Curry._1(set_previous_guesses, (function (param) {
-                  return [];
-                }));
-                Curry._1(set_success, (function (param) {
-                  return false;
-                }));
-                celebration_launched.current = false;
-                Curry._1(set_wordle_word, (function (param) {
-                  
-                }));
-                const random_index = Js__Js_math.random_int(0, words_to_guess.length - 1 | 0);
-                const word = Caml_array.get(words_to_guess, random_index);
-                console.log("Wordle word selected: " + word);
-                Curry._1(set_wordle_word, (function (param) {
-                  return word;
-                }));
+                reset(undefined);
               }),
               variant: "contained"
             })
           ],
-          className: css.successMessage,
           variant: Bindings__Material_ui.Typography.Variant.h6,
           sx: {
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            marginTop: "10px"
           }
-        }) : JsxRuntime.jsxs(Typography, {
-          children: [
-            JsxRuntime.jsx("span", {
-              children: "Dark green = Incorrect letter"
-            }),
-            JsxRuntime.jsx("span", {
-              children: "Yellow = Correct letter in the wrong position"
-            }),
-            JsxRuntime.jsx("span", {
-              children: "Dark red = Correct letter in the correct position"
+        }) : (
+          match$5[0] ? JsxRuntime.jsxs(Typography, {
+              children: [
+                "Sorry! You've failed to guess the word.",
+                JsxRuntime.jsx(Button, {
+                  children: "Play Again",
+                  onClick: (function (param) {
+                    reset(undefined);
+                  }),
+                  variant: "contained"
+                })
+              ],
+              variant: Bindings__Material_ui.Typography.Variant.h6,
+              sx: {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: "10px"
+              }
+            }) : JsxRuntime.jsxs(Typography, {
+              children: [
+                JsxRuntime.jsx("span", {
+                  children: "Dark green = Incorrect letter"
+                }),
+                JsxRuntime.jsx("span", {
+                  children: "Yellow = Correct letter in the wrong position"
+                }),
+                JsxRuntime.jsx("span", {
+                  children: "Dark red = Correct letter in the correct position"
+                })
+              ],
+              variant: Bindings__Material_ui.Typography.Variant.body2,
+              sx: {
+                marginTop: "10px",
+                display: "flex",
+                flexDirection: "column"
+              }
             })
-          ],
-          variant: Bindings__Material_ui.Typography.Variant.body2,
-          sx: {
-            marginTop: "10px",
-            display: "flex",
-            flexDirection: "column"
-          }
-        })
+        )
     ],
     className: css.memoryGameContainer
   });

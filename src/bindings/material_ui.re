@@ -2,7 +2,7 @@
  * Typed bindings for React components exported by @mui/material.
  */
 
-// TODO: once all the bindings are written, use AI to add default pops like "id" to all the components
+// TODO: once all the bindings are written, use AI to add default props like "id" to all the components
 
 // HELPERS
 
@@ -93,6 +93,43 @@ module AccordionSummary = {
         ~focusVisibleClassName: string=?,
         // TODO: slots and slotProps are not supported yet
         ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
+module Alert = {
+    module IconMapping = {
+        type t;
+
+        [@mel.obj]
+        external make: (
+            ~error: React.element=?,
+            ~info: React.element=?,
+            ~success: React.element=?,
+            ~warning: React.element=?,
+            unit
+        ) => t = "";
+    };
+
+    [@mel.module "@mui/material/Alert"] [@react.component]
+    external make: (
+        ~action: React.element=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~closeText: string=?,
+        ~color: Color.t=?,
+        ~icon: [@mel.unwrap] [
+            | `Element(React.element)
+            | `Boolean(bool)
+        ]=?,
+        ~iconMapping: IconMapping.t=?,
+        ~onClose: (React.Event.Mouse.t => unit)=?,
+        ~role: string=?,
+        ~severity: [`error | `info | `success | `warning]=?,
+        // TODO: slots and slotProps are not supported yet
+        ~sx: Js.t({..})=?,
+        ~variant: [`filled | `outlined | `standard]=?, // TODO: a string can be passed to variant
         unit
     ) => React.element = "default";
 };
@@ -1072,6 +1109,41 @@ module Select = {
     ~value: Value.t,
     ~variant: [`standard | `outlined | `filled]=?,
     ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Snackbar = {
+  module TransitionDuration = {
+    type t;
+
+    [@mel.obj]
+    external make: (
+      ~appear: int=?,
+      ~enter: int=?,
+      ~exit: int=?,
+      unit
+    ) => t = "";
+  };
+
+  [@mel.module "@mui/material/Snackbar"] [@react.component]
+  external make: (
+    ~action: React.element=?,
+    ~anchorOrigin: originPosition=?,
+    ~autoHideDuration: int=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~disableWindowBlurListener: bool=?,
+    ~message: React.element=?,
+    ~onClose: (React.Event.Synthetic.t => unit)=?,
+    ~_open: bool=?,
+    ~resumeHideDuration: int=?,
+    // TODO: slots and slotProps are not supported yet
+    ~transitionDuration: [@mel.unwrap] [
+      | `Number(int)
+      | `Object(TransitionDuration.t)
+    ]=?,
     unit
   ) => React.element = "default";
 };

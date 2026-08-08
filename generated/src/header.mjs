@@ -154,6 +154,24 @@ function Header(Props) {
                     }));
                     ReasonReactRouter.push("/keyboard");
                   })
+                }),
+                JsxRuntime.jsxs(MenuItem, {
+                  children: [
+                    JsxRuntime.jsx(ListItemIcon, {
+                      children: JsxRuntime.jsx(IconsReact.IconListCheck, {
+                        color: Bindings__Config.colors.botanicalNight
+                      })
+                    }),
+                    JsxRuntime.jsx(ListItemText, {
+                      children: "My Words List"
+                    })
+                  ],
+                  onClick: (function (param) {
+                    Curry._1(setToolsAnchor, (function (param) {
+                      return null;
+                    }));
+                    ReasonReactRouter.push("/wordslist");
+                  })
                 })
               ],
               anchorEl: toolsAnchor,

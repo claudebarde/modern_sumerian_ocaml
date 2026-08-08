@@ -141,6 +141,13 @@ let make = () => {
     let (search_results, set_search_results) =
         React.useState(_ => (None: option(array(Supabase.dictionary_row))));
         // React.useState(_ => Some(dummy_search_results));
+    let (open_snackbar, set_open_snackbar) = React.useState(_ => false);
+    let (add_to_my_words_list, set_add_to_my_words_list) = React.useState(_ => None);
+
+    React.useEffect1(() => {
+        LocalStorage.initialize_words_list();
+        None;
+    }, [||]);
 
     let search_word = () => {
         if (word |> Js.String.trim |> Js.String.length === 0) {
@@ -209,300 +216,355 @@ let make = () => {
         setPage(_ => 0);
     };
 
-    <div className=css##dictionary>
-        <h1>
-            {
-                switch selected_lang {
-                | EngToSum => "English > Sumerian Dictionary" |> React.string
-                | SumToEng => "Sumerian > English Dictionary" |> React.string
-                }
-            }
-        </h1>
-        <Stack 
-            spacing=`Object(Stack.ResponsiveSpacing.make(~xs=2, ~md=3, ()))
-            direction=`Object(Stack.ResponsiveDirection.make(~xs=`column, ~md=`row, ()))
-        >
-            <Select
-                value={selected_lang_value}
-                onChange={(event, _) => {
-                    let value = event##target##value;
-                    let new_lang = switch value {
-                        | "eng-to-sum" => EngToSum
-                        | "sum-to-eng" => SumToEng
-                        | _ => selected_lang
-                    };
-                    set_selected_lang(_ => new_lang);
-                }}
-                sx={{"backgroundColor": "white"}}
-            >
-                <MenuItem value={select_lang_options_to_string(EngToSum)}>
-                    {"English to Sumerian" |> React.string}
-                </MenuItem>
-                <MenuItem value={select_lang_options_to_string(SumToEng)}>
-                    {"Sumerian to English" |> React.string}
-                </MenuItem>
-            </Select>
-            <TextField
-                type_="text"
-                fullWidth=false
-                autoFocus=true
-                placeholder="Search a word..."
-                label={switch selected_lang {
-                    | EngToSum => "English Word" |> React.string
-                    | SumToEng => "Sumerian Word" |> React.string
-                }}
-                value={word}
-                onChange={event => set_word(_ => event -> React.Event.Form.target##value)}
-                onKeyDown={event =>
-                    if (React.Event.Keyboard.key(event) === "Enter") {
-                        React.Event.Keyboard.preventDefault(event);
-                        search_word();
+    <>
+        <div className=css##dictionary>
+            <h1>
+                {
+                    switch selected_lang {
+                    | EngToSum => "English > Sumerian Dictionary" |> React.string
+                    | SumToEng => "Sumerian > English Dictionary" |> React.string
                     }
                 }
-                sx={{"backgroundColor": "white", "width": "300px"}}
-                variant=`outlined
-            />
-            <Select
-                autoWidth=true
-                value={selected_search_shape_value}
-                onChange={(event, _) => {
-                    let value = event##target##value;
-                    let new_search_shape = switch value {
-                        | "exact-word" => ExactWord
-                        | "contains" => Contains
-                        | _ => selected_search_shape
-                    };
-                    set_selected_search_shape(_ => new_search_shape);
-                }}
-                sx={{"backgroundColor": "white"}}
+            </h1>
+            <Stack 
+                spacing=`Object(Stack.ResponsiveSpacing.make(~xs=2, ~md=3, ()))
+                direction=`Object(Stack.ResponsiveDirection.make(~xs=`column, ~md=`row, ()))
             >
-                <MenuItem value={selected_search_shape_to_string(ExactWord)}>
-                    {"Exact Word" |> React.string}
-                </MenuItem>
-                <MenuItem value={selected_search_shape_to_string(Contains)}>
-                    {"Contains" |> React.string}
-                </MenuItem>
-            </Select>
-            <Button 
-                variant=`contained 
-                size=`large
-                onClick={_ => search_word()}
-            >
-                {searching ? <TablerReact.IconRefresh className=css##refreshIcon size=20 /> : <TablerReact.IconSearch size=20 />}
-            </Button>
-        </Stack>
-        <div className=css##resultsContainer>
-        {
-            switch search_results {
-            | Some(results) when (word |> String.length > 0) =>
-                if (Array.length(results) === 0) {
-                    <div>{"No results found." |> React.string}</div>
-                } else {
-                    <>
-                        <TableContainer
-                            className=css##tableContainer
-                            component=RootComponent.reactComponent(Paper.make)
-                        >
-                            <div className=css##tableScroll>
-                                <Table stickyHeader=true className=css##resultsList>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>{"Cuneiforms" |> React.string}</TableCell>
-                                        <TableCell>{"Marker" |> React.string}</TableCell>
-                                        <TableCell>{"Word" |> React.string}</TableCell>
-                                        <TableCell>{"Translation" |> React.string}</TableCell>
-                                        <TableCell>{"Part of Speech" |> React.string}</TableCell>
-                                        <TableCell>{"Count" |> React.string}</TableCell>
-                                        <TableCell>{"More info" |> React.string}</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                {
-                                    results
-                                    |> rows_for_page(
-                                        ~page,
-                                        ~rows_per_page=rowsPerPage,
-                                    )
-                                    |> Array.map((result: Supabase.dictionary_row) =>
-                                        <TableRow key={result.id}>
-                                            <TableCell>
-                                                <strong className="cuneiforms small">{
-                                                    Array.length(result.cuneiforms) > 0
-                                                    ? result.cuneiforms[0] |> React.string
-                                                    : "X" |> React.string
-                                                }</strong>  
-                                            </TableCell>
-                                            <TableCell>
-                                                {switch result.marker {
-                                                | Supabase.A => "Ancien Sumerian" |> React.string
-                                                | Supabase.E => "Modern Extension" |> React.string
-                                                | Supabase.N => "Native Neologism" |> React.string
-                                                | Supabase.C => "Calque" |> React.string
-                                                | Supabase.L_Akk => "Akkadian Loanword" |> React.string
-                                                | Supabase.L_Anc => "Ancien Loanword" |> React.string
-                                                | Supabase.L_Mod => "Modern Loanword" |> React.string
-                                                | Supabase.X => "Uncertain" |> React.string
-                                                }}
-                                            </TableCell>
-                                            <TableCell>
-                                                <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
-                                            </TableCell>
-                                            <TableCell>
-                                                {result.translation |> React.string}
-                                            </TableCell>
-                                            <TableCell>
-                                                {switch result.part_of_speech {
-                                                    | "N" => "Noun" 
-                                                    | "V/t" => "Transitive Verb"
-                                                    | "V/i" => "Intransitive Verb"
-                                                    | "AJ" => "Adjective"   
-                                                    | _ => result.part_of_speech
-                                                } |> React.string}
-                                            </TableCell>
-                                            <TableCell>
-                                                {result.icount |> Js.Int.toString |> React.string}
-                                            </TableCell>
-                                            <TableCell>
-                                                {
-                                                    switch result.marker {
-                                                        | Supabase.A => {
-                                                            <a href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id} target="_blank" rel="noopener noreferrer">
-                                                                {"EPSD2 link" |> React.string}
-                                                            </a>
-                                                        }
-                                                        | _ => React.null
-                                                    }
-                                                }
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                    |> React.array
-                                }
-                                </TableBody>
-                                </Table>
-                            </div>
-                            <TablePagination
-                                className=css##pagination
-                                rowsPerPageOptions={[|5, 10, 25|]}
-                                component={RootComponent.htmlElement("div")}
-                                count={Array.length(results)}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                        </TableContainer>
-                        <div className=css##resultsMobile>
-                            <Stack 
-                                spacing=`Number(2)
-                                direction=`column
+                <Select
+                    value={selected_lang_value}
+                    onChange={(event, _) => {
+                        let value = event##target##value;
+                        let new_lang = switch value {
+                            | "eng-to-sum" => EngToSum
+                            | "sum-to-eng" => SumToEng
+                            | _ => selected_lang
+                        };
+                        set_selected_lang(_ => new_lang);
+                    }}
+                    sx={{"backgroundColor": "white"}}
+                >
+                    <MenuItem value={select_lang_options_to_string(EngToSum)}>
+                        {"English to Sumerian" |> React.string}
+                    </MenuItem>
+                    <MenuItem value={select_lang_options_to_string(SumToEng)}>
+                        {"Sumerian to English" |> React.string}
+                    </MenuItem>
+                </Select>
+                <TextField
+                    type_="text"
+                    fullWidth=false
+                    autoFocus=true
+                    placeholder="Search a word..."
+                    label={switch selected_lang {
+                        | EngToSum => "English Word" |> React.string
+                        | SumToEng => "Sumerian Word" |> React.string
+                    }}
+                    value={word}
+                    onChange={event => set_word(_ => event -> React.Event.Form.target##value)}
+                    onKeyDown={event =>
+                        if (React.Event.Keyboard.key(event) === "Enter") {
+                            React.Event.Keyboard.preventDefault(event);
+                            search_word();
+                        }
+                    }
+                    sx={{"backgroundColor": "white", "width": "300px"}}
+                    variant=`outlined
+                />
+                <Select
+                    autoWidth=true
+                    value={selected_search_shape_value}
+                    onChange={(event, _) => {
+                        let value = event##target##value;
+                        let new_search_shape = switch value {
+                            | "exact-word" => ExactWord
+                            | "contains" => Contains
+                            | _ => selected_search_shape
+                        };
+                        set_selected_search_shape(_ => new_search_shape);
+                    }}
+                    sx={{"backgroundColor": "white"}}
+                >
+                    <MenuItem value={selected_search_shape_to_string(ExactWord)}>
+                        {"Exact Word" |> React.string}
+                    </MenuItem>
+                    <MenuItem value={selected_search_shape_to_string(Contains)}>
+                        {"Contains" |> React.string}
+                    </MenuItem>
+                </Select>
+                <Button 
+                    variant=`contained 
+                    size=`large
+                    onClick={_ => search_word()}
+                >
+                    {searching ? <TablerReact.IconRefresh className=css##refreshIcon size=20 /> : <TablerReact.IconSearch size=20 />}
+                </Button>
+            </Stack>
+            <div className=css##resultsContainer>
+            {
+                switch search_results {
+                | Some(results) when (word |> String.length > 0) =>
+                    if (Array.length(results) === 0) {
+                        <div>{"No results found." |> React.string}</div>
+                    } else {
+                        <>
+                            <TableContainer
+                                className=css##tableContainer
+                                component=RootComponent.reactComponent(Paper.make)
                             >
-                                <Box>
-                                    {
-                                        Array.length(results) === 0
-                                        ? React.null
-                                        : (
-                                            <Typography variant=Typography.Variant.h6>
-                                                {(
-                                                    (Array.length(results) |> Js.Int.toString) 
-                                                    ++ " result" 
-                                                    ++ (Array.length(results) > 1 ? "s" : "")) |> React.string}
-                                            </Typography>
-                                        )
-                                    }
-                                </Box>
-                                {
-                                    results
-                                    |> Array.map((result: Supabase.dictionary_row) => 
-                                        <Card key={result.id}>
-                                            <CardHeader
-                                                avatar={
-                                                    <strong className="cuneiforms small">{
-                                                        Array.length(result.cuneiforms) > 0
-                                                        ? result.cuneiforms[0] |> React.string
-                                                        : "X" |> React.string
-                                                    }</strong>
-                                                }
-                                                title={
-                                                    <Typography variant=Typography.Variant.h6>
-                                                        {result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}
-                                                    </Typography>
-                                                }
-                                                subheader={(
-                                                    result.translation 
-                                                    ++ switch result.part_of_speech {
-                                                    | "N" => " (Noun)" 
-                                                    | "V/t" => " (Transitive Verb)"
-                                                    | "V/i" => " (Intransitive Verb)"
-                                                    | "AJ" => " (Adjective)"
-                                                    | _ => " (" ++ result.part_of_speech ++ ")"
-                                                }) |> React.string}
-                                            />
-                                            <CardContent sx={{"display": "flex", "justifyContent": "space-between"}}>
-                                                <div>
-                                                    {switch result.marker {
-                                                    | Supabase.A => "Ancien Sumerian" |> React.string
-                                                    | Supabase.E => "Modern Extension" |> React.string
-                                                    | Supabase.N => "Native Neologism" |> React.string
-                                                    | Supabase.C => "Calque" |> React.string
-                                                    | Supabase.L_Akk => "Akkadian Loanword" |> React.string
-                                                    | Supabase.L_Anc => "Ancien Loanword" |> React.string
-                                                    | Supabase.L_Mod => "Modern Loanword" |> React.string
-                                                    | Supabase.X => "Uncertain" |> React.string
-                                                    }}
-                                                </div>
-                                                <div>
-                                                    {(result.icount |> Js.Int.toString) 
-                                                    ++ " occurrence" 
-                                                    ++ (result.icount > 1 ? "s" : "")
-                                                    |> React.string}
-                                                </div>
-                                            </CardContent>
-                                            <CardActions>
-                                                {
-                                                    switch result.marker {
-                                                        | Supabase.A => {
-                                                            <Button
-                                                                size=`small
-                                                                href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                            >
-                                                                {"EPSD2 link" |> React.string}
-                                                            </Button>
+                                <div className=css##tableScroll>
+                                    <Table stickyHeader=true className=css##resultsList>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>{"Cuneiforms" |> React.string}</TableCell>
+                                                <TableCell>{"Marker" |> React.string}</TableCell>
+                                                <TableCell>{"Word" |> React.string}</TableCell>
+                                                <TableCell>{"Translation" |> React.string}</TableCell>
+                                                <TableCell>{"Part of Speech" |> React.string}</TableCell>
+                                                <TableCell>{"Count" |> React.string}</TableCell>
+                                                <TableCell>{"More info" |> React.string}</TableCell>
+                                                <TableCell>{"Words List" |> React.string}</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                        {
+                                            results
+                                            |> rows_for_page(
+                                                ~page,
+                                                ~rows_per_page=rowsPerPage,
+                                            )
+                                            |> Array.map((result: Supabase.dictionary_row) =>
+                                                <TableRow key={result.id}>
+                                                    <TableCell>
+                                                        <strong className="cuneiforms small">{
+                                                            Array.length(result.cuneiforms) > 0
+                                                            ? result.cuneiforms[0] |> React.string
+                                                            : "X" |> React.string
+                                                        }</strong>  
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {switch result.marker {
+                                                        | Supabase.A => "Ancien Sumerian" |> React.string
+                                                        | Supabase.E => "Modern Extension" |> React.string
+                                                        | Supabase.N => "Native Neologism" |> React.string
+                                                        | Supabase.C => "Calque" |> React.string
+                                                        | Supabase.L_Akk => "Akkadian Loanword" |> React.string
+                                                        | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                                        | Supabase.L_Mod => "Modern Loanword" |> React.string
+                                                        | Supabase.X => "Uncertain" |> React.string
+                                                        }}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <strong>{result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</strong>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {result.translation |> React.string}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {switch result.part_of_speech {
+                                                            | "N" => "Noun" 
+                                                            | "V/t" => "Transitive Verb"
+                                                            | "V/i" => "Intransitive Verb"
+                                                            | "AJ" => "Adjective"   
+                                                            | _ => result.part_of_speech
+                                                        } |> React.string}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {result.icount |> Js.Int.toString |> React.string}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            switch result.marker {
+                                                                | Supabase.A => {
+                                                                    <a href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id} target="_blank" rel="noopener noreferrer">
+                                                                        {"EPSD2 link" |> React.string}
+                                                                    </a>
+                                                                }
+                                                                | _ => React.null
+                                                            }
                                                         }
-                                                        | _ => React.null
+                                                    </TableCell>
+                                                    <TableCell sx={{"display": "flex", "justifyContent": "center"}}>
+                                                        <IconButton
+                                                            ariaLabel="Add to words list"
+                                                            color=Color.primary
+                                                            onClick={_ => {
+                                                                let data = (result.id, result.word, result.translation);
+                                                                set_add_to_my_words_list(_ => Some(data));
+                                                                set_open_snackbar(_ => true);
+                                                                // saves the data in local storage
+                                                                let cuneiforms =
+                                                                    Array.length(result.cuneiforms) > 0
+                                                                    ? Array.get(result.cuneiforms, 0)
+                                                                    : "";
+                                                                LocalStorage.add_word(
+                                                                    ~english=result.translation,
+                                                                    ~cuneiforms,
+                                                                    ~sumerian=(
+                                                                        result.word
+                                                                        |> Web_utils.Format.from_phonetic_to_standard
+                                                                    ),
+                                                                    ~epsd_code=result.id,
+                                                                );
+                                                            }}
+                                                        >
+                                                            <TablerReact.IconCirclePlusFilled size=20 />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                            |> React.array
+                                        }
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                                <TablePagination
+                                    className=css##pagination
+                                    rowsPerPageOptions={[|5, 10, 25|]}
+                                    component={RootComponent.htmlElement("div")}
+                                    count={Array.length(results)}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </TableContainer>
+                            <div className=css##resultsMobile>
+                                <Stack 
+                                    spacing=`Number(2)
+                                    direction=`column
+                                >
+                                    <Box>
+                                        {
+                                            Array.length(results) === 0
+                                            ? React.null
+                                            : (
+                                                <Typography variant=Typography.Variant.h6>
+                                                    {(
+                                                        (Array.length(results) |> Js.Int.toString) 
+                                                        ++ " result" 
+                                                        ++ (Array.length(results) > 1 ? "s" : "")) |> React.string}
+                                                </Typography>
+                                            )
+                                        }
+                                    </Box>
+                                    {
+                                        results
+                                        |> Array.map((result: Supabase.dictionary_row) => 
+                                            <Card key={result.id}>
+                                                <CardHeader
+                                                    avatar={
+                                                        <strong className="cuneiforms small">{
+                                                            Array.length(result.cuneiforms) > 0
+                                                            ? result.cuneiforms[0] |> React.string
+                                                            : "X" |> React.string
+                                                        }</strong>
                                                     }
-                                                }
-                                                <Button
-                                                    size=`small
-                                                    onClick={_ => {
-                                                        let _ = 
-                                                            (Array.length(result.cuneiforms) > 0
-                                                            ? result.cuneiforms[0]
-                                                            : "X")
-                                                            |> Browser.Clipboard.write_text
-                                                            |> Js.Promise.catch(error => {
-                                                                Js.log2("Could not copy text:", error);
-                                                                Js.Promise.resolve();
-                                                            });
-                                                        ()
-                                                    }}
-                                                >
-                                                    {"Copy" |> React.string}
-                                                </Button>
-                                            </CardActions>
-                                        </Card>
-                                    )
-                                    |> React.array
-                                }
-                            </Stack>
-                        </div>
-                    </>
+                                                    title={
+                                                        <Typography variant=Typography.Variant.h6>
+                                                            {result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}
+                                                        </Typography>
+                                                    }
+                                                    subheader={(
+                                                        result.translation 
+                                                        ++ switch result.part_of_speech {
+                                                        | "N" => " (Noun)" 
+                                                        | "V/t" => " (Transitive Verb)"
+                                                        | "V/i" => " (Intransitive Verb)"
+                                                        | "AJ" => " (Adjective)"
+                                                        | _ => " (" ++ result.part_of_speech ++ ")"
+                                                    }) |> React.string}
+                                                />
+                                                <CardContent sx={{"display": "flex", "justifyContent": "space-between"}}>
+                                                    <div>
+                                                        {switch result.marker {
+                                                        | Supabase.A => "Ancien Sumerian" |> React.string
+                                                        | Supabase.E => "Modern Extension" |> React.string
+                                                        | Supabase.N => "Native Neologism" |> React.string
+                                                        | Supabase.C => "Calque" |> React.string
+                                                        | Supabase.L_Akk => "Akkadian Loanword" |> React.string
+                                                        | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                                        | Supabase.L_Mod => "Modern Loanword" |> React.string
+                                                        | Supabase.X => "Uncertain" |> React.string
+                                                        }}
+                                                    </div>
+                                                    <div>
+                                                        {(result.icount |> Js.Int.toString) 
+                                                        ++ " occurrence" 
+                                                        ++ (result.icount > 1 ? "s" : "")
+                                                        |> React.string}
+                                                    </div>
+                                                </CardContent>
+                                                <CardActions>
+                                                    {
+                                                        switch result.marker {
+                                                            | Supabase.A => {
+                                                                <Button
+                                                                    size=`small
+                                                                    href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ result.id}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                >
+                                                                    {"EPSD2 link" |> React.string}
+                                                                </Button>
+                                                            }
+                                                            | _ => React.null
+                                                        }
+                                                    }
+                                                    <Button
+                                                        size=`small
+                                                        onClick={_ => {
+                                                            let _ = 
+                                                                (Array.length(result.cuneiforms) > 0
+                                                                ? result.cuneiforms[0]
+                                                                : "X")
+                                                                |> Browser.Clipboard.write_text
+                                                                |> Js.Promise.catch(error => {
+                                                                    Js.log2("Could not copy text:", error);
+                                                                    Js.Promise.resolve();
+                                                                });
+                                                            ()
+                                                        }}
+                                                    >
+                                                        {"Copy" |> React.string}
+                                                    </Button>
+                                                </CardActions>
+                                            </Card>
+                                        )
+                                        |> React.array
+                                    }
+                                </Stack>
+                            </div>
+                        </>
+                    }
+                | _ => <div>{searching ? "Searching..." |> React.string : "Enter a word to search." |> React.string}</div>
                 }
-            | _ => <div>{searching ? "Searching..." |> React.string : "Enter a word to search." |> React.string}</div>
             }
-        }
+            </div>
         </div>
-    </div>
+        <Snackbar
+            _open={open_snackbar}
+            anchorOrigin={{
+                vertical: `bottom,
+                horizontal: `right,
+            }}
+            autoHideDuration={3000}
+            onClose={_ => set_open_snackbar(_ => false)}
+        >
+            <Alert
+                severity=`success
+                variant=`filled
+                sx={{ "width": "100%" }}
+            >
+                {
+                    switch add_to_my_words_list {
+                    | Some((_, word, translation)) => 
+                        {"Added \"" 
+                        ++ (word |> Web_utils.Format.from_phonetic_to_standard) 
+                        ++ "\" (" ++ translation ++ ") to my words list!" |> React.string}
+                    | None => React.null
+                    }
+                }
+            </Alert>
+        </Snackbar>
+    </>
 }

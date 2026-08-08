@@ -9,6 +9,7 @@ import * as Components__Keyboard from "./components/keyboard.mjs";
 import * as Components__Lessons from "./components/lessons.mjs";
 import * as Components__Links from "./components/links.mjs";
 import * as Components__Page_not_found from "./components/page_not_found.mjs";
+import * as Components__Words_list from "./components/words_list.mjs";
 import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -68,6 +69,13 @@ function Body(Props) {
           exit = 1;
         } else {
           tmp = JsxRuntime.jsx(Components__Links.make, {});
+        }
+        break;
+      case "wordslist" :
+        if (match.tl) {
+          exit = 1;
+        } else {
+          tmp = JsxRuntime.jsx(Components__Words_list.make, {});
         }
         break;
       default:

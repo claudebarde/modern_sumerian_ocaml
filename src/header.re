@@ -111,6 +111,16 @@ let make = () => {
                             {"Keyboard" |> React.string}
                         </ListItemText>
                     </MenuItem>
+                    <MenuItem
+                        onClick={_ => navigateFromToolsMenu("/wordslist")}
+                    >
+                        <ListItemIcon>
+                            <TablerReact.IconListCheck color=Config.colors##botanicalNight />
+                        </ListItemIcon>
+                        <ListItemText>
+                            {"My Words List" |> React.string}
+                        </ListItemText>
+                    </MenuItem>
                 </Menu>
                 <Button
                     variant=`text

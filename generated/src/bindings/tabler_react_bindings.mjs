@@ -33,6 +33,10 @@ const IconCircleNumber2 = {};
 
 const IconCircleNumber3 = {};
 
+const IconCirclePlus = {};
+
+const IconCirclePlusFilled = {};
+
 const IconCloud = {};
 
 const IconCloudFog = {};
@@ -55,6 +59,8 @@ const IconLink = {};
 
 const IconList = {};
 
+const IconListCheck = {};
+
 const IconMenu2 = {};
 
 const IconPencilPlus = {};
@@ -70,6 +76,8 @@ const IconSnowflake = {};
 const IconSun = {};
 
 const IconTable = {};
+
+const IconTrashFilled = {};
 
 const IconTrashX = {};
 
@@ -94,6 +102,8 @@ export {
   IconCircleNumber1,
   IconCircleNumber2,
   IconCircleNumber3,
+  IconCirclePlus,
+  IconCirclePlusFilled,
   IconCloud,
   IconCloudFog,
   IconCloudRain,
@@ -105,6 +115,7 @@ export {
   IconKeyboard,
   IconLink,
   IconList,
+  IconListCheck,
   IconMenu2,
   IconPencilPlus,
   IconQuestionMark,
@@ -113,6 +124,7 @@ export {
   IconSnowflake,
   IconSun,
   IconTable,
+  IconTrashFilled,
   IconTrashX,
   IconTrashXFilled,
   IconWind,

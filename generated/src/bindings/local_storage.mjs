@@ -132,6 +132,108 @@ function set_location($$location) {
   localStorage.setItem("location", encode_location($$location));
 }
 
+function encode_words_list(words) {
+  const json = JSON.stringify(words);
+  if (json !== undefined) {
+    return json;
+  } else {
+    return "{}";
+  }
+}
+
+function decode_word_entry(json) {
+  const values = Js__Js_json.decodeArray(json);
+  if (values === undefined) {
+    return;
+  }
+  if (values.length !== 3) {
+    return;
+  }
+  const match = Js__Js_json.decodeString(Caml_array.get(values, 0));
+  const match$1 = Js__Js_json.decodeString(Caml_array.get(values, 1));
+  const match$2 = Js__Js_json.decodeString(Caml_array.get(values, 2));
+  if (match !== undefined && match$1 !== undefined && match$2 !== undefined) {
+    return [
+      match,
+      match$1,
+      match$2
+    ];
+  }
+  
+}
+
+function decode_words_list(value) {
+  try {
+    const object_ = Js__Js_json.decodeObject(JSON.parse(value));
+    if (object_ !== undefined) {
+      return Stdlib__Option.map((function (entries) {
+        return Js__Js_dict.fromArray(Stdlib__Array.of_list(Stdlib__List.rev(entries)));
+      }), Stdlib__Array.fold_left((function (decoded, param) {
+        const match = decode_word_entry(param[1]);
+        if (decoded !== undefined && match !== undefined) {
+          return {
+            hd: [
+              param[0],
+              match
+            ],
+            tl: decoded
+          };
+        }
+        
+      }), /* [] */ 0, Js__Js_dict.entries(Caml_option.valFromOption(object_))));
+    } else {
+      return;
+    }
+  }
+  catch (exn){
+    return;
+  }
+}
+
+function get_words_list(param) {
+  const value = localStorage.getItem("words_list");
+  if (!(value == null)) {
+    return decode_words_list(value);
+  }
+  
+}
+
+function set_words_list(words) {
+  localStorage.setItem("words_list", encode_words_list(words));
+}
+
+function add_word(english, cuneiforms, sumerian, epsd_code) {
+  const words = get_words_list(undefined);
+  const words$1 = words !== undefined ? Caml_option.valFromOption(words) : ({});
+  words$1[english] = [
+    cuneiforms,
+    sumerian,
+    epsd_code
+  ];
+  set_words_list(words$1);
+}
+
+function remove_word(english) {
+  const words = get_words_list(undefined);
+  if (words === undefined) {
+    return;
+  }
+  const updated_words = Js__Js_dict.fromArray(Stdlib__Array.of_list(Stdlib__List.filter((function (param) {
+    return param[0] !== english;
+  }), Stdlib__Array.to_list(Js__Js_dict.entries(Caml_option.valFromOption(words))))));
+  set_words_list(updated_words);
+  return Caml_option.some(updated_words);
+}
+
+function initialize_words_list(param) {
+  const match = get_words_list(undefined);
+  if (match !== undefined) {
+    return;
+  } else {
+    return set_words_list({});
+  }
+}
+
 export {
   encode_keyboard,
   decode_string_array,
@@ -142,5 +244,13 @@ export {
   decode_location,
   get_location,
   set_location,
+  encode_words_list,
+  decode_word_entry,
+  decode_words_list,
+  get_words_list,
+  set_words_list,
+  add_word,
+  remove_word,
+  initialize_words_list,
 }
 /* No side effect */

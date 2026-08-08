@@ -22,6 +22,12 @@ const AccordionDetails = {};
 
 const AccordionSummary = {};
 
+const IconMapping = {};
+
+const Alert = {
+  IconMapping: IconMapping
+};
+
 const AppBar = {};
 
 const BlurOnSelect = {
@@ -131,6 +137,12 @@ const Select = {
   Value: Value
 };
 
+const TransitionDuration = {};
+
+const Snackbar = {
+  TransitionDuration: TransitionDuration
+};
+
 const ResponsiveDirection = {};
 
 const ResponsiveSpacing = {};
@@ -226,6 +238,7 @@ export {
   AccordionActions,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   AppBar,
   Autocomplete,
   Avatar,
@@ -267,6 +280,7 @@ export {
   Radio,
   RadioGroup,
   Select,
+  Snackbar,
   Stack,
   Switch,
   Table,

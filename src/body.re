@@ -15,6 +15,7 @@ let make = () => {
                 | ["lessons"] => <Lessons />
                 | ["dictionary"] => <Dictionary />
                 | ["games"] => <Games />
+                | ["wordslist"] => <Words_list />
                 | [] | ["home"] => <Home />
                 | _ => <Page_not_found/>
             }

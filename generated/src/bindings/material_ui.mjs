@@ -111,6 +111,8 @@ const ListItemButton = {};
 
 const ListItemIcon = {};
 
+const ListItemSecondaryAction = {};
+
 const ListItemText = {};
 
 const ListSubheader = {};
@@ -271,6 +273,7 @@ export {
   ListItemAvatar,
   ListItemButton,
   ListItemIcon,
+  ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
   Menu,

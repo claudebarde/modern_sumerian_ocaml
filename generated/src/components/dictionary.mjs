@@ -465,6 +465,28 @@ function Dictionary(Props) {
                               });
                             }),
                             size: "small"
+                          }),
+                          JsxRuntime.jsx(Button, {
+                            children: "Add to words list",
+                            onClick: (function (param) {
+                              const data_0 = result.id;
+                              const data_1 = result.word;
+                              const data_2 = result.translation;
+                              const data = [
+                                data_0,
+                                data_1,
+                                data_2
+                              ];
+                              Curry._1(set_add_to_my_words_list, (function (param) {
+                                return data;
+                              }));
+                              Curry._1(set_open_snackbar, (function (param) {
+                                return true;
+                              }));
+                              const cuneiforms = result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "";
+                              Bindings__Local_storage.add_word(result.translation, cuneiforms, Components__Web_utils.Format.from_phonetic_to_standard(result.word), result.id);
+                            }),
+                            size: "small"
                           })
                         ]
                       })

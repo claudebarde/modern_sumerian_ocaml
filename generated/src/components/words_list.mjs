@@ -3,7 +3,13 @@
 import DictionaryModuleScss from "../styles/Dictionary.module.scss";
 import WordsListModuleScss from "../styles/WordsList.module.scss";
 import Alert from "@mui/material/Alert";
+import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import Snackbar from "@mui/material/Snackbar";
 import Table from "@mui/material/Table";
@@ -14,6 +20,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
@@ -52,6 +59,7 @@ function Words_list(Props) {
   });
   const set_removed_word = match$4[1];
   const removed_word = match$4[0];
+  const is_mobile = UseMediaQuery("(max-width:599px)");
   const handleChangePage = function (_event, newPage) {
     Curry._1(setPage, (function (param) {
       return newPage;
@@ -71,141 +79,209 @@ function Words_list(Props) {
     tmp = Object.keys(words).length === 0 ? JsxRuntime.jsx(Typography, {
         children: "No words in the list.",
         variant: Bindings__Material_ui.Typography.Variant.h6
-      }) : JsxRuntime.jsxs(TableContainer, {
+      }) : JsxRuntime.jsxs(JsxRuntime.Fragment, {
         children: [
-          JsxRuntime.jsx("div", {
-            children: JsxRuntime.jsxs(Table, {
-              children: [
-                JsxRuntime.jsx(TableHead, {
-                  children: JsxRuntime.jsxs(TableRow, {
-                    children: [
-                      JsxRuntime.jsx(TableCell, {
-                        children: "Cuneiforms",
-                        sx: {
-                          textAlign: "center"
-                        }
-                      }),
-                      JsxRuntime.jsx(TableCell, {
-                        children: "Word",
-                        sx: {
-                          textAlign: "center"
-                        }
-                      }),
-                      JsxRuntime.jsx(TableCell, {
-                        children: "Translation",
-                        sx: {
-                          textAlign: "center"
-                        }
-                      }),
-                      JsxRuntime.jsx(TableCell, {
-                        children: "EPSD2 Link",
-                        sx: {
-                          textAlign: "center"
-                        }
-                      }),
-                      JsxRuntime.jsx(TableCell, {
-                        children: "Actions",
-                        sx: {
-                          textAlign: "center"
-                        }
+          JsxRuntime.jsxs(TableContainer, {
+            children: [
+              JsxRuntime.jsx("div", {
+                children: JsxRuntime.jsxs(Table, {
+                  children: [
+                    JsxRuntime.jsx(TableHead, {
+                      children: JsxRuntime.jsxs(TableRow, {
+                        children: [
+                          JsxRuntime.jsx(TableCell, {
+                            children: "Cuneiforms",
+                            sx: {
+                              textAlign: "center"
+                            }
+                          }),
+                          JsxRuntime.jsx(TableCell, {
+                            children: "Word",
+                            sx: {
+                              textAlign: "center"
+                            }
+                          }),
+                          JsxRuntime.jsx(TableCell, {
+                            children: "Translation",
+                            sx: {
+                              textAlign: "center"
+                            }
+                          }),
+                          JsxRuntime.jsx(TableCell, {
+                            children: "EPSD2 Link",
+                            sx: {
+                              textAlign: "center"
+                            }
+                          }),
+                          JsxRuntime.jsx(TableCell, {
+                            children: "Actions",
+                            sx: {
+                              textAlign: "center"
+                            }
+                          })
+                        ]
                       })
-                    ]
-                  })
+                    }),
+                    JsxRuntime.jsx(TableBody, {
+                      children: Stdlib__Array.map((function (param) {
+                        const match = param[1];
+                        const sumerian = match[1];
+                        const english = param[0];
+                        return JsxRuntime.jsxs(TableRow, {
+                          children: [
+                            JsxRuntime.jsx(TableCell, {
+                              children: JsxRuntime.jsx("span", {
+                                children: match[0],
+                                className: "cuneiforms small"
+                              }),
+                              sx: {
+                                textAlign: "center"
+                              }
+                            }),
+                            JsxRuntime.jsx(TableCell, {
+                              children: sumerian,
+                              sx: {
+                                textAlign: "center"
+                              }
+                            }),
+                            JsxRuntime.jsx(TableCell, {
+                              children: english,
+                              sx: {
+                                textAlign: "center"
+                              }
+                            }),
+                            JsxRuntime.jsx(TableCell, {
+                              children: JsxRuntime.jsx(IconButton, {
+                                children: JsxRuntime.jsx(IconsReact.IconLink, {}),
+                                color: Bindings__Material_ui.Color.primary,
+                                href: "https://oracc.museum.upenn.edu/epsd2/sux/" + match[2],
+                                rel: "noopener noreferrer",
+                                target: "_blank"
+                              }),
+                              sx: {
+                                textAlign: "center"
+                              }
+                            }),
+                            JsxRuntime.jsx(TableCell, {
+                              children: JsxRuntime.jsx(IconButton, {
+                                children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
+                                color: Bindings__Material_ui.Color.primary,
+                                onClick: (function (param) {
+                                  Curry._1(set_words_list, (function (param) {
+                                    return Bindings__Local_storage.remove_word(english);
+                                  }));
+                                  Curry._1(set_removed_word, (function (param) {
+                                    return [
+                                      english,
+                                      sumerian
+                                    ];
+                                  }));
+                                  Curry._1(set_open_snackbar, (function (param) {
+                                    return true;
+                                  }));
+                                })
+                              }),
+                              sx: {
+                                textAlign: "center"
+                              }
+                            })
+                          ]
+                        }, english);
+                      }), Js__Js_dict.entries(words))
+                    })
+                  ],
+                  className: dictionary.resultsList,
+                  size: "small",
+                  stickyHeader: true
                 }),
-                JsxRuntime.jsx(TableBody, {
-                  children: Stdlib__Array.map((function (param) {
-                    const match = param[1];
-                    const sumerian = match[1];
-                    const english = param[0];
-                    return JsxRuntime.jsxs(TableRow, {
+                className: dictionary.tableScroll
+              }),
+              JsxRuntime.jsx(TablePagination, {
+                className: dictionary.pagination,
+                component: "div",
+                count: Js__Js_dict.entries(words).length,
+                onPageChange: handleChangePage,
+                onRowsPerPageChange: handleChangeRowsPerPage,
+                page: match$2[0],
+                rowsPerPage: match$1[0],
+                rowsPerPageOptions: [
+                  8,
+                  12,
+                  20
+                ]
+              })
+            ],
+            className: css.tableContainer,
+            component: Paper,
+            sx: {
+              width: "60%"
+            }
+          }),
+          is_mobile ? JsxRuntime.jsx(List, {
+              children: Stdlib__Array.map((function (param) {
+                const match = param[1];
+                const sumerian = match[1];
+                const english = param[0];
+                return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                  children: [
+                    JsxRuntime.jsxs(ListItem, {
                       children: [
-                        JsxRuntime.jsx(TableCell, {
+                        JsxRuntime.jsx(ListItemAvatar, {
                           children: JsxRuntime.jsx("span", {
                             children: match[0],
-                            className: "cuneiforms small"
-                          }),
+                            className: "cuneiforms small",
+                            style: {
+                              margin: "0"
+                            }
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          primary: sumerian,
+                          secondary: english,
                           sx: {
-                            textAlign: "center"
+                            marginLeft: "16px"
                           }
                         }),
-                        JsxRuntime.jsx(TableCell, {
-                          children: sumerian,
-                          sx: {
-                            textAlign: "center"
-                          }
-                        }),
-                        JsxRuntime.jsx(TableCell, {
-                          children: english,
-                          sx: {
-                            textAlign: "center"
-                          }
-                        }),
-                        JsxRuntime.jsx(TableCell, {
-                          children: JsxRuntime.jsx(IconButton, {
-                            children: JsxRuntime.jsx(IconsReact.IconLink, {}),
-                            color: Bindings__Material_ui.Color.primary,
-                            href: "https://oracc.museum.upenn.edu/epsd2/sux/" + match[2],
-                            rel: "noopener noreferrer",
-                            target: "_blank"
-                          }),
-                          sx: {
-                            textAlign: "center"
-                          }
-                        }),
-                        JsxRuntime.jsx(TableCell, {
-                          children: JsxRuntime.jsx(IconButton, {
-                            children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
-                            color: Bindings__Material_ui.Color.primary,
-                            onClick: (function (param) {
-                              Curry._1(set_words_list, (function (param) {
-                                return Bindings__Local_storage.remove_word(english);
-                              }));
-                              Curry._1(set_removed_word, (function (param) {
-                                return [
-                                  english,
-                                  sumerian
-                                ];
-                              }));
-                              Curry._1(set_open_snackbar, (function (param) {
-                                return true;
-                              }));
+                        JsxRuntime.jsxs(ListItemSecondaryAction, {
+                          children: [
+                            JsxRuntime.jsx(IconButton, {
+                              children: JsxRuntime.jsx(IconsReact.IconLink, {}),
+                              color: Bindings__Material_ui.Color.primary,
+                              href: "https://oracc.museum.upenn.edu/epsd2/sux/" + match[2],
+                              rel: "noopener noreferrer",
+                              target: "_blank"
+                            }),
+                            JsxRuntime.jsx(IconButton, {
+                              children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
+                              color: Bindings__Material_ui.Color.primary,
+                              onClick: (function (param) {
+                                Curry._1(set_words_list, (function (param) {
+                                  return Bindings__Local_storage.remove_word(english);
+                                }));
+                                Curry._1(set_removed_word, (function (param) {
+                                  return [
+                                    english,
+                                    sumerian
+                                  ];
+                                }));
+                                Curry._1(set_open_snackbar, (function (param) {
+                                  return true;
+                                }));
+                              })
                             })
-                          }),
-                          sx: {
-                            textAlign: "center"
-                          }
+                          ]
                         })
                       ]
-                    }, english);
-                  }), Js__Js_dict.entries(words))
-                })
-              ],
-              className: dictionary.resultsList,
-              size: "small",
-              stickyHeader: true
-            }),
-            className: dictionary.tableScroll
-          }),
-          JsxRuntime.jsx(TablePagination, {
-            className: dictionary.pagination,
-            component: "div",
-            count: Js__Js_dict.entries(words).length,
-            onPageChange: handleChangePage,
-            onRowsPerPageChange: handleChangeRowsPerPage,
-            page: match$2[0],
-            rowsPerPage: match$1[0],
-            rowsPerPageOptions: [
-              8,
-              12,
-              20
-            ]
-          })
-        ],
-        className: dictionary.tableContainer,
-        component: Paper,
-        sx: {
-          width: "60%"
-        }
+                    }, english),
+                    JsxRuntime.jsx(Divider, {})
+                  ]
+                });
+              }), Js__Js_dict.entries(words)),
+              sx: {
+                width: "100%"
+              }
+            }) : null
+        ]
       });
   } else {
     tmp = JsxRuntime.jsx(Typography, {

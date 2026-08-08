@@ -12,6 +12,8 @@ let make = () => {
     let (open_snackbar, set_open_snackbar) = React.useState(_ => false);
     let (removed_word, set_removed_word) = React.useState(_ => None);
 
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
+
     let handleChangePage = (_event, newPage) => {
         setPage(_ => newPage);
     };
@@ -39,86 +41,141 @@ let make = () => {
                         {"No words in the list." |> React.string}
                     </Typography>
                 | Some(words) =>
-                    <TableContainer
-                        className=dictionary##tableContainer
-                        component=RootComponent.reactComponent(Paper.make)
-                        sx={{"width": "60%"}}
-                    >
-                        <div className=dictionary##tableScroll>
-                            <Table 
-                                stickyHeader=true 
-                                className=dictionary##resultsList
-                                size=`small
-                            >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell sx={{"textAlign": "center"}}>{"Cuneiforms" |> React.string}</TableCell>
-                                        <TableCell sx={{"textAlign": "center"}}>{"Word" |> React.string}</TableCell>
-                                        <TableCell sx={{"textAlign": "center"}}>{"Translation" |> React.string}</TableCell>
-                                        <TableCell sx={{"textAlign": "center"}}>{"EPSD2 Link" |> React.string}</TableCell>
-                                        <TableCell sx={{"textAlign": "center"}}>{"Actions" |> React.string}</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
+                    <>
+                    // DESKTOP VIEW
+                        <TableContainer
+                            className=css##tableContainer
+                            component=RootComponent.reactComponent(Paper.make)
+                            sx={{"width": "60%"}}
+                        >
+                            <div className=dictionary##tableScroll>
+                                <Table 
+                                    stickyHeader=true 
+                                    className=dictionary##resultsList
+                                    size=`small
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{"textAlign": "center"}}>{"Cuneiforms" |> React.string}</TableCell>
+                                            <TableCell sx={{"textAlign": "center"}}>{"Word" |> React.string}</TableCell>
+                                            <TableCell sx={{"textAlign": "center"}}>{"Translation" |> React.string}</TableCell>
+                                            <TableCell sx={{"textAlign": "center"}}>{"EPSD2 Link" |> React.string}</TableCell>
+                                            <TableCell sx={{"textAlign": "center"}}>{"Actions" |> React.string}</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                    {
+                                        Js.Dict.entries(words)
+                                        |> Array.map(((english, (cuneiforms, sumerian, epsd_code))) =>
+                                            <TableRow key=english>
+                                                <TableCell sx={{"textAlign": "center"}}>
+                                                    <span className="cuneiforms small">
+                                                        {cuneiforms |> React.string}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell sx={{"textAlign": "center"}}>
+                                                    {sumerian |> React.string}
+                                                </TableCell>
+                                                <TableCell sx={{"textAlign": "center"}}>
+                                                    {english |> React.string}
+                                                </TableCell>
+                                                <TableCell sx={{"textAlign": "center"}}>
+                                                    <IconButton
+                                                        href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ epsd_code}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        color=Color.primary
+                                                    >
+                                                        <TablerReact.IconLink />
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{"textAlign": "center"}}>
+                                                    <IconButton
+                                                        onClick={_ => {
+                                                            set_words_list(_ =>
+                                                                LocalStorage.remove_word(
+                                                                    ~english,
+                                                                )
+                                                            );
+                                                            set_removed_word(_ => Some((english, sumerian)));
+                                                            set_open_snackbar(_ => true);
+                                                        }}
+                                                        color=Color.primary
+                                                    >
+                                                        <TablerReact.IconTrashFilled />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                            )
+                                        |> React.array
+                                    }
+                                    </TableBody>
+                                </Table>
+                            </div>
+                            <TablePagination
+                                className=dictionary##pagination
+                                rowsPerPageOptions={[|8, 12, 20|]}
+                                component={RootComponent.htmlElement("div")}
+                                count={Array.length(Js.Dict.entries(words))}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </TableContainer>
+                    // MOBILE VIEW
+                        {
+                            is_mobile
+                            ? <List sx={{"width": "100%"}}>
                                 {
                                     Js.Dict.entries(words)
                                     |> Array.map(((english, (cuneiforms, sumerian, epsd_code))) =>
-                                        <TableRow key=english>
-                                            <TableCell sx={{"textAlign": "center"}}>
-                                                <span className="cuneiforms small">
-                                                    {cuneiforms |> React.string}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell sx={{"textAlign": "center"}}>
-                                                {sumerian |> React.string}
-                                            </TableCell>
-                                            <TableCell sx={{"textAlign": "center"}}>
-                                                {english |> React.string}
-                                            </TableCell>
-                                            <TableCell sx={{"textAlign": "center"}}>
-                                                <IconButton
-                                                    href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ epsd_code}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    color=Color.primary
-                                                >
-                                                    <TablerReact.IconLink />
-                                                </IconButton>
-                                            </TableCell>
-                                            <TableCell sx={{"textAlign": "center"}}>
-                                                <IconButton
-                                                    onClick={_ => {
-                                                        set_words_list(_ =>
-                                                            LocalStorage.remove_word(
-                                                                ~english,
-                                                            )
-                                                        );
-                                                        set_removed_word(_ => Some((english, sumerian)));
-                                                        set_open_snackbar(_ => true);
-                                                    }}
-                                                    color=Color.primary
-                                                >
-                                                    <TablerReact.IconTrashFilled />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
+                                        <>
+                                            <ListItem key=english>
+                                                <ListItemAvatar>
+                                                    <span className="cuneiforms small" style=ReactDOM.Style.make(~margin="0", ())>
+                                                        {cuneiforms |> React.string}
+                                                    </span>
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={sumerian |> React.string}
+                                                    secondary={english |> React.string}
+                                                    sx={{"marginLeft": "16px"}}
+                                                />
+                                                <ListItemSecondaryAction>
+                                                    <IconButton
+                                                        href={"https://oracc.museum.upenn.edu/epsd2/sux/" ++ epsd_code}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        color=Color.primary
+                                                    >
+                                                        <TablerReact.IconLink />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        onClick={_ => {
+                                                            set_words_list(_ =>
+                                                                LocalStorage.remove_word(
+                                                                    ~english,
+                                                                )
+                                                            );
+                                                            set_removed_word(_ => Some((english, sumerian)));
+                                                            set_open_snackbar(_ => true);
+                                                        }}
+                                                        color=Color.primary
+                                                    >
+                                                        <TablerReact.IconTrashFilled />
+                                                    </IconButton>
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                            <Divider />
+                                        </>
                                         )
                                     |> React.array
                                 }
-                                </TableBody>
-                            </Table>
-                        </div>
-                        <TablePagination
-                            className=dictionary##pagination
-                            rowsPerPageOptions={[|8, 12, 20|]}
-                            component={RootComponent.htmlElement("div")}
-                            count={Array.length(Js.Dict.entries(words))}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                    </TableContainer>
+                            </List>
+                            : React.null
+                        }
+                    </>
                 }
             }
         </div>

@@ -303,6 +303,24 @@ function Header(Props) {
                       }));
                     })
                   }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconListCheck, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Words List"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/wordslist");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
                   JsxRuntime.jsx(ListSubheader, {
                     children: "Learn"
                   }),

@@ -893,6 +893,18 @@ module ListItemIcon = {
   ) => React.element = "default";
 };
 
+module ListItemSecondaryAction = {
+  [@mel.module "@mui/material/ListItemSecondaryAction"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
 module ListItemText = {
   [@mel.module "@mui/material/ListItemText"] [@react.component]
   external make: (

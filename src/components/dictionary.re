@@ -527,6 +527,30 @@ let make = () => {
                                                     >
                                                         {"Copy" |> React.string}
                                                     </Button>
+                                                    <Button
+                                                        size=`small
+                                                        onClick={_ => {
+                                                            let data = (result.id, result.word, result.translation);
+                                                            set_add_to_my_words_list(_ => Some(data));
+                                                            set_open_snackbar(_ => true);
+                                                            // saves the data in local storage
+                                                            let cuneiforms =
+                                                                Array.length(result.cuneiforms) > 0
+                                                                ? Array.get(result.cuneiforms, 0)
+                                                                : "";
+                                                            LocalStorage.add_word(
+                                                                ~english=result.translation,
+                                                                ~cuneiforms,
+                                                                ~sumerian=(
+                                                                    result.word
+                                                                    |> Web_utils.Format.from_phonetic_to_standard
+                                                                ),
+                                                                ~epsd_code=result.id,
+                                                            );
+                                                        }}
+                                                    >
+                                                        {"Add to words list" |> React.string}
+                                                    </Button>
                                                 </CardActions>
                                             </Card>
                                         )

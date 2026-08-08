@@ -219,6 +219,19 @@ let make = () => {
                                 {"Keyboard" |> React.string}
                             </ListItemText>
                         </ListItemButton>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/wordslist");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconListCheck color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Words List" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
                         <ListSubheader>
                             {"Learn" |> React.string}
                         </ListSubheader>

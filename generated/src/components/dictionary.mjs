@@ -30,6 +30,7 @@ import * as Bindings__Supabase from "../bindings/supabase.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Components__Web_utils from "./web_utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
+import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
@@ -67,7 +68,7 @@ function Dictionary(Props) {
   const set_searching = match$3[1];
   const searching = match$3[0];
   const match$4 = React.useState(function () {
-    return 5;
+    return 7;
   });
   const setRowsPerPage = match$4[1];
   const rowsPerPage = match$4[0];
@@ -105,38 +106,36 @@ function Dictionary(Props) {
     Curry._1(set_search_results, (function (param) {
       
     }));
-    const word_to_search = Components__Web_utils.Format.from_standard_to_phonetic(word.trim().toLowerCase());
-    let column;
-    column = selected_lang === /* EngToSum */ 0 ? "translation" : "word";
-    let filter;
-    if (selected_lang === /* EngToSum */ 0) {
-      if (selected_search_shape === /* ExactWord */ 0) {
-        filter = (function (param) {
-          return param.ilike(column, word_to_search);
+    const normalized_word = word.trim().toLowerCase();
+    let word_to_search;
+    word_to_search = selected_lang === /* EngToSum */ 0 ? normalized_word : Components__Web_utils.Format.from_standard_to_phonetic(normalized_word);
+    const contains_match = selected_search_shape === /* Contains */ 1;
+    let search_requests;
+    search_requests = selected_lang === /* EngToSum */ 0 ? [Bindings__Supabase.client.rpc("search_dictionary_english", {
+          search_text: word_to_search,
+          contains_match: contains_match
+        })] : Stdlib__Array.map((function (search_text) {
+        return Bindings__Supabase.client.rpc("search_dictionary_sumerian", {
+          search_text: search_text,
+          contains_match: contains_match
         });
-      } else {
-        const partial_arg = "%" + (word_to_search + "%");
-        filter = (function (param) {
-          return param.ilike(column, partial_arg);
-        });
-      }
-    } else if (selected_search_shape === /* ExactWord */ 0) {
-      const partial_arg$1 = Components__Web_utils.Format.with_g_variants(word_to_search);
-      filter = (function (param) {
-        return Bindings__Supabase.Filter.ilike_any(column, partial_arg$1, false, param);
-      });
-    } else {
-      const partial_arg$2 = Components__Web_utils.Format.with_g_variants(word_to_search);
-      filter = (function (param) {
-        return Bindings__Supabase.Filter.ilike_any(column, partial_arg$2, true, param);
-      });
-    }
-    Curry._1(filter, Bindings__Supabase.client.from("dictionary").select("*")).order("icount", {
-      ascending: false
-    }).then(function (res) {
-      const decoded = Bindings__Supabase.$$Response.decode(res);
+      }), Components__Web_utils.Format.with_g_variants(word_to_search));
+    Promise.all(search_requests).then(function (responses) {
+      const rows_by_id = {};
+      Stdlib__Array.iter((function (response) {
+        const decoded = Bindings__Supabase.$$Response.decode(response);
+        Stdlib__Array.iter((function (row) {
+          rows_by_id[row.id] = row;
+        }), decoded.data);
+      }), responses);
+      const rows = Stdlib__Array.map((function (param) {
+        return param[1];
+      }), Js__Js_dict.entries(rows_by_id));
+      Stdlib__Array.sort((function (a, b) {
+        return b.icount - a.icount | 0;
+      }), rows);
       Curry._1(set_search_results, (function (param) {
-        return decoded.data;
+        return rows;
       }));
       Curry._1(setPage, (function (param) {
         return 0;
@@ -298,6 +297,7 @@ function Dictionary(Props) {
                               children: tmp$2
                             }),
                             JsxRuntime.jsx(TableCell, {
+                              align: "center",
                               children: JsxRuntime.jsx(IconButton, {
                                 "aria-label": "Add to words list",
                                 children: JsxRuntime.jsx(IconsReact.IconCirclePlusFilled, {
@@ -322,11 +322,7 @@ function Dictionary(Props) {
                                   const cuneiforms = result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "";
                                   Bindings__Local_storage.add_word(result.translation, cuneiforms, Components__Web_utils.Format.from_phonetic_to_standard(result.word), result.id);
                                 })
-                              }),
-                              sx: {
-                                display: "flex",
-                                justifyContent: "center"
-                              }
+                              })
                             })
                           ]
                         }, Key);
@@ -334,6 +330,7 @@ function Dictionary(Props) {
                     })
                   ],
                   className: css.resultsList,
+                  size: "small",
                   stickyHeader: true
                 }),
                 className: css.tableScroll
@@ -347,7 +344,7 @@ function Dictionary(Props) {
                 page: page,
                 rowsPerPage: rowsPerPage,
                 rowsPerPageOptions: [
-                  5,
+                  7,
                   10,
                   25
                 ]

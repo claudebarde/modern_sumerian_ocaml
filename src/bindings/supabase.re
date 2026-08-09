@@ -45,6 +45,16 @@ module Query = {
     /** An opaque PostgREST query builder returned by client.from(table). */
     type query_builder;
 
+    /** Arguments shared by the English and Sumerian dictionary search RPCs. */
+    type dictionary_search_params;
+
+    [@mel.obj]
+    external dictionary_search_params: (
+      ~search_text: string,
+      ~contains_match: bool,
+      unit,
+    ) => dictionary_search_params = "";
+
     /** Start a query against a table or view. */
     [@mel.send]
     external from: (string, [@mel.this] client) => query_builder = "from";
@@ -52,6 +62,14 @@ module Query = {
     /** Execute a query and return the results. */
     [@mel.send]
     external select: (string, [@mel.this] query_builder) => Js.Promise.t(Js.Json.t) = "select";
+
+    /** Call a Supabase Postgres function. */
+    [@mel.send]
+    external rpc: (
+      string,
+      dictionary_search_params,
+      [@mel.this] client,
+    ) => Js.Promise.t(Js.Json.t) = "rpc";
 };
 
 module Filter = {

@@ -42,7 +42,7 @@ let make = () => {
 
     let (word, set_word) = React.useState(_ => "");
     let (searching, set_searching) = React.useState(_ => false);
-    let (rowsPerPage, setRowsPerPage) = React.useState(_ => 5);
+    let (rowsPerPage, setRowsPerPage) = React.useState(_ => 7);
     let (page, setPage) = React.useState(_ => 0);
     /* Temporary fixture rows for styling the search-results DOM. */
     // let dummy_search_results: array(Supabase.dictionary_row) = [|
@@ -155,42 +155,70 @@ let make = () => {
         } else {
             set_searching(_ => true);
             set_search_results(_ => None);
-            let word_to_search = 
+            let normalized_word =
                 word 
                 |> Js.String.trim 
-                |> Js.String.toLowerCase 
-                |> Web_utils.Format.from_standard_to_phonetic;
-            // Implement the search logic here, possibly using Supabase client
-            let column = switch selected_lang {
-                | EngToSum => "translation"
-                | SumToEng => "word"
+                |> Js.String.toLowerCase;
+            let word_to_search = switch selected_lang {
+                | EngToSum => normalized_word
+                | SumToEng =>
+                    normalized_word
+                    |> Web_utils.Format.from_standard_to_phonetic
             };
-            let filter = switch (selected_lang, selected_search_shape) {
-                | (SumToEng, ExactWord) =>
-                    Supabase.Filter.ilike_any(
-                        ~column,
-                        ~values=Web_utils.Format.with_g_variants(word_to_search),
-                        ~contains=false,
+            let contains_match = selected_search_shape === Contains;
+            let search_requests = switch selected_lang {
+                | EngToSum => [|
+                    Supabase.client
+                    |> Supabase.Query.rpc(
+                        "search_dictionary_english",
+                        Supabase.Query.dictionary_search_params(
+                            ~search_text=word_to_search,
+                            ~contains_match,
+                            (),
+                        ),
                     )
-                | (SumToEng, Contains) =>
-                    Supabase.Filter.ilike_any(
-                        ~column,
-                        ~values=Web_utils.Format.with_g_variants(word_to_search),
-                        ~contains=true,
+                |]
+                | SumToEng =>
+                    word_to_search
+                    |> Web_utils.Format.with_g_variants
+                    |> Array.map(search_text =>
+                        Supabase.client
+                        |> Supabase.Query.rpc(
+                            "search_dictionary_sumerian",
+                            Supabase.Query.dictionary_search_params(
+                                ~search_text,
+                                ~contains_match,
+                                (),
+                            ),
+                        )
                     )
-                | (_, ExactWord) => Supabase.Filter.ilike(~column, ~value=word_to_search)
-                | (_, Contains) => Supabase.Filter.ilike(~column, ~value=("%" ++ word_to_search ++ "%"))
             };
             let _ = 
-                Supabase.client 
-                |> Supabase.Query.from("dictionary")
-                |> Supabase.Query.select("*")
-                |> filter
-                |> Supabase.Modifier.order(~column="icount", ~options=Some({ascending: false}))
-                |> Js.Promise.then_(res => {
-                    // Js.log("Search result: " ++ Js.Json.stringify(res));
-                    let decoded = Supabase.Response.decode(res);
-                    set_search_results(_ => Some(decoded.data));
+                search_requests
+                |> Js.Promise.all
+                |> Js.Promise.then_(responses => {
+                    let rows_by_id: Js.Dict.t(Supabase.dictionary_row) = Js.Dict.empty();
+                    responses
+                    |> Array.iter(response =>
+                        response
+                        |> Supabase.Response.decode
+                        |> decoded => decoded.data
+                        |> Array.iter((row: Supabase.dictionary_row) =>
+                            Js.Dict.set(rows_by_id, row.id, row)
+                        )
+                    );
+                    let rows =
+                        rows_by_id
+                        |> Js.Dict.entries
+                        |> Array.map(((_id, row)) => row);
+                    Array.sort(
+                        (
+                            a: Supabase.dictionary_row,
+                            b: Supabase.dictionary_row,
+                        ) => b.icount - a.icount,
+                        rows,
+                    );
+                    set_search_results(_ => Some(rows));
                     setPage(_ => 0);
                     set_searching(_ => false);
                     Js.Promise.resolve();
@@ -312,7 +340,7 @@ let make = () => {
                                 component=RootComponent.reactComponent(Paper.make)
                             >
                                 <div className=css##tableScroll>
-                                    <Table stickyHeader=true className=css##resultsList>
+                                    <Table stickyHeader=true className=css##resultsList size=`small>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>{"Cuneiforms" |> React.string}</TableCell>
@@ -383,7 +411,7 @@ let make = () => {
                                                             }
                                                         }
                                                     </TableCell>
-                                                    <TableCell sx={{"display": "flex", "justifyContent": "center"}}>
+                                                    <TableCell align=`center>
                                                         <IconButton
                                                             ariaLabel="Add to words list"
                                                             color=Color.primary
@@ -419,7 +447,7 @@ let make = () => {
                                 </div>
                                 <TablePagination
                                     className=css##pagination
-                                    rowsPerPageOptions={[|5, 10, 25|]}
+                                    rowsPerPageOptions={[|7, 10, 25|]}
                                     component={RootComponent.htmlElement("div")}
                                     count={Array.length(results)}
                                     rowsPerPage={rowsPerPage}

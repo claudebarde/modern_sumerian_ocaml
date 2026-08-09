@@ -76,6 +76,18 @@ module IconBrain = {
   ) => React.element = "IconBrain";
 };
 
+module IconBrandDiscord = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBrandDiscord";
+};
+
 module IconBrandFacebook = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (

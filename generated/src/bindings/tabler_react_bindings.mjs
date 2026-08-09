@@ -13,6 +13,8 @@ const IconBorderAll = {};
 
 const IconBrain = {};
 
+const IconBrandDiscord = {};
+
 const IconBrandFacebook = {};
 
 const IconBrandGithub = {};
@@ -92,6 +94,7 @@ export {
   IconBook2,
   IconBorderAll,
   IconBrain,
+  IconBrandDiscord,
   IconBrandFacebook,
   IconBrandGithub,
   IconBrandX,

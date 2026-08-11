@@ -293,6 +293,7 @@ let make = () => {
                         "& .MuiChip-avatar": {
                             "backgroundColor": "transparent",
                         },
+                        "fontFamily": "CuneiformComposite, sans-serif",
                     }}
                     avatar={
                         <Avatar 

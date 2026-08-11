@@ -8,8 +8,12 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
+import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import OutlinedInput from "@mui/material/OutlinedInput";
 import Paper from "@mui/material/Paper";
 import Select from "@mui/material/Select";
 import Snackbar from "@mui/material/Snackbar";
@@ -21,7 +25,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
@@ -165,12 +168,37 @@ function Dictionary(Props) {
       return 0;
     }));
   };
+  let search_label;
+  search_label = selected_lang === /* EngToSum */ 0 ? "English Word" : "Sumerian Word";
   let tmp;
   tmp = selected_lang === /* EngToSum */ 0 ? "English > Sumerian Dictionary" : "Sumerian > English Dictionary";
   let tmp$1;
-  tmp$1 = selected_lang === /* EngToSum */ 0 ? "English Word" : "Sumerian Word";
-  let tmp$2;
   let exit = 0;
+  if (search_results !== undefined && word.length !== 0) {
+    tmp$1 = JsxRuntime.jsx(IconButton, {
+      "aria-label": "Clear search",
+      children: JsxRuntime.jsx(IconsReact.IconX, {
+        size: 20
+      }),
+      onClick: (function (param) {
+        Curry._1(set_word, (function (param) {
+          return "";
+        }));
+        Curry._1(set_search_results, (function (param) {
+          
+        }));
+      })
+    });
+  } else {
+    exit = 1;
+  }
+  if (exit === 1) {
+    tmp$1 = JsxRuntime.jsx(IconsReact.IconSearch, {
+      size: 20
+    });
+  }
+  let tmp$2;
+  let exit$1 = 0;
   if (search_results !== undefined && word.length !== 0) {
     tmp$2 = search_results.length === 0 ? JsxRuntime.jsx("div", {
         children: "No results found."
@@ -499,9 +527,9 @@ function Dictionary(Props) {
         ]
       });
   } else {
-    exit = 1;
+    exit$1 = 1;
   }
-  if (exit === 1) {
+  if (exit$1 === 1) {
     tmp$2 = JsxRuntime.jsx("div", {
       children: searching ? "Searching..." : "Enter a word to search."
     });
@@ -548,29 +576,41 @@ function Dictionary(Props) {
                   backgroundColor: "white"
                 }
               }),
-              JsxRuntime.jsx(TextField, {
-                autoFocus: true,
-                fullWidth: false,
-                label: tmp$1,
-                onChange: (function ($$event) {
-                  Curry._1(set_word, (function (param) {
-                    return $$event.target.value;
-                  }));
-                }),
-                onKeyDown: (function ($$event) {
-                  if ($$event.key === "Enter") {
-                    $$event.preventDefault();
-                    return search_word(undefined);
-                  }
-                  
-                }),
-                placeholder: "Search a word...",
+              JsxRuntime.jsxs(FormControl, {
+                children: [
+                  JsxRuntime.jsx(InputLabel, {
+                    children: search_label
+                  }),
+                  JsxRuntime.jsx(OutlinedInput, {
+                    autoFocus: true,
+                    endAdornment: JsxRuntime.jsx(InputAdornment, {
+                      children: tmp$1,
+                      position: "end_"
+                    }),
+                    fullWidth: false,
+                    label: search_label,
+                    onChange: (function ($$event) {
+                      Curry._1(set_word, (function (param) {
+                        return $$event.target.value;
+                      }));
+                    }),
+                    onKeyDown: (function ($$event) {
+                      if ($$event.key === "Enter") {
+                        $$event.preventDefault();
+                        return search_word(undefined);
+                      }
+                      
+                    }),
+                    placeholder: "Search a word...",
+                    type_: "text",
+                    value: word
+                  })
+                ],
+                className: css.searchInput,
                 sx: {
                   backgroundColor: "white",
                   width: "300px"
                 },
-                type_: "text",
-                value: word,
                 variant: "outlined"
               }),
               JsxRuntime.jsxs(Select, {
@@ -628,7 +668,8 @@ function Dictionary(Props) {
             spacing: {
               xs: 2,
               md: 3
-            }
+            },
+            useFlexGap: true
           }),
           JsxRuntime.jsx("div", {
             children: tmp$2,

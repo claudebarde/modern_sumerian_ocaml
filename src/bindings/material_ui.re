@@ -714,6 +714,22 @@ module IconButton = {
   ) => React.element = "default";
 };
 
+module InputAdornment = {
+  [@mel.module "@mui/material/InputAdornment"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~disablePointerEvents: bool=?,
+    ~disableTypography: bool=?,
+    ~position: [`start | `end_]=?,
+    ~sx: Js.t({..})=?,
+    ~variant: [`standard | `outlined | `filled]=?,
+    unit
+  ) => React.element = "default";
+};
+
 module InputBase = {
   [@mel.module "@mui/material/InputBase"] [@react.component]
   external make: (
@@ -978,6 +994,49 @@ module MenuItem = {
     ~onClick: (React.Event.Synthetic.t => unit)=?,
     ~selected: bool=?,
     ~sx: Js.t({..})=?,
+    ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
+module OutlinedInput = {
+  [@mel.module "@mui/material/OutlinedInput"] [@react.component]
+  external make: (
+    ~ariaLabel: [@mel.as "aria-label"] string=?,
+    ~ariaDescribedby: [@mel.as "aria-describedby"] string=?,
+    ~autoComplete: string=?,
+    ~autoFocus: bool=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~defaultValue: 'value=?,
+    ~disabled: bool=?,
+    ~endAdornment: React.element=?,
+    ~error: bool=?,
+    ~fullWidth: bool=?,
+    ~id: string=?,
+    ~inputComponent: RootComponent.t=?,
+    ~inputProps: Js.t({..})=?,
+    ~inputRef: React.ref(Js.Nullable.t(Dom.element))=?,
+    ~label: React.element=?,
+    ~margin: [`dense | `none]=?,
+    ~maxRows: int=?,
+    ~minRows: int=?,
+    ~multiline: bool=?,
+    ~name: string=?,
+    ~notched: bool=?,
+    ~onBlur: (React.Event.Focus.t => unit)=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~onKeyDown: (React.Event.Keyboard.t => unit)=?,
+    ~onKeyUp: (React.Event.Keyboard.t => unit)=?,
+    ~onPaste: (React.Event.Clipboard.t => unit)=?,
+    ~placeholder: string=?,
+    ~readOnly: bool=?,
+    ~required: bool=?,
+    ~rows: int=?,
+    ~startAdornment: React.element=?,
+    ~sx: Js.t({..})=?,
+    ~type_: string=?,
     ~value: 'value=?,
     unit
   ) => React.element = "default";

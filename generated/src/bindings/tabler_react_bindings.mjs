@@ -51,6 +51,8 @@ const IconCopy = {};
 
 const IconCopyFilled = {};
 
+const IconCurrencyBitcoin = {};
+
 const IconFileText = {};
 
 const IconHome = {};
@@ -87,6 +89,8 @@ const IconTrashXFilled = {};
 
 const IconWind = {};
 
+const IconX = {};
+
 export {
   IconArrowBackUpDouble,
   IconArrowBarBoth,
@@ -113,6 +117,7 @@ export {
   IconCloudSnow,
   IconCopy,
   IconCopyFilled,
+  IconCurrencyBitcoin,
   IconFileText,
   IconHome,
   IconKeyboard,
@@ -131,5 +136,6 @@ export {
   IconTrashX,
   IconTrashXFilled,
   IconWind,
+  IconX,
 }
 /* No side effect */

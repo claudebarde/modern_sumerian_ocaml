@@ -29,6 +29,12 @@
   }
 }
 
+.searchInput {
+  @media (max-width: $breakpoint) {
+    order: -1;
+  }
+}
+
 .refreshIcon {
   animation: spin 1s linear infinite;
 }

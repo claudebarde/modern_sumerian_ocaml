@@ -244,6 +244,11 @@ let make = () => {
         setPage(_ => 0);
     };
 
+    let search_label = switch selected_lang {
+        | EngToSum => "English Word" |> React.string
+        | SumToEng => "Sumerian Word" |> React.string
+    };
+
     <>
         <div className=css##dictionary>
             <h1>
@@ -257,6 +262,7 @@ let make = () => {
             <Stack 
                 spacing=`Object(Stack.ResponsiveSpacing.make(~xs=2, ~md=3, ()))
                 direction=`Object(Stack.ResponsiveDirection.make(~xs=`column, ~md=`row, ()))
+                useFlexGap=true
             >
                 <Select
                     value={selected_lang_value}
@@ -278,26 +284,49 @@ let make = () => {
                         {"Sumerian to English" |> React.string}
                     </MenuItem>
                 </Select>
-                <TextField
-                    type_="text"
-                    fullWidth=false
-                    autoFocus=true
-                    placeholder="Search a word..."
-                    label={switch selected_lang {
-                        | EngToSum => "English Word" |> React.string
-                        | SumToEng => "Sumerian Word" |> React.string
-                    }}
-                    value={word}
-                    onChange={event => set_word(_ => event -> React.Event.Form.target##value)}
-                    onKeyDown={event =>
-                        if (React.Event.Keyboard.key(event) === "Enter") {
-                            React.Event.Keyboard.preventDefault(event);
-                            search_word();
-                        }
-                    }
-                    sx={{"backgroundColor": "white", "width": "300px"}}
+                <FormControl
+                    className=css##searchInput
                     variant=`outlined
-                />
+                    sx={{"backgroundColor": "white", "width": "300px"}}
+                >
+                    <InputLabel>
+                        {search_label}
+                    </InputLabel>
+                    <OutlinedInput
+                        type_="text"
+                        fullWidth=false
+                        autoFocus=true
+                        placeholder="Search a word..."
+                        label=search_label
+                        value={word}
+                        endAdornment={
+                            <InputAdornment position=`end_>
+                            {
+                                switch search_results {
+                                | Some(_) when (word |> String.length > 0) =>
+                                    <IconButton
+                                        ariaLabel="Clear search"
+                                        onClick={_ => {
+                                            set_word(_ => "");
+                                            set_search_results(_ => None);
+                                        }}
+                                    >
+                                        <TablerReact.IconX size=20 />
+                                    </IconButton>
+                                | _ => <TablerReact.IconSearch size=20 />
+                                }
+                            }
+                            </InputAdornment>
+                        }
+                        onChange={event => set_word(_ => event -> React.Event.Form.target##value)}
+                        onKeyDown={event =>
+                            if (React.Event.Keyboard.key(event) === "Enter") {
+                                React.Event.Keyboard.preventDefault(event);
+                                search_word();
+                            }
+                        }
+                    />
+                </FormControl>
                 <Select
                     autoWidth=true
                     value={selected_search_shape_value}

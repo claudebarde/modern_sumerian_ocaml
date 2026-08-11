@@ -95,6 +95,8 @@ const Grid = {
 
 const IconButton = {};
 
+const InputAdornment = {};
+
 const InputBase = {};
 
 const InputLabel = {};
@@ -120,6 +122,8 @@ const ListSubheader = {};
 const Menu = {};
 
 const MenuItem = {};
+
+const OutlinedInput = {};
 
 const Paper = {};
 
@@ -265,6 +269,7 @@ export {
   FormLabel,
   Grid,
   IconButton,
+  InputAdornment,
   InputBase,
   InputLabel,
   Link,
@@ -278,6 +283,7 @@ export {
   ListSubheader,
   Menu,
   MenuItem,
+  OutlinedInput,
   Paper,
   Popover,
   Radio,

@@ -304,6 +304,18 @@ module IconCopyFilled = {
   ) => React.element = "IconCopyFilled";
 };
 
+module IconCurrencyBitcoin = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconCurrencyBitcoin";
+};
+
 module IconFileText = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -518,4 +530,16 @@ module IconWind = {
     ~title: string=?,
     unit
   ) => React.element = "IconWind";
+};
+
+module IconX = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconX";
 };

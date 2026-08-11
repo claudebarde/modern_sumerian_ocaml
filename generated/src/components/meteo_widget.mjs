@@ -550,7 +550,8 @@ function Meteo_widget(Props) {
           sx: {
             "& .MuiChip-avatar": {
               backgroundColor: "transparent"
-            }
+            },
+            fontFamily: "CuneiformComposite, sans-serif"
           },
           variant: "outlined"
         }),

@@ -18,6 +18,13 @@ const fallbackDict = Js__Js_dict.fromArray([
     }
   ],
   [
+    "ed",
+    {
+      hd: "0x1208A",
+      tl: /* [] */ 0
+    }
+  ],
+  [
     "eme",
     {
       hd: "0x12174",
@@ -57,16 +64,6 @@ const fallbackDict = Js__Js_dict.fromArray([
     {
       hd: "0x121B7",
       tl: /* [] */ 0
-    }
-  ],
-  [
-    "na-na",
-    {
-      hd: "0x12158",
-      tl: {
-        hd: "0x12158",
-        tl: /* [] */ 0
-      }
     }
   ],
   [

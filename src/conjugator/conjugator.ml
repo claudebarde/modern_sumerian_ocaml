@@ -25,7 +25,7 @@ type t = Constructs.conjugated_verb
 type verb_output = string array
 
 type ipfv_stem =
-    | Reduplicate
+    | Reduplicate of string option
     | Ed_marker
     | Other of string
 
@@ -60,7 +60,8 @@ let is_perfective verb: t =
 
 let is_imperfective (verb: t) ipfv_stem: t =
     match ipfv_stem with
-    | Some Reduplicate -> { verb with stem = verb.stem ^ "-" ^ verb.stem; is_perfective = false; ed_marker = false}
+    | Some (Reduplicate None) -> { verb with stem = verb.stem ^ "-" ^ verb.stem; is_perfective = false; ed_marker = false}
+    | Some (Reduplicate (Some stem)) -> { verb with stem = stem; is_perfective = false; ed_marker = false}
     | Some Ed_marker -> { verb with is_perfective = false; ed_marker = true}
     | Some Other stem -> { verb with is_perfective = false; stem = stem; ed_marker = false}
     | None -> { verb with is_perfective = false; ed_marker = false}

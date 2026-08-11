@@ -717,6 +717,10 @@
       "name": "DU"
     },
     {
+      "codepoint": "0x1207A",
+      "name": "DE6"
+    },
+    {
       "codepoint": "0x1207B",
       "name": "DU OVER DU"
     },
@@ -2587,6 +2591,10 @@
     {
       "codepoint": "0x12248",
       "name": "NE"
+    },
+    {
+      "codepoint": "0x12248",
+      "name": "DE"
     },
     {
       "codepoint": "0x12249",

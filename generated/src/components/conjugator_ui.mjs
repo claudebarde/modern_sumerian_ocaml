@@ -199,233 +199,7 @@ function Conjugator_ui(Props) {
   const set_is_modal_open = match$17[1];
   const marginTop = "20px";
   const is_mobile = UseMediaQuery("(max-width:599px)");
-  const available_verbs = [
-    {
-      label: "ak",
-      meaning: "do",
-      stem: "ʔak",
-      stem_cuneiforms: ["𒀝"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "ʔak"
-      },
-      transitive: true
-    },
-    {
-      label: "dab",
-      meaning: "seize",
-      stem: "dab",
-      stem_cuneiforms: ["𒆪"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "dab"
-      },
-      transitive: true
-    },
-    {
-      label: "dug",
-      meaning: "speak",
-      stem: "dug",
-      stem_cuneiforms: ["𒅗"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "e"
-      },
-      transitive: true
-    },
-    {
-      label: "e",
-      meaning: "leave",
-      stem: "e",
-      stem_cuneiforms: [
-        "𒌓",
-        "𒁺"
-      ],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "e"
-      },
-      transitive: false
-    },
-    {
-      label: "ĝal",
-      meaning: "exist",
-      stem: "ĝal",
-      stem_cuneiforms: ["𒅅"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "ĝal"
-      },
-      transitive: false
-    },
-    {
-      label: "ĝen",
-      meaning: "go",
-      stem: "ĝen",
-      stem_cuneiforms: ["𒁺"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "ĝen"
-      },
-      transitive: false
-    },
-    {
-      label: "gu",
-      meaning: "eat",
-      stem: "gu",
-      stem_cuneiforms: ["𒅥"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "gu"
-      },
-      transitive: true
-    },
-    {
-      label: "gub",
-      meaning: "stand",
-      stem: "gub",
-      stem_cuneiforms: ["𒁺"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "gub"
-      },
-      transitive: false
-    },
-    {
-      label: "il",
-      meaning: "raise",
-      stem: "il",
-      stem_cuneiforms: ["𒅍"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "il"
-      },
-      transitive: true
-    },
-    {
-      label: "kur",
-      meaning: "enter",
-      stem: "kur",
-      stem_cuneiforms: ["𒆭"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "kur"
-      },
-      transitive: false
-    },
-    {
-      label: "naĝ",
-      meaning: "drink",
-      stem: "naĝ",
-      stem_cuneiforms: ["𒅘"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "na-na"
-      },
-      transitive: true
-    },
-    {
-      label: "sar",
-      meaning: "write",
-      stem: "sar",
-      stem_cuneiforms: ["𒊬"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "sar"
-      },
-      transitive: true
-    },
-    {
-      label: "sig",
-      meaning: "put",
-      stem: "sig",
-      stem_cuneiforms: ["𒋛"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "sig"
-      },
-      transitive: true
-    },
-    {
-      label: "shag dab",
-      meaning: "think",
-      stem: "dab",
-      stem_cuneiforms: ["𒁳"],
-      kind: {
-        TAG: /* Compound */ 0,
-        _0: {
-          value: "shag",
-          cuneiforms: ["𒊮"]
-        }
-      },
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "dab"
-      },
-      transitive: true
-    },
-    {
-      label: "shum",
-      meaning: "give",
-      stem: "šum",
-      stem_cuneiforms: ["𒋧"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "shum"
-      },
-      transitive: true
-    },
-    {
-      label: "tush",
-      meaning: "sit",
-      stem: "tuš",
-      stem_cuneiforms: ["𒆪"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "tush"
-      },
-      transitive: false
-    },
-    {
-      label: "tuku",
-      meaning: "have",
-      stem: "tuku",
-      stem_cuneiforms: ["𒌇"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "tuku"
-      },
-      transitive: true
-    },
-    {
-      label: "zu",
-      meaning: "know",
-      stem: "zu",
-      stem_cuneiforms: ["𒍪"],
-      kind: /* Simple */ 0,
-      imperfective: {
-        TAG: /* Other */ 0,
-        _0: "zu"
-      },
-      transitive: true
-    }
-  ];
+  const available_verbs = Components__Web_utils.SumerianVerbs.verbs;
   const pronoun_options = [
     {
       label: "I",
@@ -1140,6 +914,9 @@ function Conjugator_ui(Props) {
                     autoHighlight: true,
                     getOptionLabel: (function (verb) {
                       return verb.label;
+                    }),
+                    groupBy: (function (verb) {
+                      return verb.firstLetter.toUpperCase();
                     }),
                     onChange: (function (_event, newValue) {
                       let value = (newValue == null) ? undefined : Caml_option.some(newValue);
@@ -1884,6 +1661,7 @@ function Conjugator_ui(Props) {
                         meaning: verb_stem !== undefined ? verb_stem.meaning : undefined,
                         lexicalStem: verb_stem !== undefined ? verb_stem.stem : verb_form.stem,
                         stemCuneiforms: verb_stem !== undefined ? verb_stem.stem_cuneiforms : [],
+                        imperfectiveStem: verb_stem !== undefined ? verb_stem.imperfective : undefined,
                         fixedElement: verb_stem !== undefined ? verb_fixed_element(verb_stem) : undefined
                       }) : JsxRuntime.jsx("span", {
                         children: "No Selected Verb"
@@ -1913,7 +1691,7 @@ function Conjugator_ui(Props) {
                       }
                       const error = Conjugator.print(verb_form, undefined);
                       if (error.TAG === /* Ok */ 0) {
-                        const cuneiforms = Components__Web_utils.build_result_cuneiform_string(error._0.verb, verb_form.stem, verb_stem.stem, verb_stem.stem_cuneiforms, verb_fixed_element(verb_stem));
+                        const cuneiforms = Components__Web_utils.build_result_cuneiform_string(error._0.verb, verb_form.stem, verb_stem.stem, verb_stem.stem_cuneiforms, verb_stem.imperfective, verb_fixed_element(verb_stem));
                         navigator.clipboard.writeText(cuneiforms).catch(function (error) {
                           console.log("Could not copy the conjugated cuneiforms:", error);
                           return Promise.resolve(undefined);

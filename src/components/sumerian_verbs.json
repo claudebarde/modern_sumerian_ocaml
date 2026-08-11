@@ -1,0 +1,200 @@
+[
+  {
+    "label": "ak",
+    "meaning": "do",
+    "stem": "ʔak",
+    "stem_cuneiforms": ["𒀝"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true
+  },
+  {
+    "label": "dab",
+    "meaning": "take",
+    "stem": "dab",
+    "stem_cuneiforms": ["𒆪"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "dug",
+    "meaning": "speak",
+    "stem": "dug",
+    "stem_cuneiforms": ["𒅗"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate", "value": "du-du" },
+    "transitive": true
+  },
+  {
+    "label": "e",
+    "meaning": "leave",
+    "stem": "e",
+    "stem_cuneiforms": ["𒌓", "𒁺"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "ed" },
+    "transitive": false
+  },
+  {
+    "label": "gu",
+    "meaning": "eat",
+    "stem": "gu",
+    "stem_cuneiforms": ["𒅥"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "gu" },
+    "transitive": true
+  },
+  {
+    "label": "gi",
+    "meaning": "return",
+    "stem": "gi",
+    "stem_cuneiforms": ["𒄄"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": false
+  },
+  {
+    "label": "gub",
+    "meaning": "stand",
+    "stem": "gub",
+    "stem_cuneiforms": ["𒁺"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false
+  },
+  {
+    "label": "ĝal",
+    "meaning": "exist",
+    "stem": "ĝal",
+    "stem_cuneiforms": ["𒅅"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": false
+  },
+  {
+    "label": "ĝar",
+    "meaning": "place",
+    "stem": "ĝar",
+    "stem_cuneiforms": ["𒃻"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate", "value": "ĝa-ĝa" },
+    "transitive": true
+  },
+  {
+    "label": "il",
+    "meaning": "raise",
+    "stem": "il",
+    "stem_cuneiforms": ["𒅍"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "kur",
+    "meaning": "enter",
+    "stem": "kur",
+    "stem_cuneiforms": ["𒆭"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate", "value": "ku-ku" },
+    "transitive": false
+  },
+  {
+    "label": "naĝ",
+    "meaning": "drink",
+    "stem": "naĝ",
+    "stem_cuneiforms": ["𒅘"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate", "value": "na-na" },
+    "transitive": true
+  },
+  {
+    "label": "sar",
+    "meaning": "write",
+    "stem": "sar",
+    "stem_cuneiforms": ["𒊬"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "sar" },
+    "transitive": true
+  },
+  {
+    "label": "shag dab",
+    "meaning": "think",
+    "stem": "dab",
+    "stem_cuneiforms": ["𒁳"],
+    "kind": { "type": "compound", "value": "shag", "cuneiforms": ["𒊮"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "shum",
+    "meaning": "give",
+    "stem": "šum",
+    "stem_cuneiforms": ["𒋧"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "shum" },
+    "transitive": true
+  },
+  {
+    "label": "sig",
+    "meaning": "put",
+    "stem": "sig",
+    "stem_cuneiforms": ["𒋛"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "teĝ",
+    "meaning": "approach",
+    "stem": "teĝ",
+    "stem_cuneiforms": ["𒋾"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "tuku",
+    "meaning": "have",
+    "stem": "tuku",
+    "stem_cuneiforms": ["𒌇"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "tush",
+    "meaning": "sit",
+    "stem": "tush",
+    "stem_cuneiforms": ["𒆪"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": false
+  },
+  {
+    "label": "zig",
+    "meaning": "rise",
+    "stem": "zig",
+    "stem_cuneiforms": ["𒍣"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate", "value": "zi-zi" },
+    "transitive": false
+  },
+  {
+    "label": "zu",
+    "meaning": "know",
+    "stem": "zu",
+    "stem_cuneiforms": ["𒍪"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
+    "label": "ĝen",
+    "meaning": "go",
+    "stem": "ĝen",
+    "stem_cuneiforms": ["𒁺"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "ĝen" },
+    "transitive": false
+  }
+]

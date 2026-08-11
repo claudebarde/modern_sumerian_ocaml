@@ -47,29 +47,36 @@ function is_perfective(verb) {
 function is_imperfective(verb, ipfv_stem) {
   if (ipfv_stem !== undefined) {
     if (/* tag */ typeof ipfv_stem === "number" || typeof ipfv_stem === "string") {
-      if (ipfv_stem === /* Reduplicate */ 0) {
-        const newrecord = Caml_obj.caml_obj_dup(verb);
-        newrecord.ed_marker = false;
-        newrecord.is_perfective = false;
-        newrecord.stem = verb.stem + ("-" + verb.stem);
-        return newrecord;
+      const newrecord = Caml_obj.caml_obj_dup(verb);
+      newrecord.ed_marker = true;
+      newrecord.is_perfective = false;
+      return newrecord;
+    }
+    if (ipfv_stem.TAG === /* Reduplicate */ 0) {
+      const stem = ipfv_stem._0;
+      if (stem !== undefined) {
+        const newrecord$1 = Caml_obj.caml_obj_dup(verb);
+        newrecord$1.ed_marker = false;
+        newrecord$1.is_perfective = false;
+        newrecord$1.stem = stem;
+        return newrecord$1;
       }
-      const newrecord$1 = Caml_obj.caml_obj_dup(verb);
-      newrecord$1.ed_marker = true;
-      newrecord$1.is_perfective = false;
-      return newrecord$1;
-    } else {
       const newrecord$2 = Caml_obj.caml_obj_dup(verb);
       newrecord$2.ed_marker = false;
       newrecord$2.is_perfective = false;
-      newrecord$2.stem = ipfv_stem._0;
+      newrecord$2.stem = verb.stem + ("-" + verb.stem);
       return newrecord$2;
     }
-  } else {
     const newrecord$3 = Caml_obj.caml_obj_dup(verb);
     newrecord$3.ed_marker = false;
     newrecord$3.is_perfective = false;
+    newrecord$3.stem = ipfv_stem._0;
     return newrecord$3;
+  } else {
+    const newrecord$4 = Caml_obj.caml_obj_dup(verb);
+    newrecord$4.ed_marker = false;
+    newrecord$4.is_perfective = false;
+    return newrecord$4;
   }
 }
 

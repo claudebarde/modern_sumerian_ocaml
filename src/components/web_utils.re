@@ -1,5 +1,179 @@
 external toNumber: (string) => int = "Number";
 [@mel.module "./cuneiform_code_points.json"] external cuneiformCodePoints: Js.Json.t = "default";
+[@mel.module "./sumerian_verbs.json"] external sumerianVerbsJson: Js.Json.t = "default";
+
+type fixed_element = {
+    value: string,
+    cuneiforms: array(string),
+};
+
+type verb_kind =
+    | Simple
+    | Compound(fixed_element);
+
+type verb_data = {
+    label: string,
+    meaning: string,
+    stem: string,
+    stem_cuneiforms: array(string),
+    kind: verb_kind,
+    imperfective: Conjugator.ipfv_stem,
+    transitive: bool,
+    firstLetter: string,
+};
+
+module SumerianVerbs = {
+    let get_field = (object_, field) => Js.Dict.get(object_, field);
+
+    let get_string = (object_, field) =>
+        switch (get_field(object_, field)) {
+        | Some(value) => Js.Json.decodeString(value)
+        | None => None
+        };
+
+    let get_boolean = (object_, field) =>
+        switch (get_field(object_, field)) {
+        | Some(value) => Js.Json.decodeBoolean(value)
+        | None => None
+        };
+
+    let get_string_array = (object_, field) =>
+        switch (get_field(object_, field)) {
+        | Some(value) =>
+            switch (Js.Json.decodeArray(value)) {
+            | Some(values) =>
+                let rec decode = (index, strings) =>
+                    if (index >= Array.length(values)) {
+                        Some(strings |> Stdlib.List.rev |> Array.of_list);
+                    } else {
+                        switch (Js.Json.decodeString(values[index])) {
+                        | Some(value) => decode(index + 1, [value, ...strings])
+                        | None => None
+                        };
+                    };
+                decode(0, []);
+            | None => None
+            }
+        | None => None
+        };
+
+    let parse_kind = json =>
+        switch (Js.Json.decodeObject(json)) {
+        | Some(object_) =>
+            switch (get_string(object_, "type")) {
+            | Some("simple") => Some(Simple)
+            | Some("compound") =>
+                switch (
+                    get_string(object_, "value"),
+                    get_string_array(object_, "cuneiforms"),
+                ) {
+                | (Some(value), Some(cuneiforms)) =>
+                    Some(Compound({value, cuneiforms}))
+                | _ => None
+                }
+            | _ => None
+            }
+        | None => None
+        };
+
+    let parse_imperfective = json =>
+        switch (Js.Json.decodeObject(json)) {
+        | Some(object_) =>
+            switch (get_string(object_, "type")) {
+            | Some("ed_marker") => Some(Conjugator.Ed_marker)
+            | Some("reduplicate") =>
+                Some(
+                    Conjugator.Reduplicate(
+                        get_string(object_, "value"),
+                    ),
+                )
+            | Some("other") =>
+                switch (get_string(object_, "value")) {
+                | Some(value) => Some(Conjugator.Other(value))
+                | None => None
+                }
+            | _ => None
+            }
+        | None => None
+        };
+
+    let parse_verb = json =>
+        switch (Js.Json.decodeObject(json)) {
+        | Some(object_) =>
+            let kind =
+                switch (get_field(object_, "kind")) {
+                | Some(value) => parse_kind(value)
+                | None => None
+                };
+            let imperfective =
+                switch (get_field(object_, "imperfective")) {
+                | Some(value) => parse_imperfective(value)
+                | None => None
+                };
+            switch (
+                get_string(object_, "label"),
+                get_string(object_, "meaning"),
+                get_string(object_, "stem"),
+                get_string_array(object_, "stem_cuneiforms"),
+                kind,
+                imperfective,
+                get_boolean(object_, "transitive"),
+            ) {
+            | (
+                Some(label),
+                Some(meaning),
+                Some(stem),
+                Some(stem_cuneiforms),
+                Some(kind),
+                Some(imperfective),
+                Some(transitive),
+              ) =>
+                Some({
+                    label,
+                    meaning,
+                    stem,
+                    stem_cuneiforms,
+                    kind,
+                    imperfective,
+                    transitive,
+                    firstLetter: label |> Js.String.charAt(~index=0),
+                })
+            | _ => None
+            }
+        | None => None
+        };
+
+    let parse_result = (json: Js.Json.t): result(array(verb_data), string) =>
+        switch (Js.Json.decodeArray(json)) {
+        | Some(rows) =>
+            let rec decode = (index, verbs) =>
+                if (index >= Array.length(rows)) {
+                    Ok(verbs |> Stdlib.List.rev |> Array.of_list);
+                } else {
+                    switch (parse_verb(rows[index])) {
+                    | Some(verb) => decode(index + 1, [verb, ...verbs])
+                    | None =>
+                        Error(
+                            "Invalid Sumerian verb data at array index "
+                            ++ Js.Int.toString(index),
+                        )
+                    };
+                };
+            decode(0, []);
+        | None => Error("The Sumerian verbs JSON root must be an array")
+        };
+
+    let parse = (json: Js.Json.t): array(verb_data) =>
+        switch (parse_result(json)) {
+        | Ok(verbs) => {
+            let _ = verbs |> Array.sort((a, b) => String.compare(a.label, b.label));
+            verbs
+        }
+        | Error(message) => Js.Exn.raiseError(message)
+        };
+
+    let verbs: array(verb_data) = parse(sumerianVerbsJson);
+};
 
 type codePointData = {
     codepoint: string,
@@ -14,7 +188,7 @@ type cuneiformData = (string, string); // (Unicode code point, sound)
 let search_cuneiforms = (words: array(string)): array((string, option(list(string)))) => {
     let cuneiformData: jsonCuneiformData = cuneiformCodePoints |> Js.Json.stringify |> parseCuneiformCodePoints;
     words |> Array.map(word => {
-        // remove the glottal stop
+        // formats the word to match the names in the cuneiform code points JSON file
         let formattedWord = 
             word
             |> Js.String.replaceByRe(~regexp=Js.Re.fromString({js|ʔ|js}), ~replacement="")
@@ -171,6 +345,7 @@ let build_result_cuneiforms = (
     verbStem: string,
     lexicalStem: string,
     stemCuneiforms: array(string),
+    imperfectiveStem: option(Conjugator.ipfv_stem),
     fixedElement: option((string, array(string))),
 ): array(cuneiformData) => {
     let fixedCuneiforms =
@@ -180,6 +355,15 @@ let build_result_cuneiforms = (
             |> Array.map(cuneiform => (cuneiform, value))
         | None => [||]
         };
+    let isReduplicatedStem =
+        switch imperfectiveStem {
+        | Some(Conjugator.Reduplicate(None)) =>
+            verbStem === lexicalStem ++ "-" ++ lexicalStem
+        | Some(Conjugator.Reduplicate(Some(stem))) => verbStem === stem
+        | _ => false
+        };
+    let lexicalCuneiforms = stemCuneiforms |> Js.Array.join(~sep="");
+    let reduplicatedCuneiforms = lexicalCuneiforms ++ lexicalCuneiforms;
     let conjugatedCuneiforms =
         parse_verb_syllables(conjugatedVerb, verbStem)
         |> display_cuneiforms
@@ -187,10 +371,16 @@ let build_result_cuneiforms = (
             let displayedCodePoint =
                 if (
                     word === verbStem
+                    && isReduplicatedStem
+                    && Array.length(stemCuneiforms) > 0
+                ) {
+                    reduplicatedCuneiforms
+                } else if (
+                    word === verbStem
                     && verbStem === lexicalStem
                     && Array.length(stemCuneiforms) > 0
                 ) {
-                    stemCuneiforms |> Js.Array.join(~sep="")
+                    lexicalCuneiforms
                 } else {
                     codePoint
                 };
@@ -204,6 +394,7 @@ let build_result_cuneiform_string = (
     verbStem: string,
     lexicalStem: string,
     stemCuneiforms: array(string),
+    imperfectiveStem: option(Conjugator.ipfv_stem),
     fixedElement: option((string, array(string))),
 ): string =>
     build_result_cuneiforms(
@@ -211,6 +402,7 @@ let build_result_cuneiform_string = (
         verbStem,
         lexicalStem,
         stemCuneiforms,
+        imperfectiveStem,
         fixedElement,
     )
     |> Array.map(((codePoint, _)) => codePoint)
@@ -226,6 +418,7 @@ module BuildResults = {
         ~meaning: option(string),
         ~lexicalStem: string,
         ~stemCuneiforms: array(string),
+        ~imperfectiveStem: option(Conjugator.ipfv_stem),
         ~fixedElement: option((string, array(string))),
     ) => {
         switch (Conjugator.print(verb, meaning)) {
@@ -253,6 +446,7 @@ module BuildResults = {
                         verb.stem,
                         lexicalStem,
                         stemCuneiforms,
+                        imperfectiveStem,
                         fixedElement,
                     )
                     |> Array.mapi((i, (codePoint, word)) =>

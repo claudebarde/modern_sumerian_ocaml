@@ -1,5 +1,7 @@
 [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default"; 
 
+open Web_utils;
+
 type prefix =
   | Negative
   | NegativeNan
@@ -12,25 +14,6 @@ type prefix =
   | LocativeOn;
   
 type modal_prefix = HA | NAN | NU;
-
-type fixed_element = {
-    value: string,
-    cuneiforms: array(string),
-};
-
-type verb_kind =
-    | Simple
-    | Compound(fixed_element);
-
-type verb_data = { 
-    label: string, 
-    meaning: string,
-    stem: string,
-    stem_cuneiforms: array(string),
-    kind: verb_kind,
-    imperfective: Conjugator.ipfv_stem, 
-    transitive: bool 
-};
 
 let verb_dictionary_value = (verb: verb_data): string =>
     switch verb.kind {
@@ -94,26 +77,7 @@ let make = () => {
     let marginTop = "20px";
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
-    let available_verbs: array(verb_data) = [|
-        {label: "ak", meaning: "do", stem: {js|ʔak|js}, stem_cuneiforms: [|{js|𒀝|js}|], kind: Simple, imperfective: Other({js|ʔak|js}), transitive: true},
-        {label: "dab", meaning: "seize", stem: "dab", stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("dab"), transitive: true},
-        {label: "dug", meaning: "speak", stem: "dug", stem_cuneiforms: [|{js|𒅗|js}|], kind: Simple, imperfective: Other("e"), transitive: true},
-        {label: "e", meaning: "leave", stem: "e", stem_cuneiforms: [|{js|𒌓|js}, {js|𒁺|js}|], kind: Simple, imperfective: Other("e"), transitive: false},
-        {label: {js|ĝal|js}, meaning: "exist", stem: {js|ĝal|js}, stem_cuneiforms: [|{js|𒅅|js}|], kind: Simple, imperfective: Other({js|ĝal|js}), transitive: false},
-        {label: {js|ĝen|js}, meaning: "go", stem: {js|ĝen|js}, stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other({js|ĝen|js}), transitive: false},
-        {label: "gu", meaning: "eat", stem: "gu", stem_cuneiforms: [|{js|𒅥|js}|], kind: Simple, imperfective: Other("gu"), transitive: true},
-        {label: "gub", meaning: "stand", stem: "gub", stem_cuneiforms: [|{js|𒁺|js}|], kind: Simple, imperfective: Other("gub"), transitive: false},
-        {label: "il", meaning: "raise", stem: "il", stem_cuneiforms: [|{js|𒅍|js}|], kind: Simple, imperfective: Other("il"), transitive: true},
-        {label: "kur", meaning: "enter", stem: "kur", stem_cuneiforms: [|{js|𒆭|js}|], kind: Simple, imperfective: Other("kur"), transitive: false},
-        {label: {js|naĝ|js}, meaning: "drink", stem: {js|naĝ|js}, stem_cuneiforms: [|{js|𒅘|js}|], kind: Simple, imperfective: Other("na-na"), transitive: true},
-        {label: "sar", meaning: "write", stem: "sar", stem_cuneiforms: [|{js|𒊬|js}|], kind: Simple, imperfective: Other("sar"), transitive: true},
-        {label: "sig", meaning: "put", stem: "sig", stem_cuneiforms: [|{js|𒋛|js}|], kind: Simple, imperfective: Other("sig"), transitive: true},
-        {label: "shag dab", meaning: "think", stem: "dab", stem_cuneiforms: [|{js|𒁳|js}|], kind: Compound({value: "shag", cuneiforms: [|{js|𒊮|js}|]}), imperfective: Other("dab"), transitive: true},
-        {label: "shum", meaning: "give", stem: {js|šum|js}, stem_cuneiforms: [|{js|𒋧|js}|], kind: Simple, imperfective: Other("shum"), transitive: true},
-        {label: "tush", meaning: "sit", stem: {js|tuš|js}, stem_cuneiforms: [|{js|𒆪|js}|], kind: Simple, imperfective: Other("tush"), transitive: false},
-        {label: "tuku", meaning: "have", stem: "tuku", stem_cuneiforms: [|{js|𒌇|js}|], kind: Simple, imperfective: Other("tuku"), transitive: true},
-        {label: "zu", meaning: "know", stem: "zu", stem_cuneiforms: [|{js|𒍪|js}|], kind: Simple, imperfective: Other("zu"), transitive: true},
-    |];
+    let available_verbs: array(verb_data) = SumerianVerbs.verbs;
 
     let pronoun_options: array(Utils.select_option) = [|
         {label: "I", value: "first-sing"},
@@ -641,6 +605,7 @@ let make = () => {
                         verb.stem,
                         selected_verb.stem,
                         selected_verb.stem_cuneiforms,
+                        Some(selected_verb.imperfective),
                         verb_fixed_element(selected_verb),
                     );
                 let _ =
@@ -680,6 +645,7 @@ let make = () => {
                     <Autocomplete
                         autoHighlight=true
                         options=available_verbs
+                        groupBy={verb => verb.firstLetter |> Js.String.toUpperCase}
                         getOptionLabel=(verb => verb.label)
                         value={
                             switch verb_stem {
@@ -1465,6 +1431,13 @@ let make = () => {
                                     | Some(selected_verb) =>
                                         selected_verb.stem_cuneiforms
                                     | None => [||]
+                                    }
+                                }
+                                imperfectiveStem={
+                                    switch verb_stem {
+                                    | Some(selected_verb) =>
+                                        Some(selected_verb.imperfective)
+                                    | None => None
                                     }
                                 }
                                 fixedElement={

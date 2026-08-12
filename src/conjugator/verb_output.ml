@@ -47,7 +47,12 @@ let add_preformative (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
         | None -> ()
     in Ok(arr)
 
-(* TODO: create a function to add the coordinator prefix *)
+let add_coordinator (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
+    match arr with
+    | Error(err) -> Error(err)
+    | Ok(arr) ->
+        let _ = if verb.coordinator then arr.(coordinator_pos) <- "nga" else ()
+        in Ok(arr)
 
 let add_ventive (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
     match arr with
@@ -210,6 +215,7 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
         |> add_stem morphemes_start
         |> add_first_prefix verb
         |> add_preformative verb
+        |> add_coordinator verb
         |> add_ventive verb
         |> add_adverbial verb
         |> add_middle_prefix verb
@@ -621,7 +627,7 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                         |> String.concat "" 
                                     in
                                     let cvc_seq = consonant_vowel_sequence temp_verb in
-                                    if (String.length cvc_seq > 1 && String.sub cvc_seq 0 2 == "CC")
+                                    if (String.length cvc_seq > 4 && String.sub cvc_seq 2 2 == "CC")
                                         || (String.length cvc_seq > 0 && String.sub cvc_seq 0 1 == "V")
                                     then
                                         (* 25.5 A by-form /na/ occurs before /b/ or /m/ *)

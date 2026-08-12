@@ -492,43 +492,6 @@ module BuildResults = {
                         </span>
                     </Grid>
                 </Grid>,
-                // <table key="verbAnalysis">
-                //     <thead>
-                //         <tr>
-                //             {analysis |> Conjugator__Verb_analysis.output |> Array.map(
-                //                 ((output_type, _)) => {
-                //                     <th key={output_type}>
-                //                         {
-                //                             switch output_type {
-                //                                 | "middlePrefix" => "Middle Prefix"
-                //                                 | "initialPersonPrefix" => "Initial Person Prefix"
-                //                                 | "finalPersonPrefix" => "Final Person Prefix"
-                //                                 | "edMarker" => "ED Marker"
-                //                                 | "finalPersonSuffix" => "Final Person Suffix"
-                //                                 | _ => {
-                //                                     let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
-                //                                     let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
-                //                                     first_char ++ rest
-                //                                 }
-                //                             }|> React.string
-                //                         }
-                //                     </th>
-                //                 },
-                //             )|> React.array}
-                //         </tr>
-                //     </thead>
-                //     <tbody>
-                //         <tr>
-                //             {analysis |> Conjugator__Verb_analysis.output |> Array.mapi(
-                //                 (i, (_, value)) => {
-                //                     <td key={value ++ Int.to_string(i)}>
-                //                         {value |> React.string}
-                //                     </td>
-                //                 },
-                //             )|> React.array}
-                //         </tr>
-                //     </tbody>
-                // </table>,
                 <TableContainer
                     key="verbAnalysis"
                     component={RootComponent.reactComponent(Paper.make)}
@@ -552,6 +515,9 @@ module BuildResults = {
                                                     | "finalPersonPrefix" => "Final Person Prefix"
                                                     | "edMarker" => "ED Marker"
                                                     | "finalPersonSuffix" => "Final Person Suffix"
+                                                    | "negativeNan" => "Nan Modal"
+                                                    | "modal" => {js|ḪA Modal|js}
+                                                    | "negative" => "Negation"
                                                     | _ => {
                                                         let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
                                                         let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;

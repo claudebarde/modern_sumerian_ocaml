@@ -554,6 +554,15 @@ function Web_utils$BuildResults(Props) {
                   case "middlePrefix" :
                     tmp = "Middle Prefix";
                     break;
+                  case "modal" :
+                    tmp = "ḪA Modal";
+                    break;
+                  case "negative" :
+                    tmp = "Negation";
+                    break;
+                  case "negativeNan" :
+                    tmp = "Nan Modal";
+                    break;
                   default:
                     const first_char = output_type.charAt(0).toUpperCase();
                     const rest = output_type.slice(1, undefined).toLowerCase();

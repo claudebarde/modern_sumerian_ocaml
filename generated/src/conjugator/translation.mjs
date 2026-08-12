@@ -1254,6 +1254,7 @@ function conjugate(verb_form, english_verb) {
                 return "are not " + ing_form;
             }
           case /* Negative_nan */ 2 :
+            return "shouldn't be " + ing_form;
           case /* Modal_ga */ 3 :
             return verb;
         }
@@ -1304,6 +1305,8 @@ function conjugate(verb_form, english_verb) {
           conjugated_verb = "didn't " + english_verb;
           break;
         case /* Negative_nan */ 2 :
+          conjugated_verb = "shouldn't " + english_verb;
+          break;
         case /* Modal_ga */ 3 :
           exit = 1;
           break;
@@ -1364,7 +1367,8 @@ function add_complements(verb) {
   } else {
     locative = "";
   }
-  return comitative + (" " + (adverbial + (" " + locative)));
+  const coordinator = verb.coordinator ? " too" : "";
+  return comitative + (" " + (adverbial + (" " + (locative + (" " + coordinator)))));
 }
 
 function translate(verb, meaning) {

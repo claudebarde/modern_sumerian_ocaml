@@ -2,7 +2,7 @@ include Infixes
 (*
     Slot 1 Modal prefix (ḫa); negative particle; prefix of anteriority; stem (in imperative forms)
     Slot 2 Finite-marker prefix; modal prefixes (all the other)
-    Slot 3 Coordinator prefix
+    Slot 3 Coordinator prefix (nga)
     Slot 4 Ventive (cislocative) prefix
     Slot 5 Middle prefix or the 3.SG.NH pronominal prefix /b/ (specifying the person;
     gender and number of the first in the sequence of adverbial prefixes)

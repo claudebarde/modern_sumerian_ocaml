@@ -178,6 +178,7 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): st
                     | _ -> "are " ^ ing_form
                 )
             | (Present, Some(Modal)) -> "should be " ^ ing_form
+            | (Present, Some(Negative_nan)) -> "shouldn't be " ^ ing_form
             | (Present, Some(Negative)) -> 
                 (
                     match pers with
@@ -209,6 +210,7 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): st
           match verb_form.first_prefix with
           | Some FirstPrefix.Negative -> "didn't " ^ english_verb
           | Some FirstPrefix.Modal -> "should " ^ english_verb
+          | Some FirstPrefix.Negative_nan -> "shouldn't " ^ english_verb
           | _ -> 
             match search_verb english_verb irregular_verbs with
             | Some (_, past, _) -> past
@@ -264,7 +266,13 @@ let add_complements (verb: Constructs.conjugated_verb): string =
         | (Some On_with_initial_person, Some ipp) -> "on " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
         | (Some On_without_initial_person, _) -> "on"
         | _ -> ""
-    in comitative ^ " " ^ adverbial ^ " " ^ locative
+    in
+    (* MUST BE THE LAST COMPLEMENT TO BE CHECKED *)
+    let coordinator = 
+        if verb.coordinator 
+            then " too" 
+        else "" 
+    in comitative ^ " " ^ adverbial ^ " " ^ locative ^ " " ^ coordinator
 
 (* let translate (verb: Constructs.conjugated_verb) (meaning: string option): string =
     match meaning with

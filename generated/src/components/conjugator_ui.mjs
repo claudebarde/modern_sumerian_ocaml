@@ -5,6 +5,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
+import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -13,8 +14,6 @@ import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
 import Select from "@mui/material/Select";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
@@ -32,6 +31,7 @@ import * as Conjugator__Utils from "../conjugator/utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
+import * as Stdlib__List from "melange/list.mjs";
 import * as Stdlib__Option from "melange/option.mjs";
 import * as Stdlib__Result from "melange/result.mjs";
 import * as React from "react";
@@ -149,6 +149,7 @@ function Conjugator_ui(Props) {
     return false;
   });
   const set_ventive = match$7[1];
+  const ventive = match$7[0];
   const match$8 = React.useState(function () {
     return false;
   });
@@ -173,33 +174,115 @@ function Conjugator_ui(Props) {
     return false;
   });
   const set_middle_prefix = match$12[1];
+  const middle_prefix = match$12[0];
   const match$13 = React.useState(function () {
+    return false;
+  });
+  const set_coordinator = match$13[1];
+  const coordinator = match$13[0];
+  const match$14 = React.useState(function () {
     return null;
   });
-  const set_initial_person_prefix = match$13[1];
-  const initial_person_prefix = match$13[0];
-  const match$14 = React.useState(function () {
-    
-  });
-  const set_subject = match$14[1];
-  const subject = match$14[0];
+  const set_initial_person_prefix = match$14[1];
+  const initial_person_prefix = match$14[0];
   const match$15 = React.useState(function () {
     
   });
-  const set_object = match$15[1];
-  const object_ = match$15[0];
+  const set_subject = match$15[1];
+  const subject = match$15[0];
   const match$16 = React.useState(function () {
     
   });
-  const set_indirect_object = match$16[1];
-  const indirect_object = match$16[0];
+  const set_object = match$16[1];
+  const object_ = match$16[0];
   const match$17 = React.useState(function () {
+    
+  });
+  const set_indirect_object = match$17[1];
+  const indirect_object = match$17[0];
+  const match$18 = React.useState(function () {
     return false;
   });
-  const set_is_modal_open = match$17[1];
+  const set_is_modal_open = match$18[1];
   const marginTop = "20px";
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const available_verbs = Components__Web_utils.SumerianVerbs.verbs;
+  const prefixes = [
+    {
+      label: "Modal",
+      value: "modal-nu",
+      pos: 1
+    },
+    {
+      label: "Modal",
+      value: "modal-nan",
+      pos: 1
+    },
+    {
+      label: "Modal",
+      value: "modal-ha",
+      pos: 1
+    },
+    {
+      label: "Preformative",
+      value: "preformative-a",
+      pos: 2
+    },
+    {
+      label: "Preformative",
+      value: "preformative-u",
+      pos: 2
+    },
+    {
+      label: "Preformative",
+      value: "preformative-i",
+      pos: 2
+    },
+    {
+      label: "Others",
+      value: "ventive",
+      pos: 3
+    },
+    {
+      label: "Others",
+      value: "middle-prefix",
+      pos: 3
+    },
+    {
+      label: "Others",
+      value: "coordinator",
+      pos: 3
+    }
+  ];
+  Stdlib__Array.sort((function (a, b) {
+    return a.pos - b.pos | 0;
+  }), prefixes);
+  const prefix_is_selected = function (prefix) {
+    const match = prefix.value;
+    switch (match) {
+      case "coordinator" :
+        return coordinator;
+      case "middle-prefix" :
+        return middle_prefix;
+      case "modal-ha" :
+        return modal_prefix === /* HA */ 0;
+      case "modal-nan" :
+        return modal_prefix === /* NAN */ 1;
+      case "modal-nu" :
+        return modal_prefix === /* NU */ 2;
+      case "preformative-a" :
+        return preformative === /* A */ 0;
+      case "preformative-i" :
+        return preformative === /* I */ 1;
+      case "preformative-u" :
+        return preformative === /* U */ 2;
+      case "ventive" :
+        return ventive;
+      default:
+        return false;
+    }
+  };
+  const selected_prefixes = Stdlib__Array.of_list(Stdlib__List.filter(prefix_is_selected, Stdlib__Array.to_list(prefixes)));
   const pronoun_options = [
     {
       label: "I",
@@ -556,7 +639,24 @@ function Conjugator_ui(Props) {
           }
           
         }));
-      case /* Comitative */ 3 :
+      case /* Coordinator */ 3 :
+        Curry._1(set_coordinator, (function (param) {
+          return checked;
+        }));
+        return Curry._1(set_verb_form, (function (prev_verb_form) {
+          if (prev_verb_form !== undefined) {
+            Curry._1(set_error, (function (param) {
+              
+            }));
+            if (checked) {
+              return Conjugator.set_coordinator(prev_verb_form);
+            } else {
+              return Conjugator.reset_coordinator(prev_verb_form);
+            }
+          }
+          
+        }));
+      case /* Comitative */ 4 :
         Curry._1(set_comitative, (function (param) {
           return checked;
         }));
@@ -573,7 +673,7 @@ function Conjugator_ui(Props) {
           }
           
         }));
-      case /* Ablative */ 4 :
+      case /* Ablative */ 5 :
         Curry._1(set_ablative, (function (param) {
           return checked;
         }));
@@ -593,7 +693,7 @@ function Conjugator_ui(Props) {
           }
           
         }));
-      case /* Terminative */ 5 :
+      case /* Terminative */ 6 :
         Curry._1(set_terminative, (function (param) {
           return checked;
         }));
@@ -613,7 +713,7 @@ function Conjugator_ui(Props) {
           }
           
         }));
-      case /* MiddlePrefix */ 6 :
+      case /* MiddlePrefix */ 7 :
         Curry._1(set_middle_prefix, (function (param) {
           return checked;
         }));
@@ -630,7 +730,7 @@ function Conjugator_ui(Props) {
           }
           
         }));
-      case /* LocativeIn */ 7 :
+      case /* LocativeIn */ 8 :
         Curry._1(set_locative, (function (param) {
           if (checked) {
             return "IN";
@@ -650,7 +750,7 @@ function Conjugator_ui(Props) {
           }
           
         }));
-      case /* LocativeOn */ 8 :
+      case /* LocativeOn */ 9 :
         Curry._1(set_locative, (function (param) {
           if (checked) {
             return "ON";
@@ -692,6 +792,9 @@ function Conjugator_ui(Props) {
       
     }));
     Curry._1(set_ventive, (function (param) {
+      return false;
+    }));
+    Curry._1(set_coordinator, (function (param) {
       return false;
     }));
     Curry._1(set_comitative, (function (param) {
@@ -866,38 +969,6 @@ function Conjugator_ui(Props) {
       }) : null;
   } else {
     tmp = null;
-  }
-  let tmp$1;
-  if (preformative !== undefined) {
-    switch (preformative) {
-      case /* A */ 0 :
-        tmp$1 = "preformative-a";
-        break;
-      case /* I */ 1 :
-        tmp$1 = "preformative-i";
-        break;
-      case /* U */ 2 :
-        tmp$1 = "preformative-u";
-        break;
-    }
-  } else {
-    tmp$1 = "";
-  }
-  let tmp$2;
-  if (modal_prefix !== undefined) {
-    switch (modal_prefix) {
-      case /* HA */ 0 :
-        tmp$2 = "modal-ha";
-        break;
-      case /* NAN */ 1 :
-        tmp$2 = "modal-nan";
-        break;
-      case /* NU */ 2 :
-        tmp$2 = "modal-nu";
-        break;
-    }
-  } else {
-    tmp$2 = "";
   }
   return JsxRuntime.jsxs(Container, {
     children: [
@@ -1269,203 +1340,178 @@ function Conjugator_ui(Props) {
           }),
           JsxRuntime.jsxs(Grid, {
             children: [
-              JsxRuntime.jsxs(Grid, {
-                children: [
-                  JsxRuntime.jsx(Grid, {
-                    children: JsxRuntime.jsxs(FormControl, {
-                      children: [
-                        JsxRuntime.jsx(FormLabel, {
-                          children: "Preformative",
-                          id: "preformative-label"
-                        }),
-                        JsxRuntime.jsxs(RadioGroup, {
-                          "aria-labelledby": "preformative-label",
-                          children: [
-                            JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {
-                                onClick: (function (param) {
-                                  if (preformative === undefined) {
-                                    return;
-                                  }
-                                  switch (preformative) {
-                                    case /* A */ 0 :
-                                      return change_preformative(undefined);
-                                    case /* I */ 1 :
-                                    case /* U */ 2 :
-                                      return;
-                                  }
-                                }),
-                                size: is_mobile ? "small" : "medium"
-                              }),
-                              disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                              label: "A",
-                              value: "preformative-a"
-                            }),
-                            JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {
-                                onClick: (function (param) {
-                                  if (preformative === undefined) {
-                                    return;
-                                  }
-                                  switch (preformative) {
-                                    case /* I */ 1 :
-                                      return change_preformative(undefined);
-                                    case /* A */ 0 :
-                                    case /* U */ 2 :
-                                      return;
-                                  }
-                                }),
-                                size: is_mobile ? "small" : "medium"
-                              }),
-                              disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                              label: "I",
-                              value: "preformative-i"
-                            }),
-                            JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {
-                                onClick: (function (param) {
-                                  if (preformative === undefined) {
-                                    return;
-                                  }
-                                  switch (preformative) {
-                                    case /* A */ 0 :
-                                    case /* I */ 1 :
-                                      return;
-                                    case /* U */ 2 :
-                                      return change_preformative(undefined);
-                                  }
-                                }),
-                                size: is_mobile ? "small" : "medium"
-                              }),
-                              disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                              label: "U",
-                              value: "preformative-u"
-                            })
-                          ],
-                          name: "preformative",
-                          onChange: (function (ev) {
-                            const target = ev.target;
-                            const match = target.value;
-                            switch (match) {
-                              case "preformative-a" :
-                                return change_preformative(/* A */ 0);
-                              case "preformative-i" :
-                                return change_preformative(/* I */ 1);
-                              case "preformative-u" :
-                                return change_preformative(/* U */ 2);
-                              default:
-                                return;
-                            }
-                          }),
-                          row: true,
-                          sx: {
-                            padding: "8px"
-                          },
-                          value: tmp$1
-                        })
-                      ]
-                    }),
-                    size: 6
-                  }),
-                  JsxRuntime.jsx(Grid, {
-                    children: JsxRuntime.jsxs(FormControl, {
-                      children: [
-                        JsxRuntime.jsx(FormLabel, {
-                          children: "Modal Prefix",
-                          id: "modal-prefix-label"
-                        }),
-                        JsxRuntime.jsxs(RadioGroup, {
-                          "aria-labelledby": "modal-prefix-label",
-                          children: [
-                            JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {
-                                onClick: (function (param) {
-                                  if (modal_prefix === undefined) {
-                                    return;
-                                  }
-                                  switch (modal_prefix) {
-                                    case /* HA */ 0 :
-                                      return change_modal(undefined);
-                                    case /* NAN */ 1 :
-                                    case /* NU */ 2 :
-                                      return;
-                                  }
-                                }),
-                                size: is_mobile ? "small" : "medium"
-                              }),
-                              disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                              label: "ḪA",
-                              value: "modal-ha"
-                            }),
-                            JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {
-                                onClick: (function (param) {
-                                  if (modal_prefix === undefined) {
-                                    return;
-                                  }
-                                  switch (modal_prefix) {
-                                    case /* HA */ 0 :
-                                    case /* NAN */ 1 :
-                                      return;
-                                    case /* NU */ 2 :
-                                      return change_modal(undefined);
-                                  }
-                                }),
-                                size: is_mobile ? "small" : "medium"
-                              }),
-                              disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                              label: "NU",
-                              value: "modal-nu"
-                            }),
-                            JsxRuntime.jsx(FormControlLabel, {
-                              control: JsxRuntime.jsx(Radio, {
-                                onClick: (function (param) {
-                                  if (modal_prefix === undefined) {
-                                    return;
-                                  }
-                                  switch (modal_prefix) {
-                                    case /* NAN */ 1 :
-                                      return change_modal(undefined);
-                                    case /* HA */ 0 :
-                                    case /* NU */ 2 :
-                                      return;
-                                  }
-                                }),
-                                size: is_mobile ? "small" : "medium"
-                              }),
-                              disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                              label: "NAN",
-                              value: "modal-nan"
-                            })
-                          ],
-                          name: "modal-prefix",
-                          onChange: (function (ev) {
-                            const target = ev.target;
-                            const match = target.value;
-                            switch (match) {
-                              case "modal-ha" :
-                                return change_modal(/* HA */ 0);
-                              case "modal-nan" :
-                                return change_modal(/* NAN */ 1);
-                              case "modal-nu" :
-                                return change_modal(/* NU */ 2);
-                              default:
-                                return;
-                            }
-                          }),
-                          row: true,
-                          sx: {
-                            padding: "8px"
-                          },
-                          value: tmp$2
-                        })
-                      ]
-                    }),
-                    size: 6
-                  })
-                ],
-                container: true,
-                spacing: 2
+              JsxRuntime.jsx(Autocomplete, {
+                autoHighlight: true,
+                disabled: Stdlib__Option.is_none(verb_stem),
+                getOptionKey: (function (prefix) {
+                  return prefix.value;
+                }),
+                getOptionLabel: (function (prefix) {
+                  return prefix.value;
+                }),
+                groupBy: (function (prefix) {
+                  return prefix.label;
+                }),
+                multiple: true,
+                onChange: (function (_event, newValue) {
+                  const selectedPrefixes = (newValue == null) ? [] : newValue;
+                  const newlySelectedPrefix = Stdlib__Array.find_opt((function (prefix) {
+                    return !Stdlib__Array.exists((function (selected) {
+                      return selected.value === prefix.value;
+                    }), selected_prefixes);
+                  }), selectedPrefixes);
+                  const selectedPrefixes$1 = newlySelectedPrefix !== undefined ? Stdlib__Array.of_list(Stdlib__List.filter((function (prefix) {
+                      if (prefix.label !== newlySelectedPrefix.label) {
+                        return true;
+                      } else {
+                        return prefix.value === newlySelectedPrefix.value;
+                      }
+                    }), Stdlib__Array.to_list(selectedPrefixes))) : selectedPrefixes;
+                  const hasPrefix = function (value) {
+                    return Stdlib__Array.exists((function (prefix) {
+                      return prefix.value === value;
+                    }), selectedPrefixes$1);
+                  };
+                  const selectedPreformative = hasPrefix("preformative-a") ? /* A */ 0 : (
+                      hasPrefix("preformative-i") ? /* I */ 1 : (
+                          hasPrefix("preformative-u") ? /* U */ 2 : undefined
+                        )
+                    );
+                  const selectedModal = hasPrefix("modal-ha") ? /* HA */ 0 : (
+                      hasPrefix("modal-nu") ? /* NU */ 2 : (
+                          hasPrefix("modal-nan") ? /* NAN */ 1 : undefined
+                        )
+                    );
+                  change_preformative(selectedPreformative);
+                  change_modal(selectedModal);
+                  change_prefix(/* Ventive */ 2, hasPrefix("ventive"));
+                  change_prefix(/* MiddlePrefix */ 7, hasPrefix("middle-prefix"));
+                  change_prefix(/* Coordinator */ 3, hasPrefix("coordinator"));
+                }),
+                options: prefixes,
+                renderInput: (function (params) {
+                  return React.cloneElement(JsxRuntime.jsx(TextField, {
+                    label: "Prefixes"
+                  }), params);
+                }),
+                renderOption: (function (props, prefix, _state, _ownerState) {
+                  const Key = prefix.value;
+                  const match = prefix.value;
+                  let tmp;
+                  switch (match) {
+                    case "coordinator" :
+                      tmp = "NGA (COORDINATOR)";
+                      break;
+                    case "middle-prefix" :
+                      tmp = "BA (MIDDLE PREFIX)";
+                      break;
+                    case "modal-ha" :
+                      tmp = "ḪA";
+                      break;
+                    case "modal-nan" :
+                      tmp = "NAN";
+                      break;
+                    case "modal-nu" :
+                      tmp = "NU";
+                      break;
+                    case "preformative-a" :
+                      tmp = "A";
+                      break;
+                    case "preformative-i" :
+                      tmp = "I";
+                      break;
+                    case "preformative-u" :
+                      tmp = "U";
+                      break;
+                    case "ventive" :
+                      tmp = "MU (VENTIVE)";
+                      break;
+                    default:
+                      tmp = "N/A";
+                  }
+                  return React.cloneElement(JsxRuntime.jsx("li", {
+                    children: tmp
+                  }, Key), props);
+                }),
+                renderValue: (function (selectedPrefixes, getItemProps, _ownerState) {
+                  const sortedPrefixes = Stdlib__Array.copy(selectedPrefixes);
+                  Stdlib__Array.sort((function (a, b) {
+                    return a.pos - b.pos | 0;
+                  }), sortedPrefixes);
+                  return Stdlib__Array.mapi((function (index, prefix) {
+                    const Key = prefix.value;
+                    const match = prefix.value;
+                    let tmp;
+                    switch (match) {
+                      case "middle-prefix" :
+                        tmp = Bindings__Material_ui.Color.warning;
+                        break;
+                      case "coordinator" :
+                      case "modal-ha" :
+                      case "modal-nan" :
+                      case "modal-nu" :
+                        tmp = Bindings__Material_ui.Color.secondary;
+                        break;
+                      case "preformative-a" :
+                      case "preformative-i" :
+                      case "preformative-u" :
+                        tmp = Bindings__Material_ui.Color.info;
+                        break;
+                      case "ventive" :
+                        tmp = Bindings__Material_ui.Color.success;
+                        break;
+                      default:
+                        tmp = Bindings__Material_ui.Color.primary;
+                    }
+                    const value = prefix.value;
+                    let tmp$1;
+                    switch (value) {
+                      case "coordinator" :
+                        tmp$1 = "NGA";
+                        break;
+                      case "middle-prefix" :
+                        tmp$1 = "Middle Prefix";
+                        break;
+                      case "modal-ha" :
+                        tmp$1 = "ḪA";
+                        break;
+                      case "modal-nan" :
+                        tmp$1 = "NAN";
+                        break;
+                      case "modal-nu" :
+                        tmp$1 = "NU";
+                        break;
+                      case "preformative-a" :
+                        tmp$1 = "A";
+                        break;
+                      case "preformative-i" :
+                        tmp$1 = "I";
+                        break;
+                      case "preformative-u" :
+                        tmp$1 = "U";
+                        break;
+                      case "ventive" :
+                        tmp$1 = "Ventive";
+                        break;
+                      default:
+                        tmp$1 = value;
+                    }
+                    return React.cloneElement(JsxRuntime.jsx(Chip, {
+                      color: tmp,
+                      label: tmp$1,
+                      size: "small"
+                    }, Key), Curry._1(getItemProps, {
+                      index: index
+                    }));
+                  }), sortedPrefixes);
+                }),
+                size: "small",
+                sx: {
+                  width: "100%",
+                  backgroundColor: "white",
+                  marginBottom: marginTop
+                },
+                value: selected_prefixes
               }),
               JsxRuntime.jsxs(Grid, {
                 children: [
@@ -1486,7 +1532,7 @@ function Conjugator_ui(Props) {
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
-                                  change_prefix(/* Comitative */ 3, checked);
+                                  change_prefix(/* Comitative */ 4, checked);
                                 }),
                                 size: is_mobile ? "small" : "medium"
                               }),
@@ -1499,7 +1545,7 @@ function Conjugator_ui(Props) {
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
-                                  change_prefix(/* Ablative */ 4, checked);
+                                  change_prefix(/* Ablative */ 5, checked);
                                 }),
                                 size: is_mobile ? "small" : "medium"
                               }),
@@ -1512,7 +1558,7 @@ function Conjugator_ui(Props) {
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
-                                  change_prefix(/* Terminative */ 5, checked);
+                                  change_prefix(/* Terminative */ 6, checked);
                                 }),
                                 size: is_mobile ? "small" : "medium"
                               }),
@@ -1525,7 +1571,7 @@ function Conjugator_ui(Props) {
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
-                                  change_prefix(/* LocativeIn */ 7, checked);
+                                  change_prefix(/* LocativeIn */ 8, checked);
                                 }),
                                 size: is_mobile ? "small" : "medium"
                               }),
@@ -1538,7 +1584,7 @@ function Conjugator_ui(Props) {
                                 onChange: (function (ev) {
                                   const target = ev.target;
                                   const checked = target.checked;
-                                  change_prefix(/* LocativeOn */ 8, checked);
+                                  change_prefix(/* LocativeOn */ 9, checked);
                                 }),
                                 size: is_mobile ? "small" : "medium"
                               }),
@@ -1595,52 +1641,6 @@ function Conjugator_ui(Props) {
                 ],
                 container: true,
                 spacing: 0
-              }),
-              JsxRuntime.jsx(Box, {
-                children: JsxRuntime.jsxs(FormControl, {
-                  children: [
-                    JsxRuntime.jsx(FormLabel, {
-                      children: "Other Prefixes",
-                      id: "other-prefixes-label"
-                    }),
-                    JsxRuntime.jsxs(FormGroup, {
-                      "aria-labelledby": "other-prefixes-label",
-                      children: [
-                        JsxRuntime.jsx(FormControlLabel, {
-                          control: JsxRuntime.jsx(Checkbox, {
-                            checked: match$7[0],
-                            disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                            onChange: (function (ev) {
-                              const target = ev.target;
-                              const checked = target.checked;
-                              change_prefix(/* Ventive */ 2, checked);
-                            }),
-                            size: is_mobile ? "small" : "medium"
-                          }),
-                          label: "MU"
-                        }),
-                        JsxRuntime.jsx(FormControlLabel, {
-                          control: JsxRuntime.jsx(Checkbox, {
-                            checked: match$12[0],
-                            disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
-                            onChange: (function (ev) {
-                              const target = ev.target;
-                              const checked = target.checked;
-                              change_prefix(/* MiddlePrefix */ 6, checked);
-                            }),
-                            size: is_mobile ? "small" : "medium"
-                          }),
-                          label: "BA"
-                        })
-                      ],
-                      row: true
-                    })
-                  ],
-                  fullWidth: true
-                }),
-                sx: {
-                  marginTop: marginTop
-                }
               })
             ],
             size: {
@@ -1738,7 +1738,7 @@ function Conjugator_ui(Props) {
         children: JsxRuntime.jsx(Components__Verb_error_form.make, {
           verb: verb_form
         }),
-        is_open: match$17[0],
+        is_open: match$18[0],
         close: (function (param) {
           Curry._1(set_is_modal_open, (function (param) {
             return false;

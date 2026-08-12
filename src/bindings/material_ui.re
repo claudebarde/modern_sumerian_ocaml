@@ -184,6 +184,11 @@ module Autocomplete = {
         "selected": bool,
     };
 
+    type getItemPropsParams;
+
+    [@mel.obj]
+    external getItemPropsParams: (~index: int, unit) => getItemPropsParams = "";
+
     [@mel.module "@mui/material/Autocomplete"] [@react.component]
     external make: (
         ~autoComplete: bool=?,
@@ -250,7 +255,7 @@ module Autocomplete = {
         ) => React.element=?,
         ~renderValue: (
             'value,
-            Js.t({..}) => Js.t({..}),
+            getItemPropsParams => Js.t({..}),
             Js.t({..}),
         ) => React.element=?,
         ~resetHighlightOnMouseLeave: bool=?,

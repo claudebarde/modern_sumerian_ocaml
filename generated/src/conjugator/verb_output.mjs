@@ -78,6 +78,23 @@ function add_preformative(verb, arr) {
   };
 }
 
+function add_coordinator(verb, arr) {
+  if (arr.TAG !== /* Ok */ 0) {
+    return {
+      TAG: /* Error */ 1,
+      _0: arr._0
+    };
+  }
+  const arr$1 = arr._0;
+  if (verb.coordinator) {
+    Caml_array.set(arr$1, Conjugator__Utils.coordinator_pos, "nga");
+  }
+  return {
+    TAG: /* Ok */ 0,
+    _0: arr$1
+  };
+}
+
 function add_ventive(verb, arr) {
   if (arr.TAG !== /* Ok */ 0) {
     return {
@@ -453,7 +470,7 @@ function add_oblique_object(verb, arr) {
 function print(verb, meaning) {
   const warnings = [];
   const morphemes_start = Caml_array.make(15, "");
-  const outputRes = add_oblique_object(verb, add_final_person_suffix(verb, add_ed_marker(verb, add_final_person_prefix(verb, add_locative(verb, add_comitative(verb, add_indirect_object_prefix(verb, add_initial_person_prefix(verb, add_middle_prefix(verb, add_adverbial(verb, add_ventive(verb, add_preformative(verb, add_first_prefix(verb, add_stem(morphemes_start, verb.stem))))))))))))));
+  const outputRes = add_oblique_object(verb, add_final_person_suffix(verb, add_ed_marker(verb, add_final_person_prefix(verb, add_locative(verb, add_comitative(verb, add_indirect_object_prefix(verb, add_initial_person_prefix(verb, add_middle_prefix(verb, add_adverbial(verb, add_ventive(verb, add_coordinator(verb, add_preformative(verb, add_first_prefix(verb, add_stem(morphemes_start, verb.stem)))))))))))))));
   if (outputRes.TAG !== /* Ok */ 0) {
     return {
       TAG: /* Error */ 1,
@@ -853,7 +870,7 @@ function print(verb, meaning) {
           case "nan" :
             const temp_verb = Stdlib__String.concat("", Stdlib__Array.to_list(Stdlib__Array.sub(outputArr$8, 0, outputArr$8.length - 1 | 0)));
             const cvc_seq = Conjugator__Utils.consonant_vowel_sequence(temp_verb);
-            if (cvc_seq.length > 1 && Stdlib__String.sub(cvc_seq, 0, 2) === "CC" || cvc_seq.length !== 0 && Stdlib__String.sub(cvc_seq, 0, 1) === "V") {
+            if (cvc_seq.length > 4 && Stdlib__String.sub(cvc_seq, 2, 2) === "CC" || cvc_seq.length !== 0 && Stdlib__String.sub(cvc_seq, 0, 1) === "V") {
               Caml_array.set(outputArr$8, Conjugator__Utils.first_prefix_pos, "na");
               outputRes$1 = {
                 TAG: /* Ok */ 0,
@@ -979,6 +996,7 @@ export {
   add_stem,
   add_first_prefix,
   add_preformative,
+  add_coordinator,
   add_ventive,
   add_adverbial,
   add_middle_prefix,

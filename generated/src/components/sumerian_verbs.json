@@ -90,6 +90,15 @@
     "transitive": true
   },
   {
+    "label": "ki aĝ",
+    "meaning": "love",
+    "stem": "aĝ",
+    "stem_cuneiforms": ["𒉘"],
+    "kind": { "type": "compound", "value": "ki", "cuneiforms": ["𒆠"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
     "label": "kur",
     "meaning": "enter",
     "stem": "kur",

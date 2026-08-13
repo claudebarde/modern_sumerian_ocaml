@@ -410,7 +410,8 @@ let build_result_cuneiform_string = (
 
 module BuildResults = {
     [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default";
-    open Bindings.Mui;
+    open Bindings;
+    open Mui;
 
     [@react.component]
     let make = (
@@ -421,8 +422,10 @@ module BuildResults = {
         ~imperfectiveStem: option(Conjugator.ipfv_stem),
         ~fixedElement: option((string, array(string))),
     ) => {
+        let (open_warnings, set_open_warnings) = React.useState(() => false);
+
         switch (Conjugator.print(verb, meaning)) {
-            | Ok({verb: conjugatedVerb, analysis, translation, _}) => {
+            | Ok({verb: conjugatedVerb, analysis, translation, warnings}) => {
                 let displayedVerb =
                     switch fixedElement {
                     | Some((value, _)) => value ++ " " ++ conjugatedVerb
@@ -504,52 +507,126 @@ module BuildResults = {
                     <Table className=css##analysisTable>
                         <TableHead>
                             <TableRow>
-                                {analysisOutput |> Array.map(
-                                    ((output_type, _)) => {
-                                        <TableCell key={output_type}>
-                                            {
-                                                switch output_type {
-                                                    | "compoundElement" => "Compound Element"
-                                                    | "middlePrefix" => "Middle Prefix"
-                                                    | "initialPersonPrefix" => "Initial Person Prefix"
-                                                    | "finalPersonPrefix" => "Final Person Prefix"
-                                                    | "edMarker" => "ED Marker"
-                                                    | "finalPersonSuffix" => "Final Person Suffix"
-                                                    | "negativeNan" => "Nan Modal"
-                                                    | "modal" => {js|ḪA Modal|js}
-                                                    | "negative" => "Negation"
-                                                    | _ => {
-                                                        let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
-                                                        let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
-                                                        first_char ++ rest
-                                                    }
-                                                }|> React.string
-                                            }
-                                        </TableCell>
-                                    },
-                                )|> React.array}
+                                <>
+                                    {analysisOutput |> Array.map(
+                                        ((output_type, _)) => {
+                                            <TableCell key={output_type}>
+                                                {
+                                                    switch output_type {
+                                                        | "compoundElement" => "Compound Element"
+                                                        | "middlePrefix" => "Middle Prefix"
+                                                        | "initialPersonPrefix" => "Initial Person Prefix"
+                                                        | "finalPersonPrefix" => "Final Person Prefix"
+                                                        | "edMarker" => "ED Marker"
+                                                        | "finalPersonSuffix" => "Final Person Suffix"
+                                                        | "negativeNan" => "Nan Modal"
+                                                        | "modal" => {js|ḪA Modal|js}
+                                                        | "negative" => "Negation"
+                                                        | _ => {
+                                                            let first_char = output_type |> Js.String.charAt(~index=0) |> Js.String.toUpperCase;
+                                                            let rest = output_type |> Js.String.slice(~start=1) |> Js.String.toLowerCase;
+                                                            first_char ++ rest
+                                                        }
+                                                    }|> React.string
+                                                }
+                                            </TableCell>
+                                        },
+                                    )|> React.array}
+                                    {
+                                        (warnings |> Array.length > 0) ? (
+                                            <TableCell key="warnings">
+                                                {"Details" |> React.string}
+                                            </TableCell>
+                                        ) : React.null
+                                    }
+                                </>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             <TableRow>
-                                {analysisOutput |> Array.mapi(
-                                    (i, (output_type, value)) => {
-                                        <TableCell 
-                                            key={value ++ Int.to_string(i)}
-                                            sx={{"textAlign": "center"}}
-                                        >
-                                            {
-                                                if (output_type == "stem") {
-                                                    <strong>
-                                                        {value |> React.string}
-                                                    </strong>
-                                                } else {
-                                                    value |> React.string
+                                <>
+                                    {analysisOutput |> Array.mapi(
+                                        (i, (output_type, value)) => {
+                                            <TableCell 
+                                                key={value ++ Int.to_string(i)}
+                                                sx={{"textAlign": "center"}}
+                                            >
+                                                {
+                                                    if (output_type == "stem") {
+                                                        <strong>
+                                                            {value |> React.string}
+                                                        </strong>
+                                                    } else {
+                                                        value |> React.string
+                                                    }
                                                 }
-                                            }
-                                        </TableCell>
-                                    },
-                                )|> React.array}
+                                            </TableCell>
+                                        },
+                                    )|> React.array}
+                                    {
+                                        (warnings |> Array.length > 0) ? (
+                                            <TableCell key="warnings" sx={{"textAlign": "center"}}>
+                                                <IconButton onClick={_ => set_open_warnings(_ => true)}>
+                                                    <Badge 
+                                                        badgeContent={warnings |> Array.length |> Js.Int.toString |> React.string} 
+                                                        color=Color.info
+                                                    >
+                                                        <TablerReact.IconInfoTriangle />
+                                                    </Badge>
+                                                </IconButton>
+                                                <Dialog
+                                                    _open={open_warnings}
+                                                    onClose={(_event, _reason) =>
+                                                        set_open_warnings(_ => false)
+                                                    }
+                                                >
+                                                    <DialogTitle>
+                                                        {"More Details"|> React.string}
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                        {
+                                                            warnings
+                                                            |> Array.mapi((index, warning) =>
+                                                                <Alert 
+                                                                    key={index |> Js.Int.toString}
+                                                                    severity={
+                                                                        switch warning {
+                                                                        | Conjugator__Verb_output.Warning.Info(_) => `info
+                                                                        | Conjugator__Verb_output.Warning.Warning(_) => `warning
+                                                                        | Conjugator__Verb_output.Warning.Error(_) => `error
+                                                                        }
+                                                                    } 
+                                                                    sx={{"marginTop": "0.5rem"}}
+                                                                >
+                                                                    {
+                                                                        switch warning {
+                                                                        | Conjugator__Verb_output.Warning.Info(message) => 
+                                                                            message |> React.string
+                                                                        | Conjugator__Verb_output.Warning.Warning(message) =>
+                                                                            message |> React.string
+                                                                        | Conjugator__Verb_output.Warning.Error(message) =>
+                                                                            message |> React.string
+                                                                        }
+                                                                    }
+                                                                </Alert>
+                                                            )
+                                                            |> React.array
+                                                        }
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                        <Button
+                                                            onClick={(_event) =>
+                                                                set_open_warnings(_ => false)
+                                                            }
+                                                        >
+                                                            {"Close"|> React.string}
+                                                        </Button>
+                                                    </DialogActions>
+                                                </Dialog>                                                
+                                            </TableCell>
+                                        ) : React.null
+                                    }
+                                </>
                             </TableRow>
                         </TableBody>
                     </Table>

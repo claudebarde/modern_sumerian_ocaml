@@ -126,7 +126,7 @@ function find_next_morpheme(_pos, arr) {
     try {
       const morph = Caml_array.get(arr, pos + 1 | 0);
       if (morph.length === 0) {
-        return;
+        return find_next_morpheme(pos + 1 | 0, arr);
       }
       const marker = marker_by_pos(pos + 1 | 0);
       if (marker !== undefined) {

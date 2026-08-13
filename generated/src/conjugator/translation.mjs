@@ -1331,7 +1331,7 @@ function conjugate(verb_form, english_verb) {
   return Stdlib__String.trim(Stdlib__String.concat(" ", Stdlib__Array.to_list(res)));
 }
 
-function add_complements(verb) {
+function add_post_verb_complements(verb) {
   const match = verb.comitative;
   const match$1 = verb.initial_person_prefix;
   const comitative = match ? (
@@ -1371,20 +1371,36 @@ function add_complements(verb) {
   return comitative + (" " + (adverbial + (" " + (locative + (" " + coordinator)))));
 }
 
+function add_pre_verb_complements(verb) {
+  const match = verb.preformative;
+  if (match === undefined) {
+    return "";
+  }
+  switch (match) {
+    case /* A */ 0 :
+    case /* I */ 1 :
+      return "";
+    case /* U */ 2 :
+      return "when/after ";
+  }
+}
+
 function translate(verb, meaning) {
   if (meaning === undefined) {
     return verb.stem;
   }
   const conjugated_verb = conjugate(verb, meaning);
-  const complements = add_complements(verb);
-  return Stdlib__String.trim(conjugated_verb + (" " + complements));
+  const post_verb_complements = add_post_verb_complements(verb);
+  const pre_verb_complements = add_pre_verb_complements(verb);
+  return Stdlib__String.trim(pre_verb_complements + (" " + (conjugated_verb + (" " + post_verb_complements))));
 }
 
 export {
   irregular_verbs,
   search_verb,
   conjugate,
-  add_complements,
+  add_post_verb_complements,
+  add_pre_verb_complements,
   translate,
 }
 /* No side effect */

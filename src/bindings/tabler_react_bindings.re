@@ -4,6 +4,18 @@
  * Add another icon by copying the module below and changing both occurrences
  * of its JavaScript export name.
  */
+module IconAlertTriangle = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconAlertTriangle";
+};
+
 module IconArrowBackUpDouble = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -338,6 +350,18 @@ module IconHome = {
     ~title: string=?,
     unit
   ) => React.element = "IconHome";
+};
+
+module IconInfoTriangle = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconInfoTriangle";
 };
 
 module IconKeyboard = {

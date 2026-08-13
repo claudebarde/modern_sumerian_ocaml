@@ -247,7 +247,7 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): st
 
     Array.to_list res |> String.concat " " |> String.trim
 
-let add_complements (verb: Constructs.conjugated_verb): string =
+let add_post_verb_complements (verb: Constructs.conjugated_verb): string =
     let comitative = match (verb.comitative, verb.initial_person_prefix) with
         | (true, Some ipp) -> "with " ^ (ipp |> InitialPersonPrefix.to_person |> PersonParam.print Object)
         | (true, None) -> "with"
@@ -267,12 +267,16 @@ let add_complements (verb: Constructs.conjugated_verb): string =
         | (Some On_without_initial_person, _) -> "on"
         | _ -> ""
     in
-    (* MUST BE THE LAST COMPLEMENT TO BE CHECKED *)
     let coordinator = 
         if verb.coordinator 
             then " too" 
         else "" 
     in comitative ^ " " ^ adverbial ^ " " ^ locative ^ " " ^ coordinator
+
+let add_pre_verb_complements (verb: Constructs.conjugated_verb): string =
+    match verb.preformative with
+        | Some Preformative.U -> "when/after "
+        | _ -> ""
 
 (* let translate (verb: Constructs.conjugated_verb) (meaning: string option): string =
     match meaning with
@@ -304,6 +308,7 @@ let translate (verb: Constructs.conjugated_verb) (meaning: string option): strin
   match meaning with
   | Some m ->
       let conjugated_verb = conjugate verb m in
-      let complements = add_complements verb in
-      (conjugated_verb ^ " " ^ complements) |> String.trim
+      let post_verb_complements = add_post_verb_complements verb in
+      let pre_verb_complements = add_pre_verb_complements verb in
+      (pre_verb_complements ^ " " ^ conjugated_verb ^ " " ^ post_verb_complements) |> String.trim
   | None -> verb.stem

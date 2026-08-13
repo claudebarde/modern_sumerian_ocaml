@@ -30,6 +30,23 @@ let verb_fixed_element = (
     | Compound(element) => Some((element.value, element.cuneiforms))
     };
 
+module Warnings = {
+    type t = 
+    | PreformativeUWithNU
+    | PreformativeAWithNU
+    | PreformativeAWithHA
+    | PreformativeUOnlyInPerfective
+    
+
+    let print = (warning: t): string =>
+        switch warning {
+        | PreformativeUWithNU => {js|⚠️|js} ++ " The preformative {u} cannot be used together with the negative {nu} (Jagersma 24.2.1)"
+        | PreformativeAWithNU => {js|⚠️|js} ++ " The preformative {a} cannot be used together with the negative {nu} (Jagersma 24.3.3)"
+        | PreformativeAWithHA => {js|⚠️|js} ++ " The preformative {a} cannot be used together with the modal {ha} (Jagersma 24.3.3)"
+        | PreformativeUOnlyInPerfective => "The preformative {u} is only found in perfective forms (Jagersma 24.2.1)"
+        };
+}
+
 module Utils = {
     open Conjugator;
 
@@ -60,7 +77,8 @@ type prefix_option = {
 
 [@react.component]
 let make = () => {
-    open Bindings.Mui;
+    open Bindings;
+    open Mui;
 
     let (error, set_error) = React.useState(_ => None);
     let (verb_stem, set_verb_stem) = React.useState(_ => None);
@@ -81,6 +99,8 @@ let make = () => {
     let (object_, set_object) = React.useState(_ => None);
     let (indirect_object, set_indirect_object) = React.useState(_ => None);
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
+    let (prefix_warning, set_prefix_warning) = React.useState(_ => None);
+    let (general_warning, set_general_warning) = React.useState(_ => None);
 
     let marginTop = "20px";
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
@@ -597,6 +617,13 @@ let make = () => {
                     set_error(_ => None)
                     set_is_perfective(_ => value)
 
+                    // Jagersma 24.2.1: The preformative {u} is only found in perfective forms.
+                    switch (value, preformative) {
+                    | (Some(false), Some(Conjugator.Preformative.U)) =>
+                        set_general_warning(_ => Some(Warnings.PreformativeUOnlyInPerfective))
+                    | _ => set_general_warning(_ => None)
+                    }
+
                     let apply_aspect = verb =>
                         switch (value, verb_stem) {
                         | (Some(true), Some(verb_data)) =>
@@ -1069,7 +1096,21 @@ let make = () => {
                     }
                     renderInput={params =>
                         React.cloneElement(
-                            <TextField label={"Prefixes" |> React.string} />,
+                            <TextField 
+                                label={"Prefixes" |> React.string} 
+                                helperText={
+                                    switch prefix_warning {
+                                    | Some(warning) => Warnings.print(warning) |> React.string
+                                    | None => React.null
+                                    }
+                                }
+                                color={
+                                    switch prefix_warning {
+                                    | Some(_) => Color.warning
+                                    | None => Color.primary
+                                    }
+                                }
+                            />,
                             params,
                         )
                     }
@@ -1148,9 +1189,23 @@ let make = () => {
                         |> React.array
                         }
                     }
-                    sx={{"width": "100%", "backgroundColor": "white", "marginBottom": marginTop}}
+                    sx={{
+                        "width": "100%",  
+                        "marginBottom": marginTop,
+
+                        "& .MuiOutlinedInput-root": {
+                            "backgroundColor": "white",
+                        },
+                        "& .MuiFormHelperText-root": {
+                            "backgroundColor": "transparent",
+                            "color": Config.colors##botanicalNight,
+                        },
+                    }}
                     size=`small
                     onChange={(_event, newValue) => {
+                        set_prefix_warning(_ => None);
+                        set_general_warning(_ => None);
+
                         let selectedPrefixes =
                             switch (newValue |> Js.Nullable.toOption) {
                             | Some(prefixes) => prefixes
@@ -1202,6 +1257,23 @@ let make = () => {
                             } else {
                                 None
                             };
+                        // Jagersma 24.2.1 "the prefix {÷u} cannot be used together with the negative proclitic {nu}"
+                        if (hasPrefix("preformative-u") && hasPrefix("modal-nu")) {
+                            set_prefix_warning(_ => Some(Warnings.PreformativeUWithNU));
+                        }
+                        // Jagersma 24.3.3 "the vocalic prefix {÷a} cannot be preceded by the negative proclitic {nu}"
+                        if (hasPrefix("preformative-a") && hasPrefix("modal-nu")) {
+                            set_prefix_warning(_ => Some(Warnings.PreformativeAWithNU));
+                        }
+                        // Jagersma 24.3.3 "Nor can {÷a} be preceded by the modal proclitic {h~a},"
+                        if (hasPrefix("preformative-a") && hasPrefix("modal-ha")) {
+                            set_prefix_warning(_ => Some(Warnings.PreformativeAWithHA));
+                        }
+                        // Jagersma 24.2.1 the prefix {÷u} is only found in perfective forms.
+                        if (hasPrefix("preformative-u") && is_perfective !== Option.Some(true)) {
+                            set_general_warning(_ => Some(Warnings.PreformativeUOnlyInPerfective));
+                        }
+
                         change_preformative(selectedPreformative);
                         change_modal(selectedModal);
                         change_prefix(Ventive, hasPrefix("ventive"));
@@ -1215,196 +1287,6 @@ let make = () => {
                         );
                     }}
                 />
-            //     <Grid container=true spacing=`Number(2)>
-            //         <Grid size=`Number(6)>
-            //             <FormControl>
-            //                 <FormLabel id="preformative-label">
-            //                     {"Preformative" |> React.string}
-            //                 </FormLabel>
-            //                 <RadioGroup
-            //                     row=true
-            //                     ariaLabelledby="preformative-label"
-            //                     name="preformative"
-            //                     value={
-            //                         switch preformative {
-            //                         | Some(Conjugator.Preformative.A) => "preformative-a"
-            //                         | Some(Conjugator.Preformative.I) => "preformative-i"
-            //                         | Some(Conjugator.Preformative.U) => "preformative-u"
-            //                         | None => ""
-            //                         }
-            //                     }
-            //                     onChange={ev => {
-            //                         let target = React.Event.Form.target(ev)
-            //                         switch target##value {
-            //                         | "preformative-a" =>
-            //                             change_preformative(Some(Conjugator.Preformative.A))
-            //                         | "preformative-i" =>
-            //                             change_preformative(Some(Conjugator.Preformative.I))
-            //                         | "preformative-u" =>
-            //                             change_preformative(Some(Conjugator.Preformative.U))
-            //                         | _ => ()
-            //                         }
-            //                     }}
-            //                     sx={{"padding": "8px"}}
-            //                 >
-            //                     <FormControlLabel
-            //                         value="preformative-a"
-            //                         control={
-            //                             <Radio
-            //                                 size={is_mobile ? `small : `medium}
-            //                                 onClick={_ =>
-            //                                     switch preformative {
-            //                                     | Some(Conjugator.Preformative.A) =>
-            //                                         change_preformative(None)
-            //                                     | _ => ()
-            //                                     }
-            //                                 }
-            //                             />
-            //                         }
-            //                         label={"A" |> React.string}                                    
-            //                         disabled={
-            //                             is_transitive |> Option.is_none 
-            //                             || is_perfective |> Option.is_none
-            //                             || Option.is_none(verb_stem)
-            //                         }
-            //                     />
-            //                     <FormControlLabel
-            //                         value="preformative-i"
-            //                         control={
-            //                             <Radio
-            //                                 size={is_mobile ? `small : `medium}
-            //                                 onClick={_ =>
-            //                                     switch preformative {
-            //                                     | Some(Conjugator.Preformative.I) =>
-            //                                         change_preformative(None)
-            //                                     | _ => ()
-            //                                     }
-            //                                 }
-            //                             />
-            //                         }
-            //                         label={"I" |> React.string}
-            //                         disabled={
-            //                             is_transitive |> Option.is_none 
-            //                             || is_perfective |> Option.is_none
-            //                             || Option.is_none(verb_stem)
-            //                         }
-            //                     />
-            //                     <FormControlLabel
-            //                         value="preformative-u"
-            //                         control={
-            //                             <Radio
-            //                                 size={is_mobile ? `small : `medium}
-            //                                 onClick={_ =>
-            //                                     switch preformative {
-            //                                     | Some(Conjugator.Preformative.U) =>
-            //                                         change_preformative(None)
-            //                                     | _ => ()
-            //                                     }
-            //                                 }
-            //                             />
-            //                         }
-            //                         label={"U" |> React.string}
-            //                         disabled={
-            //                             is_transitive |> Option.is_none 
-            //                             || is_perfective |> Option.is_none
-            //                             || Option.is_none(verb_stem)
-            //                         }
-            //                     />
-            //                 </RadioGroup>
-            //             </FormControl>
-            //         </Grid>
-            //         <Grid size=`Number(6)>
-            //             <FormControl>
-            //                 <FormLabel id="modal-prefix-label">
-            //                     {"Modal Prefix" |> React.string}
-            //                 </FormLabel>
-            //                 <RadioGroup
-            //                     row=true
-            //                     ariaLabelledby="modal-prefix-label"
-            //                     name="modal-prefix"
-            //                     value={
-            //                         switch modal_prefix {
-            //                         | Some(HA) => "modal-ha"
-            //                         | Some(NU) => "modal-nu"
-            //                         | Some(NAN) => "modal-nan"
-            //                         | None => ""
-            //                         }
-            //                     }
-            //                     onChange={ev => {
-            //                         let target = React.Event.Form.target(ev)
-            //                         switch target##value {
-            //                         | "modal-ha" => change_modal(Some(HA))
-            //                         | "modal-nu" => change_modal(Some(NU))
-            //                         | "modal-nan" => change_modal(Some(NAN))
-            //                         | _ => ()
-            //                         }
-            //                     }}
-            //                     sx={{"padding": "8px"}}
-            //                 >
-            //                     <FormControlLabel
-            //                         value="modal-ha"
-            //                         control={
-            //                             <Radio
-            //                                 size={is_mobile ? `small : `medium}
-            //                                 onClick={_ =>
-            //                                     switch modal_prefix {
-            //                                     | Some(HA) => change_modal(None)
-            //                                     | _ => ()
-            //                                     }
-            //                                 }
-            //                             />
-            //                         }
-            //                         label={{js|ḪA|js} |> React.string}
-            //                         disabled={
-            //                             is_transitive |> Option.is_none 
-            //                             || is_perfective |> Option.is_none
-            //                             || Option.is_none(verb_stem)
-            //                         }
-            //                     />
-            //                     <FormControlLabel
-            //                         value="modal-nu"
-            //                         control={
-            //                             <Radio
-            //                                 size={is_mobile ? `small : `medium}
-            //                                 onClick={_ =>
-            //                                     switch modal_prefix {
-            //                                     | Some(NU) => change_modal(None)
-            //                                     | _ => ()
-            //                                     }
-            //                                 }
-            //                             />
-            //                         }
-            //                         label={"NU" |> React.string}
-            //                         disabled={
-            //                             is_transitive |> Option.is_none 
-            //                             || is_perfective |> Option.is_none
-            //                             || Option.is_none(verb_stem)
-            //                         }
-            //                     />
-            //                     <FormControlLabel
-            //                         value="modal-nan"
-            //                         control={
-            //                             <Radio
-            //                                 size={is_mobile ? `small : `medium}
-            //                                 onClick={_ =>
-            //                                     switch modal_prefix {
-            //                                     | Some(NAN) => change_modal(None)
-            //                                     | _ => ()
-            //                                     }
-            //                                 }
-            //                             />
-            //                         }
-            //                         label={"NAN" |> React.string}
-            //                         disabled={
-            //                             is_transitive |> Option.is_none 
-            //                             || is_perfective |> Option.is_none
-            //                             || Option.is_none(verb_stem)
-            //                         }
-            //                     />
-            //                 </RadioGroup>
-            //             </FormControl>
-            //         </Grid>
-            //     </Grid>
                 <Grid container=true spacing=`Number(0)>
                     <Grid size=`Number(8)>
                         <FormControl fullWidth=true>
@@ -1575,57 +1457,18 @@ let make = () => {
                             </Select>
                         </FormControl>
                     </Grid>
+                    <Box>
+                        {
+                            switch (general_warning) {
+                            | Some(warning) =>
+                                <Alert severity=`warning sx={{"marginTop": marginTop}}>
+                                    {warning |> Warnings.print |> React.string}
+                                </Alert>
+                            | None => React.null
+                            }
+                        }
+                    </Box>
                 </Grid>
-                // <Box sx={{"marginTop": marginTop}}>
-                //     <FormControl fullWidth=true>
-                //         <FormLabel id="other-prefixes-label">
-                //             {"Other Prefixes" |> React.string}
-                //         </FormLabel>
-                //         <FormGroup
-                //             row=true
-                //             ariaLabelledby="other-prefixes-label"
-                //         >
-                //             <FormControlLabel 
-                //                 control={
-                //                     <Checkbox 
-                //                         checked={ventive}
-                //                         size={is_mobile ? `small : `medium}
-                //                         onChange={ev => {
-                //                             let target = React.Event.Form.target(ev)
-                //                             let checked: bool = target##checked
-                //                             change_prefix(Ventive, checked)
-                //                         }}
-                //                         disabled={
-                //                             is_transitive |> Option.is_none 
-                //                             || is_perfective |> Option.is_none
-                //                             || Option.is_none(verb_stem)    
-                //                         }
-                //                     />
-                //                 }
-                //                 label={"MU" |> React.string}
-                //             />
-                //             <FormControlLabel 
-                //                 control={
-                //                     <Checkbox 
-                //                         checked={middle_prefix}
-                //                         size={is_mobile ? `small : `medium}
-                //                         onChange={ev => {
-                //                             let target = React.Event.Form.target(ev)
-                //                             let checked: bool = target##checked
-                //                             change_prefix(MiddlePrefix, checked)
-                //                         }}
-                //                         disabled={
-                //                             is_transitive |> Option.is_none 
-                //                             || is_perfective |> Option.is_none
-                //                             || Option.is_none(verb_stem)    
-                //                         }
-                //                     />
-                //                 }
-                //                 label={"BA" |> React.string}
-                //             />
-                //         </FormGroup>
-                //     </FormControl>
-                // </Box>
             </Grid>
             <Container sx={{"display": "flex", "flexDirection": "column", "alignItems": "center", "marginTop": marginTop}}>
                 <div className=css##result>

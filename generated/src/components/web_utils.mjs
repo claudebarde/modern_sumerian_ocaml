@@ -4,7 +4,15 @@ import ConjugatorModuleScss from "../styles/Conjugator.module.scss";
 import Cuneiform_code_pointsJson from "./cuneiform_code_points.json";
 import * as Epsd_linksJson from "./epsd_links.json";
 import Sumerian_verbsJson from "./sumerian_verbs.json";
+import Alert from "@mui/material/Alert";
+import Badge from "@mui/material/Badge";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,12 +20,15 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import * as IconsReact from "@tabler/icons-react";
+import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Components__Cuneiform_char from "./cuneiform_char.mjs";
 import * as Components__Custom_dict from "./custom_dict.mjs";
 import * as Conjugator from "../conjugator/conjugator.mjs";
 import * as Conjugator__Verb_analysis from "../conjugator/verb_analysis.mjs";
+import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Js__Js_exn from "melange.js/js_exn.mjs";
 import * as Js__Js_json from "melange.js/js_json.mjs";
@@ -25,6 +36,7 @@ import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__List from "melange/list.mjs";
 import * as Stdlib__String from "melange/string.mjs";
+import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 const cuneiformCodePoints = Cuneiform_code_pointsJson;
@@ -449,6 +461,10 @@ function Web_utils$BuildResults(Props) {
   let stemCuneiforms = Props.stemCuneiforms;
   let imperfectiveStem = Props.imperfectiveStem;
   let fixedElement = Props.fixedElement;
+  const match = React.useState(function () {
+    return false;
+  });
+  const set_open_warnings = match[1];
   const err = Conjugator.print(verb, meaning);
   if (err.TAG !== /* Ok */ 0) {
     return JsxRuntime.jsx("span", {
@@ -456,10 +472,11 @@ function Web_utils$BuildResults(Props) {
       className: css.error
     });
   }
-  const match = err._0;
-  const conjugatedVerb = match.verb;
+  const match$1 = err._0;
+  const warnings = match$1.warnings;
+  const conjugatedVerb = match$1.verb;
   const displayedVerb = fixedElement !== undefined ? fixedElement[0] + (" " + conjugatedVerb) : conjugatedVerb;
-  const output = Conjugator__Verb_analysis.output(match.analysis);
+  const output = Conjugator__Verb_analysis.output(match$1.analysis);
   const analysisOutput = fixedElement !== undefined ? Stdlib__Array.concat({
       hd: [[
           "compoundElement",
@@ -509,7 +526,7 @@ function Web_utils$BuildResults(Props) {
         }),
         JsxRuntime.jsx(Grid, {
           children: JsxRuntime.jsx("span", {
-            children: "(" + (match.translation + ")"),
+            children: "(" + (match$1.translation + ")"),
             className: css.noWrap
           }),
           size: {
@@ -532,62 +549,139 @@ function Web_utils$BuildResults(Props) {
         children: [
           JsxRuntime.jsx(TableHead, {
             children: JsxRuntime.jsx(TableRow, {
-              children: Stdlib__Array.map((function (param) {
-                const output_type = param[0];
-                let tmp;
-                switch (output_type) {
-                  case "compoundElement" :
-                    tmp = "Compound Element";
-                    break;
-                  case "edMarker" :
-                    tmp = "ED Marker";
-                    break;
-                  case "finalPersonPrefix" :
-                    tmp = "Final Person Prefix";
-                    break;
-                  case "finalPersonSuffix" :
-                    tmp = "Final Person Suffix";
-                    break;
-                  case "initialPersonPrefix" :
-                    tmp = "Initial Person Prefix";
-                    break;
-                  case "middlePrefix" :
-                    tmp = "Middle Prefix";
-                    break;
-                  case "modal" :
-                    tmp = "ḪA Modal";
-                    break;
-                  case "negative" :
-                    tmp = "Negation";
-                    break;
-                  case "negativeNan" :
-                    tmp = "Nan Modal";
-                    break;
-                  default:
-                    const first_char = output_type.charAt(0).toUpperCase();
-                    const rest = output_type.slice(1, undefined).toLowerCase();
-                    tmp = first_char + rest;
-                }
-                return JsxRuntime.jsx(TableCell, {
-                  children: tmp
-                }, output_type);
-              }), analysisOutput)
+              children: JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                children: [
+                  Stdlib__Array.map((function (param) {
+                    const output_type = param[0];
+                    let tmp;
+                    switch (output_type) {
+                      case "compoundElement" :
+                        tmp = "Compound Element";
+                        break;
+                      case "edMarker" :
+                        tmp = "ED Marker";
+                        break;
+                      case "finalPersonPrefix" :
+                        tmp = "Final Person Prefix";
+                        break;
+                      case "finalPersonSuffix" :
+                        tmp = "Final Person Suffix";
+                        break;
+                      case "initialPersonPrefix" :
+                        tmp = "Initial Person Prefix";
+                        break;
+                      case "middlePrefix" :
+                        tmp = "Middle Prefix";
+                        break;
+                      case "modal" :
+                        tmp = "ḪA Modal";
+                        break;
+                      case "negative" :
+                        tmp = "Negation";
+                        break;
+                      case "negativeNan" :
+                        tmp = "Nan Modal";
+                        break;
+                      default:
+                        const first_char = output_type.charAt(0).toUpperCase();
+                        const rest = output_type.slice(1, undefined).toLowerCase();
+                        tmp = first_char + rest;
+                    }
+                    return JsxRuntime.jsx(TableCell, {
+                      children: tmp
+                    }, output_type);
+                  }), analysisOutput),
+                  warnings.length !== 0 ? JsxRuntime.jsx(TableCell, {
+                      children: "Details"
+                    }, "warnings") : null
+                ]
+              })
             })
           }),
           JsxRuntime.jsx(TableBody, {
             children: JsxRuntime.jsx(TableRow, {
-              children: Stdlib__Array.mapi((function (i, param) {
-                const value = param[1];
-                const Key = value + Stdlib__Int.to_string(i);
-                return JsxRuntime.jsx(TableCell, {
-                  children: param[0] === "stem" ? JsxRuntime.jsx("strong", {
-                      children: value
-                    }) : value,
-                  sx: {
-                    textAlign: "center"
-                  }
-                }, Key);
-              }), analysisOutput)
+              children: JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                children: [
+                  Stdlib__Array.mapi((function (i, param) {
+                    const value = param[1];
+                    const Key = value + Stdlib__Int.to_string(i);
+                    return JsxRuntime.jsx(TableCell, {
+                      children: param[0] === "stem" ? JsxRuntime.jsx("strong", {
+                          children: value
+                        }) : value,
+                      sx: {
+                        textAlign: "center"
+                      }
+                    }, Key);
+                  }), analysisOutput),
+                  warnings.length !== 0 ? JsxRuntime.jsxs(TableCell, {
+                      children: [
+                        JsxRuntime.jsx(IconButton, {
+                          children: JsxRuntime.jsx(Badge, {
+                            badgeContent: warnings.length.toString(undefined),
+                            children: JsxRuntime.jsx(IconsReact.IconInfoTriangle, {}),
+                            color: Bindings__Material_ui.Color.info
+                          }),
+                          onClick: (function (param) {
+                            Curry._1(set_open_warnings, (function (param) {
+                              return true;
+                            }));
+                          })
+                        }),
+                        JsxRuntime.jsxs(Dialog, {
+                          children: [
+                            JsxRuntime.jsx(DialogTitle, {
+                              children: "More Details"
+                            }),
+                            JsxRuntime.jsx(DialogContent, {
+                              children: Stdlib__Array.mapi((function (index, warning) {
+                                const Key = index.toString(undefined);
+                                let tmp;
+                                switch (warning.TAG) {
+                                  case /* Info */ 0 :
+                                    tmp = "info";
+                                    break;
+                                  case /* Warning */ 1 :
+                                    tmp = "warning";
+                                    break;
+                                  case /* Error */ 2 :
+                                    tmp = "error";
+                                    break;
+                                }
+                                return JsxRuntime.jsx(Alert, {
+                                  children: warning._0,
+                                  severity: tmp,
+                                  sx: {
+                                    marginTop: "0.5rem"
+                                  }
+                                }, Key);
+                              }), warnings)
+                            }),
+                            JsxRuntime.jsx(DialogActions, {
+                              children: JsxRuntime.jsx(Button, {
+                                children: "Close",
+                                onClick: (function (_event) {
+                                  Curry._1(set_open_warnings, (function (param) {
+                                    return false;
+                                  }));
+                                })
+                              })
+                            })
+                          ],
+                          onClose: (function (_event, _reason) {
+                            Curry._1(set_open_warnings, (function (param) {
+                              return false;
+                            }));
+                          }),
+                          open: match[0]
+                        })
+                      ],
+                      sx: {
+                        textAlign: "center"
+                      }
+                    }, "warnings") : null
+                ]
+              })
             })
           })
         ],

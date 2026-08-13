@@ -10,11 +10,18 @@
 open Infixes 
 open Utils
 
+module Warning = struct
+    type t =
+        | Info of string
+        | Warning of string
+        | Error of string
+end
+
 type t = {
     verb: string;
     analysis: Verb_analysis.t;
     translation: string;
-    warnings: string array;
+    warnings: Warning.t array;
 }
 
 type morphemes_array = string array
@@ -207,7 +214,7 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
         | None -> Ok(arr)
 
 let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, string) result  =
-    let warnings: string array = [||] in
+    let warnings: Warning.t list ref = ref [] in
     let morphemes_start = Array.make 15 "" in
     (* builds the array with all the markers *)
     let (outputRes: morphemes_res) = 
@@ -240,56 +247,58 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                 let outputArr = 
                     match (outputArr |> get_morpheme_at_pos preformative_pos) with
                     | Some preformative ->
-                        (* find previous morpheme *)
-                        (match find_previous_morpheme preformative_pos outputArr with
-                            | Some((marker, markerName)) ->
-                                (match (markerName, preformative) with
-                                    (* TODO: An imperfective form with {h~a} is always transitive 25.4.2 *)
-                                    | (FirstPrefix, "i") when marker == {js|ḫa|js} ->
-                                        (* If the verbal form begins with the vocalic prefix /ʔi/ (§24.3),
-                                        /ḫa/ contracts with it. The sequence /ḫaʔi/ thus becomes /ḫē/ *)
-                                        let _ = outputArr.(preformative_pos) <- "" in
-                                        let _ = outputArr.(first_prefix_pos) <- {js|ḫē|js} in outputArr
-                                    | (FirstPrefix, "i") when marker == "nu" ->
-                                        (* 24.3.2 *)
-                                        let _ = outputArr.(preformative_pos) <- "u" in outputArr
-                                    | _ ->
-                                        (* no change *)
-                                        outputArr)
-                            | None ->
-                                (* 24.3.2 The prefix {ʔi} may also contract with the verbal stem,
-                                if the latter has an initial glottal stop. *)
-                                (match find_next_morpheme preformative_pos outputArr with
-                                | Some (morpheme, marker) when String.length morpheme > 1 ->
-                                    if marker == Stem && String.length morpheme > 0
-                                        (* stem must start with CV and first consonant must be a glottal stop *)
-                                    then 
-                                        let stem_start_struct = String.sub (consonant_vowel_sequence morpheme) 0 2 in
-                                        if stem_start_struct == "CV" && String.sub morpheme 0 1 == {js|ʔ|js}
-                                        then 
-                                            (* removes the "i" of the preformative *)
-                                            let prefix = String.sub morpheme 0 1 in
-                                            let _ = outputArr.(preformative_pos) <- prefix in
-                                            (* removes the "i" of the stem *)
-                                            let _ = outputArr.(stem_pos) <- String.sub morpheme 1 ((String.length morpheme) - 1) in
-                                            outputArr
-                                        else if morpheme |> starts_with_consonant && ventive_pos == ventive_pos
-                                        then 
-                                            let prefix = String.sub morpheme 0 1 in
-                                            (* removes the "i" of the preformative *)
-                                            let _ = outputArr.(preformative_pos) <- prefix in
-                                            (* removes the "i" of the stem *)
-                                            outputArr
-                                        else
+                        if preformative == "i"
+                        then                            
+                            (* find previous morpheme *)
+                            (match find_previous_morpheme preformative_pos outputArr with
+                                | Some((marker, markerName)) ->
+                                    (match (markerName, preformative) with
+                                        (* TODO: An imperfective form with {h~a} is always transitive 25.4.2 *)
+                                        | (FirstPrefix, "i") when marker == {js|ḫa|js} ->
+                                            (* If the verbal form begins with the vocalic prefix /ʔi/ (§24.3),
+                                            /ḫa/ contracts with it. The sequence /ḫaʔi/ thus becomes /ḫē/ *)
+                                            let _ = outputArr.(preformative_pos) <- "" in
+                                            let _ = outputArr.(first_prefix_pos) <- {js|ḫē|js} in outputArr
+                                        | (FirstPrefix, "i") when marker == "nu" ->
+                                            (* 24.3.2 *)
+                                            let _ = outputArr.(preformative_pos) <- "u" in outputArr
+                                        | _ ->
                                             (* no change *)
-                                            outputArr
-                                    else
-                                        (* no change *)
-                                        outputArr
-                                | _ ->
-                                    (* there is no marker after the preformative *)
-                                    outputArr)
-                        )
+                                            outputArr)
+                                | None -> outputArr
+                                    (* there is no marker before the preformative *)
+                            )
+                        else if preformative == "a"
+                        then
+                            (* When the prefix {÷a} occurs immediately before the stem, that is, when it is the only verbal prefix, it has the special form /÷al/ *)
+                            match (find_next_morpheme preformative_pos outputArr) with
+                            | Some (_, markerName) ->
+                                if (markerName == Stem)
+                                then
+                                    let _ = outputArr.(preformative_pos) <- {js|al|js} in outputArr
+                                else
+                                    (* no change *)
+                                    outputArr
+                            | None ->
+                                (* there is no morpheme after the preformative *)
+                                outputArr
+                        else if preformative == "u"
+                        then
+                            (* When the prefix {÷u} occurs immediately before the stem, that is, when it is the only verbal prefix, it has the special form /÷ul/. 24.2.1*)
+                            match (find_next_morpheme preformative_pos outputArr) with
+                            | Some (_, markerName) ->
+                                if (markerName == Stem)
+                                then
+                                    let _ = outputArr.(preformative_pos) <- {js|ūl|js} in outputArr
+                                else
+                                    (* no change *)
+                                    outputArr
+                            | None ->
+                                (* there is no morpheme after the preformative *)
+                                outputArr
+                        else
+                            (* no change *)
+                            outputArr
                     | _ -> outputArr
                 in
 
@@ -690,13 +699,165 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                                 | _ -> Ok(outputArr))
                             | _ -> Ok(outputArr))
             in
+
+            let finalChanges (outputArr: string array): string array = 
+                (* PREFORMATIVE CHANGES *)
+                match get_morpheme_at_pos preformative_pos outputArr with
+                | Some(preformative) ->
+                    if preformative == "i" 
+                    then 
+                        (* {i} is never found before a prefix with the shape /CV/. *)
+                        (match find_next_morpheme preformative_pos outputArr with
+                        | Some (morpheme, marker) ->
+                            let cvc = morpheme |> consonant_vowel_sequence in
+                            if marker != Stem 
+                                && String.length cvc > 1 
+                                && cvc.[0] == 'C' 
+                                && cvc.[1] == 'V'
+                            then 
+                                let _ = outputArr.(preformative_pos) <- "" in
+                                warnings :=
+                                    Warning.Info(
+                                        "The preformative {i} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else if marker == Ventive && morpheme == "m"
+                            then
+                                (* the prefix {÷i} is long before the shortened forms /n/ of the local prefix {ni}
+                                (§20.2.1), /b/ of the local prefix {e} (§20.3.1), and /m/ of the ventive prefix {mu} *)
+                                let _ = outputArr.(preformative_pos) <- {js|ī|js} in
+                                warnings :=
+                                    Warning.Info(
+                                        "The preformative {i} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.1)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else if marker == Locative && morpheme == "n"
+                            then
+                                (* the prefix {÷i} is long before the shortened forms /n/ of the local prefix {ni}
+                                (§20.2.1), /b/ of the local prefix {e} (§20.3.1), and /m/ of the ventive prefix {mu} *)
+                                let _ = outputArr.(preformative_pos) <- {js|ī|js} in
+                                warnings :=
+                                    Warning.Info(
+                                        "The preformative {i} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.1)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else if marker == InitialPersonPrefix && morpheme == "b"
+                            then
+                                (* the prefix {÷i} is long before the shortened forms /n/ of the local prefix {ni}
+                                (§20.2.1), /b/ of the local prefix {e} (§20.3.1), and /m/ of the ventive prefix {mu} *)
+                                match get_morpheme_at_pos locative_pos outputArr with
+                                | Some locative when locative == "e" ->
+                                    let _ = outputArr.(preformative_pos) <- {js|ī|js} in
+                                    warnings :=
+                                        Warning.Info(
+                                            "The preformative {i} is long before the /b/ of the local prefix {e} (Jagersma 24.3.1)"
+                                        )
+                                        :: !warnings;
+                                    outputArr
+                                | _ -> outputArr
+                            else
+                                outputArr
+                        | None -> outputArr)
+                    else if preformative == "a"
+                    then 
+                        (* {i} is never found before a prefix with the shape /CV/. *)
+                        (match find_next_morpheme preformative_pos outputArr with
+                        | Some (morpheme, marker) ->
+                            let cvc = morpheme |> consonant_vowel_sequence in
+                            if marker != Stem 
+                                && String.length cvc > 1 
+                                && cvc.[0] == 'C' 
+                                && cvc.[1] == 'V'
+                            then 
+                                let _ = outputArr.(preformative_pos) <- "" in
+                                warnings :=
+                                    Warning.Info(
+                                        "The preformative {a} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else if marker == Ventive && morpheme == "m"
+                            then
+                                (* the prefix {÷a} is long before the shortened forms /n/ of the local prefix {ni}
+                                (§20.2.1), /b/ of the local prefix {e} (§20.3.1), and /m/ of the ventive prefix {mu} *)
+                                let _ = outputArr.(preformative_pos) <- {js|ā|js} in
+                                warnings :=
+                                    Warning.Info(
+                                        "The preformative {a} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.3)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else if marker == Locative && morpheme == "n"
+                            then
+                                (* the prefix {÷a} is long before the shortened forms /n/ of the local prefix {ni}
+                                (§20.2.1), /b/ of the local prefix {e} (§20.3.1), and /m/ of the ventive prefix {mu} *)
+                                let _ = outputArr.(preformative_pos) <- {js|ā|js} in
+                                warnings :=
+                                    Warning.Info(
+                                        "The preformative {a} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.3)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else if marker == InitialPersonPrefix && morpheme == "b"
+                            then
+                                (* the prefix {÷a} is long before the shortened forms /n/ of the local prefix {ni}
+                                (§20.2.1), /b/ of the local prefix {e} (§20.3.1), and /m/ of the ventive prefix {mu} *)
+                                match get_morpheme_at_pos locative_pos outputArr with
+                                | Some locative when locative == "e" ->
+                                    let _ = outputArr.(preformative_pos) <- {js|ā|js} in
+                                    warnings :=
+                                        Warning.Info(
+                                            "The preformative {a} is long before the /b/ of the local prefix {e} (Jagersma 24.3.3)"
+                                        )
+                                        :: !warnings;
+                                    outputArr
+                                | _ -> outputArr
+                            else outputArr
+                        | None -> outputArr)
+                    else if preformative == "u"
+                    then
+                        (* find next morpheme *)
+                        (match ((find_previous_morpheme preformative_pos outputArr), (find_next_morpheme preformative_pos outputArr)) with
+                        | (None, Some((morpheme, _))) ->
+                            (* In an open syllable the /u/ of the prefix {÷u} assimilates to the vowel of the following syllable 24.2.1 *)
+                            if (morpheme |> consonant_vowel_sequence == "CV" || morpheme |> consonant_vowel_sequence == "CVC")
+                            then
+                                (* extracts the vowel of the following syllable and replace "u" in the preformative with it *)
+                                let vowel_of_next_syllable = 
+                                    match consonant_vowel_sequence morpheme with
+                                    | "CV" | "CVC" -> String.sub morpheme 1 1
+                                    | _ -> "u"
+                                in
+                                let _ = outputArr.(preformative_pos) <- vowel_of_next_syllable in
+                                warnings :=
+                                    Warning.Info(
+                                        "In an open syllable, preformative {u} assimilates to the following syllable (Jagersma 24.2.1)"
+                                    )
+                                    :: !warnings;
+                                outputArr
+                            else
+                                (* no change *)
+                                outputArr
+                        | _ ->
+                            (* there is no marker after the preformative *)
+                            outputArr)
+                    else 
+                        (* no change *)
+                        outputArr
+                | None -> outputArr
+            in
             
             (* returns the final string *)
             match outputRes with
             | Error(err) -> Error(err)
             | Ok(outputArr) -> 
                 let final_verb = 
-                    outputArr 
+                    outputArr
+                    |> Array.copy 
+                    |> finalChanges
                     |> Array.to_list 
                     |> String.concat ""
                 in 
@@ -704,5 +865,5 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                     verb = final_verb;
                     analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
                     translation = Translation.translate verb meaning;
-                    warnings = warnings;
+                    warnings = !warnings |> Stdlib.List.rev |> Array.of_list;
                 }

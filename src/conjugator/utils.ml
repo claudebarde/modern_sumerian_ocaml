@@ -100,7 +100,8 @@ let rec find_next_morpheme (pos: int) (arr: string array): (string * markerName)
           (match marker_by_pos(pos + 1) with
           | Some marker -> Some((morph, marker))
           | None -> None)
-        else None
+        (* else None *)
+        else find_next_morpheme (pos + 1) arr
       with
         | Invalid_argument _ -> find_next_morpheme (pos + 1) arr
 

@@ -9,7 +9,10 @@ import * as Conjugator__Utils from "./utils.mjs";
 import * as Conjugator__Verb_analysis from "./verb_analysis.mjs";
 import * as Stdlib from "melange/stdlib.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
+import * as Stdlib__List from "melange/list.mjs";
 import * as Stdlib__String from "melange/string.mjs";
+
+const Warning = {};
 
 function add_stem(arr, stem) {
   Caml_array.set(arr, Conjugator__Utils.stem_pos, stem);
@@ -468,7 +471,9 @@ function add_oblique_object(verb, arr) {
 }
 
 function print(verb, meaning) {
-  const warnings = [];
+  const warnings = {
+    contents: /* [] */ 0
+  };
   const morphemes_start = Caml_array.make(15, "");
   const outputRes = add_oblique_object(verb, add_final_person_suffix(verb, add_ed_marker(verb, add_final_person_prefix(verb, add_locative(verb, add_comitative(verb, add_indirect_object_prefix(verb, add_initial_person_prefix(verb, add_middle_prefix(verb, add_adverbial(verb, add_ventive(verb, add_coordinator(verb, add_preformative(verb, add_first_prefix(verb, add_stem(morphemes_start, verb.stem)))))))))))))));
   if (outputRes.TAG !== /* Ok */ 0) {
@@ -481,37 +486,17 @@ function print(verb, meaning) {
   const preformative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.preformative_pos, outputArr);
   let outputArr$1;
   if (preformative !== undefined) {
-    const match = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.preformative_pos, outputArr);
-    if (match !== undefined) {
-      const marker = match[0];
-      if (match[1] === /* FirstPrefix */ 0 && preformative === "i") {
-        if (marker === "ḫa") {
-          Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
-          Caml_array.set(outputArr, Conjugator__Utils.first_prefix_pos, "ḫē");
-          outputArr$1 = outputArr;
-        } else if (marker === "nu") {
-          Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "u");
-          outputArr$1 = outputArr;
-        } else {
-          outputArr$1 = outputArr;
-        }
-      } else {
-        outputArr$1 = outputArr;
-      }
-    } else {
-      const match$1 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
-      if (match$1 !== undefined) {
-        const morpheme = match$1[0];
-        if (morpheme.length > 1 && match$1[1] === /* Stem */ 11 && morpheme.length !== 0) {
-          const stem_start_struct = Stdlib__String.sub(Conjugator__Utils.consonant_vowel_sequence(morpheme), 0, 2);
-          if (stem_start_struct === "CV" && Stdlib__String.sub(morpheme, 0, 1) === "ʔ") {
-            const prefix = Stdlib__String.sub(morpheme, 0, 1);
-            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, prefix);
-            Caml_array.set(outputArr, Conjugator__Utils.stem_pos, Stdlib__String.sub(morpheme, 1, morpheme.length - 1 | 0));
+    if (preformative === "i") {
+      const match = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+      if (match !== undefined) {
+        const marker = match[0];
+        if (match[1] === /* FirstPrefix */ 0 && preformative === "i") {
+          if (marker === "ḫa") {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
+            Caml_array.set(outputArr, Conjugator__Utils.first_prefix_pos, "ḫē");
             outputArr$1 = outputArr;
-          } else if (Conjugator__Utils.starts_with_consonant(morpheme) && Conjugator__Utils.ventive_pos === Conjugator__Utils.ventive_pos) {
-            const prefix$1 = Stdlib__String.sub(morpheme, 0, 1);
-            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, prefix$1);
+          } else if (marker === "nu") {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "u");
             outputArr$1 = outputArr;
           } else {
             outputArr$1 = outputArr;
@@ -522,22 +507,40 @@ function print(verb, meaning) {
       } else {
         outputArr$1 = outputArr;
       }
+    } else if (preformative === "a") {
+      const match$1 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+      if (match$1 !== undefined && match$1[1] === /* Stem */ 11) {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "al");
+        outputArr$1 = outputArr;
+      } else {
+        outputArr$1 = outputArr;
+      }
+    } else if (preformative === "u") {
+      const match$2 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+      if (match$2 !== undefined && match$2[1] === /* Stem */ 11) {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ūl");
+        outputArr$1 = outputArr;
+      } else {
+        outputArr$1 = outputArr;
+      }
+    } else {
+      outputArr$1 = outputArr;
     }
   } else {
     outputArr$1 = outputArr;
   }
-  const match$2 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.ventive_pos, outputArr$1);
-  const match$3 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.initial_person_prefix_pos, outputArr$1);
+  const match$3 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.ventive_pos, outputArr$1);
+  const match$4 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.initial_person_prefix_pos, outputArr$1);
   let outputArr$2;
-  if (match$2 !== undefined && match$3 !== undefined) {
-    if (match$3 === "b") {
-      const match$4 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.initial_person_prefix_pos, outputArr$1);
-      if (match$4 !== undefined) {
-        const morpheme$1 = match$4[0];
-        if (Conjugator__Utils.starts_with_consonant(morpheme$1) && match$2 === "mu") {
+  if (match$3 !== undefined && match$4 !== undefined) {
+    if (match$4 === "b") {
+      const match$5 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.initial_person_prefix_pos, outputArr$1);
+      if (match$5 !== undefined) {
+        const morpheme = match$5[0];
+        if (Conjugator__Utils.starts_with_consonant(morpheme) && match$3 === "mu") {
           Caml_array.set(outputArr$1, Conjugator__Utils.initial_person_prefix_pos, "");
           outputArr$2 = outputArr$1;
-        } else if (Conjugator__Utils.starts_with_vowel(morpheme$1) && match$2 === "m") {
+        } else if (Conjugator__Utils.starts_with_vowel(morpheme) && match$3 === "m") {
           Caml_array.set(outputArr$1, Conjugator__Utils.initial_person_prefix_pos, "m");
           outputArr$2 = outputArr$1;
         } else {
@@ -546,7 +549,7 @@ function print(verb, meaning) {
       } else {
         outputArr$2 = outputArr$1;
       }
-    } else if (match$3 === "\xca\x94") {
+    } else if (match$4 === "\xca\x94") {
       Caml_array.set(outputArr$1, Conjugator__Utils.ventive_pos, "mu");
       outputArr$2 = outputArr$1;
     } else {
@@ -558,9 +561,9 @@ function print(verb, meaning) {
   const ipp = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.initial_person_prefix_pos, outputArr$2);
   let outputArr$3;
   if (ipp === "e") {
-    const match$5 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.initial_person_prefix_pos, outputArr$2);
-    if (match$5 !== undefined) {
-      const marker$1 = match$5[0];
+    const match$6 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.initial_person_prefix_pos, outputArr$2);
+    if (match$6 !== undefined) {
+      const marker$1 = match$6[0];
       if (Conjugator__Utils.ends_with_vowel(marker$1)) {
         const last_vowel = marker$1.length === 1 ? marker$1 : Stdlib__String.sub(marker$1, marker$1.length - 1 | 0, 1);
         Caml_array.set(outputArr$2, Conjugator__Utils.initial_person_prefix_pos, last_vowel);
@@ -578,19 +581,19 @@ function print(verb, meaning) {
   let outputArr$4;
   if (locative !== undefined) {
     if (locative === "e") {
-      const match$6 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.locative_pos, outputArr$3);
-      if (match$6 !== undefined) {
-        const morpheme$2 = match$6[0];
+      const match$7 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.locative_pos, outputArr$3);
+      if (match$7 !== undefined) {
+        const morpheme$1 = match$7[0];
         let exit = 0;
-        if (match$6[1] === /* MiddlePrefix */ 4 && morpheme$2 === "ba") {
+        if (match$7[1] === /* MiddlePrefix */ 4 && morpheme$1 === "ba") {
           Caml_array.set(outputArr$3, Conjugator__Utils.locative_pos, "a");
           outputArr$4 = outputArr$3;
         } else {
           exit = 1;
         }
         if (exit === 1) {
-          if (Conjugator__Utils.ends_with_vowel(morpheme$2)) {
-            const new_morpheme = morpheme$2.length === 1 ? morpheme$2 : Stdlib__String.sub(morpheme$2, morpheme$2.length - 1 | 0, 1);
+          if (Conjugator__Utils.ends_with_vowel(morpheme$1)) {
+            const new_morpheme = morpheme$1.length === 1 ? morpheme$1 : Stdlib__String.sub(morpheme$1, morpheme$1.length - 1 | 0, 1);
             Caml_array.set(outputArr$3, Conjugator__Utils.locative_pos, new_morpheme);
             outputArr$4 = outputArr$3;
           } else {
@@ -602,9 +605,9 @@ function print(verb, meaning) {
         outputArr$4 = outputArr$3;
       }
     } else if (locative === "bi") {
-      const match$7 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.locative_pos, outputArr$3);
-      if (match$7 !== undefined) {
-        if (match$7[1] === /* Ventive */ 3) {
+      const match$8 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.locative_pos, outputArr$3);
+      if (match$8 !== undefined) {
+        if (match$8[1] === /* Ventive */ 3) {
           Caml_array.set(outputArr$3, Conjugator__Utils.locative_pos, "mi");
           Caml_array.set(outputArr$3, Conjugator__Utils.ventive_pos, "m");
           outputArr$4 = outputArr$3;
@@ -637,11 +640,11 @@ function print(verb, meaning) {
   const fpp$2 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.final_person_prefix_pos, outputArr$4);
   let outputArr$5;
   if (fpp$2 === "e") {
-    const match$8 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.final_person_prefix_pos, outputArr$4);
-    if (match$8 !== undefined) {
-      const morpheme$3 = match$8[0];
-      if (Conjugator__Utils.ends_with_vowel(morpheme$3)) {
-        const last_vowel$1 = morpheme$3.length === 1 ? morpheme$3 : Stdlib__String.make(1, Caml_string.get(morpheme$3, morpheme$3.length - 1 | 0));
+    const match$9 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.final_person_prefix_pos, outputArr$4);
+    if (match$9 !== undefined) {
+      const morpheme$2 = match$9[0];
+      if (Conjugator__Utils.ends_with_vowel(morpheme$2)) {
+        const last_vowel$1 = morpheme$2.length === 1 ? morpheme$2 : Stdlib__String.make(1, Caml_string.get(morpheme$2, morpheme$2.length - 1 | 0));
         Caml_array.set(outputArr$4, Conjugator__Utils.final_person_prefix_pos, last_vowel$1);
         outputArr$5 = outputArr$4;
       } else {
@@ -656,8 +659,8 @@ function print(verb, meaning) {
   const suffix = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.final_person_suffix_pos, outputArr$5);
   let outputArr$6;
   if (suffix !== undefined) {
-    const match$9 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.final_person_suffix_pos, outputArr$5);
-    if (match$9 !== undefined) {
+    const match$10 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.final_person_suffix_pos, outputArr$5);
+    if (match$10 !== undefined) {
       if (suffix === "e") {
         const _marker = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.ed_marker_pos, outputArr$5);
         if (_marker !== undefined || !Conjugator__Utils.ends_with_vowel(verb.stem)) {
@@ -671,7 +674,7 @@ function print(verb, meaning) {
             outputArr$6 = outputArr$5;
           }
         }
-      } else if (suffix.length > 1 && Conjugator__Utils.starts_with_vowel(suffix) && Conjugator__Utils.ends_with_vowel(match$9[0])) {
+      } else if (suffix.length > 1 && Conjugator__Utils.starts_with_vowel(suffix) && Conjugator__Utils.ends_with_vowel(match$10[0])) {
         Caml_array.get(outputArr$5, Conjugator__Utils.final_person_suffix_pos) === Conjugator__Utils.remove_first_char(suffix);
         outputArr$6 = outputArr$5;
       } else {
@@ -736,30 +739,30 @@ function print(verb, meaning) {
             _0: outputArr$7
           };
         } else {
-          const match$10 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.ventive_pos, outputArr$7);
-          if (match$10 !== undefined) {
-            const morpheme$4 = match$10[0];
-            if (morpheme$4 === "ni" || morpheme$4 === "ri") {
+          const match$11 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.ventive_pos, outputArr$7);
+          if (match$11 !== undefined) {
+            const morpheme$3 = match$11[0];
+            if (morpheme$3 === "ni" || morpheme$3 === "ri") {
               Caml_array.set(outputArr$7, Conjugator__Utils.ventive_pos, "mi");
               outputArrRes$1 = {
                 TAG: /* Ok */ 0,
                 _0: outputArr$7
               };
-            } else if (morpheme$4 === "ra") {
+            } else if (morpheme$3 === "ra") {
               Caml_array.set(outputArr$7, Conjugator__Utils.ventive_pos, "ma");
               outputArrRes$1 = {
                 TAG: /* Ok */ 0,
                 _0: outputArr$7
               };
-            } else if (morpheme$4 === "bi") {
+            } else if (morpheme$3 === "bi") {
               Caml_array.set(outputArr$7, Conjugator__Utils.ventive_pos, "m");
-              Caml_array.set(outputArr$7, Conjugator__Utils.marker_to_pos(match$10[1]), "mi");
+              Caml_array.set(outputArr$7, Conjugator__Utils.marker_to_pos(match$11[1]), "mi");
               outputArrRes$1 = {
                 TAG: /* Ok */ 0,
                 _0: outputArr$7
               };
-            } else if (morpheme$4.length > 1) {
-              const morph_start_struct = Conjugator__Utils.consonant_vowel_sequence(Stdlib__String.sub(morpheme$4, 0, 2));
+            } else if (morpheme$3.length > 1) {
+              const morph_start_struct = Conjugator__Utils.consonant_vowel_sequence(Stdlib__String.sub(morpheme$3, 0, 2));
               if (ventive === "mu" && morph_start_struct === "CV") {
                 Caml_array.set(outputArr$7, Conjugator__Utils.ventive_pos, "m");
                 outputArrRes$1 = {
@@ -890,17 +893,17 @@ function print(verb, meaning) {
             }
             break;
           case "nu" :
-            const match$11 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.first_prefix_pos, outputArr$8);
-            if (match$11 !== undefined) {
-              const morpheme$5 = match$11[0];
-              if (morpheme$5.length === 2) {
-                const match$12 = Caml_string.get(morpheme$5, 0);
-                const match$13 = Caml_string.get(morpheme$5, 1);
+            const match$12 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.first_prefix_pos, outputArr$8);
+            if (match$12 !== undefined) {
+              const morpheme$4 = match$12[0];
+              if (morpheme$4.length === 2) {
+                const match$13 = Caml_string.get(morpheme$4, 0);
+                const match$14 = Caml_string.get(morpheme$4, 1);
                 let exit$1 = 0;
-                if (match$12 !== 98) {
+                if (match$13 !== 98) {
                   exit$1 = 1;
-                } else if (match$13 !== 97) {
-                  if (match$13 !== 105) {
+                } else if (match$14 !== 97) {
+                  if (match$14 !== 105) {
                     exit$1 = 1;
                   } else {
                     Caml_array.get(outputArr$8, Conjugator__Utils.first_prefix_pos) === "li";
@@ -918,7 +921,7 @@ function print(verb, meaning) {
                 }
                 if (exit$1 === 1) {
                   let exit$2 = 0;
-                  if (match$13 !== 97 && match$13 !== 105) {
+                  if (match$14 !== 97 && match$14 !== 105) {
                     outputRes$1 = {
                       TAG: /* Ok */ 0,
                       _0: outputArr$8
@@ -973,6 +976,164 @@ function print(verb, meaning) {
       _0: outputArrRes._0
     };
   }
+  const finalChanges = function (outputArr) {
+    const preformative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.preformative_pos, outputArr);
+    if (preformative === undefined) {
+      return outputArr;
+    }
+    if (preformative === "i") {
+      const match = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+      if (match === undefined) {
+        return outputArr;
+      }
+      const marker = match[1];
+      const morpheme = match[0];
+      const cvc = Conjugator__Utils.consonant_vowel_sequence(morpheme);
+      if (marker !== /* Stem */ 11 && cvc.length > 1 && Caml_string.get(cvc, 0) === /* 'C' */67 && Caml_string.get(cvc, 1) === /* 'V' */86) {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {i} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      }
+      if (marker === /* Ventive */ 3 && morpheme === "m") {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {i} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.1)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      }
+      if (marker === /* Locative */ 9 && morpheme === "n") {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {i} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.1)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      }
+      if (!(marker === /* InitialPersonPrefix */ 5 && morpheme === "b")) {
+        return outputArr;
+      }
+      const locative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.locative_pos, outputArr);
+      if (locative === "e") {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {i} is long before the /b/ of the local prefix {e} (Jagersma 24.3.1)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      } else {
+        return outputArr;
+      }
+    }
+    if (preformative === "a") {
+      const match$1 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+      if (match$1 === undefined) {
+        return outputArr;
+      }
+      const marker$1 = match$1[1];
+      const morpheme$1 = match$1[0];
+      const cvc$1 = Conjugator__Utils.consonant_vowel_sequence(morpheme$1);
+      if (marker$1 !== /* Stem */ 11 && cvc$1.length > 1 && Caml_string.get(cvc$1, 0) === /* 'C' */67 && Caml_string.get(cvc$1, 1) === /* 'V' */86) {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {a} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      }
+      if (marker$1 === /* Ventive */ 3 && morpheme$1 === "m") {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {a} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.3)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      }
+      if (marker$1 === /* Locative */ 9 && morpheme$1 === "n") {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {a} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.3)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      }
+      if (!(marker$1 === /* InitialPersonPrefix */ 5 && morpheme$1 === "b")) {
+        return outputArr;
+      }
+      const locative$1 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.locative_pos, outputArr);
+      if (locative$1 === "e") {
+        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
+        warnings.contents = {
+          hd: {
+            TAG: /* Info */ 0,
+            _0: "The preformative {a} is long before the /b/ of the local prefix {e} (Jagersma 24.3.3)"
+          },
+          tl: warnings.contents
+        };
+        return outputArr;
+      } else {
+        return outputArr;
+      }
+    }
+    if (preformative !== "u") {
+      return outputArr;
+    }
+    const match$2 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+    const match$3 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+    if (match$2 !== undefined) {
+      return outputArr;
+    }
+    if (match$3 === undefined) {
+      return outputArr;
+    }
+    const morpheme$2 = match$3[0];
+    if (!(Conjugator__Utils.consonant_vowel_sequence(morpheme$2) === "CV" || Conjugator__Utils.consonant_vowel_sequence(morpheme$2) === "CVC")) {
+      return outputArr;
+    }
+    const match$4 = Conjugator__Utils.consonant_vowel_sequence(morpheme$2);
+    let vowel_of_next_syllable;
+    switch (match$4) {
+      case "CV" :
+      case "CVC" :
+        vowel_of_next_syllable = Stdlib__String.sub(morpheme$2, 1, 1);
+        break;
+      default:
+        vowel_of_next_syllable = "u";
+    }
+    Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, vowel_of_next_syllable);
+    warnings.contents = {
+      hd: {
+        TAG: /* Info */ 0,
+        _0: "In an open syllable, preformative {u} assimilates to the following syllable (Jagersma 24.2.1)"
+      },
+      tl: warnings.contents
+    };
+    return outputArr;
+  };
   if (outputRes$1.TAG !== /* Ok */ 0) {
     return {
       TAG: /* Error */ 1,
@@ -980,19 +1141,20 @@ function print(verb, meaning) {
     };
   }
   const outputArr$9 = outputRes$1._0;
-  const final_verb = Stdlib__String.concat("", Stdlib__Array.to_list(outputArr$9));
+  const final_verb = Stdlib__String.concat("", Stdlib__Array.to_list(finalChanges(Stdlib__Array.copy(outputArr$9))));
   return {
     TAG: /* Ok */ 0,
     _0: {
       verb: final_verb,
       analysis: Conjugator__Verb_analysis.analyse(outputArr$9, verb, Conjugator__Verb_analysis.create(undefined), 0),
       translation: Conjugator__Translation.translate(verb, meaning),
-      warnings: warnings
+      warnings: Stdlib__Array.of_list(Stdlib__List.rev(warnings.contents))
     }
   };
 }
 
 export {
+  Warning,
   add_stem,
   add_first_prefix,
   add_preformative,

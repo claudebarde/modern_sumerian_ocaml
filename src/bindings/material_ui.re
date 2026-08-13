@@ -4,15 +4,23 @@
 
 // TODO: once all the bindings are written, use AI to add default props like "id" to all the components
 
+// TODO: some components support props from other components
+
 // HELPERS
 
-type width = [
-    | `xs
-    | `sm
-    | `md
-    | `lg
-    | `xl
-];
+module MaxWidth = {
+    type t;
+
+    external fromString: string => t = "%identity";
+    external fromBool: bool => t = "%identity";
+
+    let xs = fromString("xs");
+    let sm = fromString("sm");
+    let md = fromString("md");
+    let lg = fromString("lg");
+    let xl = fromString("xl");
+    let disabled = fromBool(false);
+};
 
 type originPosition = {
     vertical: [`top | `center | `bottom],
@@ -285,6 +293,27 @@ module Avatar = {
     ) => React.element = "default";
 };
 
+module Badge = {
+    [@mel.module "@mui/material/Badge"] [@react.component]
+    external make: (
+        ~anchorOrigin: originPosition=?,
+        ~badgeContent: React.element=?,
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~color: Color.t=?,
+        ~component: RootComponent.t=?,
+        ~invisible: bool=?,
+        ~max: int=?,
+        ~overlap: [`circular | `rectangular]=?,
+        ~showZero: bool=?,
+        ~sx: Js.t({..})=?,
+        // TODO: slots and slotProps are not supported yet
+        ~variant: [`dot | `standard]=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Box = {
     [@mel.module "@mui/material/Box"] [@react.component]
     external make: (
@@ -487,12 +516,80 @@ module Container = {
     ~component: RootComponent.t=?,
     ~disableGutters: bool=?,
     ~fixed: bool=?,
-    ~maxWidth: (
-        [@mel.unwrap] [
-            | `Width(width)
-            | `Disabled(bool)
-        ]
-        )=?,
+    ~maxWidth: MaxWidth.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Dialog = {
+  [@mel.module "@mui/material/Dialog"] [@react.component]
+  external make: (
+    ~ariaDescribedby: [@mel.as "aria-describedby"] string=?,
+    ~ariaLabelledby: [@mel.as "aria-labelledby"] string=?,
+    ~ariaModal: [@mel.as "aria-modal"] bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~fullScreen: bool=?,
+    ~fullWidth: bool=?,
+    ~maxWidth: MaxWidth.t=?,
+    ~onClose: (React.Event.Synthetic.t, string) => unit=?,
+    ~_open: bool=?,
+    ~_PaperComponent: RootComponent.t=?,
+    ~role: [`dialog | `alertdialog]=?,
+    ~scroll: [`body | `paper]=?,
+    ~sx: Js.t({..})=?,
+    ~transitionDuration: [@mel.unwrap] [
+        | `auto
+        | `Number(int)
+        | `Object(Js.t({..}))
+    ]=?,
+    unit
+  ) => React.element = "default";
+};
+
+module DialogActions = {
+  [@mel.module "@mui/material/DialogActions"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~disableSpacing: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module DialogContent = {
+  [@mel.module "@mui/material/DialogContent"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~dividers: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module DialogContentText = {
+  [@mel.module "@mui/material/DialogContentText"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module DialogTitle = {
+  [@mel.module "@mui/material/DialogTitle"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";

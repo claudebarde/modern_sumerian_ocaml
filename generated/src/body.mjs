@@ -2,6 +2,7 @@
 
 import BodyModuleScss from "./Body.module.scss";
 import * as Components__Conjugator_ui from "./components/conjugator_ui.mjs";
+import * as Components__Country_name_success from "./components/country_name_success.mjs";
 import * as Components__Dictionary from "./components/dictionary.mjs";
 import * as Components__Games from "./components/games.mjs";
 import * as Components__Home from "./components/home.mjs";
@@ -28,6 +29,13 @@ function Body(Props) {
           exit = 1;
         } else {
           tmp = JsxRuntime.jsx(Components__Conjugator_ui.make, {});
+        }
+        break;
+      case "country-name-success" :
+        if (match.tl) {
+          exit = 1;
+        } else {
+          tmp = JsxRuntime.jsx(Components__Country_name_success.make, {});
         }
         break;
       case "dictionary" :

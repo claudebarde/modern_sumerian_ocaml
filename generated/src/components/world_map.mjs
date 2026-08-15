@@ -34,6 +34,7 @@ import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
+import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__Option from "melange/option.mjs";
@@ -164,6 +165,13 @@ function World_map(Props) {
   };
   const matching_country = find_country(country_name_input);
   const country_name_has_error = country_name_input.trim().length > 0 && Stdlib__Option.is_none(matching_country);
+  let selected_country_english_name;
+  if (country_details !== undefined) {
+    const country_name = get_country_name(country_details);
+    selected_country_english_name = country_name !== undefined ? country_name : "";
+  } else {
+    selected_country_english_name = "";
+  }
   const country_code_to_flag = function (country_code) {
     const normalized_code = country_code.toUpperCase();
     if (normalized_code.length !== 2) {
@@ -570,6 +578,11 @@ function World_map(Props) {
                 type: "hidden",
                 value: "country-name-suggestion"
               }),
+              JsxRuntime.jsx("input", {
+                name: "country-name-english",
+                type: "hidden",
+                value: selected_country_english_name
+              }),
               JsxRuntime.jsx("p", {
                 children: JsxRuntime.jsxs("label", {
                   children: [
@@ -637,7 +650,7 @@ function World_map(Props) {
                           children: JsxRuntime.jsx(TextField, {
                             fullWidth: true,
                             label: "Your name",
-                            name: "your-name",
+                            name: "user-name",
                             onChange: (function ($$event) {
                               Curry._1(set_new_country_user_name, (function (param) {
                                 return $$event.target.value;
@@ -656,7 +669,7 @@ function World_map(Props) {
                           children: JsxRuntime.jsx(TextField, {
                             fullWidth: true,
                             label: "Your email address",
-                            name: "your-email",
+                            name: "user-email",
                             onChange: (function ($$event) {
                               Curry._1(set_new_country_email, (function (param) {
                                 return $$event.target.value;
@@ -717,8 +730,16 @@ function World_map(Props) {
               })
             ],
             className: css.countryNameForm,
+            action: "/country-name-success",
             method: "POST",
-            name: "country-name-suggestion"
+            name: "country-name-suggestion",
+            onSubmit: (function ($$event) {
+              if (Bindings__Config.isDevelopment) {
+                $$event.preventDefault();
+                return ReasonReactRouter.push("/country-name-success");
+              }
+              
+            })
           }), {
             "data-netlify": "true",
             "data-netlify-honeypot": "bot-field"

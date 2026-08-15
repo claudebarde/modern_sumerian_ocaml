@@ -97,6 +97,15 @@ let make = () => {
     let country_name_has_error =
         Js.String.length(Js.String.trim(country_name_input)) > 0
         && Option.is_none(matching_country);
+    let selected_country_english_name =
+        switch country_details {
+        | Some(country_code) =>
+            switch (get_country_name(country_code)) {
+            | Some(country_name) => country_name
+            | None => ""
+            }
+        | None => ""
+        };
 
     let country_code_to_flag = country_code => {
         let normalized_code = Js.String.toUpperCase(country_code);
@@ -453,11 +462,23 @@ let make = () => {
                         className={css##countryNameForm}
                         name="country-name-suggestion"
                         method="POST"
+                        action="/country-name-success"
+                        onSubmit={event =>
+                            if (Config.isDevelopment) {
+                                React.Event.Form.preventDefault(event);
+                                ReasonReactRouter.push("/country-name-success");
+                            }
+                        }
                     >
                         <input
                             type_="hidden"
                             name="form-name"
                             value="country-name-suggestion"
+                        />
+                        <input
+                            type_="hidden"
+                            name="country-name-english"
+                            value=selected_country_english_name
                         />
                         <p className={css##honeypot}>
                             <label>
@@ -503,7 +524,7 @@ let make = () => {
                                             label={"Your name" |> React.string}
                                             fullWidth=true
                                             size=`small
-                                            name="your-name"
+                                            name="user-name"
                                             required=true
                                             value=new_country_user_name
                                             onChange={event =>
@@ -517,7 +538,7 @@ let make = () => {
                                             label={"Your email address" |> React.string}
                                             fullWidth=true
                                             size=`small
-                                            name="your-email"
+                                            name="user-email"
                                             required=true
                                             value=new_country_email
                                             onChange={event =>

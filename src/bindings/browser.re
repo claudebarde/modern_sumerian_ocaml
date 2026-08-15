@@ -74,6 +74,25 @@ module Clipboard = {
   external write_text: string => Js.Promise.t(unit) = "writeText";
 };
 
+module Fetch = {
+  type response;
+  type request_options;
+
+  [@mel.obj]
+  external make_request_options: (
+    ~method_: [@mel.as "method"] string,
+    ~headers: Js.Dict.t(string),
+    ~body: string,
+    unit,
+  ) => request_options = "";
+
+  [@mel.scope "window"]
+  external request: (string, request_options) => Js.Promise.t(response) = "fetch";
+
+  [@mel.get]
+  external ok: response => bool = "ok";
+};
+
 module Geolocation = {
   type coordinates;
   type position;

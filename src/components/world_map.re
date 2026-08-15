@@ -18,12 +18,16 @@ let make = () => {
         React.useRef(Js.Nullable.null);
     let (country_details, set_country_details) = React.useState(_ => None);
     let (open_add_name_dialog, set_open_add_name_dialog) = React.useState(_ => false);
+    let (open_success_dialog, set_open_success_dialog) = React.useState(_ => false);
     let (new_country_name, set_new_country_name) = React.useState(_ => "");
     let (new_country_cuneiform, set_new_country_cuneiform) = React.useState(_ => "");
     let (new_country_email, set_new_country_email) = React.useState(_ => "");
     let (new_country_user_name, set_new_country_user_name) = React.useState(_ => "");
     let (expanded_continent, set_expanded_continent) = React.useState(_ => None);
     let (country_name_input, set_country_name_input) = React.useState(_ => "");
+    let (is_submitting, set_is_submitting) = React.useState(_ => false);
+    let (submission_error, set_submission_error) =
+        React.useState(_ => (None: option(string)));
 
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
@@ -106,6 +110,70 @@ let make = () => {
             }
         | None => ""
         };
+
+    let encode_form_fields = fields =>
+        fields
+        |> Array.map(((name, value)) =>
+            Js.Global.encodeURIComponent(name)
+            ++ "="
+            ++ Js.Global.encodeURIComponent(value)
+        )
+        |> Js.Array.join(~sep="&");
+
+    let submit_country_name = (event: React.Event.Form.t) => {
+        React.Event.Form.preventDefault(event);
+        set_is_submitting(_ => true);
+        set_submission_error(_ => None);
+
+        let body =
+            encode_form_fields([|
+                ("form-name", "country-name-suggestion"),
+                ("bot-field", ""),
+                ("country-name-english", selected_country_english_name),
+                ("country-name-sumerian", new_country_name),
+                ("country-name-cuneiform", new_country_cuneiform),
+                ("user-name", new_country_user_name),
+                ("user-email", new_country_email),
+            |]);
+        let headers =
+            Js.Dict.fromList([(
+                "Content-Type",
+                "application/x-www-form-urlencoded",
+            )]);
+        let options =
+            Browser.Fetch.make_request_options(
+                ~method_="POST",
+                ~headers,
+                ~body,
+                (),
+            );
+
+        Browser.Fetch.request("/", options)
+        |> Js.Promise.then_(response => {
+            set_is_submitting(_ => false);
+            if (Browser.Fetch.ok(response)) {
+                set_open_add_name_dialog(_ => false);
+                set_open_success_dialog(_ => true);
+                set_new_country_user_name(_ => "");
+                set_new_country_email(_ => "");
+                set_new_country_name(_ => "");
+                set_new_country_cuneiform(_ => "");
+            } else {
+                set_submission_error(_ => Some(
+                    "The form could not be submitted. Please try again.",
+                ));
+            };
+            Js.Promise.resolve();
+        })
+        |> Js.Promise.catch(_error => {
+            set_is_submitting(_ => false);
+            set_submission_error(_ => Some(
+                "The form could not be submitted. Please check your connection and try again.",
+            ));
+            Js.Promise.resolve();
+        })
+        |> ignore;
+    };
 
     let country_code_to_flag = country_code => {
         let normalized_code = Js.String.toUpperCase(country_code);
@@ -462,13 +530,7 @@ let make = () => {
                         className={css##countryNameForm}
                         name="country-name-suggestion"
                         method="POST"
-                        action="/country-name-success"
-                        onSubmit={event =>
-                            if (Config.isDevelopment) {
-                                React.Event.Form.preventDefault(event);
-                                ReasonReactRouter.push("/country-name-success");
-                            }
-                        }
+                        onSubmit=submit_country_name
                     >
                         <input
                             type_="hidden"
@@ -548,6 +610,15 @@ let make = () => {
                                     </Grid>
                                 </Grid>
                             </Grid>
+                            {
+                                switch submission_error {
+                                | Some(message) =>
+                                    <Alert severity=`error sx={{"marginTop": 2}}>
+                                        {React.string(message)}
+                                    </Alert>
+                                | None => React.null
+                                }
+                            }
                             </DialogContent>
                         <DialogActions>
                             <Button
@@ -569,13 +640,18 @@ let make = () => {
                                 variant=`contained
                                 color=Color.primary
                                 disabled={
+                                    is_submitting ||
                                     new_country_user_name == "" ||
                                     new_country_email == "" ||
                                     new_country_name == "" ||
                                     new_country_cuneiform == ""
                                 }
                             >
-                                {"Submit" |> React.string}
+                                {
+                                    is_submitting
+                                        ? "Submitting..." |> React.string
+                                        : "Submit" |> React.string
+                                }
                             </Button>
                         </DialogActions>
                     </form>,
@@ -585,6 +661,32 @@ let make = () => {
                     },
                 )
             }
+        </Dialog>
+        <Dialog
+            _open=open_success_dialog
+            onClose={(_, _) => set_open_success_dialog(_ => false)}
+        >
+            <DialogTitle>
+                {"Thank you!" |> React.string}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    {
+                        "Your country name suggestion has been submitted successfully."
+                        |> React.string
+                    }
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    type_=`button
+                    variant=`contained
+                    color=Color.primary
+                    onClick={_ => set_open_success_dialog(_ => false)}
+                >
+                    {"Continue" |> React.string}
+                </Button>
+            </DialogActions>
         </Dialog>
     </div>
 };

@@ -5,8 +5,6 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
 const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-const isDevelopment = import.meta.env.DEV;
-
 const colors = {
   protonRed: "#840804",
   nycTaxi: "#f7b732",
@@ -23,7 +21,6 @@ const max_keyboard_search_results = 30;
 export {
   supabaseUrl,
   supabasePublishableKey,
-  isDevelopment,
   max_keyboard_search_results,
   colors,
 }

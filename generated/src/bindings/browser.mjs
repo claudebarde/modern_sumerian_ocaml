@@ -3,6 +3,8 @@
 
 const Clipboard = {};
 
+const Fetch = {};
+
 const $$Geolocation = {};
 
 const $$ResizeObserver = {};
@@ -11,6 +13,7 @@ const $$Window = {};
 
 export {
   Clipboard,
+  Fetch,
   $$Geolocation,
   $$ResizeObserver,
   $$Window,

@@ -4,12 +4,14 @@ import WorldMapModuleScss from "../styles/WorldMap.module.scss";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -34,7 +36,6 @@ import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
-import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__Option from "melange/option.mjs";
@@ -61,35 +62,49 @@ function World_map(Props) {
   });
   const set_open_add_name_dialog = match$2[1];
   const match$3 = React.useState(function () {
-    return "";
+    return false;
   });
-  const set_new_country_name = match$3[1];
-  const new_country_name = match$3[0];
+  const set_open_success_dialog = match$3[1];
   const match$4 = React.useState(function () {
     return "";
   });
-  const set_new_country_cuneiform = match$4[1];
-  const new_country_cuneiform = match$4[0];
+  const set_new_country_name = match$4[1];
+  const new_country_name = match$4[0];
   const match$5 = React.useState(function () {
     return "";
   });
-  const set_new_country_email = match$5[1];
-  const new_country_email = match$5[0];
+  const set_new_country_cuneiform = match$5[1];
+  const new_country_cuneiform = match$5[0];
   const match$6 = React.useState(function () {
     return "";
   });
-  const set_new_country_user_name = match$6[1];
-  const new_country_user_name = match$6[0];
+  const set_new_country_email = match$6[1];
+  const new_country_email = match$6[0];
   const match$7 = React.useState(function () {
-    
-  });
-  const set_expanded_continent = match$7[1];
-  const expanded_continent = match$7[0];
-  const match$8 = React.useState(function () {
     return "";
   });
-  const set_country_name_input = match$8[1];
-  const country_name_input = match$8[0];
+  const set_new_country_user_name = match$7[1];
+  const new_country_user_name = match$7[0];
+  const match$8 = React.useState(function () {
+    
+  });
+  const set_expanded_continent = match$8[1];
+  const expanded_continent = match$8[0];
+  const match$9 = React.useState(function () {
+    return "";
+  });
+  const set_country_name_input = match$9[1];
+  const country_name_input = match$9[0];
+  const match$10 = React.useState(function () {
+    return false;
+  });
+  const set_is_submitting = match$10[1];
+  const is_submitting = match$10[0];
+  const match$11 = React.useState(function () {
+    
+  });
+  const set_submission_error = match$11[1];
+  const submission_error = match$11[0];
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const countryData = Js__Js_dict.fromList({
     hd: [
@@ -172,6 +187,100 @@ function World_map(Props) {
   } else {
     selected_country_english_name = "";
   }
+  const encode_form_fields = function (fields) {
+    return Stdlib__Array.map((function (param) {
+      return encodeURIComponent(param[0]) + ("=" + encodeURIComponent(param[1]));
+    }), fields).join("&");
+  };
+  const submit_country_name = function ($$event) {
+    $$event.preventDefault();
+    Curry._1(set_is_submitting, (function (param) {
+      return true;
+    }));
+    Curry._1(set_submission_error, (function (param) {
+      
+    }));
+    const body = encode_form_fields([
+      [
+        "form-name",
+        "country-name-suggestion"
+      ],
+      [
+        "bot-field",
+        ""
+      ],
+      [
+        "country-name-english",
+        selected_country_english_name
+      ],
+      [
+        "country-name-sumerian",
+        new_country_name
+      ],
+      [
+        "country-name-cuneiform",
+        new_country_cuneiform
+      ],
+      [
+        "user-name",
+        new_country_user_name
+      ],
+      [
+        "user-email",
+        new_country_email
+      ]
+    ]);
+    const headers = Js__Js_dict.fromList({
+      hd: [
+        "Content-Type",
+        "application/x-www-form-urlencoded"
+      ],
+      tl: /* [] */ 0
+    });
+    const options = {
+      method: "POST",
+      headers: headers,
+      body: body
+    };
+    window.fetch("/", options).then(function (response) {
+      Curry._1(set_is_submitting, (function (param) {
+        return false;
+      }));
+      if (response.ok) {
+        Curry._1(set_open_add_name_dialog, (function (param) {
+          return false;
+        }));
+        Curry._1(set_open_success_dialog, (function (param) {
+          return true;
+        }));
+        Curry._1(set_new_country_user_name, (function (param) {
+          return "";
+        }));
+        Curry._1(set_new_country_email, (function (param) {
+          return "";
+        }));
+        Curry._1(set_new_country_name, (function (param) {
+          return "";
+        }));
+        Curry._1(set_new_country_cuneiform, (function (param) {
+          return "";
+        }));
+      } else {
+        Curry._1(set_submission_error, (function (param) {
+          return "The form could not be submitted. Please try again.";
+        }));
+      }
+      return Promise.resolve(undefined);
+    }).catch(function (_error) {
+      Curry._1(set_is_submitting, (function (param) {
+        return false;
+      }));
+      Curry._1(set_submission_error, (function (param) {
+        return "The form could not be submitted. Please check your connection and try again.";
+      }));
+      return Promise.resolve(undefined);
+    });
+  };
   const country_code_to_flag = function (country_code) {
     const normalized_code = country_code.toUpperCase();
     if (normalized_code.length !== 2) {
@@ -468,17 +577,17 @@ function World_map(Props) {
   } else {
     let tmp$2;
     if (country_details !== undefined) {
-      const match$9 = Js__Js_dict.get(countryData, country_details);
-      if (match$9 !== undefined) {
+      const match$12 = Js__Js_dict.get(countryData, country_details);
+      if (match$12 !== undefined) {
         const name = get_country_name(country_details);
         tmp$2 = JsxRuntime.jsxs(JsxRuntime.Fragment, {
           children: [
             JsxRuntime.jsx("span", {
-              children: match$9[1],
+              children: match$12[1],
               className: "cuneiforms small"
             }),
             JsxRuntime.jsx("span", {
-              children: match$9[0]
+              children: match$12[0]
             }),
             JsxRuntime.jsx("span", {
               children: name !== undefined ? "(" + (name + ")") : null
@@ -553,9 +662,9 @@ function World_map(Props) {
   }
   let tmp$3;
   if (country_details !== undefined) {
-    const match$10 = Js__Js_dict.get(countryData, country_details);
-    if (match$10 !== undefined) {
-      tmp$3 = "Add a Name for " + match$10[0];
+    const match$13 = Js__Js_dict.get(countryData, country_details);
+    if (match$13 !== undefined) {
+      tmp$3 = "Add a Name for " + match$13[0];
     } else {
       const name$2 = get_country_name(country_details);
       tmp$3 = name$2 !== undefined ? "Add a Name for " + name$2 : "Add a Name for Unknown Country";
@@ -596,103 +705,112 @@ function World_map(Props) {
                 }),
                 className: css.honeypot
               }),
-              JsxRuntime.jsx(DialogContent, {
-                children: JsxRuntime.jsxs(Grid, {
-                  children: [
-                    JsxRuntime.jsxs(Grid, {
-                      children: [
-                        JsxRuntime.jsx(Grid, {
-                          children: JsxRuntime.jsx(TextField, {
-                            fullWidth: true,
-                            label: "Country name in Sumerian",
-                            name: "country-name-sumerian",
-                            onChange: (function ($$event) {
-                              Curry._1(set_new_country_name, (function (param) {
-                                return $$event.target.value;
-                              }));
+              JsxRuntime.jsxs(DialogContent, {
+                children: [
+                  JsxRuntime.jsxs(Grid, {
+                    children: [
+                      JsxRuntime.jsxs(Grid, {
+                        children: [
+                          JsxRuntime.jsx(Grid, {
+                            children: JsxRuntime.jsx(TextField, {
+                              fullWidth: true,
+                              label: "Country name in Sumerian",
+                              name: "country-name-sumerian",
+                              onChange: (function ($$event) {
+                                Curry._1(set_new_country_name, (function (param) {
+                                  return $$event.target.value;
+                                }));
+                              }),
+                              required: true,
+                              size: "small",
+                              value: new_country_name
                             }),
-                            required: true,
-                            size: "small",
-                            value: new_country_name
+                            size: {
+                              xs: 12,
+                              sm: 6
+                            }
                           }),
-                          size: {
-                            xs: 12,
-                            sm: 6
-                          }
-                        }),
-                        JsxRuntime.jsx(Grid, {
-                          children: JsxRuntime.jsx(TextField, {
-                            fullWidth: true,
-                            label: "Cuneiform spelling",
-                            name: "country-name-cuneiform",
-                            onChange: (function ($$event) {
-                              Curry._1(set_new_country_cuneiform, (function (param) {
-                                return $$event.target.value;
-                              }));
+                          JsxRuntime.jsx(Grid, {
+                            children: JsxRuntime.jsx(TextField, {
+                              fullWidth: true,
+                              label: "Cuneiform spelling",
+                              name: "country-name-cuneiform",
+                              onChange: (function ($$event) {
+                                Curry._1(set_new_country_cuneiform, (function (param) {
+                                  return $$event.target.value;
+                                }));
+                              }),
+                              required: true,
+                              size: "small",
+                              value: new_country_cuneiform
                             }),
-                            required: true,
-                            size: "small",
-                            value: new_country_cuneiform
-                          }),
-                          size: {
-                            xs: 12,
-                            sm: 6
-                          }
-                        })
-                      ],
-                      container: true,
-                      size: 12,
-                      spacing: 2
-                    }),
-                    JsxRuntime.jsxs(Grid, {
-                      children: [
-                        JsxRuntime.jsx(Grid, {
-                          children: JsxRuntime.jsx(TextField, {
-                            fullWidth: true,
-                            label: "Your name",
-                            name: "user-name",
-                            onChange: (function ($$event) {
-                              Curry._1(set_new_country_user_name, (function (param) {
-                                return $$event.target.value;
-                              }));
+                            size: {
+                              xs: 12,
+                              sm: 6
+                            }
+                          })
+                        ],
+                        container: true,
+                        size: 12,
+                        spacing: 2
+                      }),
+                      JsxRuntime.jsxs(Grid, {
+                        children: [
+                          JsxRuntime.jsx(Grid, {
+                            children: JsxRuntime.jsx(TextField, {
+                              fullWidth: true,
+                              label: "Your name",
+                              name: "user-name",
+                              onChange: (function ($$event) {
+                                Curry._1(set_new_country_user_name, (function (param) {
+                                  return $$event.target.value;
+                                }));
+                              }),
+                              required: true,
+                              size: "small",
+                              value: new_country_user_name
                             }),
-                            required: true,
-                            size: "small",
-                            value: new_country_user_name
+                            size: {
+                              xs: 12,
+                              sm: 6
+                            }
                           }),
-                          size: {
-                            xs: 12,
-                            sm: 6
-                          }
-                        }),
-                        JsxRuntime.jsx(Grid, {
-                          children: JsxRuntime.jsx(TextField, {
-                            fullWidth: true,
-                            label: "Your email address",
-                            name: "user-email",
-                            onChange: (function ($$event) {
-                              Curry._1(set_new_country_email, (function (param) {
-                                return $$event.target.value;
-                              }));
+                          JsxRuntime.jsx(Grid, {
+                            children: JsxRuntime.jsx(TextField, {
+                              fullWidth: true,
+                              label: "Your email address",
+                              name: "user-email",
+                              onChange: (function ($$event) {
+                                Curry._1(set_new_country_email, (function (param) {
+                                  return $$event.target.value;
+                                }));
+                              }),
+                              required: true,
+                              size: "small",
+                              value: new_country_email
                             }),
-                            required: true,
-                            size: "small",
-                            value: new_country_email
-                          }),
-                          size: {
-                            xs: 12,
-                            sm: 6
-                          }
-                        })
-                      ],
-                      container: true,
-                      size: 12,
-                      spacing: 2
-                    })
-                  ],
-                  container: true,
-                  spacing: 2
-                })
+                            size: {
+                              xs: 12,
+                              sm: 6
+                            }
+                          })
+                        ],
+                        container: true,
+                        size: 12,
+                        spacing: 2
+                      })
+                    ],
+                    container: true,
+                    spacing: 2
+                  }),
+                  submission_error !== undefined ? JsxRuntime.jsx(Alert, {
+                      children: submission_error,
+                      severity: "error",
+                      sx: {
+                        marginTop: 2
+                      }
+                    }) : null
+                ]
               }),
               JsxRuntime.jsxs(DialogActions, {
                 children: [
@@ -720,9 +838,9 @@ function World_map(Props) {
                     variant: "contained"
                   }),
                   JsxRuntime.jsx(Button, {
-                    children: "Submit",
+                    children: is_submitting ? "Submitting..." : "Submit",
                     color: Bindings__Material_ui.Color.primary,
-                    disabled: new_country_user_name === "" || new_country_email === "" || new_country_name === "" || new_country_cuneiform === "",
+                    disabled: is_submitting || new_country_user_name === "" || new_country_email === "" || new_country_name === "" || new_country_cuneiform === "",
                     type: "submit",
                     variant: "contained"
                   })
@@ -730,16 +848,9 @@ function World_map(Props) {
               })
             ],
             className: css.countryNameForm,
-            action: "/country-name-success",
             method: "POST",
             name: "country-name-suggestion",
-            onSubmit: (function ($$event) {
-              if (Bindings__Config.isDevelopment) {
-                $$event.preventDefault();
-                return ReasonReactRouter.push("/country-name-success");
-              }
-              
-            })
+            onSubmit: submit_country_name
           }), {
             "data-netlify": "true",
             "data-netlify-honeypot": "bot-field"
@@ -751,6 +862,37 @@ function World_map(Props) {
           }));
         }),
         open: match$2[0]
+      }),
+      JsxRuntime.jsxs(Dialog, {
+        children: [
+          JsxRuntime.jsx(DialogTitle, {
+            children: "Thank you!"
+          }),
+          JsxRuntime.jsx(DialogContent, {
+            children: JsxRuntime.jsx(DialogContentText, {
+              children: "Your country name suggestion has been submitted successfully."
+            })
+          }),
+          JsxRuntime.jsx(DialogActions, {
+            children: JsxRuntime.jsx(Button, {
+              children: "Continue",
+              color: Bindings__Material_ui.Color.primary,
+              onClick: (function (param) {
+                Curry._1(set_open_success_dialog, (function (param) {
+                  return false;
+                }));
+              }),
+              type: "button",
+              variant: "contained"
+            })
+          })
+        ],
+        onClose: (function (param, param$1) {
+          Curry._1(set_open_success_dialog, (function (param) {
+            return false;
+          }));
+        }),
+        open: match$3[0]
       })
     ],
     className: css.mainContainer

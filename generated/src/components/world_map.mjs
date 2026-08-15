@@ -297,7 +297,7 @@ function World_map(Props) {
     tmp = JsxRuntime.jsxs(Stack, {
       children: [
         JsxRuntime.jsx("h1", {
-          children: "Countries in Modern Sumerian"
+          children: "World Countries"
         }),
         JsxRuntime.jsxs(Box, {
           children: [

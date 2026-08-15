@@ -220,7 +220,7 @@ let make = () => {
     <div className={css##mainContainer}>
         {is_mobile 
             ? <Stack>
-                <h1> {"Countries in Modern Sumerian" |> React.string} </h1>
+                <h1> {"World Countries" |> React.string} </h1>
                 <Box sx={{"margin": "20px 0px"}}>
                     <Accordion>
                         <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >

@@ -1,5 +1,13 @@
 [@mel.module "../styles/WorldMap.module.scss"] external css: Js.t({..}) = "default"; 
 
+type continent =
+  | Africa
+  | Asia
+  | Europe
+  | NorthAmerica
+  | SouthAmerica
+  | Oceania;
+
 [@react.component]
 let make = () => {
     open Bindings;
@@ -14,11 +22,21 @@ let make = () => {
     let (new_country_cuneiform, set_new_country_cuneiform) = React.useState(_ => "");
     let (new_country_email, set_new_country_email) = React.useState(_ => "");
     let (new_country_user_name, set_new_country_user_name) = React.useState(_ => "");
+    let (expanded_continent, set_expanded_continent) = React.useState(_ => None);
+    let (country_name_input, set_country_name_input) = React.useState(_ => "");
+
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let countryData: Js.Dict.t((string, string)) = Js.Dict.fromList([
         ("FR", ("Paransa", {js|𒉺𒁺𒀭𒊓𒆠|js})),
         ("CA", ("Kanada", {js|𒅗𒈾𒁕𒆠|js})),
     ]);
+
+    let continent_by_code: Js.Dict.t(continent) =
+        Js.Dict.fromList([
+            ("CA", NorthAmerica),
+            ("FR", Europe),
+        ]);
 
     let mapData = Js.Dict.entries(countryData)
         |> Array.map(((country, (country_name, _cuneiforms))) =>
@@ -54,6 +72,121 @@ let make = () => {
         |> Option.map(region => region##name);
     };
 
+    let find_country = input => {
+        let normalized_input =
+            input
+            |> Js.String.trim
+            |> Js.String.toLowerCase;
+
+        ReactSvgWorldmap.regions
+        |> Array.find_opt(region => {
+            let normalized_name =
+                region##name
+                |> Js.String.trim
+                |> Js.String.toLowerCase;
+            let normalized_code =
+                region##code
+                |> Js.String.toLowerCase;
+
+            normalized_name === normalized_input
+            || normalized_code === normalized_input;
+        });
+    };
+
+    let matching_country = find_country(country_name_input);
+    let country_name_has_error =
+        Js.String.length(Js.String.trim(country_name_input)) > 0
+        && Option.is_none(matching_country);
+
+    let country_code_to_flag = country_code => {
+        let normalized_code = Js.String.toUpperCase(country_code);
+
+        if (Js.String.length(normalized_code) !== 2) {
+            "";
+        } else {
+            normalized_code
+            |> Js.String.split(~sep="")
+            |> Array.map(letter =>
+                switch (letter |> Js.String.codePointAt(~index=0)) {
+                | Some(code_point) =>
+                    Js.String.fromCodePoint(code_point + 0x1F1A5)
+                | None => ""
+                }
+            )
+            |> Js.Array.join(~sep="");
+        };
+    };
+
+    let countries_by_continent = (continent_to_search: continent) =>
+        Js.Dict.entries(continent_by_code)
+        |> Array.fold_left(
+            (acc, (code, continent)) =>
+                if (continent === continent_to_search) {
+                    Array.append(acc, [|code|]);
+                } else {
+                    acc;
+                },
+            [||],
+        );
+
+    let show_countries_in_continent = (continent_to_search: continent) => {
+        let countries =
+            countries_by_continent(continent_to_search);
+        if (Array.length(countries) == 0) {
+            <Stack spacing=`Number(2)>
+                <span className="cuneiforms small">{{js|𒈠𒁕·𒉡𒅅𒅅|js} |> React.string}</span>
+                <span>{{js|Mada nuĝal-ĝal|js} |> React.string}</span>
+                <span>{"No countries found." |> React.string}</span>
+                <TextField 
+                        label={"Add a Country" |> React.string}
+                        variant=`outlined
+                        size=`small
+                    />
+            </Stack>
+        } else {
+            <List dense=true sx={{"width": "100%"}}>
+                {countries
+                |> Array.map(code => 
+                    <ListItem key={code}>
+                        {
+                            switch (Js.Dict.get(countryData, code)) {
+                            | Some((country_name, cuneiforms)) =>
+                                <>
+                                    <ListItemIcon sx={{"fontSize": "1.7rem", "minWidth": "40px", "color": "rgba(0, 0, 0, 1)", "opacity": 1,}}>
+                                        {country_code_to_flag(code) |> React.string}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        key={code}
+                                        primary={
+                                            switch (get_country_name(code)) {
+                                            | Some(name) => {country_name ++ " (" ++ name ++ ")" |> React.string}
+                                            | None => React.null
+                                            }
+                                        }
+                                        secondary={<span className="cuneiforms small">{cuneiforms |> React.string}</span>}
+                                    />
+                                </>
+                            | None => React.null
+                            }
+                        }
+                    </ListItem>)
+                |> React.array}
+            </List>
+        }
+    }
+
+    let continent_is_expanded = continent_to_check =>
+        switch expanded_continent {
+        | Some(continent) => continent === continent_to_check
+        | None => false
+        };
+
+    let handle_continent_change = continent =>
+        (_event: React.Event.Synthetic.t, is_expanded: bool) =>
+            set_expanded_continent(_ =>
+                is_expanded ? Some(continent) : None
+            );
+
     React.useEffect1(() => {
         switch (Js.Nullable.toOption(map_viewport_ref.current)) {
         | Some(map_viewport) => {
@@ -85,83 +218,212 @@ let make = () => {
     }, [||]);
 
     <div className={css##mainContainer}>
-        <Container
-            className={css##mapContainer}
-            maxWidth=MaxWidth.disabled
-            disableGutters=true
-        >
-            <h1>
-                {"World Map in Modern Sumerian" |> React.string}
-            </h1>
-            <div
-                className={css##mapViewport}
-                ref={ReactDOM.Ref.domRef(map_viewport_ref)}
-            >
-                {
-                    map_width > 0.0
-                        ? <ReactSvgWorldmap.WorldMap
-                            data=mapData
-                            size={ReactSvgWorldmap.Size.fromFloat(map_width)}
-                            containerClassName={css##worldMapWrapper}
-                            backgroundColor=Config.colors##whiteSmoke
-                            color=Config.colors##protonRed
-                            borderColor=Config.colors##botanicalNight
-                            onClickFunction=handleClick
-                            tooltipTextFunction=handleTooltip
-                        />
-                        : React.null
-                }
-            </div>
-            <Typography variant=Typography.Variant.body1 className={css##countryDetails}>
-                {
-                    switch (country_details) {
-                    | Some(details) => {
-                        switch (Js.Dict.get(countryData, details)) {
-                        | Some((country_name, cuneiforms)) =>
-                            <>
-                                <span className="cuneiforms small">{cuneiforms |> React.string}</span>
-                                <span>{country_name |> React.string}</span>
-                                <span>
-                                    {
-                                        switch (get_country_name(details)) {
-                                        | Some(name) => {"(" ++ name ++ ")" |> React.string}
-                                        | None => React.null
-                                        }
+        {is_mobile 
+            ? <Stack>
+                <h1> {"Countries in Modern Sumerian" |> React.string} </h1>
+                <Box sx={{"margin": "20px 0px"}}>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"Add a new country" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <FormControl
+                                fullWidth=true
+                                size=`small
+                                variant=`outlined
+                                >
+                                <InputLabel htmlFor="country-name-input">
+                                    {"Add a country" |> React.string}
+                                </InputLabel>
+                                <OutlinedInput
+                                    id="country-name-input"
+                                    label={"Add a country" |> React.string}
+                                    value=country_name_input
+                                    error=country_name_has_error
+                                    onChange={event =>
+                                        set_country_name_input(_ =>
+                                            React.Event.Form.target(event)##value
+                                        )
                                     }
-                                </span>
-                            </>
-                        | None => {
-                            switch (get_country_name(details)) {
-                            | Some(name) => <>
-                                <span>{name |> React.string}</span>
-                                <Tooltip 
-                                    title={"Mu emegira nubtuku" |> React.string}
-                                    placement=Tooltip.Placement.top
-                                    arrow=true
-                                >
-                                    <span className="cuneiforms x-small">
-                                        {"(" ++ {js|𒈬·𒅴𒄀𒀀·𒉡𒌒𒌇|js} ++ ")" |> React.string}
+                                    endAdornment={
+                                        <InputAdornment position=`end_>
+                                            <IconButton
+                                                edge=`end_
+                                                ariaLabel="Open the add-country dialog"
+                                                disabled={Option.is_none(matching_country)}
+                                                variant=`contained
+                                                color=Color.primary
+                                                onClick={_ =>
+                                                    switch matching_country {
+                                                    | Some(country) => {
+                                                        set_country_details(_ => Some(country##code));
+                                                        set_open_add_name_dialog(_ => true);
+                                                    }
+                                                    | None => ()
+                                                    }
+                                                }
+                                            >
+                                                <TablerReact.IconCirclePlusFilled />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                                <FormHelperText error=country_name_has_error>
+                                    {
+                                        country_name_has_error
+                                            ? React.string("Enter a valid English country name or ISO code.")
+                                            : switch matching_country {
+                                            | Some(country) =>
+                                                React.string(country##name ++ " - " ++ country##code)
+                                            | None =>
+                                                React.string("Enter a country name, for example Russia.")
+                                            }
+                                    }
+                                </FormHelperText>
+                            </FormControl>
+                        </AccordionDetails>                    
+                    </Accordion>
+                    <Accordion 
+                        expanded={continent_is_expanded(Africa)} 
+                        onChange={handle_continent_change(Africa)}>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"Africa" ++ " (" ++ (Array.length(countries_by_continent(Africa)) |> Int.to_string) ++ ")" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {show_countries_in_continent(Africa)}
+                        </AccordionDetails>                    
+                    </Accordion>
+                    <Accordion 
+                        expanded={continent_is_expanded(Asia)} 
+                        onChange={handle_continent_change(Asia)}>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"Asia" ++ " (" ++ (Array.length(countries_by_continent(Asia)) |> Int.to_string) ++ ")" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {show_countries_in_continent(Asia)}
+                        </AccordionDetails>                    
+                    </Accordion>
+                    <Accordion 
+                        expanded={continent_is_expanded(Europe)} 
+                        onChange={handle_continent_change(Europe)}>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"Europe" ++ " (" ++ (Array.length(countries_by_continent(Europe)) |> Int.to_string) ++ ")" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            { show_countries_in_continent(Europe) }
+                        </AccordionDetails>                    
+                    </Accordion>
+                    <Accordion 
+                        expanded={continent_is_expanded(NorthAmerica)} 
+                        onChange={handle_continent_change(NorthAmerica)}>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"North America" ++ " (" ++ (Array.length(countries_by_continent(NorthAmerica)) |> Int.to_string) ++ ")" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {show_countries_in_continent(NorthAmerica)}
+                        </AccordionDetails>                    
+                    </Accordion>
+                    <Accordion 
+                        expanded={continent_is_expanded(SouthAmerica)} 
+                        onChange={handle_continent_change(SouthAmerica)}>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"South America" ++ " (" ++ (Array.length(countries_by_continent(SouthAmerica)) |> Int.to_string) ++ ")" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {show_countries_in_continent(SouthAmerica)}
+                        </AccordionDetails>                    
+                    </Accordion>
+                    <Accordion 
+                        expanded={continent_is_expanded(Oceania)} 
+                        onChange={handle_continent_change(Oceania)}>
+                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />} >
+                            {"Oceania" ++ " (" ++ (Array.length(countries_by_continent(Oceania)) |> Int.to_string) ++ ")" |> React.string}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {show_countries_in_continent(Oceania)}
+                        </AccordionDetails>                    
+                    </Accordion>                    
+                </Box>
+            </Stack>
+            : <Container
+                className={css##mapContainer}
+                maxWidth=MaxWidth.disabled
+                disableGutters=true
+            >
+                <h1>
+                    {"World Map in Modern Sumerian" |> React.string}
+                </h1>
+                <div
+                    className={css##mapViewport}
+                    ref={ReactDOM.Ref.domRef(map_viewport_ref)}
+                >
+                    {
+                        map_width > 0.0
+                            ? <ReactSvgWorldmap.WorldMap
+                                data=mapData
+                                size={ReactSvgWorldmap.Size.fromFloat(map_width)}
+                                containerClassName={css##worldMapWrapper}
+                                backgroundColor=Config.colors##whiteSmoke
+                                color=Config.colors##protonRed
+                                borderColor=Config.colors##botanicalNight
+                                onClickFunction=handleClick
+                                tooltipTextFunction=handleTooltip
+                                richInteraction=true
+                            />
+                            : React.null
+                    }
+                </div>
+                <Typography variant=Typography.Variant.body1 className={css##countryDetails}>
+                    {
+                        switch (country_details) {
+                        | Some(details) => {
+                            switch (Js.Dict.get(countryData, details)) {
+                            | Some((country_name, cuneiforms)) =>
+                                <>
+                                    <span className="cuneiforms small">{cuneiforms |> React.string}</span>
+                                    <span>{country_name |> React.string}</span>
+                                    <span>
+                                        {
+                                            switch (get_country_name(details)) {
+                                            | Some(name) => {"(" ++ name ++ ")" |> React.string}
+                                            | None => React.null
+                                            }
+                                        }
                                     </span>
-                                </Tooltip>
-                                <Button
-                                    variant=`outlined
-                                    color=Color.primary
-                                    size=`small
-                                    onClick={_ => set_open_add_name_dialog(_ => true)}
-                                >
-                                    {"Add a Name" |> React.string}
-                                </Button>
-                            </>
-                            | None => <span>{"Unknown Country" |> React.string}</span>
-                            };
+                                </>
+                            | None => {
+                                switch (get_country_name(details)) {
+                                | Some(name) => <>
+                                    <span>{name |> React.string}</span>
+                                    <Tooltip 
+                                        title={"Mu emegira nubtuku" |> React.string}
+                                        placement=Tooltip.Placement.top
+                                        arrow=true
+                                    >
+                                        <span className="cuneiforms x-small">
+                                            {"(" ++ {js|𒈬·𒅴𒄀𒀀·𒉡𒌒𒌇|js} ++ ")" |> React.string}
+                                        </span>
+                                    </Tooltip>
+                                    <Button
+                                        variant=`outlined
+                                        color=Color.primary
+                                        size=`small
+                                        onClick={_ => set_open_add_name_dialog(_ => true)}
+                                    >
+                                        {"Add a Name" |> React.string}
+                                    </Button>
+                                </>
+                                | None => <span>{"Unknown Country" |> React.string}</span>
+                                };
+                            }
+                            }
                         }
+                        | None => React.string("Click on a country to see more details. Double-click to zoom in and out.")
                         }
                     }
-                    | None => React.string("Click on a country to see more details.")
-                    }
-                }
-            </Typography>
-        </Container>
+                </Typography>
+            </Container>
+        }
         <Dialog 
             _open=open_add_name_dialog 
             onClose={(_, _) => set_open_add_name_dialog(_ => false)}

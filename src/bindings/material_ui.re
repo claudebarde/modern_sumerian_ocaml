@@ -715,6 +715,26 @@ module FormGroup = {
   ) => React.element = "default";
 };
 
+module FormHelperText = {
+  [@mel.module "@mui/material/FormHelperText"] [@react.component]
+  external make: (
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~component: RootComponent.t=?,
+    ~disabled: bool=?,
+    ~error: bool=?,
+    ~filled: bool=?,
+    ~focused: bool=?,
+    ~id: string=?,
+    ~margin: [`dense | `none]=?,
+    ~required: bool=?,
+    ~sx: Js.t({..})=?,
+    ~variant: [`standard | `outlined | `filled]=?,
+    unit
+  ) => React.element = "default";
+};
+
 module FormLabel = {
   [@mel.module "@mui/material/FormLabel"] [@react.component]
   external make: (
@@ -817,6 +837,48 @@ module IconButton = {
   ) => React.element = "default";
 };
 
+module Input = {
+  [@mel.module "@mui/material/Input"] [@react.component]
+  external make: (
+    ~autoComplete: string=?,
+    ~autoFocus: bool=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~color: Color.t=?,
+    ~defaultValue: 'value=?,
+    ~disabled: bool=?,
+    ~disableUnderline: bool=?,
+    ~endAdornment: React.element=?,
+    ~error: bool=?,
+    ~fullWidth: bool=?,
+    ~id: string=?,
+    ~inputComponent: RootComponent.t=?,
+    ~inputProps: Js.t({..})=?,
+    ~inputRef: React.ref(Js.Nullable.t(Dom.element))=?,
+    ~margin: [`dense | `none]=?,
+    ~maxRows: int=?,
+    ~minRows: int=?,
+    ~multiline: bool=?,
+    ~name: string=?,
+    ~onBlur: (React.Event.Focus.t => unit)=?,
+    ~onChange: (React.Event.Form.t => unit)=?,
+    ~onInvalid: (React.Event.Form.t => unit)=?,
+    ~onKeyDown: (React.Event.Keyboard.t => unit)=?,
+    ~onKeyUp: (React.Event.Keyboard.t => unit)=?,
+    ~onPaste: (React.Event.Clipboard.t => unit)=?,
+    ~placeholder: string=?,
+    ~readOnly: bool=?,
+    ~required: bool=?,
+    ~rows: int=?,
+    ~startAdornment: React.element=?,
+    ~sx: Js.t({..})=?,
+    // TODO: slots and slotProps are not supported yet
+    ~type_: [@mel.as "type"] string=?,
+    ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
 module InputAdornment = {
   [@mel.module "@mui/material/InputAdornment"] [@react.component]
   external make: (
@@ -887,6 +949,7 @@ module InputLabel = {
     ~disabled: bool=?,
     ~error: bool=?,
     ~focused: bool=?,
+    ~htmlFor: string=?,
     ~id: string=?,
     ~margin: [`dense | `none]=?,
     ~required: bool=?,

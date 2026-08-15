@@ -106,6 +106,8 @@ const FormControlLabel = {};
 
 const FormGroup = {};
 
+const FormHelperText = {};
+
 const FormLabel = {};
 
 const ResponsiveSize = {};
@@ -115,6 +117,8 @@ const Grid = {
 };
 
 const IconButton = {};
+
+const Input = {};
 
 const InputAdornment = {};
 
@@ -316,9 +320,11 @@ export {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   FormLabel,
   Grid,
   IconButton,
+  Input,
   InputAdornment,
   InputBase,
   InputLabel,

@@ -16,6 +16,7 @@ let make = () => {
                 | ["dictionary"] => <Dictionary />
                 | ["games"] => <Games />
                 | ["wordslist"] => <Words_list />
+                | ["worldmap"] => <World_map />
                 | [] | ["home"] => <Home />
                 | _ => <Page_not_found/>
             }

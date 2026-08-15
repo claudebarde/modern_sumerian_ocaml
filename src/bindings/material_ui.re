@@ -346,6 +346,7 @@ module Button = {
         ~size: [`small | `medium | `large]=?, // TODO: a string can be passed to size
         ~startIcon: React.element=?,
         ~target: string=?,
+        ~type_: [@mel.as "type"] [`button | `reset | `submit]=?,
         ~variant: [`text | `outlined | `contained]=?, // TODO: a string can be passed to variant
         ~sx: Js.t({..})=?,
         unit
@@ -869,7 +870,7 @@ module InputBase = {
     // TODO: slots and slotProps are not supported yet
     ~startAdornment: React.element=?,
     ~sx: Js.t({..})=?,
-    ~type_: string=?,
+    ~type_: [@mel.as "type"] string=?,
     ~value: 'value=?,
     unit
   ) => React.element = "default";
@@ -1584,7 +1585,7 @@ module TextField = {
     ~size: [`small | `medium]=?,
     ~sx: Js.t({..})=?,
     // TODO: slots and slotProps are not supported yet
-    ~type_: string=?,
+    ~type_: [@mel.as "type"] string=?,
     ~value: string=?,
     ~variant: [`standard | `outlined | `filled]=?,
     unit
@@ -1647,6 +1648,58 @@ module Toolbar = {
     ~className: string=?,
     ~disableGutters: bool=?,
     ~variant: Variant.t=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Tooltip = {
+  module Placement = {
+    type t;
+
+    external fromString: string => t = "%identity";
+
+    let auto = fromString("auto");
+    let autoEnd = fromString("auto-end");
+    let autoStart = fromString("auto-start");
+    let bottom = fromString("bottom");
+    let bottomEnd = fromString("bottom-end");
+    let bottomStart = fromString("bottom-start");
+    let left = fromString("left");
+    let leftEnd = fromString("left-end");
+    let leftStart = fromString("left-start");
+    let right = fromString("right");
+    let rightEnd = fromString("right-end");
+    let rightStart = fromString("right-start");
+    let top = fromString("top");
+    let topEnd = fromString("top-end");
+    let topStart = fromString("top-start");
+  };
+
+  [@mel.module "@mui/material/Tooltip"] [@react.component]
+  external make: (
+    ~arrow: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~describeChild: bool=?,
+    ~disableFocusListener: bool=?,
+    ~disableHoverListener: bool=?,
+    ~disableInteractive: bool=?,
+    ~disableTouchListener: bool=?,
+    ~enterDelay: int=?,
+    ~enterNextDelay: int=?,
+    ~enterTouchDelay: int=?,
+    ~followCursor: bool=?,
+    ~id: string=?,
+    ~leaveDelay: int=?,
+    ~leaveTouchDelay: int=?,
+    ~onClose: (React.Event.Synthetic.t => unit)=?,
+    ~onOpen: (React.Event.Synthetic.t => unit)=?,
+    ~_open: bool=?,
+    ~placement: Placement.t=?,
+    ~title: React.element=?,
+    // TODO: slots and slotProps are not supported yet
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";

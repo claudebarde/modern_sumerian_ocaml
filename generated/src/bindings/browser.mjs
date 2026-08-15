@@ -5,11 +5,14 @@ const Clipboard = {};
 
 const $$Geolocation = {};
 
+const $$ResizeObserver = {};
+
 const $$Window = {};
 
 export {
   Clipboard,
   $$Geolocation,
+  $$ResizeObserver,
   $$Window,
 }
 /* No side effect */

@@ -131,6 +131,30 @@ module Geolocation = {
   ) => unit = "getCurrentPosition";
 };
 
+module ResizeObserver = {
+  type t;
+  type entry;
+  type contentRect;
+
+  [@mel.new]
+  external make: ((array(entry), t) => unit) => t = "ResizeObserver";
+
+  [@mel.send]
+  external observe: (t, Dom.element) => unit = "observe";
+
+  [@mel.send]
+  external disconnect: t => unit = "disconnect";
+
+  [@mel.get]
+  external content_rect: entry => contentRect = "contentRect";
+
+  [@mel.get]
+  external width: contentRect => float = "width";
+
+  [@mel.get]
+  external height: contentRect => float = "height";
+};
+
 module Window = {
   type keyboard_event;
 

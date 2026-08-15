@@ -216,6 +216,28 @@ const Toolbar = {
   Variant: Variant
 };
 
+const Placement = {
+  auto: "auto",
+  autoEnd: "auto-end",
+  autoStart: "auto-start",
+  bottom: "bottom",
+  bottomEnd: "bottom-end",
+  bottomStart: "bottom-start",
+  left: "left",
+  leftEnd: "left-end",
+  leftStart: "left-start",
+  right: "right",
+  rightEnd: "right-end",
+  rightStart: "right-start",
+  top: "top",
+  topEnd: "top-end",
+  topStart: "top-start"
+};
+
+const Tooltip = {
+  Placement: Placement
+};
+
 const Variant$1 = {
   h1: "h1",
   h2: "h2",
@@ -334,6 +356,7 @@ export {
   ToggleButton,
   ToggleButtonGroup,
   Toolbar,
+  Tooltip,
   Typography,
   UseMediaQuery,
   Theme,

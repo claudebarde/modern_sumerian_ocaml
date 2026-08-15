@@ -90,6 +90,15 @@
     "transitive": true
   },
   {
+    "label": "inim gi",
+    "meaning": "answer",
+    "stem": "gi",
+    "stem_cuneiforms": ["𒄄"],
+    "kind": { "type": "compound", "value": "inim", "cuneiforms": ["𒅗"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true
+  },
+  {
     "label": "ki aĝ",
     "meaning": "love",
     "stem": "aĝ",

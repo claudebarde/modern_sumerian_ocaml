@@ -244,9 +244,9 @@ let pronoun_to_person_param = (pronoun: string): option(Conjugator.PersonParam.t
 };
 
 let parse_verb_syllables = (word: string, stem: string): array(string) => {
-    let regex = [%re "/[^aeiu]*[aeiu]+(?:[^aeiu]*$|[^aeiu](?=[^aeiu]))?/gi"];
-    let vowels_regex = [%re "/(?<=[aeiu])(?=[aeiu])/gi"];
-    let cvc_regex = [%re "/([^aeiu])([aeiu])([^aeiu])/gi"];
+    let regex = [%re "/[^aeiīuū]*[aeiīuū]+(?:[^aeiīuū]*$|[^aeiīuū](?=[^aeiīuū]))?/gi"];
+    let vowels_regex = [%re "/(?<=[aeiīuū])(?=[aeiīuū])/gi"];
+    let cvc_regex = [%re "/([^aeiīuū])([aeiīuū])([^aeiīuū])/gi"];
     // makes sure that the array will be of length 2
     if (!Js.String.includes(~search=stem, word)) {
         [||]

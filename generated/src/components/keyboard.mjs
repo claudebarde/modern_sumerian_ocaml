@@ -1035,7 +1035,7 @@ function Keyboard(Props) {
                   backgroundColor: "white",
                   width: "300px"
                 },
-                type_: "text",
+                type: "text",
                 value: input !== undefined ? input : ""
               }),
               dictionary_search ? JsxRuntime.jsx(IconsReact.IconRefresh, {

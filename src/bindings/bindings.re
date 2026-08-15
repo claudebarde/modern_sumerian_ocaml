@@ -23,6 +23,7 @@ module Browser = Browser;
 module Config = Config;
 module Confetti = Confetti;
 module LocalStorage = Local_storage;
+module ReactSvgWorldmap = React_svg_worldmap;
 module Supabase = Supabase;
 module TablerReact = Tabler_react_bindings;
 module Mui = Material_ui;

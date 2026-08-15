@@ -23,6 +23,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-select": "^5.10.2",
+    "react-svg-worldmap": "^2.0.2",
     "sass": "^1.101.0"
   },
   "devDependencies": {

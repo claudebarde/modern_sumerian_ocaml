@@ -8,6 +8,22 @@
   </head>
 
   <body>
+    <!-- Netlify's deploy scanner needs a static copy of this client-rendered form. -->
+    <form
+      name="country-name-suggestion"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="country-name-suggestion" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="country-name-english" />
+      <input type="text" name="country-name-sumerian" />
+      <input type="text" name="country-name-cuneiform" />
+      <input type="text" name="user-name" />
+      <input type="email" name="user-email" />
+    </form>
     <div id="root" />
     <!-- Melange output is precompiled locally and committed for JS-only builds. -->
     <script type="module" src="./generated/src/app.mjs"></script>

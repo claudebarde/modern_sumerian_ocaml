@@ -93,6 +93,8 @@ const IconTrashXFilled = {};
 
 const IconWind = {};
 
+const IconWorldMap = {};
+
 const IconX = {};
 
 export {
@@ -142,6 +144,7 @@ export {
   IconTrashX,
   IconTrashXFilled,
   IconWind,
+  IconWorldMap,
   IconX,
 }
 /* No side effect */

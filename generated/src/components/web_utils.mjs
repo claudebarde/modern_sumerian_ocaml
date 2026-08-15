@@ -323,9 +323,9 @@ function pronoun_to_person_param(pronoun) {
 }
 
 function parse_verb_syllables(word, stem) {
-  const regex = /[^aeiu]*[aeiu]+(?:[^aeiu]*$|[^aeiu](?=[^aeiu]))?/gi;
-  const vowels_regex = /(?<=[aeiu])(?=[aeiu])/gi;
-  const cvc_regex = /([^aeiu])([aeiu])([^aeiu])/gi;
+  const regex = /[^aeiīuū]*[aeiīuū]+(?:[^aeiīuū]*$|[^aeiīuū](?=[^aeiīuū]))?/gi;
+  const vowels_regex = /(?<=[aeiīuū])(?=[aeiīuū])/gi;
+  const cvc_regex = /([^aeiīuū])([aeiīuū])([^aeiīuū])/gi;
   if (!word.includes(stem, undefined)) {
     return [];
   }

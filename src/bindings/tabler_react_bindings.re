@@ -556,6 +556,18 @@ module IconWind = {
   ) => React.element = "IconWind";
 };
 
+module IconWorldMap = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconWorldMap";
+};
+
 module IconX = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (

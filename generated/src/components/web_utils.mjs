@@ -156,6 +156,47 @@ function parse_imperfective(json) {
   }
 }
 
+function parse_english_verb(json) {
+  const object_ = Js__Js_json.decodeObject(json);
+  if (object_ === undefined) {
+    return;
+  }
+  const object_$1 = Caml_option.valFromOption(object_);
+  const value = Js__Js_dict.get(object_$1, "complement");
+  let complement;
+  if (value !== undefined) {
+    const complement$1 = Js__Js_json.decodeString(Caml_option.valFromOption(value));
+    complement = complement$1 !== undefined ? Caml_option.some(complement$1) : undefined;
+  } else {
+    complement = Caml_option.some(undefined);
+  }
+  const match = get_string(object_$1, "complement_placement");
+  let complement_placement;
+  if (match !== undefined) {
+    switch (match) {
+      case "after_object" :
+        complement_placement = /* After_object */ 1;
+        break;
+      case "after_verb" :
+        complement_placement = /* After_verb */ 0;
+        break;
+      default:
+        complement_placement = undefined;
+    }
+  } else {
+    complement_placement = /* After_verb */ 0;
+  }
+  const match$1 = get_string(object_$1, "lemma");
+  if (match$1 !== undefined && complement !== undefined && complement_placement !== undefined) {
+    return {
+      lemma: match$1,
+      complement: Caml_option.valFromOption(complement),
+      complement_placement: complement_placement
+    };
+  }
+  
+}
+
 function parse_verb(json) {
   const object_ = Js__Js_json.decodeObject(json);
   if (object_ === undefined) {
@@ -166,20 +207,25 @@ function parse_verb(json) {
   const kind = value !== undefined ? parse_kind(Caml_option.valFromOption(value)) : undefined;
   const value$1 = Js__Js_dict.get(object_$1, "imperfective");
   const imperfective = value$1 !== undefined ? parse_imperfective(Caml_option.valFromOption(value$1)) : undefined;
+  const value$2 = Js__Js_dict.get(object_$1, "english");
+  const english = value$2 !== undefined ? parse_english_verb(Caml_option.valFromOption(value$2)) : undefined;
   const match = get_string(object_$1, "label");
   const match$1 = get_string(object_$1, "meaning");
   const match$2 = get_string(object_$1, "stem");
   const match$3 = get_string_array(object_$1, "stem_cuneiforms");
   const match$4 = get_boolean(object_$1, "transitive");
-  if (match !== undefined && match$1 !== undefined && match$2 !== undefined && match$3 !== undefined && kind !== undefined && imperfective !== undefined && match$4 !== undefined) {
+  const match$5 = get_string_array(object_$1, "notes");
+  if (match !== undefined && match$1 !== undefined && english !== undefined && match$2 !== undefined && match$3 !== undefined && kind !== undefined && imperfective !== undefined && match$4 !== undefined && match$5 !== undefined) {
     return {
       label: match,
       meaning: match$1,
+      english: english,
       stem: match$2,
       stem_cuneiforms: match$3,
       kind: kind,
       imperfective: imperfective,
       transitive: match$4,
+      notes: match$5,
       firstLetter: match.charAt(0)
     };
   }
@@ -242,6 +288,7 @@ const SumerianVerbs = {
   get_string_array: get_string_array,
   parse_kind: parse_kind,
   parse_imperfective: parse_imperfective,
+  parse_english_verb: parse_english_verb,
   parse_verb: parse_verb,
   parse_result: parse_result,
   parse: parse,
@@ -456,7 +503,7 @@ const css = ConjugatorModuleScss;
 
 function Web_utils$BuildResults(Props) {
   let verb = Props.verb;
-  let meaning = Props.meaning;
+  let english = Props.english;
   let lexicalStem = Props.lexicalStem;
   let stemCuneiforms = Props.stemCuneiforms;
   let imperfectiveStem = Props.imperfectiveStem;
@@ -465,7 +512,7 @@ function Web_utils$BuildResults(Props) {
     return false;
   });
   const set_open_warnings = match[1];
-  const err = Conjugator.print(verb, meaning);
+  const err = Conjugator.print(verb, english);
   if (err.TAG !== /* Ok */ 0) {
     return JsxRuntime.jsx("span", {
       children: err._0,

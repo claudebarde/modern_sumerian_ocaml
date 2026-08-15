@@ -470,7 +470,7 @@ function add_oblique_object(verb, arr) {
   };
 }
 
-function print(verb, meaning) {
+function print(verb, english) {
   const warnings = {
     contents: /* [] */ 0
   };
@@ -1147,7 +1147,7 @@ function print(verb, meaning) {
     _0: {
       verb: final_verb,
       analysis: Conjugator__Verb_analysis.analyse(outputArr$9, verb, Conjugator__Verb_analysis.create(undefined), 0),
-      translation: Conjugator__Translation.translate(verb, meaning),
+      translation: Conjugator__Translation.translate(verb, english),
       warnings: Stdlib__Array.of_list(Stdlib__List.rev(warnings.contents))
     }
   };

@@ -14,11 +14,13 @@ type verb_kind =
 type verb_data = {
     label: string,
     meaning: string,
+    english: Conjugator.english_verb,
     stem: string,
     stem_cuneiforms: array(string),
     kind: verb_kind,
     imperfective: Conjugator.ipfv_stem,
     transitive: bool,
+    notes: array(string),
     firstLetter: string,
 };
 
@@ -97,6 +99,41 @@ module SumerianVerbs = {
         | None => None
         };
 
+    let parse_english_verb = json =>
+        switch (Js.Json.decodeObject(json)) {
+        | Some(object_) =>
+            let complement =
+                switch (get_field(object_, "complement")) {
+                | Some(value) =>
+                    switch (Js.Json.decodeString(value)) {
+                    | Some(complement) => Some(Some(complement))
+                    | None => None
+                    }
+                | None => Some(None)
+                };
+            let complement_placement =
+                switch (get_string(object_, "complement_placement")) {
+                | Some("after_object") => Some(Conjugator.After_object)
+                | Some("after_verb") | None => Some(Conjugator.After_verb)
+                | Some(_) => None
+                };
+
+            switch (
+                get_string(object_, "lemma"),
+                complement,
+                complement_placement,
+            ) {
+            | (Some(lemma), Some(complement), Some(complement_placement)) =>
+                Some(({
+                    lemma,
+                    complement,
+                    complement_placement,
+                }: Conjugator.english_verb))
+            | _ => None
+            }
+        | None => None
+        };
+
     let parse_verb = json =>
         switch (Js.Json.decodeObject(json)) {
         | Some(object_) =>
@@ -110,32 +147,43 @@ module SumerianVerbs = {
                 | Some(value) => parse_imperfective(value)
                 | None => None
                 };
+            let english =
+                switch (get_field(object_, "english")) {
+                | Some(value) => parse_english_verb(value)
+                | None => None
+                };
             switch (
                 get_string(object_, "label"),
                 get_string(object_, "meaning"),
+                english,
                 get_string(object_, "stem"),
                 get_string_array(object_, "stem_cuneiforms"),
                 kind,
                 imperfective,
                 get_boolean(object_, "transitive"),
+                get_string_array(object_, "notes"),
             ) {
             | (
                 Some(label),
                 Some(meaning),
+                Some(english),
                 Some(stem),
                 Some(stem_cuneiforms),
                 Some(kind),
                 Some(imperfective),
                 Some(transitive),
+                Some(notes),
               ) =>
                 Some({
                     label,
                     meaning,
+                    english,
                     stem,
                     stem_cuneiforms,
                     kind,
                     imperfective,
                     transitive,
+                    notes,
                     firstLetter: label |> Js.String.charAt(~index=0),
                 })
             | _ => None
@@ -416,7 +464,7 @@ module BuildResults = {
     [@react.component]
     let make = (
         ~verb: Conjugator.t,
-        ~meaning: option(string),
+        ~english: option(Conjugator.english_verb),
         ~lexicalStem: string,
         ~stemCuneiforms: array(string),
         ~imperfectiveStem: option(Conjugator.ipfv_stem),
@@ -424,7 +472,7 @@ module BuildResults = {
     ) => {
         let (open_warnings, set_open_warnings) = React.useState(() => false);
 
-        switch (Conjugator.print(verb, meaning)) {
+        switch (Conjugator.print(verb, english)) {
             | Ok({verb: conjugatedVerb, analysis, translation, warnings}) => {
                 let displayedVerb =
                     switch fixedElement {

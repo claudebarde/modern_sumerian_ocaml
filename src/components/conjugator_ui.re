@@ -1510,9 +1510,9 @@ let make = () => {
                                     | None => None
                                     }
                                 }
-                                meaning={
+                                english={
                                     switch (verb_stem) {
-                                        | Some(verb) => Some(verb.meaning)
+                                        | Some(verb) => Some(verb.english)
                                         | None => None
                                     }
                                 }

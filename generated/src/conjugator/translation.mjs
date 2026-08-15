@@ -1224,7 +1224,7 @@ function search_verb(verb, list) {
 }
 
 function conjugate(verb_form, english_verb) {
-  const res = Caml_array.make(4, "");
+  const res = Caml_array.make(5, "");
   const match = verb_form.subject;
   let subject;
   subject = /* tag */ typeof match === "number" || typeof match === "string" ? "" : Conjugator__Infixes.PersonParam.print(/* Subject */ 0, match._0);
@@ -1235,7 +1235,7 @@ function conjugate(verb_form, english_verb) {
   Caml_array.set(res, 2, object_);
   const obj = verb_form.indirect_object_prefix;
   const indirect_object = obj !== undefined ? Conjugator__Infixes.PersonParam.print(/* Indirect_object */ 2, Conjugator__Infixes.IndirectObjectPrefix.to_person(obj)) : "";
-  Caml_array.set(res, 3, indirect_object);
+  Caml_array.set(res, 4, indirect_object);
   const continuous = function (verb, pers, tense, modal) {
     const ing_form = Stdlib__String.ends_with("e", verb) ? Stdlib__String.sub(verb, 0, verb.length - 1 | 0) + "ing" : verb + "ing";
     if (tense === /* Present */ 0) {
@@ -1299,13 +1299,13 @@ function conjugate(verb_form, english_verb) {
     if (match$2 !== undefined) {
       switch (match$2) {
         case /* Modal */ 0 :
-          conjugated_verb = "should " + english_verb;
+          conjugated_verb = "should " + english_verb.lemma;
           break;
         case /* Negative */ 1 :
-          conjugated_verb = "didn't " + english_verb;
+          conjugated_verb = "didn't " + english_verb.lemma;
           break;
         case /* Negative_nan */ 2 :
-          conjugated_verb = "shouldn't " + english_verb;
+          conjugated_verb = "shouldn't " + english_verb.lemma;
           break;
         case /* Modal_ga */ 3 :
           exit = 1;
@@ -1315,9 +1315,9 @@ function conjugate(verb_form, english_verb) {
       exit = 1;
     }
     if (exit === 1) {
-      const match$3 = search_verb(english_verb, irregular_verbs);
+      const match$3 = search_verb(english_verb.lemma, irregular_verbs);
       conjugated_verb = match$3 !== undefined ? match$3[1] : (
-          Stdlib__String.ends_with("e", english_verb) ? Stdlib__String.sub(english_verb, 0, english_verb.length - 1 | 0) + "ed" : english_verb + "ed"
+          Stdlib__String.ends_with("e", english_verb.lemma) ? Stdlib__String.sub(english_verb.lemma, 0, english_verb.lemma.length - 1 | 0) + "ed" : english_verb.lemma + "ed"
         );
     }
     
@@ -1325,9 +1325,20 @@ function conjugate(verb_form, english_verb) {
     const match$4 = verb_form.subject;
     let tmp;
     tmp = /* tag */ typeof match$4 === "number" || typeof match$4 === "string" ? /* Third_sing_human */ 2 : match$4._0;
-    conjugated_verb = continuous(english_verb, tmp, /* Present */ 0, verb_form.first_prefix);
+    conjugated_verb = continuous(english_verb.lemma, tmp, /* Present */ 0, verb_form.first_prefix);
   }
-  Caml_array.set(res, 1, conjugated_verb);
+  const complement = english_verb.complement;
+  if (complement !== undefined) {
+    const match$5 = english_verb.complement_placement;
+    if (match$5 === /* After_verb */ 0) {
+      Caml_array.set(res, 1, conjugated_verb + (" " + complement));
+    } else {
+      Caml_array.set(res, 1, conjugated_verb);
+      Caml_array.set(res, 3, complement);
+    }
+  } else {
+    Caml_array.set(res, 1, conjugated_verb);
+  }
   return Stdlib__String.trim(Stdlib__String.concat(" ", Stdlib__Array.to_list(res)));
 }
 
@@ -1385,11 +1396,11 @@ function add_pre_verb_complements(verb) {
   }
 }
 
-function translate(verb, meaning) {
-  if (meaning === undefined) {
+function translate(verb, english) {
+  if (english === undefined) {
     return verb.stem;
   }
-  const conjugated_verb = conjugate(verb, meaning);
+  const conjugated_verb = conjugate(verb, english);
   const post_verb_complements = add_post_verb_complements(verb);
   const pre_verb_complements = add_pre_verb_complements(verb);
   return Stdlib__String.trim(pre_verb_complements + (" " + (conjugated_verb + (" " + post_verb_complements))));

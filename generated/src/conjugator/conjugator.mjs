@@ -605,9 +605,9 @@ function reset_ed_marker(verb) {
   return newrecord;
 }
 
-function print(verb, meaning) {
+function print(verb, english) {
   try {
-    return Conjugator__Verb_output.print(verb, meaning);
+    return Conjugator__Verb_output.print(verb, english);
   }
   catch (raw_exn){
     const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);

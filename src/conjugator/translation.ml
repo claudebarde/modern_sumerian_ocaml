@@ -4,6 +4,16 @@ type tense =
     | Present
     | Past
 
+type complement_placement =
+    | After_verb
+    | After_object
+
+type english_verb = {
+    lemma: string;
+    complement: string option;
+    complement_placement: complement_placement;
+}
+
 type entry = {
   word: string;
   values: string * string * string;
@@ -141,8 +151,8 @@ let search_verb (verb: string) (list: entry list) : (string * string * string) o
   in
   search list
 
-let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): string =
-    let res = Array.make 4 "" in
+let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: english_verb): string =
+    let res = Array.make 5 "" in
 
     let subject = 
         match verb_form.subject with
@@ -160,7 +170,7 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): st
         match verb_form.indirect_object_prefix with
         | Some obj -> obj |> IndirectObjectPrefix.to_person |> PersonParam.print Indirect_object
         | None -> ""
-    in res.(3) <- indirect_object;
+    in res.(4) <- indirect_object;
 
     let continuous : verb:string -> pers:PersonParam.t -> tense:tense -> modal:FirstPrefix.t option -> string = 
         fun ~verb ~pers ~tense ~modal -> 
@@ -208,20 +218,20 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): st
       if verb_form.is_perfective
       then 
           match verb_form.first_prefix with
-          | Some FirstPrefix.Negative -> "didn't " ^ english_verb
-          | Some FirstPrefix.Modal -> "should " ^ english_verb
-          | Some FirstPrefix.Negative_nan -> "shouldn't " ^ english_verb
+          | Some FirstPrefix.Negative -> "didn't " ^ english_verb.lemma
+          | Some FirstPrefix.Modal -> "should " ^ english_verb.lemma
+          | Some FirstPrefix.Negative_nan -> "shouldn't " ^ english_verb.lemma
           | _ -> 
-            match search_verb english_verb irregular_verbs with
+            match search_verb english_verb.lemma irregular_verbs with
             | Some (_, past, _) -> past
             | None ->
-                if String.ends_with ~suffix:"e" english_verb
-                then String.sub english_verb 0 (String.length english_verb - 1) ^ "ed"
-                else english_verb ^ "ed"
+                if String.ends_with ~suffix:"e" english_verb.lemma
+                then String.sub english_verb.lemma 0 (String.length english_verb.lemma - 1) ^ "ed"
+                else english_verb.lemma ^ "ed"
       else
         (* IMPERFECTIVE *)
         continuous 
-          ~verb:english_verb 
+          ~verb:english_verb.lemma
           ~pers:(match verb_form.subject with | Subject_prefix subj | Subject_suffix subj -> subj | _ -> PersonParam.Third_sing_human)
           ~tense:Present 
           ~modal:verb_form.first_prefix
@@ -243,7 +253,15 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: string): st
                     )
             )
         | _ -> english_verb *)
-    in res.(1) <- conjugated_verb;
+    in
+    (match english_verb.complement with
+    | Some complement ->
+        (match english_verb.complement_placement with
+        | After_verb -> res.(1) <- conjugated_verb ^ " " ^ complement
+        | After_object ->
+            res.(1) <- conjugated_verb;
+            res.(3) <- complement)
+    | None -> res.(1) <- conjugated_verb);
 
     Array.to_list res |> String.concat " " |> String.trim
 
@@ -304,10 +322,10 @@ let add_pre_verb_complements (verb: Constructs.conjugated_verb): string =
         )
     | None -> verb.stem *)
 
-let translate (verb: Constructs.conjugated_verb) (meaning: string option): string =
-  match meaning with
-  | Some m ->
-      let conjugated_verb = conjugate verb m in
+let translate (verb: Constructs.conjugated_verb) (english: english_verb option): string =
+  match english with
+  | Some english_verb ->
+      let conjugated_verb = conjugate verb english_verb in
       let post_verb_complements = add_post_verb_complements verb in
       let pre_verb_complements = add_pre_verb_complements verb in
       (pre_verb_complements ^ " " ^ conjugated_verb ^ " " ^ post_verb_complements) |> String.trim

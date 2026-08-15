@@ -316,8 +316,18 @@ let set_ed_marker verb: t = { verb with ed_marker = true}
 
 let reset_ed_marker verb: t = { verb with ed_marker = false}
 
-let print verb (meaning: string option) = 
-        try Verb_output.print verb meaning
+type complement_placement = Translation.complement_placement =
+    | After_verb
+    | After_object
+
+type english_verb = Translation.english_verb = {
+    lemma: string;
+    complement: string option;
+    complement_placement: complement_placement;
+}
+
+let print verb (english: english_verb option) =
+        try Verb_output.print verb english
         with
             | Invalid_argument exn -> Error ("Invalid argument: " ^ exn)
             | _ -> Error "Unknown error"

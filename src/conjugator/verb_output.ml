@@ -213,7 +213,7 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
                 in Ok(arr))
         | None -> Ok(arr)
 
-let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, string) result  =
+let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb option): (t, string) result  =
     let warnings: Warning.t list ref = ref [] in
     let morphemes_start = Array.make 15 "" in
     (* builds the array with all the markers *)
@@ -864,6 +864,6 @@ let print (verb: Constructs.conjugated_verb) (meaning: string option): (t, strin
                 Ok { 
                     verb = final_verb;
                     analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
-                    translation = Translation.translate verb meaning;
+                    translation = Translation.translate verb english;
                     warnings = !warnings |> Stdlib.List.rev |> Array.of_list;
                 }

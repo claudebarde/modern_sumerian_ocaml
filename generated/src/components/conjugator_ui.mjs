@@ -1751,7 +1751,7 @@ function Conjugator_ui(Props) {
                   }) : (
                     verb_form !== undefined ? JsxRuntime.jsx(Components__Web_utils.BuildResults.make, {
                         verb: verb_form,
-                        meaning: verb_stem !== undefined ? verb_stem.meaning : undefined,
+                        english: verb_stem !== undefined ? verb_stem.english : undefined,
                         lexicalStem: verb_stem !== undefined ? verb_stem.stem : verb_form.stem,
                         stemCuneiforms: verb_stem !== undefined ? verb_stem.stem_cuneiforms : [],
                         imperfectiveStem: verb_stem !== undefined ? verb_stem.imperfective : undefined,

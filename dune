@@ -10,6 +10,7 @@
 (alias
   (name all)
   (deps
+    index.html
     (alias_rec modern_sumerian_ocaml)))
 
 
@@ -26,6 +27,6 @@
     (glob_files_rec src/*.scss) 
     (glob_files_rec src/*.json)
     (glob_files_rec src/assets/*)
-    (glob_files public/*)
+    (glob_files_rec public/*)
     )
   )

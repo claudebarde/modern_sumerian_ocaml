@@ -56,6 +56,26 @@ let make = () => {
         }
     );
 
+    let countryStyle = (context: ReactSvgWorldmap.countryContext) => {
+        let is_selected =
+            switch country_details {
+            | Some(country_code) => country_code === context##countryCode
+            | None => false
+            };
+        let has_country_value =
+            context##countryValue
+            |> Js.Undefined.toOption
+            |> Option.is_some;
+
+        {
+            "fill": is_selected ? Config.colors##nycTaxi : context##color,
+            "fillOpacity": is_selected ? 1.0 : (has_country_value ? 0.8 : 0.0),
+            "stroke": Config.colors##botanicalNight,
+            "strokeWidth": is_selected ? 2 : 1,
+            "cursor": "pointer",
+        };
+    };
+
     let handleTooltip = (context: ReactSvgWorldmap.countryContext) => {
         let country_value =
             switch (Js.Undefined.toOption(context##countryValue)) {
@@ -443,6 +463,7 @@ let make = () => {
                                 backgroundColor=Config.colors##whiteSmoke
                                 color=Config.colors##protonRed
                                 borderColor=Config.colors##botanicalNight
+                                styleFunction=countryStyle
                                 onClickFunction=handleClick
                                 tooltipTextFunction=handleTooltip
                                 richInteraction=true

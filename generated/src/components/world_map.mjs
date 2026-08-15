@@ -149,6 +149,19 @@ function World_map(Props) {
       return context.countryCode;
     }));
   }), []);
+  const countryStyle = function (context) {
+    const is_selected = country_details !== undefined ? country_details === context.countryCode : false;
+    const has_country_value = Stdlib__Option.is_some(Caml_option.undefined_to_opt(context.countryValue));
+    return {
+      fill: is_selected ? Bindings__Config.colors.nycTaxi : context.color,
+      fillOpacity: is_selected ? 1.0 : (
+          has_country_value ? 0.8 : 0.0
+        ),
+      stroke: Bindings__Config.colors.botanicalNight,
+      strokeWidth: is_selected ? 2 : 1,
+      cursor: "pointer"
+    };
+  };
   const handleTooltip = function (context) {
     const value = context.countryValue;
     const country_value = value !== undefined ? String(value) : "";
@@ -644,6 +657,7 @@ function World_map(Props) {
               containerClassName: css.worldMapWrapper,
               borderColor: Bindings__Config.colors.botanicalNight,
               richInteraction: true,
+              styleFunction: countryStyle,
               onClickFunction: handleClick,
               tooltipTextFunction: handleTooltip
             }) : null,

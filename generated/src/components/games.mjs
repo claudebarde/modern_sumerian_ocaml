@@ -66,9 +66,9 @@ function Games$Timer(Props) {
   }), [time]);
   const two_digits = function (value) {
     if (value < 10) {
-      return "0" + value.toString(undefined);
+      return "0" + value.toString();
     } else {
-      return value.toString(undefined);
+      return value.toString();
     }
   };
   const formatted_time = two_digits(time / 60 | 0) + (":" + two_digits(time % 60));
@@ -139,7 +139,7 @@ function Games$MemoryGame(Props) {
     return duplicated_cards;
   };
   const match = React.useState(function () {
-    return create_cards(undefined);
+    return create_cards();
   });
   const set_cards = match[1];
   const cards = match[0];
@@ -164,7 +164,7 @@ function Games$MemoryGame(Props) {
   const reset_game = function (param) {
     game_generation.current = game_generation.current + 1 | 0;
     Curry._1(set_cards, (function (param) {
-      return create_cards(undefined);
+      return create_cards();
     }));
     Curry._1(set_flipped_cards, (function (param) {
       return [
@@ -258,7 +258,7 @@ function Games$MemoryGame(Props) {
       }), previous_cards);
     }));
   };
-  const Key = match$3[0].toString(undefined);
+  const Key = match$3[0].toString();
   return JsxRuntime.jsxs(Container, {
     children: [
       JsxRuntime.jsx(Typography, {
@@ -279,7 +279,7 @@ function Games$MemoryGame(Props) {
           celebration_launched.current === true ? JsxRuntime.jsx(Button, {
               children: "Play Again",
               onClick: (function (param) {
-                reset_game(undefined);
+                reset_game();
               })
             }) : null
         ],
@@ -288,7 +288,7 @@ function Games$MemoryGame(Props) {
       }),
       JsxRuntime.jsx(Grid, {
         children: Stdlib__Array.map((function (card) {
-          const Key = card.id.toString(undefined);
+          const Key = card.id.toString();
           return JsxRuntime.jsx(Grid, {
             children: JsxRuntime.jsx("div", {
               children: JsxRuntime.jsxs("div", {
@@ -562,12 +562,12 @@ function Games$Wordle(Props) {
   }), [current_guess]);
   let tmp;
   if (wordle_word !== undefined) {
-    const letters = wordle_word.split("", undefined);
+    const letters = wordle_word.split("");
     tmp = Stdlib__Array.init(6, (function (row_index) {
-      const Key = "row-" + row_index.toString(undefined);
+      const Key = "row-" + row_index.toString();
       return JsxRuntime.jsx("div", {
         children: Stdlib__Array.mapi((function (letter_index, letter) {
-          const Key = row_index.toString(undefined) + ("-" + letter_index.toString(undefined));
+          const Key = row_index.toString() + ("-" + letter_index.toString());
           let tmp;
           if (current_row === row_index) {
             tmp = current_guess !== undefined && current_guess.length > letter_index ? current_guess[letter_index] : null;
@@ -582,7 +582,7 @@ function Games$Wordle(Props) {
             const previous_guess$1 = Caml_array.get(previous_guesses, row_index);
             const guessed_letter = previous_guess$1[letter_index];
             tmp$1 = guessed_letter === letter ? css.success : (
-                wordle_word.includes(guessed_letter, undefined) ? css.partial : css.incorrect
+                wordle_word.includes(guessed_letter) ? css.partial : css.incorrect
               );
           } else {
             tmp$1 = "";
@@ -629,7 +629,7 @@ function Games$Wordle(Props) {
             JsxRuntime.jsx(Button, {
               children: "Play Again",
               onClick: (function (param) {
-                reset(undefined);
+                reset();
               }),
               variant: "contained"
             })
@@ -648,7 +648,7 @@ function Games$Wordle(Props) {
                 JsxRuntime.jsx(Button, {
                   children: "Play Again",
                   onClick: (function (param) {
-                    reset(undefined);
+                    reset();
                   }),
                   variant: "contained"
                 })
@@ -708,7 +708,7 @@ function Games(Props) {
   let tmp;
   if (game_choice !== undefined) {
     if (game_choice === /* Memory */ 0) {
-      const Key = match$2[0].toString(undefined);
+      const Key = match$2[0].toString();
       tmp = JsxRuntime.jsx(Games$MemoryGame, {}, Key);
     } else {
       tmp = JsxRuntime.jsx(Games$Wordle, {});
@@ -761,7 +761,7 @@ function Games(Props) {
                       }));
                     }),
                     sx: {
-                      paddingLeft: paddingLeft
+                      paddingLeft
                     }
                   }),
                   JsxRuntime.jsx(Divider, {}),
@@ -780,7 +780,7 @@ function Games(Props) {
                       }));
                     }),
                     sx: {
-                      paddingLeft: paddingLeft
+                      paddingLeft
                     }
                   })
                 ],

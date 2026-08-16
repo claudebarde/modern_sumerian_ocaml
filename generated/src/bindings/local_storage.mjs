@@ -203,7 +203,7 @@ function set_words_list(words) {
 }
 
 function add_word(english, cuneiforms, sumerian, epsd_code) {
-  const words = get_words_list(undefined);
+  const words = get_words_list();
   const words$1 = words !== undefined ? Caml_option.valFromOption(words) : ({});
   words$1[english] = [
     cuneiforms,
@@ -214,7 +214,7 @@ function add_word(english, cuneiforms, sumerian, epsd_code) {
 }
 
 function remove_word(english) {
-  const words = get_words_list(undefined);
+  const words = get_words_list();
   if (words === undefined) {
     return;
   }
@@ -226,7 +226,7 @@ function remove_word(english) {
 }
 
 function initialize_words_list(param) {
-  const match = get_words_list(undefined);
+  const match = get_words_list();
   if (match !== undefined) {
     return;
   } else {

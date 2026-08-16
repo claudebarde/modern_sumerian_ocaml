@@ -1227,11 +1227,11 @@ function conjugate(verb_form, english_verb) {
   const res = Caml_array.make(5, "");
   const match = verb_form.subject;
   let subject;
-  subject = /* tag */ typeof match === "number" || typeof match === "string" ? "" : Conjugator__Infixes.PersonParam.print(/* Subject */ 0, match._0);
+  subject = /* tag */ typeof match !== "object" && typeof match !== "function" ? "" : Conjugator__Infixes.PersonParam.print(/* Subject */ 0, match._0);
   Caml_array.set(res, 0, subject);
   const match$1 = verb_form.object_;
   let object_;
-  object_ = /* tag */ typeof match$1 === "number" || typeof match$1 === "string" ? "" : Conjugator__Infixes.PersonParam.print(/* Object */ 1, match$1._0);
+  object_ = /* tag */ typeof match$1 !== "object" && typeof match$1 !== "function" ? "" : Conjugator__Infixes.PersonParam.print(/* Object */ 1, match$1._0);
   Caml_array.set(res, 2, object_);
   const obj = verb_form.indirect_object_prefix;
   const indirect_object = obj !== undefined ? Conjugator__Infixes.PersonParam.print(/* Indirect_object */ 2, Conjugator__Infixes.IndirectObjectPrefix.to_person(obj)) : "";
@@ -1324,7 +1324,7 @@ function conjugate(verb_form, english_verb) {
   } else {
     const match$4 = verb_form.subject;
     let tmp;
-    tmp = /* tag */ typeof match$4 === "number" || typeof match$4 === "string" ? /* Third_sing_human */ 2 : match$4._0;
+    tmp = /* tag */ typeof match$4 !== "object" && typeof match$4 !== "function" ? /* Third_sing_human */ 2 : match$4._0;
     conjugated_verb = continuous(english_verb.lemma, tmp, /* Present */ 0, verb_form.first_prefix);
   }
   const complement = english_verb.complement;

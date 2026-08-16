@@ -66,7 +66,7 @@ function print($$case, person) {
 }
 
 const PersonParam = {
-  print: print
+  print
 };
 
 const FirstPrefix = {};
@@ -102,8 +102,8 @@ function to_person(pers) {
 }
 
 const FinalPersonPrefix = {
-  from_person: from_person,
-  to_person: to_person
+  from_person,
+  to_person
 };
 
 function from_person$1(pers) {
@@ -166,7 +166,7 @@ function to_final_person_prefix(pers) {
 const InitialPersonPrefix = {
   from_person: from_person$1,
   to_person: to_person$1,
-  to_final_person_prefix: to_final_person_prefix
+  to_final_person_prefix
 };
 
 function to_person$2(pers) {

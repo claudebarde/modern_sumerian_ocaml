@@ -25,10 +25,10 @@ import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
+import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
-import * as Stdlib__Option from "melange/option.mjs";
 import * as Openmeteo from "openmeteo";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
@@ -158,7 +158,7 @@ function capitalize(value) {
     return value;
   }
   const first_character = value.charAt(0).toUpperCase();
-  const remaining_characters = value.slice(1, undefined);
+  const remaining_characters = value.slice(1);
   return first_character + remaining_characters;
 }
 
@@ -258,9 +258,9 @@ function Meteo_widget(Props) {
               console.log("Current weather is unavailable");
             } else {
               const temperature_variable = current.variables(0);
-              const temperature = !(temperature_variable == null) ? Stdlib__Option.some(temperature_variable.value() | 0) : undefined;
+              const temperature = !(temperature_variable == null) ? Caml_option.some(temperature_variable.value() | 0) : undefined;
               const weather_code_variable = current.variables(1);
-              const weather_code = !(weather_code_variable == null) ? Stdlib__Option.some(weather_condition_from_code(weather_code_variable.value() | 0)) : undefined;
+              const weather_code = !(weather_code_variable == null) ? Caml_option.some(weather_condition_from_code(weather_code_variable.value() | 0)) : undefined;
               Curry._1(set_temperature, (function (param) {
                 return temperature;
               }));
@@ -269,12 +269,12 @@ function Meteo_widget(Props) {
               }));
             }
           }
-          return Promise.resolve(undefined);
+          return Promise.resolve();
         });
       }
       
     } else if (lat_long === undefined) {
-      const $$location = Bindings__Local_storage.get_location(undefined);
+      const $$location = Bindings__Local_storage.get_location();
       if ($$location !== undefined) {
         Curry._1(set_current_city, (function (param) {
           return $$location.city;
@@ -684,7 +684,7 @@ function Meteo_widget(Props) {
                         JsxRuntime.jsx(MenuItem, {
                           children: tmp$10,
                           onClick: (function (param) {
-                            get_current_location(undefined);
+                            get_current_location();
                             Curry._1(set_cities_menu_open, (function (param) {
                               return false;
                             }));

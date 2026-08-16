@@ -22,6 +22,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Caml from "melange.js/caml.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Components__Cuneiform_char from "./cuneiform_char.mjs";
@@ -35,7 +36,6 @@ import * as Js__Js_json from "melange.js/js_json.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__List from "melange/list.mjs";
-import * as Stdlib__String from "melange/string.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -191,7 +191,7 @@ function parse_english_verb(json) {
     return {
       lemma: match$1,
       complement: Caml_option.valFromOption(complement),
-      complement_placement: complement_placement
+      complement_placement
     };
   }
   
@@ -219,11 +219,11 @@ function parse_verb(json) {
     return {
       label: match,
       meaning: match$1,
-      english: english,
+      english,
       stem: match$2,
       stem_cuneiforms: match$3,
-      kind: kind,
-      imperfective: imperfective,
+      kind,
+      imperfective,
       transitive: match$4,
       notes: match$5,
       firstLetter: match.charAt(0)
@@ -255,7 +255,7 @@ function parse_result(json) {
     if (verb === undefined) {
       return {
         TAG: /* Error */ 1,
-        _0: "Invalid Sumerian verb data at array index " + index.toString(undefined)
+        _0: "Invalid Sumerian verb data at array index " + index.toString()
       };
     }
     _verbs = {
@@ -274,7 +274,7 @@ function parse(json) {
   }
   const verbs$1 = verbs._0;
   Stdlib__Array.sort((function (a, b) {
-    return Stdlib__String.compare(a.label, b.label);
+    return Caml.caml_string_compare(a.label, b.label);
   }), verbs$1);
   return verbs$1;
 }
@@ -282,17 +282,17 @@ function parse(json) {
 const verbs = parse(sumerianVerbsJson);
 
 const SumerianVerbs = {
-  get_field: get_field,
-  get_string: get_string,
-  get_boolean: get_boolean,
-  get_string_array: get_string_array,
-  parse_kind: parse_kind,
-  parse_imperfective: parse_imperfective,
-  parse_english_verb: parse_english_verb,
-  parse_verb: parse_verb,
-  parse_result: parse_result,
-  parse: parse,
-  verbs: verbs
+  get_field,
+  get_string,
+  get_boolean,
+  get_string_array,
+  parse_kind,
+  parse_imperfective,
+  parse_english_verb,
+  parse_verb,
+  parse_result,
+  parse,
+  verbs
 };
 
 function search_cuneiforms(words) {
@@ -373,10 +373,10 @@ function parse_verb_syllables(word, stem) {
   const regex = /[^aeiīuū]*[aeiīuū]+(?:[^aeiīuū]*$|[^aeiīuū](?=[^aeiīuū]))?/gi;
   const vowels_regex = /(?<=[aeiīuū])(?=[aeiīuū])/gi;
   const cvc_regex = /([^aeiīuū])([aeiīuū])([^aeiīuū])/gi;
-  if (!word.includes(stem, undefined)) {
+  if (!word.includes(stem)) {
     return [];
   }
-  const syllables = word.split(stem, undefined);
+  const syllables = word.split(stem);
   if (syllables.length !== 2) {
     return [];
   }
@@ -402,11 +402,11 @@ function parse_verb_syllables(word, stem) {
     if (syllables.length === 0) {
       return [];
     } else {
-      return Stdlib__Array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (syll) {
+      return Caml_array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (syll) {
         const matches = syll.match(cvc_regex);
         if (matches !== null) {
-          return Stdlib__Array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (match_) {
-            const match_$1 = match_ !== undefined ? match_.split("", undefined) : [];
+          return Caml_array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (match_) {
+            const match_$1 = match_ !== undefined ? match_.split("") : [];
             if (match_$1.length !== 3) {
               return [];
             }
@@ -427,12 +427,12 @@ function parse_verb_syllables(word, stem) {
         } else {
           return "";
         }
-      }), Stdlib__Array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (syll) {
-        return syll.split(vowels_regex, undefined);
+      }), Caml_array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (syll) {
+        return syll.split(vowels_regex);
       }), syllables)))))));
     }
   };
-  return Stdlib__Array.concat({
+  return Caml_array.concat({
     hd: formatting(res_before),
     tl: {
       hd: [stem],
@@ -466,7 +466,7 @@ function build_result_cuneiforms(conjugatedVerb, verbStem, lexicalStem, stemCune
     fixedCuneiforms = [];
   }
   let isReduplicatedStem;
-  if (imperfectiveStem !== undefined && !(/* tag */ typeof imperfectiveStem === "number" || typeof imperfectiveStem === "string" || imperfectiveStem.TAG !== /* Reduplicate */ 0)) {
+  if (imperfectiveStem !== undefined && !(/* tag */ typeof imperfectiveStem !== "object" && typeof imperfectiveStem !== "function" || imperfectiveStem.TAG !== /* Reduplicate */ 0)) {
     const stem = imperfectiveStem._0;
     isReduplicatedStem = stem !== undefined ? verbStem === stem : verbStem === lexicalStem + ("-" + lexicalStem);
   } else {
@@ -484,7 +484,7 @@ function build_result_cuneiforms(conjugatedVerb, verbStem, lexicalStem, stemCune
       word
     ];
   }), display_cuneiforms(parse_verb_syllables(conjugatedVerb, verbStem)));
-  return Stdlib__Array.concat({
+  return Caml_array.concat({
     hd: fixedCuneiforms,
     tl: {
       hd: conjugatedCuneiforms,
@@ -524,7 +524,7 @@ function Web_utils$BuildResults(Props) {
   const conjugatedVerb = match$1.verb;
   const displayedVerb = fixedElement !== undefined ? fixedElement[0] + (" " + conjugatedVerb) : conjugatedVerb;
   const output = Conjugator__Verb_analysis.output(match$1.analysis);
-  const analysisOutput = fixedElement !== undefined ? Stdlib__Array.concat({
+  const analysisOutput = fixedElement !== undefined ? Caml_array.concat({
       hd: [[
           "compoundElement",
           fixedElement[0]
@@ -539,7 +539,7 @@ function Web_utils$BuildResults(Props) {
     const codePoint = param[0];
     const Key = codePoint + (word + Stdlib__Int.to_string(i));
     return JsxRuntime.jsx(Components__Cuneiform_char.make, {
-      codePoint: codePoint,
+      codePoint,
       pronunciation: word
     }, Key);
   }), build_result_cuneiforms(conjugatedVerb, verb.stem, lexicalStem, stemCuneiforms, imperfectiveStem, fixedElement));
@@ -631,7 +631,7 @@ function Web_utils$BuildResults(Props) {
                         break;
                       default:
                         const first_char = output_type.charAt(0).toUpperCase();
-                        const rest = output_type.slice(1, undefined).toLowerCase();
+                        const rest = output_type.slice(1).toLowerCase();
                         tmp = first_char + rest;
                     }
                     return JsxRuntime.jsx(TableCell, {
@@ -665,7 +665,7 @@ function Web_utils$BuildResults(Props) {
                       children: [
                         JsxRuntime.jsx(IconButton, {
                           children: JsxRuntime.jsx(Badge, {
-                            badgeContent: warnings.length.toString(undefined),
+                            badgeContent: warnings.length.toString(),
                             children: JsxRuntime.jsx(IconsReact.IconInfoTriangle, {}),
                             color: Bindings__Material_ui.Color.info
                           }),
@@ -682,7 +682,7 @@ function Web_utils$BuildResults(Props) {
                             }),
                             JsxRuntime.jsx(DialogContent, {
                               children: Stdlib__Array.mapi((function (index, warning) {
-                                const Key = index.toString(undefined);
+                                const Key = index.toString();
                                 let tmp;
                                 switch (warning.TAG) {
                                   case /* Info */ 0 :
@@ -752,7 +752,7 @@ function Web_utils$BuildResults(Props) {
 }
 
 const BuildResults = {
-  css: css,
+  css,
   make: Web_utils$BuildResults
 };
 
@@ -774,8 +774,8 @@ function get_epsd_link(word) {
 }
 
 const EpsdDict = {
-  epsdDict: epsdDict,
-  get_epsd_link: get_epsd_link
+  epsdDict,
+  get_epsd_link
 };
 
 function global_regexp(pattern) {
@@ -793,7 +793,7 @@ function from_standard_to_phonetic(word) {
 function with_g_variants(word) {
   return Stdlib__Array.fold_left((function (variants, character) {
     if (character === "g") {
-      return Stdlib__Array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (prefix) {
+      return Caml_array.concat(Stdlib__Array.to_list(Stdlib__Array.map((function (prefix) {
         return [
           prefix + "g",
           prefix + "ŋ"
@@ -804,14 +804,14 @@ function with_g_variants(word) {
         return prefix + character;
       }), variants);
     }
-  }), [""], word.split("", undefined));
+  }), [""], word.split(""));
 }
 
 const Format = {
-  global_regexp: global_regexp,
-  from_phonetic_to_standard: from_phonetic_to_standard,
-  from_standard_to_phonetic: from_standard_to_phonetic,
-  with_g_variants: with_g_variants
+  global_regexp,
+  from_phonetic_to_standard,
+  from_standard_to_phonetic,
+  with_g_variants
 };
 
 export {

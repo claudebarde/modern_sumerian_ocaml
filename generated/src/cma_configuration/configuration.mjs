@@ -34,15 +34,15 @@ function overwrite_preference_of_string(param) {
 
 function make(name, directory, node_package_manager, bundler, is_react_app, initialize_git, initialize_npm, initialize_ocaml_toolchain, overwrite, param) {
   return {
-    name: name,
-    directory: directory,
-    node_package_manager: node_package_manager,
-    bundler: bundler,
-    is_react_app: is_react_app,
-    initialize_git: initialize_git,
-    initialize_npm: initialize_npm,
-    initialize_ocaml_toolchain: initialize_ocaml_toolchain,
-    overwrite: overwrite
+    name,
+    directory,
+    node_package_manager,
+    bundler,
+    is_react_app,
+    initialize_git,
+    initialize_npm,
+    initialize_ocaml_toolchain,
+    overwrite
   };
 }
 

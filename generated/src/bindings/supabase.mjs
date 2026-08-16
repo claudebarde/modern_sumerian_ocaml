@@ -31,9 +31,9 @@ function starts_with_any(column, values, query) {
 }
 
 const Filter = {
-  quote_filter_value: quote_filter_value,
-  ilike_any: ilike_any,
-  starts_with_any: starts_with_any
+  quote_filter_value,
+  ilike_any,
+  starts_with_any
 };
 
 const Modifier = {};
@@ -147,7 +147,7 @@ function decode_error(obj) {
   }
   const value$1 = Caml_option.valFromOption(value);
   const message = Js__Js_json.classify(value$1);
-  if (/* tag */ typeof message === "number" || typeof message === "string") {
+  if (/* tag */ typeof message !== "object" && typeof message !== "function") {
     if (message === /* JSONNull */ 2) {
       return;
     } else {
@@ -190,18 +190,18 @@ function decode(json) {
   }
   return {
     success: error === undefined,
-    data: data,
-    error: error
+    data,
+    error
   };
 }
 
 const $$Response = {
-  decode_string_field: decode_string_field,
-  decode_marker: decode_marker,
-  decode_string_array: decode_string_array,
-  decode_row: decode_row,
-  decode_error: decode_error,
-  decode: decode
+  decode_string_field,
+  decode_marker,
+  decode_string_array,
+  decode_row,
+  decode_error,
+  decode
 };
 
 const client = SupabaseJs.createClient(Bindings__Config.supabaseUrl, Bindings__Config.supabasePublishableKey);

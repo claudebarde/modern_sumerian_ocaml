@@ -23,6 +23,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_js_exceptions from "melange.js/caml_js_exceptions.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Components__Modal from "./modal.mjs";
@@ -43,7 +44,7 @@ const css = ConjugatorModuleScss;
 
 function verb_dictionary_value(verb) {
   const element = verb.kind;
-  if (/* tag */ typeof element === "number" || typeof element === "string") {
+  if (/* tag */ typeof element !== "object" && typeof element !== "function") {
     return verb.stem;
   } else {
     return element._0.value + (" " + verb.stem);
@@ -52,7 +53,7 @@ function verb_dictionary_value(verb) {
 
 function verb_fixed_element(verb) {
   const element = verb.kind;
-  if (/* tag */ typeof element === "number" || typeof element === "string") {
+  if (/* tag */ typeof element !== "object" && typeof element !== "function") {
     return;
   }
   const element$1 = element._0;
@@ -76,7 +77,7 @@ function print(warning) {
 }
 
 const Warnings = {
-  print: print
+  print
 };
 
 function person_param_to_option(pp) {
@@ -125,7 +126,7 @@ function person_param_to_option(pp) {
 }
 
 const Utils = {
-  person_param_to_option: person_param_to_option
+  person_param_to_option
 };
 
 function Conjugator_ui(Props) {
@@ -455,16 +456,16 @@ function Conjugator_ui(Props) {
               try {
                 return Stdlib__Result.get_ok(Conjugator.set_subject(prev_verb_form, match));
               }
-              catch (raw_exn){
-                const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-                if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-                  const err = exn._1;
+              catch (raw_err){
+                const err = Caml_js_exceptions.internalToOCamlException(raw_err);
+                if (err.MEL_EXN_ID === Conjugator__Utils.Todo) {
+                  const err$1 = err._1;
                   Curry._1(set_error, (function (param) {
-                    return err;
+                    return err$1;
                   }));
                   return prev_verb_form;
                 }
-                throw exn;
+                throw err;
               }
             }));
           } else {
@@ -887,31 +888,31 @@ function Conjugator_ui(Props) {
         try {
           return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
         }
-        catch (raw_exn){
-          const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-          if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-            const err = exn._1;
-            Curry._1(set_error, (function (param) {
-              return err;
-            }));
-            return prev_verb_form;
-          }
-          throw exn;
-        }
-      } else {
-        try {
-          return Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject));
-        }
-        catch (raw_exn$1){
-          const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
-          if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
-            const err$1 = exn$1._1;
+        catch (raw_err){
+          const err = Caml_js_exceptions.internalToOCamlException(raw_err);
+          if (err.MEL_EXN_ID === Conjugator__Utils.Todo) {
+            const err$1 = err._1;
             Curry._1(set_error, (function (param) {
               return err$1;
             }));
             return prev_verb_form;
           }
-          throw exn$1;
+          throw err;
+        }
+      } else {
+        try {
+          return Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject));
+        }
+        catch (raw_err$1){
+          const err$2 = Caml_js_exceptions.internalToOCamlException(raw_err$1);
+          if (err$2.MEL_EXN_ID === Conjugator__Utils.Todo) {
+            const err$3 = err$2._1;
+            Curry._1(set_error, (function (param) {
+              return err$3;
+            }));
+            return prev_verb_form;
+          }
+          throw err$2;
         }
       }
     }));
@@ -977,31 +978,31 @@ function Conjugator_ui(Props) {
           try {
             return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
           }
-          catch (raw_exn){
-            const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-            if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
-              const err = exn._1;
-              Curry._1(set_error, (function (param) {
-                return err;
-              }));
-              return prev_verb_form;
-            }
-            throw exn;
-          }
-        } else {
-          try {
-            return Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject));
-          }
-          catch (raw_exn$1){
-            const exn$1 = Caml_js_exceptions.internalToOCamlException(raw_exn$1);
-            if (exn$1.MEL_EXN_ID === Conjugator__Utils.Todo) {
-              const err$1 = exn$1._1;
+          catch (raw_err){
+            const err = Caml_js_exceptions.internalToOCamlException(raw_err);
+            if (err.MEL_EXN_ID === Conjugator__Utils.Todo) {
+              const err$1 = err._1;
               Curry._1(set_error, (function (param) {
                 return err$1;
               }));
               return prev_verb_form;
             }
-            throw exn$1;
+            throw err;
+          }
+        } else {
+          try {
+            return Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject));
+          }
+          catch (raw_err$1){
+            const err$2 = Caml_js_exceptions.internalToOCamlException(raw_err$1);
+            if (err$2.MEL_EXN_ID === Conjugator__Utils.Todo) {
+              const err$3 = err$2._1;
+              Curry._1(set_error, (function (param) {
+                return err$3;
+              }));
+              return prev_verb_form;
+            }
+            throw err$2;
           }
         }
       }));
@@ -1041,7 +1042,7 @@ function Conjugator_ui(Props) {
                     }),
                     onChange: (function (_event, newValue) {
                       let value = (newValue == null) ? undefined : Caml_option.some(newValue);
-                      reset(undefined);
+                      reset();
                       Curry._1(set_verb_stem, (function (param) {
                         return value;
                       }));
@@ -1074,7 +1075,7 @@ function Conjugator_ui(Props) {
                       const Key = verb_dictionary_value(option) + option.label;
                       const element = option.kind;
                       let tmp;
-                      tmp = /* tag */ typeof element === "number" || typeof element === "string" ? option.stem_cuneiforms : Stdlib__Array.concat({
+                      tmp = /* tag */ typeof element !== "object" && typeof element !== "function" ? option.stem_cuneiforms : Caml_array.concat({
                           hd: element._0.cuneiforms,
                           tl: {
                             hd: option.stem_cuneiforms,
@@ -1221,7 +1222,7 @@ function Conjugator_ui(Props) {
                 container: true,
                 spacing: 2,
                 sx: {
-                  marginTop: marginTop
+                  marginTop
                 }
               }),
               JsxRuntime.jsxs(Grid, {
@@ -1378,7 +1379,7 @@ function Conjugator_ui(Props) {
                   width: "100%",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginTop: marginTop
+                  marginTop
                 }
               })
             ],
@@ -1579,7 +1580,7 @@ function Conjugator_ui(Props) {
                       label: tmp$1,
                       size: "small"
                     }, Key), Curry._1(getItemProps, {
-                      index: index
+                      index
                     }));
                   }), sortedPrefixes);
                 }),
@@ -1727,7 +1728,7 @@ function Conjugator_ui(Props) {
                         children: print(general_warning),
                         severity: "warning",
                         sx: {
-                          marginTop: marginTop
+                          marginTop
                         }
                       }) : null
                   })
@@ -1768,7 +1769,7 @@ function Conjugator_ui(Props) {
                     children: "Reset",
                     disabled: Stdlib__Option.is_none(verb_form),
                     onClick: (function (param) {
-                      reset(undefined);
+                      reset();
                     }),
                     variant: "contained"
                   }),
@@ -1787,7 +1788,7 @@ function Conjugator_ui(Props) {
                         const cuneiforms = Components__Web_utils.build_result_cuneiform_string(error._0.verb, verb_form.stem, verb_stem.stem, verb_stem.stem_cuneiforms, verb_stem.imperfective, verb_fixed_element(verb_stem));
                         navigator.clipboard.writeText(cuneiforms).catch(function (error) {
                           console.log("Could not copy the conjugated cuneiforms:", error);
-                          return Promise.resolve(undefined);
+                          return Promise.resolve();
                         });
                         return;
                       }
@@ -1813,7 +1814,7 @@ function Conjugator_ui(Props) {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              marginTop: marginTop
+              marginTop
             }
           })
         ],
@@ -1824,7 +1825,7 @@ function Conjugator_ui(Props) {
           md: 6
         },
         sx: {
-          marginTop: marginTop
+          marginTop
         }
       }),
       JsxRuntime.jsx(Components__Modal.make, {

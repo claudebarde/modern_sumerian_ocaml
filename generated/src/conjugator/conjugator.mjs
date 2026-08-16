@@ -8,7 +8,7 @@ import * as Stdlib from "melange/stdlib.mjs";
 
 function create(stem) {
   return {
-    stem: stem,
+    stem,
     is_perfective: false,
     is_transitive: false,
     oblique_object: /* None */ 0,
@@ -46,7 +46,7 @@ function is_perfective(verb) {
 
 function is_imperfective(verb, ipfv_stem) {
   if (ipfv_stem !== undefined) {
-    if (/* tag */ typeof ipfv_stem === "number" || typeof ipfv_stem === "string") {
+    if (/* tag */ typeof ipfv_stem !== "object" && typeof ipfv_stem !== "function") {
       const newrecord = Caml_obj.caml_obj_dup(verb);
       newrecord.ed_marker = true;
       newrecord.is_perfective = false;
@@ -543,7 +543,7 @@ function reset_subject(verb) {
   newrecord.final_person_suffix = undefined;
   newrecord.final_person_prefix = undefined;
   const match = verb.object_;
-  if (/* tag */ typeof match === "number" || typeof match === "string") {
+  if (/* tag */ typeof match !== "object" && typeof match !== "function") {
     return newrecord;
   } else {
     return set_object(newrecord, match._0);
@@ -556,7 +556,7 @@ function reset_object(verb) {
   newrecord.final_person_suffix = undefined;
   newrecord.final_person_prefix = undefined;
   const match = verb.subject;
-  if (/* tag */ typeof match === "number" || typeof match === "string") {
+  if (/* tag */ typeof match !== "object" && typeof match !== "function") {
     return newrecord;
   }
   match.TAG === /* Subject_prefix */ 0;

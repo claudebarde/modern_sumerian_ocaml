@@ -38,7 +38,7 @@ const theme = Styles.createTheme({
 
 function App$App(Props) {
   return JsxRuntime.jsxs(Styles.ThemeProvider, {
-    theme: theme,
+    theme,
     children: [
       JsxRuntime.jsx(CssBaseline, {}),
       JsxRuntime.jsx(App__Header.make, {}),
@@ -52,12 +52,12 @@ const App = {
   make: App$App
 };
 
-const param = document.querySelector("#root");
+const root_elem = document.querySelector("#root");
 
-if (param == null) {
+if (root_elem == null) {
   console.error("Failed to start React: couldn't find the #root element");
 } else {
-  const root = Client.createRoot(param);
+  const root = Client.createRoot(root_elem);
   root.render(JsxRuntime.jsx(App$App, {}));
 }
 

@@ -151,7 +151,7 @@ function World_map(Props) {
   }), []);
   const countryStyle = function (context) {
     const is_selected = country_details !== undefined ? country_details === context.countryCode : false;
-    const has_country_value = Stdlib__Option.is_some(Caml_option.undefined_to_opt(context.countryValue));
+    const has_country_value = Caml_option.undefined_to_opt(context.countryValue) !== undefined;
     return {
       fill: is_selected ? Bindings__Config.colors.nycTaxi : context.color,
       fillOpacity: is_selected ? 1.0 : (
@@ -252,8 +252,8 @@ function World_map(Props) {
     });
     const options = {
       method: "POST",
-      headers: headers,
-      body: body
+      headers,
+      body
     };
     window.fetch("/", options).then(function (response) {
       Curry._1(set_is_submitting, (function (param) {
@@ -283,7 +283,7 @@ function World_map(Props) {
           return "The form could not be submitted. Please try again.";
         }));
       }
-      return Promise.resolve(undefined);
+      return Promise.resolve();
     }).catch(function (_error) {
       Curry._1(set_is_submitting, (function (param) {
         return false;
@@ -291,7 +291,7 @@ function World_map(Props) {
       Curry._1(set_submission_error, (function (param) {
         return "The form could not be submitted. Please check your connection and try again.";
       }));
-      return Promise.resolve(undefined);
+      return Promise.resolve();
     });
   };
   const country_code_to_flag = function (country_code) {
@@ -306,7 +306,7 @@ function World_map(Props) {
         } else {
           return "";
         }
-      }), normalized_code.split("", undefined)).join("");
+      }), normalized_code.split("")).join("");
     }
   };
   const countries_by_continent = function (continent_to_search) {

@@ -172,6 +172,24 @@ function Header(Props) {
                     }));
                     ReasonReactRouter.push("/wordslist");
                   })
+                }),
+                JsxRuntime.jsxs(MenuItem, {
+                  children: [
+                    JsxRuntime.jsx(ListItemIcon, {
+                      children: JsxRuntime.jsx(IconsReact.IconWorldMap, {
+                        color: Bindings__Config.colors.botanicalNight
+                      })
+                    }),
+                    JsxRuntime.jsx(ListItemText, {
+                      children: "World Map"
+                    })
+                  ],
+                  onClick: (function (param) {
+                    Curry._1(setToolsAnchor, (function (param) {
+                      return null;
+                    }));
+                    ReasonReactRouter.push("/worldmap");
+                  })
                 })
               ],
               anchorEl: toolsAnchor,

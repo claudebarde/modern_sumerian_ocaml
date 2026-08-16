@@ -396,7 +396,7 @@ function add_oblique_object(verb, arr) {
   }
   const arr$1 = arr._0;
   const fpp = verb.oblique_object;
-  if (/* tag */ typeof fpp === "number" || typeof fpp === "string") {
+  if (/* tag */ typeof fpp !== "object" && typeof fpp !== "function") {
     return {
       TAG: /* Ok */ 0,
       _0: arr$1
@@ -836,7 +836,7 @@ function print(verb, english) {
                   }
                 } else {
                   const ipp$1 = verb.oblique_object;
-                  if (/* tag */ typeof ipp$1 === "number" || typeof ipp$1 === "string" || ipp$1.TAG === /* Final_person_prefix */ 0) {
+                  if (/* tag */ typeof ipp$1 !== "object" && typeof ipp$1 !== "function" || ipp$1.TAG === /* Final_person_prefix */ 0) {
                     outputRes$1 = {
                       TAG: /* Ok */ 0,
                       _0: outputArr$8
@@ -1146,7 +1146,7 @@ function print(verb, english) {
     TAG: /* Ok */ 0,
     _0: {
       verb: final_verb,
-      analysis: Conjugator__Verb_analysis.analyse(outputArr$9, verb, Conjugator__Verb_analysis.create(undefined), 0),
+      analysis: Conjugator__Verb_analysis.analyse(outputArr$9, verb, Conjugator__Verb_analysis.create(), 0),
       translation: Conjugator__Translation.translate(verb, english),
       warnings: Stdlib__Array.of_list(Stdlib__List.rev(warnings.contents))
     }

@@ -95,7 +95,7 @@ function Dictionary(Props) {
   const set_add_to_my_words_list = match$8[1];
   const add_to_my_words_list = match$8[0];
   React.useEffect((function () {
-    Bindings__Local_storage.initialize_words_list(undefined);
+    Bindings__Local_storage.initialize_words_list();
   }), []);
   const search_word = function (param) {
     if (word.trim().length === 0) {
@@ -116,11 +116,11 @@ function Dictionary(Props) {
     let search_requests;
     search_requests = selected_lang === /* EngToSum */ 0 ? [Bindings__Supabase.client.rpc("search_dictionary_english", {
           search_text: word_to_search,
-          contains_match: contains_match
+          contains_match
         })] : Stdlib__Array.map((function (search_text) {
         return Bindings__Supabase.client.rpc("search_dictionary_sumerian", {
-          search_text: search_text,
-          contains_match: contains_match
+          search_text,
+          contains_match
         });
       }), Components__Web_utils.Format.with_g_variants(word_to_search));
     Promise.all(search_requests).then(function (responses) {
@@ -146,13 +146,13 @@ function Dictionary(Props) {
       Curry._1(set_searching, (function (param) {
         return false;
       }));
-      return Promise.resolve(undefined);
+      return Promise.resolve();
     }).catch(function (err) {
       Curry._1(set_searching, (function (param) {
         return false;
       }));
       console.log("Error during search:", err);
-      return Promise.resolve(undefined);
+      return Promise.resolve();
     });
   };
   const handleChangePage = function (_event, newPage) {
@@ -319,7 +319,7 @@ function Dictionary(Props) {
                               children: tmp$1
                             }),
                             JsxRuntime.jsx(TableCell, {
-                              children: result.icount.toString(undefined)
+                              children: result.icount.toString()
                             }),
                             JsxRuntime.jsx(TableCell, {
                               children: tmp$2
@@ -369,8 +369,8 @@ function Dictionary(Props) {
                 count: search_results.length,
                 onPageChange: handleChangePage,
                 onRowsPerPageChange: handleChangeRowsPerPage,
-                page: page,
-                rowsPerPage: rowsPerPage,
+                page,
+                rowsPerPage,
                 rowsPerPageOptions: [
                   7,
                   10,
@@ -386,7 +386,7 @@ function Dictionary(Props) {
               children: [
                 JsxRuntime.jsx(Box, {
                   children: search_results.length === 0 ? null : JsxRuntime.jsx(Typography, {
-                      children: search_results.length.toString(undefined) + (" result" + (
+                      children: search_results.length.toString() + (" result" + (
                         search_results.length > 1 ? "s" : ""
                       )),
                       variant: Bindings__Material_ui.Typography.Variant.h6
@@ -468,7 +468,7 @@ function Dictionary(Props) {
                             children: tmp$1
                           }),
                           JsxRuntime.jsx("div", {
-                            children: result.icount.toString(undefined) + (" occurrence" + (
+                            children: result.icount.toString() + (" occurrence" + (
                               result.icount > 1 ? "s" : ""
                             ))
                           })
@@ -486,7 +486,7 @@ function Dictionary(Props) {
                             onClick: (function (param) {
                               navigator.clipboard.writeText(result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X").catch(function (error) {
                                 console.log("Could not copy text:", error);
-                                return Promise.resolve(undefined);
+                                return Promise.resolve();
                               });
                             }),
                             size: "small"
@@ -597,7 +597,7 @@ function Dictionary(Props) {
                     onKeyDown: (function ($$event) {
                       if ($$event.key === "Enter") {
                         $$event.preventDefault();
-                        return search_word(undefined);
+                        return search_word();
                       }
                       
                     }),
@@ -655,7 +655,7 @@ function Dictionary(Props) {
                     size: 20
                   }),
                 onClick: (function (param) {
-                  search_word(undefined);
+                  search_word();
                 }),
                 size: "large",
                 variant: "contained"

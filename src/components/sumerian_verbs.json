@@ -101,13 +101,19 @@
   {
     "label": "igi bar",
     "meaning": "look at",
-    "english": { "lemma": "look", "complement": "at", "complement_placement": "after_verb" },
+    "english": {
+      "lemma": "look",
+      "complement": "at",
+      "complement_placement": "after_verb"
+    },
     "stem": "bar",
     "stem_cuneiforms": ["𒁇"],
     "kind": { "type": "compound", "value": "igi", "cuneiforms": ["𒅆"] },
     "imperfective": { "type": "reduplicate" },
     "transitive": true,
-    "notes": []
+    "notes": [
+      "The person/object that is being looked at is in the terminative case."
+    ]
   },
   {
     "label": "il",

@@ -34,7 +34,7 @@ const AccordionSummary = {};
 const IconMapping = {};
 
 const Alert = {
-  IconMapping: IconMapping
+  IconMapping
 };
 
 const AppBar = {};
@@ -51,9 +51,9 @@ const ForcePopupIcon = {
 const OptionKey = {};
 
 const Autocomplete = {
-  BlurOnSelect: BlurOnSelect,
-  ForcePopupIcon: ForcePopupIcon,
-  OptionKey: OptionKey
+  BlurOnSelect,
+  ForcePopupIcon,
+  OptionKey
 };
 
 const Avatar = {};
@@ -113,7 +113,7 @@ const FormLabel = {};
 const ResponsiveSize = {};
 
 const Grid = {
-  ResponsiveSize: ResponsiveSize
+  ResponsiveSize
 };
 
 const IconButton = {};
@@ -155,7 +155,7 @@ const Paper = {};
 const Actions = {};
 
 const Popover = {
-  Actions: Actions
+  Actions
 };
 
 const Radio = {};
@@ -165,13 +165,13 @@ const RadioGroup = {};
 const Value = {};
 
 const Select = {
-  Value: Value
+  Value
 };
 
 const TransitionDuration = {};
 
 const Snackbar = {
-  TransitionDuration: TransitionDuration
+  TransitionDuration
 };
 
 const ResponsiveDirection = {};
@@ -179,8 +179,8 @@ const ResponsiveDirection = {};
 const ResponsiveSpacing = {};
 
 const Stack = {
-  ResponsiveDirection: ResponsiveDirection,
-  ResponsiveSpacing: ResponsiveSpacing
+  ResponsiveDirection,
+  ResponsiveSpacing
 };
 
 const Switch = {};
@@ -217,7 +217,7 @@ const Variant = {
 };
 
 const Toolbar = {
-  Variant: Variant
+  Variant
 };
 
 const Placement = {
@@ -239,7 +239,7 @@ const Placement = {
 };
 
 const Tooltip = {
-  Placement: Placement
+  Placement
 };
 
 const Variant$1 = {

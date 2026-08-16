@@ -38,7 +38,7 @@ const dictionary = DictionaryModuleScss;
 
 function Words_list(Props) {
   const match = React.useState(function () {
-    return Bindings__Local_storage.get_words_list(undefined);
+    return Bindings__Local_storage.get_words_list();
   });
   const set_words_list = match[1];
   const words_list = match[0];

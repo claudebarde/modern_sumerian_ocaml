@@ -142,9 +142,9 @@ let make = () => {
                 <Button
                     variant=`text
                     color=Color.fromString(Config.colors##protonRed)
-                    onClick={_ => ReasonReactRouter.push("/lessons")}
+                    onClick={_ => ReasonReactRouter.push("/learn")}
                 >
-                    {"Lessons" |> React.string}
+                    {"Learn" |> React.string}
                 </Button>
                 <Button
                     variant=`text

@@ -1024,7 +1024,7 @@ module ListItem = {
     ~divider: bool=?,
     ~href: string=?,
     ~onClick: (React.Event.Synthetic.t => unit)=?,
-    ~secondarAction: React.element=?,
+    ~secondaryAction: React.element=?,
     // TODO: slots and slotProps are not supported yet
     ~sx: Js.t({..})=?,
     ~target: string=?,

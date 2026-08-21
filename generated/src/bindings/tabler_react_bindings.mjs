@@ -7,6 +7,10 @@ const IconArrowBackUpDouble = {};
 
 const IconArrowBarBoth = {};
 
+const IconArrowBigUp = {};
+
+const IconArrowBigUpFilled = {};
+
 const IconBolt = {};
 
 const IconBook2 = {};
@@ -28,6 +32,10 @@ const IconBrightnessHalf = {};
 const IconChevronUp = {};
 
 const IconChevronDown = {};
+
+const IconChevronLeft = {};
+
+const IconChevronRight = {};
 
 const IconCheck = {};
 
@@ -73,6 +81,8 @@ const IconMenu2 = {};
 
 const IconPencilPlus = {};
 
+const IconPhoto = {};
+
 const IconQuestionMark = {};
 
 const IconRefresh = {};
@@ -101,6 +111,8 @@ export {
   IconAlertTriangle,
   IconArrowBackUpDouble,
   IconArrowBarBoth,
+  IconArrowBigUp,
+  IconArrowBigUpFilled,
   IconBolt,
   IconBook2,
   IconBorderAll,
@@ -112,6 +124,8 @@ export {
   IconBrightnessHalf,
   IconChevronUp,
   IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
   IconCheck,
   IconCircleNumber1,
   IconCircleNumber2,
@@ -134,6 +148,7 @@ export {
   IconListCheck,
   IconMenu2,
   IconPencilPlus,
+  IconPhoto,
   IconQuestionMark,
   IconRefresh,
   IconSearch,

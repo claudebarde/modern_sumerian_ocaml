@@ -1,5 +1,4 @@
-[@mel.module "../styles/Lessons.module.scss"] external css: Js.t({..}) = "default"; 
-
+[@mel.module "../styles/Learn.module.scss"] external css: Js.t({..}) = "default"; 
 
 [@react.component]
 let make = () => {

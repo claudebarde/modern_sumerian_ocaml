@@ -40,6 +40,30 @@ module IconArrowBarBoth = {
   ) => React.element = "IconArrowBarBoth";
 };
 
+module IconArrowBigUp = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconArrowBigUp";
+};
+
+module IconArrowBigUpFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconArrowBigUpFilled";
+};
+
 module IconBolt = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -170,6 +194,30 @@ module IconChevronDown = {
     ~title: string=?,
     unit
   ) => React.element = "IconChevronDown";
+};
+
+module IconChevronLeft = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconChevronLeft";
+};
+
+module IconChevronRight = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconChevronRight";
 };
 
 module IconCheck = {
@@ -434,6 +482,18 @@ module IconPencilPlus = {
     ~title: string=?,
     unit
   ) => React.element = "IconPencilPlus";
+};
+
+module IconPhoto = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconPhoto";
 };
 
 module IconQuestionMark = {

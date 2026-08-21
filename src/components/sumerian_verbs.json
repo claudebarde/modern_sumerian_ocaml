@@ -116,6 +116,21 @@
     ]
   },
   {
+    "label": "igi duh",
+    "meaning": "see",
+    "english": {
+      "lemma": "see"
+    },
+    "stem": "duh",
+    "stem_cuneiforms": ["𒂃"],
+    "kind": { "type": "compound", "value": "igi", "cuneiforms": ["𒅆"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": [
+      "The person/object that is being seen at is in the dative/directive case."
+    ]
+  },
+  {
     "label": "il",
     "meaning": "raise",
     "english": { "lemma": "raise" },

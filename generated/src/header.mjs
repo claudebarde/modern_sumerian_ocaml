@@ -213,10 +213,10 @@ function Header(Props) {
               variant: "text"
             }),
             JsxRuntime.jsx(Button, {
-              children: "Lessons",
+              children: "Learn",
               color: Bindings__Config.colors.protonRed,
               onClick: (function (param) {
-                ReasonReactRouter.push("/lessons");
+                ReasonReactRouter.push("/learn");
               }),
               variant: "text"
             }),

@@ -6,7 +6,7 @@ import * as Components__Dictionary from "./components/dictionary.mjs";
 import * as Components__Games from "./components/games.mjs";
 import * as Components__Home from "./components/home.mjs";
 import * as Components__Keyboard from "./components/keyboard.mjs";
-import * as Components__Lessons from "./components/lessons.mjs";
+import * as Components__Learn from "./components/learn.mjs";
 import * as Components__Links from "./components/links.mjs";
 import * as Components__Page_not_found from "./components/page_not_found.mjs";
 import * as Components__Words_list from "./components/words_list.mjs";
@@ -58,11 +58,11 @@ function Body(Props) {
           tmp = JsxRuntime.jsx(Components__Keyboard.make, {});
         }
         break;
-      case "lessons" :
+      case "learn" :
         if (match.tl) {
           exit = 1;
         } else {
-          tmp = JsxRuntime.jsx(Components__Lessons.make, {});
+          tmp = JsxRuntime.jsx(Components__Learn.make, {});
         }
         break;
       case "links" :

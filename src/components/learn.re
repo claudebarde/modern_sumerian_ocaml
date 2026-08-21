@@ -11,7 +11,7 @@ let make = () => {
     open Mui;
 
     let (is_drawer_open, set_drawer_open) = React.useState(() => false);
-    let (current_view, set_current_view) = React.useState(() => None);
+    let (current_view, set_current_view) = React.useState(() => Some(DailyVocabulary));
 
     let drawer_width = is_drawer_open ? "280px" : "64px";
     let drawer_transition = "width 225ms cubic-bezier(0.4, 0, 0.6, 1)";

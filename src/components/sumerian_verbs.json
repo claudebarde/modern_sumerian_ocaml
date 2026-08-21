@@ -263,6 +263,17 @@
     "notes": []
   },
   {
+    "label": "zah",
+    "meaning": "disappear",
+    "english": { "lemma": "disappear" },
+    "stem": "zah",
+    "stem_cuneiforms": ["𒀄"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": []
+  },
+  {
     "label": "zig",
     "meaning": "rise",
     "english": { "lemma": "rise" },

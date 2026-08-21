@@ -32,7 +32,7 @@ function Learn(Props) {
   const set_drawer_open = match[1];
   const is_drawer_open = match[0];
   const match$1 = React.useState(function () {
-    
+    return /* DailyVocabulary */ 0;
   });
   const set_current_view = match$1[1];
   const current_view = match$1[0];

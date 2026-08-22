@@ -17,6 +17,8 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
+import * as Bindings__Config from "../bindings/config.mjs";
+import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Components__Learn_daily_test_yourself from "./learn_daily_test_yourself.mjs";
@@ -44,6 +46,12 @@ function Learn_daily_vocabulary(Props) {
   });
   const set_test_yourself_category = match$2[1];
   const test_yourself_category = match$2[0];
+  const match$3 = React.useState(function () {
+    Bindings__Local_storage.initialize_daily_vocabulary_progression();
+    return Bindings__Local_storage.get_daily_vocabulary_progression();
+  });
+  const set_daily_vocabulary_progression = match$3[1];
+  const daily_vocabulary_progression = match$3[0];
   const words_list = [
     [
       [
@@ -567,58 +575,63 @@ function Learn_daily_vocabulary(Props) {
     ]
   ];
   let tmp;
-  let exit = 0;
-  if (test_yourself_category !== undefined) {
-    if (test_yourself_category === /* Words */ 0) {
-      if (current_day !== undefined) {
+  if (is_test_yourself_open) {
+    let exit = 0;
+    if (test_yourself_category !== undefined) {
+      if (test_yourself_category === /* Words */ 0) {
+        if (current_day !== undefined) {
+          tmp = JsxRuntime.jsx(Components__Learn_daily_test_yourself.make, {
+            entries: Caml_array.get(words_list, current_day),
+            category: /* Words */ 0
+          });
+        } else {
+          exit = 1;
+        }
+      } else if (current_day !== undefined) {
         tmp = JsxRuntime.jsx(Components__Learn_daily_test_yourself.make, {
           entries: Caml_array.get(words_list, current_day),
-          category: /* Words */ 0
+          category: /* Cuneiform */ 1
         });
       } else {
         exit = 1;
       }
-    } else if (current_day !== undefined) {
-      tmp = JsxRuntime.jsx(Components__Learn_daily_test_yourself.make, {
-        entries: Caml_array.get(words_list, current_day),
-        category: /* Cuneiform */ 1
-      });
     } else {
       exit = 1;
     }
+    if (exit === 1) {
+      tmp = JsxRuntime.jsxs(JsxRuntime.Fragment, {
+        children: [
+          JsxRuntime.jsx(Typography, {
+            children: "Choose a category below to test your knowledge",
+            variant: Bindings__Material_ui.Typography.Variant.subtitle1
+          }),
+          JsxRuntime.jsxs(ButtonGroup, {
+            children: [
+              JsxRuntime.jsx(Button, {
+                children: "Words",
+                onClick: (function (param) {
+                  Curry._1(set_test_yourself_category, (function (param) {
+                    return /* Words */ 0;
+                  }));
+                })
+              }),
+              JsxRuntime.jsx(Button, {
+                children: "Cuneiform",
+                onClick: (function (param) {
+                  Curry._1(set_test_yourself_category, (function (param) {
+                    return /* Cuneiform */ 1;
+                  }));
+                })
+              })
+            ],
+            variant: "text"
+          })
+        ]
+      });
+    }
+    
   } else {
-    exit = 1;
-  }
-  if (exit === 1) {
-    tmp = JsxRuntime.jsxs(JsxRuntime.Fragment, {
-      children: [
-        JsxRuntime.jsx(Typography, {
-          children: "Choose a category below to test your knowledge",
-          variant: Bindings__Material_ui.Typography.Variant.subtitle1
-        }),
-        JsxRuntime.jsxs(ButtonGroup, {
-          children: [
-            JsxRuntime.jsx(Button, {
-              children: "Words",
-              onClick: (function (param) {
-                Curry._1(set_test_yourself_category, (function (param) {
-                  return /* Words */ 0;
-                }));
-              })
-            }),
-            JsxRuntime.jsx(Button, {
-              children: "Cuneiform",
-              onClick: (function (param) {
-                Curry._1(set_test_yourself_category, (function (param) {
-                  return /* Cuneiform */ 1;
-                }));
-              })
-            })
-          ],
-          variant: "text"
-        })
-      ]
-    });
+    tmp = null;
   }
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
@@ -638,6 +651,7 @@ function Learn_daily_vocabulary(Props) {
           }),
           JsxRuntime.jsx(Box, {
             children: Stdlib__Array.mapi((function (day_index, day) {
+              const is_day_learned = Stdlib__Array.mem(day_index, daily_vocabulary_progression);
               const Key = "day-" + Stdlib__Int.to_string(day_index + 1 | 0);
               let tmp;
               switch (day_index) {
@@ -677,7 +691,20 @@ function Learn_daily_vocabulary(Props) {
               return JsxRuntime.jsxs(Accordion, {
                 children: [
                   JsxRuntime.jsx(AccordionSummary, {
-                    children: tmp,
+                    children: JsxRuntime.jsxs(Box, {
+                      children: [
+                        is_day_learned ? JsxRuntime.jsx(IconsReact.IconSquareCheckFilled, {
+                            color: Bindings__Config.colors.protonRed
+                          }) : null,
+                        tmp
+                      ],
+                      sx: {
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: "0.5rem"
+                      }
+                    }),
                     expandIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {})
                   }),
                   JsxRuntime.jsx(AccordionDetails, {
@@ -745,7 +772,8 @@ function Learn_daily_vocabulary(Props) {
                     children: [
                       JsxRuntime.jsx(Button, {
                         children: "Test yourself",
-                        onClick: (function (param) {
+                        onClick: (function ($$event) {
+                          $$event.currentTarget.blur();
                           Curry._1(set_test_yourself_open, (function (param) {
                             return true;
                           }));
@@ -756,7 +784,16 @@ function Learn_daily_vocabulary(Props) {
                         variant: "outlined"
                       }),
                       JsxRuntime.jsx(Button, {
-                        children: "Mark as learned",
+                        children: is_day_learned ? "Reset" : "Mark as learned",
+                        onClick: (function (param) {
+                          Curry._1(set_daily_vocabulary_progression, (function (param) {
+                            if (is_day_learned) {
+                              return Bindings__Local_storage.reset_daily_vocabulary_day(day_index);
+                            } else {
+                              return Bindings__Local_storage.mark_daily_vocabulary_day(day_index);
+                            }
+                          }));
+                        }),
                         variant: "outlined"
                       })
                     ]
@@ -804,6 +841,12 @@ function Learn_daily_vocabulary(Props) {
         onClose: (function (param, param$1) {
           Curry._1(set_test_yourself_open, (function (param) {
             return false;
+          }));
+          Curry._1(set_test_yourself_category, (function (param) {
+            
+          }));
+          Curry._1(set_current_day, (function (param) {
+            
           }));
         }),
         open: is_test_yourself_open

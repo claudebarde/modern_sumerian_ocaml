@@ -234,6 +234,97 @@ function initialize_words_list(param) {
   }
 }
 
+const daily_vocabulary_progression_key = "daily_vocabulary_progression";
+
+function encode_daily_vocabulary_progression(progression) {
+  const json = JSON.stringify(progression);
+  if (json !== undefined) {
+    return json;
+  } else {
+    return "[]";
+  }
+}
+
+function decode_daily_vocabulary_progression(value) {
+  try {
+    const values = Js__Js_json.decodeArray(JSON.parse(value));
+    if (values !== undefined) {
+      return Stdlib__Option.map((function (day_indexes) {
+        return Stdlib__Array.of_list(Stdlib__List.rev(day_indexes));
+      }), Stdlib__Array.fold_left((function (decoded, json) {
+        const match = Js__Js_json.decodeNumber(json);
+        if (decoded === undefined) {
+          return;
+        }
+        if (match === undefined) {
+          return;
+        }
+        const day_index = match | 0;
+        if (day_index === match && day_index >= 0 && day_index <= 9) {
+          return {
+            hd: day_index,
+            tl: decoded
+          };
+        }
+        
+      }), /* [] */ 0, values));
+    } else {
+      return;
+    }
+  }
+  catch (exn){
+    return;
+  }
+}
+
+function get_daily_vocabulary_progression(param) {
+  const value = localStorage.getItem(daily_vocabulary_progression_key);
+  if (value == null) {
+    return [];
+  }
+  const progression = decode_daily_vocabulary_progression(value);
+  if (progression !== undefined) {
+    return progression;
+  } else {
+    return [];
+  }
+}
+
+function set_daily_vocabulary_progression(progression) {
+  localStorage.setItem(daily_vocabulary_progression_key, encode_daily_vocabulary_progression(progression));
+}
+
+function initialize_daily_vocabulary_progression(param) {
+  const value = localStorage.getItem(daily_vocabulary_progression_key);
+  if (value == null) {
+    return set_daily_vocabulary_progression([]);
+  }
+  const match = decode_daily_vocabulary_progression(value);
+  if (match !== undefined) {
+    return;
+  } else {
+    return set_daily_vocabulary_progression([]);
+  }
+}
+
+function mark_daily_vocabulary_day(day_index) {
+  const progression = get_daily_vocabulary_progression();
+  if (day_index < 0 || day_index > 9 || Stdlib__Array.mem(day_index, progression)) {
+    return progression;
+  }
+  const updated_progression = Stdlib__Array.append(progression, [day_index]);
+  set_daily_vocabulary_progression(updated_progression);
+  return updated_progression;
+}
+
+function reset_daily_vocabulary_day(day_index) {
+  const updated_progression = Stdlib__Array.of_list(Stdlib__List.filter((function (stored_day_index) {
+    return stored_day_index !== day_index;
+  }), Stdlib__Array.to_list(get_daily_vocabulary_progression())));
+  set_daily_vocabulary_progression(updated_progression);
+  return updated_progression;
+}
+
 export {
   encode_keyboard,
   decode_string_array,
@@ -252,5 +343,13 @@ export {
   add_word,
   remove_word,
   initialize_words_list,
+  daily_vocabulary_progression_key,
+  encode_daily_vocabulary_progression,
+  decode_daily_vocabulary_progression,
+  get_daily_vocabulary_progression,
+  set_daily_vocabulary_progression,
+  initialize_daily_vocabulary_progression,
+  mark_daily_vocabulary_day,
+  reset_daily_vocabulary_day,
 }
 /* No side effect */

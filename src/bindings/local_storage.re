@@ -281,3 +281,113 @@ let initialize_words_list = (): unit =>
     | Some(_) => ()
     | None => set_words_list(Js.Dict.empty())
     };
+
+/**
+ * Zero-based indexes of Daily Vocabulary days that the user has learned.
+ * Valid values are integers from 0 through 9.
+ */
+type daily_vocabulary_progression = array(int);
+
+let daily_vocabulary_progression_key = "daily_vocabulary_progression";
+
+let encode_daily_vocabulary_progression = (
+    progression: daily_vocabulary_progression,
+): string =>
+    switch (Js.Json.stringifyAny(progression)) {
+    | Some(json) => json
+    | None => "[]"
+    };
+
+let decode_daily_vocabulary_progression = (
+    value: string,
+): option(daily_vocabulary_progression) =>
+    try (
+        switch (value |> Js.Json.parseExn |> Js.Json.decodeArray) {
+        | Some(values) =>
+            values
+            |> Array.fold_left((decoded, json) =>
+                switch (decoded, Js.Json.decodeNumber(json)) {
+                | (Some(day_indexes), Some(value)) => {
+                    let day_index = int_of_float(value);
+
+                    if (
+                        float_of_int(day_index) === value
+                        && day_index >= 0
+                        && day_index <= 9
+                    ) {
+                        Some([day_index, ...day_indexes]);
+                    } else {
+                        None;
+                    };
+                }
+                | _ => None
+                }, Some([]))
+            |> Option.map(day_indexes =>
+                day_indexes
+                |> List.rev
+                |> Array.of_list
+            )
+        | None => None
+        }
+    ) {
+    | _ => None
+    };
+
+/** Return the learned day indexes, falling back to an empty array. */
+let get_daily_vocabulary_progression = (): daily_vocabulary_progression =>
+    switch (get_item(daily_vocabulary_progression_key)) {
+    | Some(value) =>
+        switch (decode_daily_vocabulary_progression(value)) {
+        | Some(progression) => progression
+        | None => [||]
+        }
+    | None => [||]
+    };
+
+let set_daily_vocabulary_progression = (
+    progression: daily_vocabulary_progression,
+): unit =>
+    set_item(
+        daily_vocabulary_progression_key,
+        encode_daily_vocabulary_progression(progression),
+    );
+
+/** Ensure that the progression key exists without replacing valid data. */
+let initialize_daily_vocabulary_progression = (): unit =>
+    switch (get_item(daily_vocabulary_progression_key)) {
+    | Some(value) =>
+        switch (decode_daily_vocabulary_progression(value)) {
+        | Some(_) => ()
+        | None => set_daily_vocabulary_progression([||])
+        }
+    | None => set_daily_vocabulary_progression([||])
+    };
+
+/** Mark one day as learned and return the updated, duplicate-free array. */
+let mark_daily_vocabulary_day = (
+    day_index: int,
+): daily_vocabulary_progression => {
+    let progression = get_daily_vocabulary_progression();
+
+    if (day_index < 0 || day_index > 9 || Array.mem(day_index, progression)) {
+        progression;
+    } else {
+        let updated_progression = Array.append(progression, [|day_index|]);
+        set_daily_vocabulary_progression(updated_progression);
+        updated_progression;
+    };
+};
+
+/** Remove one learned day and return the updated progression array. */
+let reset_daily_vocabulary_day = (
+    day_index: int,
+): daily_vocabulary_progression => {
+    let updated_progression =
+        get_daily_vocabulary_progression()
+        |> Array.to_list
+        |> List.filter(stored_day_index => stored_day_index !== day_index)
+        |> Array.of_list;
+
+    set_daily_vocabulary_progression(updated_progression);
+    updated_progression;
+};

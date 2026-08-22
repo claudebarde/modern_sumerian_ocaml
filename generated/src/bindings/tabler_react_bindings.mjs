@@ -79,6 +79,10 @@ const IconListCheck = {};
 
 const IconMenu2 = {};
 
+const IconMoodHappy = {};
+
+const IconMoodSadDizzy = {};
+
 const IconPencilPlus = {};
 
 const IconPhoto = {};
@@ -90,6 +94,8 @@ const IconRefresh = {};
 const IconSearch = {};
 
 const IconSnowflake = {};
+
+const IconSquareCheckFilled = {};
 
 const IconSun = {};
 
@@ -147,12 +153,15 @@ export {
   IconList,
   IconListCheck,
   IconMenu2,
+  IconMoodHappy,
+  IconMoodSadDizzy,
   IconPencilPlus,
   IconPhoto,
   IconQuestionMark,
   IconRefresh,
   IconSearch,
   IconSnowflake,
+  IconSquareCheckFilled,
   IconSun,
   IconTable,
   IconTrashFilled,

@@ -504,6 +504,28 @@ module Chip = {
     ) => React.element = "default";
 };
 
+module CircularProgress = {
+    [@mel.module "@mui/material/CircularProgress"] [@react.component]
+    external make: (
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~color: Color.t=?,
+        ~disableShrink: bool=?,
+        ~enableTrackSlot: bool=?,
+        ~max: float=?,
+        ~min: float=?,
+        ~size: [@mel.unwrap] [
+            | `Number(int)
+            | `String(string)
+        ]=?,
+        ~thickness: float=?,
+        ~value: float=?,
+        ~variant: [`determinate | `indeterminate]=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Collapse = {
     [@mel.module "@mui/material/Collapse"] [@react.component]
     external make: (
@@ -1187,6 +1209,7 @@ module MenuItem = {
 };
 
 module OutlinedInput = {
+  // TODO: implement the props of the InputBase component
   [@mel.module "@mui/material/OutlinedInput"] [@react.component]
   external make: (
     ~ariaLabel: [@mel.as "aria-label"] string=?,
@@ -1221,6 +1244,7 @@ module OutlinedInput = {
     ~readOnly: bool=?,
     ~required: bool=?,
     ~rows: int=?,
+    ~size: [`small | `medium]=?,
     ~startAdornment: React.element=?,
     ~sx: Js.t({..})=?,
     ~type_: string=?,

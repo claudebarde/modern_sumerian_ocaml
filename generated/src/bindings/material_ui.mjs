@@ -82,6 +82,8 @@ const Checkbox = {};
 
 const Chip = {};
 
+const CircularProgress = {};
+
 const Collapse = {};
 
 const Container = {};
@@ -310,6 +312,7 @@ export {
   CardMedia,
   Checkbox,
   Chip,
+  CircularProgress,
   Collapse,
   Container,
   Dialog,

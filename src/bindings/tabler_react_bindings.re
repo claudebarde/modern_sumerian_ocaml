@@ -472,6 +472,30 @@ module IconMenu2 = {
   ) => React.element = "IconMenu2";
 };
 
+module IconMoodHappy = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconMoodHappy";
+};
+
+module IconMoodSadDizzy = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconMoodSadDizzy";
+};
+
 module IconPencilPlus = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -542,6 +566,18 @@ module IconSnowflake = {
     ~title: string=?,
     unit
   ) => React.element = "IconSnowflake";
+};
+
+module IconSquareCheckFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconSquareCheckFilled";
 };
 
 module IconSun = {

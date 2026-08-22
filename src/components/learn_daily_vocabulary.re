@@ -1,5 +1,8 @@
 [@mel.module "../styles/Learn.module.scss"] external css: Js.t({..}) = "default"; 
 
+external dom_element_from_event_target: Js.t({..}) => Dom.element = "%identity";
+[@mel.send] external blur_element: Dom.element => unit = "blur";
+
 [@react.component]
 let make = () => {
     open Bindings;
@@ -8,6 +11,17 @@ let make = () => {
     let (current_day, set_current_day) = React.useState(() => None);
     let (is_test_yourself_open, set_test_yourself_open) = React.useState(() => false);
     let (test_yourself_category, set_test_yourself_category) = React.useState(() => None);
+    let (daily_vocabulary_progression, set_daily_vocabulary_progression) =
+        React.useState(() => {
+            LocalStorage.initialize_daily_vocabulary_progression();
+            LocalStorage.get_daily_vocabulary_progression();
+        });
+
+    let close_test_dialog = () => {
+        set_test_yourself_open(_ => false);
+        set_test_yourself_category(_ => None);
+        set_current_day(_ => None);
+    };
 
     let words_list: array(array((string, string, string))) = [|
         /* Day 1 — Everyday essentials */
@@ -171,6 +185,9 @@ let make = () => {
             {
                 words_list
                 |> Array.mapi((day_index, day) => {
+                    let is_day_learned =
+                        Array.mem(day_index, daily_vocabulary_progression);
+
                     <Accordion 
                         key={"day-" ++ Int.to_string(day_index + 1)}
                         sx={{"width": "70%"}}
@@ -182,22 +199,31 @@ let make = () => {
                             }
                         }}
                     >
-                        <AccordionSummary expandIcon={<TablerReact.IconChevronDown />}>
-                            {
-                                switch day_index {
-                                    | 0 => ("Day 1" ++ " - " ++ "Ud dishkamma" ++ " - " ++ {js|𒌓𒁹𒄰𒈠|js}) |> React.string
-                                    | 1 => ("Day 2" ++ " - " ++ "Ud minkamma" ++ " - " ++ {js|𒌓𒈫𒄰𒈠|js}) |> React.string
-                                    | 2 => ("Day 3" ++ " - " ++ "Ud eshkamma" ++ " - " ++ {js|𒌓𒁹𒁹𒁹𒄰𒈠|js}) |> React.string
-                                    | 3 => ("Day 4" ++ " - " ++ "Ud limmukamma" ++ " - " ++ {js|𒌓𒇹𒄰𒈠|js}) |> React.string
-                                    | 4 => ("Day 5" ++ " - " ++ "Ud iakamma" ++ " - " ++ {js|𒌓𒐊𒄰𒈠|js}) |> React.string
-                                    | 5 => ("Day 6" ++ " - " ++ "Ud ashkamma" ++ " - " ++ {js|𒌓𒐋𒄰𒈠|js}) |> React.string
-                                    | 6 => ("Day 7" ++ " - " ++ "Ud iminkamma" ++ " - " ++ {js|𒌓𒅓𒄰𒈠|js}) |> React.string
-                                    | 7 => ("Day 8" ++ " - " ++ "Ud ussukamma" ++ " - " ++ {js|𒌓𒐍𒄰𒈠|js}) |> React.string
-                                    | 8 => ("Day 9" ++ " - " ++ "Ud ilimmukamma" ++ " - " ++ {js|𒌓𒑆𒄰𒈠|js}) |> React.string
-                                    | 9 => ("Day 10" ++ " - " ++ "Ud ukamma" ++ " - " ++ {js|𒌓𒌋𒄰𒈠|js}) |> React.string
-                                    | _ => "N/A" |> React.string
+                        <AccordionSummary 
+                            expandIcon={<TablerReact.IconChevronDown />}                            
+                        >
+                            <Box sx={{"display": "flex", "alignItems": "center", "justifyContent": "flex-start", "gap": "0.5rem"}}>
+                                {
+                                    is_day_learned
+                                        ? <TablerReact.IconSquareCheckFilled color=Config.colors##protonRed />
+                                        : React.null
                                 }
-                            }
+                                {
+                                    switch day_index {
+                                        | 0 => ("Day 1" ++ " - " ++ "Ud dishkamma" ++ " - " ++ {js|𒌓𒁹𒄰𒈠|js}) |> React.string
+                                        | 1 => ("Day 2" ++ " - " ++ "Ud minkamma" ++ " - " ++ {js|𒌓𒈫𒄰𒈠|js}) |> React.string
+                                        | 2 => ("Day 3" ++ " - " ++ "Ud eshkamma" ++ " - " ++ {js|𒌓𒁹𒁹𒁹𒄰𒈠|js}) |> React.string
+                                        | 3 => ("Day 4" ++ " - " ++ "Ud limmukamma" ++ " - " ++ {js|𒌓𒇹𒄰𒈠|js}) |> React.string
+                                        | 4 => ("Day 5" ++ " - " ++ "Ud iakamma" ++ " - " ++ {js|𒌓𒐊𒄰𒈠|js}) |> React.string
+                                        | 5 => ("Day 6" ++ " - " ++ "Ud ashkamma" ++ " - " ++ {js|𒌓𒐋𒄰𒈠|js}) |> React.string
+                                        | 6 => ("Day 7" ++ " - " ++ "Ud iminkamma" ++ " - " ++ {js|𒌓𒅓𒄰𒈠|js}) |> React.string
+                                        | 7 => ("Day 8" ++ " - " ++ "Ud ussukamma" ++ " - " ++ {js|𒌓𒐍𒄰𒈠|js}) |> React.string
+                                        | 8 => ("Day 9" ++ " - " ++ "Ud ilimmukamma" ++ " - " ++ {js|𒌓𒑆𒄰𒈠|js}) |> React.string
+                                        | 9 => ("Day 10" ++ " - " ++ "Ud ukamma" ++ " - " ++ {js|𒌓𒌋𒄰𒈠|js}) |> React.string
+                                        | _ => "N/A" |> React.string
+                                    }
+                                }
+                            </Box>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Grid
@@ -262,14 +288,34 @@ let make = () => {
                         <AccordionActions>
                             <Button 
                                 variant=`outlined
-                                onClick={_ => {
+                                onClick={event => {
+                                    event
+                                    |> React.Event.Mouse.currentTarget
+                                    |> dom_element_from_event_target
+                                    |> blur_element;
                                     set_test_yourself_open(_ => true)
                                     set_current_day(_ => Some(day_index))
                                 }}
                             >
                                 {"Test yourself" |> React.string}
                             </Button>
-                            <Button variant=`outlined>{"Mark as learned" |> React.string}</Button>
+                            <Button 
+                                variant=`outlined
+                                onClick={_ =>
+                                    set_daily_vocabulary_progression(_ =>
+                                        is_day_learned
+                                            ? LocalStorage.reset_daily_vocabulary_day(day_index)
+                                            : LocalStorage.mark_daily_vocabulary_day(day_index)
+                                    )
+                                }
+                            >
+                                {
+                                    (is_day_learned
+                                        ? "Reset"
+                                        : "Mark as learned")
+                                    |> React.string
+                                }
+                            </Button>
                         </AccordionActions>
                     </Accordion>
                 })
@@ -279,7 +325,7 @@ let make = () => {
         </Stack>
         <Dialog 
             _open=is_test_yourself_open 
-            onClose={(_, _) => set_test_yourself_open(_ => false)}
+            onClose={(_, _) => close_test_dialog()}
         >
             <DialogTitle>
                 {
@@ -297,26 +343,32 @@ let make = () => {
                     sx={{"justifyContent": "flex-start", "alignItems": "center"}}
                 >
                     {
-                        switch (test_yourself_category, current_day) {
-                        | (Some(Learn_daily_test_yourself.Words), Some(day)) => <Learn_daily_test_yourself 
-                            entries={Array.get(words_list, day)}
-                            category=Learn_daily_test_yourself.Words
-                        />
-                        | (Some(Learn_daily_test_yourself.Cuneiform), Some(day)) => <Learn_daily_test_yourself 
-                            entries={Array.get(words_list, day)}
-                            category=Learn_daily_test_yourself.Cuneiform
-                        />
-                        | _ => 
-                            <>
-                                <Typography variant=Typography.Variant.subtitle1>
-                                    {"Choose a category below to test your knowledge" |> React.string}
-                                </Typography>
-                                <ButtonGroup variant=`text>
-                                    <Button onClick={_ => set_test_yourself_category(_ => Some(Learn_daily_test_yourself.Words))}>{"Words" |> React.string}</Button>
-                                    <Button onClick={_ => set_test_yourself_category(_ => Some(Learn_daily_test_yourself.Cuneiform))}>{"Cuneiform" |> React.string}</Button>
-                                </ButtonGroup>
-                            </>
-                        }
+                        if (!is_test_yourself_open) {
+                            React.null;
+                        } else {
+                            switch (test_yourself_category, current_day) {
+                            | (Some(Learn_daily_test_yourself.Words), Some(day)) => 
+                                <Learn_daily_test_yourself 
+                                    entries={Array.get(words_list, day)}
+                                    category=Learn_daily_test_yourself.Words
+                                />
+                            | (Some(Learn_daily_test_yourself.Cuneiform), Some(day)) => 
+                                <Learn_daily_test_yourself 
+                                    entries={Array.get(words_list, day)}
+                                    category=Learn_daily_test_yourself.Cuneiform
+                                />
+                            | _ => 
+                                <>
+                                    <Typography variant=Typography.Variant.subtitle1>
+                                        {"Choose a category below to test your knowledge" |> React.string}
+                                    </Typography>
+                                    <ButtonGroup variant=`text>
+                                        <Button onClick={_ => set_test_yourself_category(_ => Some(Learn_daily_test_yourself.Words))}>{"Words" |> React.string}</Button>
+                                        <Button onClick={_ => set_test_yourself_category(_ => Some(Learn_daily_test_yourself.Cuneiform))}>{"Cuneiform" |> React.string}</Button>
+                                    </ButtonGroup>
+                                </>
+                            };
+                        };
                     }
                 </Stack>
             </DialogContent>

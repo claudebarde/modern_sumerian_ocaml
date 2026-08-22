@@ -74,6 +74,7 @@ let make = () => {
 
     <Container 
         className={css##learnContainer}
+        maxWidth=MaxWidth.disabled
         disableGutters=true
     >
         {

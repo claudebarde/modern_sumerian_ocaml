@@ -220,7 +220,8 @@ function Learn(Props) {
       })
     ],
     className: css.learnContainer,
-    disableGutters: true
+    disableGutters: true,
+    maxWidth: Bindings__Material_ui.MaxWidth.disabled
   });
 }
 

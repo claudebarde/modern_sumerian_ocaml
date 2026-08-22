@@ -1,7 +1,5 @@
 [@mel.module "../styles/Learn.module.scss"] external css: Js.t({..}) = "default"; 
 
-type test_yourself_category = Words | Cuneiform;
-
 [@react.component]
 let make = () => {
     open Bindings;
@@ -292,20 +290,36 @@ let make = () => {
                 }
             </DialogTitle>
             <DialogContent>
-                <DialogContentText>
+                <Stack
+                    direction=`column
+                    spacing=`Number(2)
+                    useFlexGap=true
+                    sx={{"justifyContent": "flex-start", "alignItems": "center"}}
+                >
                     {
-                        switch (test_yourself_category) {
-                        | Some(Words) => "Test your knowledge of words"
-                        | Some(Cuneiform) => "Test your knowledge of cuneiform"
-                        | None => "Choose a category below to test your knowledge"
-                        } |> React.string
+                        switch (test_yourself_category, current_day) {
+                        | (Some(Learn_daily_test_yourself.Words), Some(day)) => <Learn_daily_test_yourself 
+                            entries={Array.get(words_list, day)}
+                            category=Learn_daily_test_yourself.Words
+                        />
+                        | (Some(Learn_daily_test_yourself.Cuneiform), Some(day)) => <Learn_daily_test_yourself 
+                            entries={Array.get(words_list, day)}
+                            category=Learn_daily_test_yourself.Cuneiform
+                        />
+                        | _ => 
+                            <>
+                                <Typography variant=Typography.Variant.subtitle1>
+                                    {"Choose a category below to test your knowledge" |> React.string}
+                                </Typography>
+                                <ButtonGroup variant=`text>
+                                    <Button onClick={_ => set_test_yourself_category(_ => Some(Learn_daily_test_yourself.Words))}>{"Words" |> React.string}</Button>
+                                    <Button onClick={_ => set_test_yourself_category(_ => Some(Learn_daily_test_yourself.Cuneiform))}>{"Cuneiform" |> React.string}</Button>
+                                </ButtonGroup>
+                            </>
+                        }
                     }
-                </DialogContentText>
+                </Stack>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={_ => set_test_yourself_category(_ => Some(Words))}>{"Words" |> React.string}</Button>
-                <Button onClick={_ => set_test_yourself_category(_ => Some(Cuneiform))}>{"Cuneiform" |> React.string}</Button>
-            </DialogActions>
         </Dialog>
     </>
 }

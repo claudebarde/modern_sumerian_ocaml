@@ -7,18 +7,19 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Caml_array from "melange.js/caml_array.mjs";
+import * as Components__Learn_daily_test_yourself from "./learn_daily_test_yourself.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
@@ -566,9 +567,59 @@ function Learn_daily_vocabulary(Props) {
     ]
   ];
   let tmp;
-  tmp = test_yourself_category !== undefined ? (
-      test_yourself_category === /* Words */ 0 ? "Test your knowledge of words" : "Test your knowledge of cuneiform"
-    ) : "Choose a category below to test your knowledge";
+  let exit = 0;
+  if (test_yourself_category !== undefined) {
+    if (test_yourself_category === /* Words */ 0) {
+      if (current_day !== undefined) {
+        tmp = JsxRuntime.jsx(Components__Learn_daily_test_yourself.make, {
+          entries: Caml_array.get(words_list, current_day),
+          category: /* Words */ 0
+        });
+      } else {
+        exit = 1;
+      }
+    } else if (current_day !== undefined) {
+      tmp = JsxRuntime.jsx(Components__Learn_daily_test_yourself.make, {
+        entries: Caml_array.get(words_list, current_day),
+        category: /* Cuneiform */ 1
+      });
+    } else {
+      exit = 1;
+    }
+  } else {
+    exit = 1;
+  }
+  if (exit === 1) {
+    tmp = JsxRuntime.jsxs(JsxRuntime.Fragment, {
+      children: [
+        JsxRuntime.jsx(Typography, {
+          children: "Choose a category below to test your knowledge",
+          variant: Bindings__Material_ui.Typography.Variant.subtitle1
+        }),
+        JsxRuntime.jsxs(ButtonGroup, {
+          children: [
+            JsxRuntime.jsx(Button, {
+              children: "Words",
+              onClick: (function (param) {
+                Curry._1(set_test_yourself_category, (function (param) {
+                  return /* Words */ 0;
+                }));
+              })
+            }),
+            JsxRuntime.jsx(Button, {
+              children: "Cuneiform",
+              onClick: (function (param) {
+                Curry._1(set_test_yourself_category, (function (param) {
+                  return /* Cuneiform */ 1;
+                }));
+              })
+            })
+          ],
+          variant: "text"
+        })
+      ]
+    });
+  }
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
       JsxRuntime.jsxs(Stack, {
@@ -738,29 +789,16 @@ function Learn_daily_vocabulary(Props) {
             children: current_day !== undefined ? "Test yourself (day " + (String(current_day + 1 | 0) + ")") : "Test yourself"
           }),
           JsxRuntime.jsx(DialogContent, {
-            children: JsxRuntime.jsx(DialogContentText, {
-              children: tmp
+            children: JsxRuntime.jsx(Stack, {
+              children: tmp,
+              direction: "column",
+              spacing: 2,
+              sx: {
+                justifyContent: "flex-start",
+                alignItems: "center"
+              },
+              useFlexGap: true
             })
-          }),
-          JsxRuntime.jsxs(DialogActions, {
-            children: [
-              JsxRuntime.jsx(Button, {
-                children: "Words",
-                onClick: (function (param) {
-                  Curry._1(set_test_yourself_category, (function (param) {
-                    return /* Words */ 0;
-                  }));
-                })
-              }),
-              JsxRuntime.jsx(Button, {
-                children: "Cuneiform",
-                onClick: (function (param) {
-                  Curry._1(set_test_yourself_category, (function (param) {
-                    return /* Cuneiform */ 1;
-                  }));
-                })
-              })
-            ]
           })
         ],
         onClose: (function (param, param$1) {

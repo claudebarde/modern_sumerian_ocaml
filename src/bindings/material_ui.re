@@ -353,6 +353,27 @@ module Button = {
     ) => React.element = "default";
 };
 
+module ButtonGroup = {
+    [@mel.module "@mui/material/ButtonGroup"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~color: Color.t=?,
+        ~component: RootComponent.t=?,
+        ~disabled: bool=?,
+        ~disableElevation: bool=?,
+        ~disableFocusRipple: bool=?,
+        ~disableRipple: bool=?,
+        ~fullWidth: bool=?,
+        ~orientation: [`horizontal | `vertical]=?,
+        ~size: [`small | `medium | `large]=?,
+        ~variant: [`text | `outlined | `contained]=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
 module Card = {
     [@mel.module "@mui/material/Card"] [@react.component]
     external make: (

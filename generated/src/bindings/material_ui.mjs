@@ -64,6 +64,8 @@ const Box = {};
 
 const Button = {};
 
+const ButtonGroup = {};
+
 const Card = {};
 
 const CardActions = {};
@@ -299,6 +301,7 @@ export {
   Badge,
   Box,
   Button,
+  ButtonGroup,
   Card,
   CardActions,
   CardActionArea,

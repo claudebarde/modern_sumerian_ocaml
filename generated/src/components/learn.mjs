@@ -12,6 +12,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
+import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
@@ -20,6 +21,7 @@ import * as Components__Learn_flashcards from "./learn_flashcards.mjs";
 import * as Components__Learn_lessons from "./learn_lessons.mjs";
 import * as Components__Learn_welcome from "./learn_welcome.mjs";
 import * as Curry from "melange.js/curry.mjs";
+import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -31,33 +33,46 @@ function Learn(Props) {
   });
   const set_drawer_open = match[1];
   const is_drawer_open = match[0];
-  const match$1 = React.useState(function () {
-    return /* DailyVocabulary */ 0;
-  });
-  const set_current_view = match$1[1];
-  const current_view = match$1[0];
+  const url = ReasonReactRouter.useUrl(undefined, undefined);
+  const match$1 = url.path;
+  let current_view;
+  if (match$1 && match$1.hd === "learn") {
+    const match$2 = match$1.tl;
+    if (match$2) {
+      switch (match$2.hd) {
+        case "daily_vocabulary" :
+          current_view = match$2.tl ? undefined : /* DailyVocabulary */ 0;
+          break;
+        case "flashcards" :
+          current_view = match$2.tl ? undefined : /* Flashcards */ 1;
+          break;
+        case "lessons" :
+          current_view = match$2.tl ? undefined : /* Lessons */ 2;
+          break;
+        default:
+          current_view = undefined;
+      }
+    } else {
+      current_view = undefined;
+    }
+  } else {
+    current_view = undefined;
+  }
   const drawer_width = is_drawer_open ? "280px" : "64px";
   const drawer_transition = "width 225ms cubic-bezier(0.4, 0, 0.6, 1)";
   const select_view = function (key) {
     switch (key) {
       case "daily_vocabulary" :
-        return Curry._1(set_current_view, (function (param) {
-          return /* DailyVocabulary */ 0;
-        }));
+        return ReasonReactRouter.push("/learn/daily_vocabulary");
       case "flashcards" :
-        return Curry._1(set_current_view, (function (param) {
-          return /* Flashcards */ 1;
-        }));
+        return ReasonReactRouter.push("/learn/flashcards");
       case "lessons" :
-        return Curry._1(set_current_view, (function (param) {
-          return /* Lessons */ 2;
-        }));
+        return ReasonReactRouter.push("/learn/lessons");
       default:
-        return Curry._1(set_current_view, (function (param) {
-          
-        }));
+        return ReasonReactRouter.push("/learn");
     }
   };
+  const is_mobile = UseMediaQuery("(max-width:599px)");
   const navigation_item = function (key, label, icon) {
     let tmp;
     if (current_view !== undefined) {
@@ -135,68 +150,68 @@ function Learn(Props) {
   }
   return JsxRuntime.jsxs(Container, {
     children: [
-      JsxRuntime.jsxs(Drawer, {
-        children: [
-          JsxRuntime.jsx(Box, {
-            children: JsxRuntime.jsx(IconButton, {
-              "aria-label": is_drawer_open ? "Collapse navigation" : "Expand navigation",
-              children: is_drawer_open ? JsxRuntime.jsx(IconsReact.IconChevronLeft, {
-                  color: Bindings__Config.colors.darkRift
-                }) : JsxRuntime.jsx(IconsReact.IconChevronRight, {
-                  color: Bindings__Config.colors.darkRift
-                }),
-              onClick: (function (param) {
-                Curry._1(set_drawer_open, (function (open_) {
-                  return !open_;
-                }));
-              })
+      is_mobile ? null : JsxRuntime.jsxs(Drawer, {
+          children: [
+            JsxRuntime.jsx(Box, {
+              children: JsxRuntime.jsx(IconButton, {
+                "aria-label": is_drawer_open ? "Collapse navigation" : "Expand navigation",
+                children: is_drawer_open ? JsxRuntime.jsx(IconsReact.IconChevronLeft, {
+                    color: Bindings__Config.colors.darkRift
+                  }) : JsxRuntime.jsx(IconsReact.IconChevronRight, {
+                    color: Bindings__Config.colors.darkRift
+                  }),
+                onClick: (function (param) {
+                  Curry._1(set_drawer_open, (function (open_) {
+                    return !open_;
+                  }));
+                })
+              }),
+              sx: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: is_drawer_open ? "flex-end" : "center",
+                minHeight: "56px",
+                padding: is_drawer_open ? "0 8px" : "0"
+              }
             }),
-            sx: {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: is_drawer_open ? "flex-end" : "center",
-              minHeight: "56px",
-              padding: is_drawer_open ? "0 8px" : "0"
-            }
-          }),
-          JsxRuntime.jsx(Divider, {}),
-          JsxRuntime.jsxs(List, {
-            children: [
-              navigation_item("daily_vocabulary", "Daily Vocabulary", JsxRuntime.jsx(IconsReact.IconListCheck, {
-                color: Bindings__Config.colors.darkRift
-              })),
-              navigation_item("lessons", "Lessons", JsxRuntime.jsx(IconsReact.IconBook2, {
-                color: Bindings__Config.colors.darkRift
-              })),
-              navigation_item("flashcards", "Flashcards", JsxRuntime.jsx(IconsReact.IconPhoto, {
-                color: Bindings__Config.colors.darkRift
-              }))
-            ],
-            disablePadding: true
-          })
-        ],
-        open: is_drawer_open,
-        sx: {
-          width: drawer_width,
-          height: "100%",
-          flexShrink: 0,
-          whiteSpace: "nowrap",
-          transition: drawer_transition,
-          "& .MuiDrawer-paper": {
-            position: "absolute",
-            top: "0",
-            bottom: "0",
-            height: "100%",
+            JsxRuntime.jsx(Divider, {}),
+            JsxRuntime.jsxs(List, {
+              children: [
+                navigation_item("daily_vocabulary", "Daily Vocabulary", JsxRuntime.jsx(IconsReact.IconListCheck, {
+                  color: Bindings__Config.colors.darkRift
+                })),
+                navigation_item("lessons", "Lessons", JsxRuntime.jsx(IconsReact.IconBook2, {
+                  color: Bindings__Config.colors.darkRift
+                })),
+                navigation_item("flashcards", "Flashcards", JsxRuntime.jsx(IconsReact.IconPhoto, {
+                  color: Bindings__Config.colors.darkRift
+                }))
+              ],
+              disablePadding: true
+            })
+          ],
+          open: is_drawer_open,
+          sx: {
             width: drawer_width,
-            maxWidth: "100%",
-            boxSizing: "border-box",
-            overflowX: "hidden",
+            height: "100%",
+            flexShrink: 0,
+            whiteSpace: "nowrap",
             transition: drawer_transition,
-            backgroundColor: Bindings__Config.colors.cerealFlake
-          }
-        },
-        variant: "permanent"
-      }),
+            "& .MuiDrawer-paper": {
+              position: "absolute",
+              top: "0",
+              bottom: "0",
+              height: "100%",
+              width: drawer_width,
+              maxWidth: "100%",
+              boxSizing: "border-box",
+              overflowX: "hidden",
+              transition: drawer_transition,
+              backgroundColor: Bindings__Config.colors.cerealFlake
+            }
+          },
+          variant: "permanent"
+        }),
       JsxRuntime.jsx(Box, {
         children: tmp,
         sx: {

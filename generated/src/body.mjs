@@ -59,8 +59,26 @@ function Body(Props) {
         }
         break;
       case "learn" :
-        if (match.tl) {
-          exit = 1;
+        const match$1 = match.tl;
+        if (match$1) {
+          let exit$1 = 0;
+          switch (match$1.hd) {
+            case "daily_vocabulary" :
+            case "flashcards" :
+            case "lessons" :
+              exit$1 = 2;
+              break;
+            default:
+              exit = 1;
+          }
+          if (exit$1 === 2) {
+            if (match$1.tl) {
+              exit = 1;
+            } else {
+              tmp = JsxRuntime.jsx(Components__Learn.make, {});
+            }
+          }
+          
         } else {
           tmp = JsxRuntime.jsx(Components__Learn.make, {});
         }

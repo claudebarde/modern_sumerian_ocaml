@@ -158,18 +158,23 @@ let make = () => {
             <Box className=css##hamburgerMenu>
                 <IconButton 
                     color=Color.secondary
-                    onClick={_ => setMobileMenuOpen(_ => true)}
+                    onClick={_ => setMobileMenuOpen(state => !state)}
                 >
-                    <TablerReact.IconMenu2 />
+                    {
+                        mobileMenuOpen 
+                        ? <TablerReact.IconX color=Config.colors##botanicalNight /> 
+                        : <TablerReact.IconMenu2 color=Config.colors##botanicalNight />
+                    }
                 </IconButton>
                 <Drawer
                     anchor=`right
                     _open=mobileMenuOpen
                     onClose={_ => setMobileMenuOpen(_ => false)}
                     sx={{
+                        "zIndex": 1202,
                         "& .MuiDrawer-paper": {
-                        "width": "min(60vw, 360px)",
-                        "boxSizing": "border-box",
+                            "width": "min(60vw, 360px)",
+                            "boxSizing": "border-box",
                         },
                     }}
                 >
@@ -247,11 +252,37 @@ let make = () => {
                         </ListSubheader>
                         <ListItemButton
                             onClick={_ => {
-                                ReasonReactRouter.push("/lessons");
+                                ReasonReactRouter.push("/learn/flashcards");
                                 setMobileMenuOpen(_ => false);
                             }}
                         >
-                            <ListItemIcon>  
+                            <ListItemIcon>
+                                <TablerReact.IconPhoto color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Flashcards" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/learn/daily_vocabulary");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconListCheck color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Daily Vocabulary" |> React.string}
+                            </ListItemText>
+                        </ListItemButton>
+                        <ListItemButton
+                            onClick={_ => {
+                                ReasonReactRouter.push("/learn/lessons");
+                                setMobileMenuOpen(_ => false);
+                            }}
+                        >
+                            <ListItemIcon>
                                 <TablerReact.IconBook2 color=Config.colors##botanicalNight />
                             </ListItemIcon>
                             <ListItemText>

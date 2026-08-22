@@ -42,6 +42,7 @@ function Header(Props) {
     return false;
   });
   const setMobileMenuOpen = match$1[1];
+  const mobileMenuOpen = match$1[0];
   const openToolsMenu = !(toolsAnchor == null);
   return JsxRuntime.jsx(AppBar, {
     children: JsxRuntime.jsxs(Toolbar, {
@@ -234,11 +235,15 @@ function Header(Props) {
         JsxRuntime.jsxs(Box, {
           children: [
             JsxRuntime.jsx(IconButton, {
-              children: JsxRuntime.jsx(IconsReact.IconMenu2, {}),
+              children: mobileMenuOpen ? JsxRuntime.jsx(IconsReact.IconX, {
+                  color: Bindings__Config.colors.botanicalNight
+                }) : JsxRuntime.jsx(IconsReact.IconMenu2, {
+                  color: Bindings__Config.colors.botanicalNight
+                }),
               color: Bindings__Material_ui.Color.secondary,
               onClick: (function (param) {
-                Curry._1(setMobileMenuOpen, (function (param) {
-                  return true;
+                Curry._1(setMobileMenuOpen, (function (state) {
+                  return !state;
                 }));
               })
             }),
@@ -345,6 +350,42 @@ function Header(Props) {
                   JsxRuntime.jsxs(ListItemButton, {
                     children: [
                       JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconPhoto, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Flashcards"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/learn/flashcards");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconListCheck, {
+                          color: Bindings__Config.colors.botanicalNight
+                        })
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Daily Vocabulary"
+                      })
+                    ],
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/learn/daily_vocabulary");
+                      Curry._1(setMobileMenuOpen, (function (param) {
+                        return false;
+                      }));
+                    })
+                  }),
+                  JsxRuntime.jsxs(ListItemButton, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
                         children: JsxRuntime.jsx(IconsReact.IconBook2, {
                           color: Bindings__Config.colors.botanicalNight
                         })
@@ -354,7 +395,7 @@ function Header(Props) {
                       })
                     ],
                     onClick: (function (param) {
-                      ReasonReactRouter.push("/lessons");
+                      ReasonReactRouter.push("/learn/lessons");
                       Curry._1(setMobileMenuOpen, (function (param) {
                         return false;
                       }));
@@ -411,8 +452,9 @@ function Header(Props) {
                   return false;
                 }));
               }),
-              open: match$1[0],
+              open: mobileMenuOpen,
               sx: {
+                zIndex: 1202,
                 "& .MuiDrawer-paper": {
                   width: "min(60vw, 360px)",
                   boxSizing: "border-box"

@@ -17,6 +17,8 @@ let make = () => {
             LocalStorage.get_daily_vocabulary_progression();
         });
 
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
+
     let close_test_dialog = () => {
         set_test_yourself_open(_ => false);
         set_test_yourself_category(_ => None);
@@ -179,7 +181,17 @@ let make = () => {
                 align=`center
                 gutterBottom=true
             >
-            {"Learn 10 Sumerian words every day for 10 days" |> React.string}       
+            {
+                if (is_mobile) {
+                    <>
+                        {"Learn 10 Sumerian words" |> React.string}
+                        <br />
+                        {"every day for 10 days" |> React.string}
+                    </>
+                } else {
+                    {"Learn 10 Sumerian words every day for 10 days" |> React.string}
+                }
+            }
             </Typography>
             <Box className=css##accordionContainer>
             {
@@ -190,7 +202,7 @@ let make = () => {
 
                     <Accordion 
                         key={"day-" ++ Int.to_string(day_index + 1)}
-                        sx={{"width": "70%"}}
+                        sx={{"width": is_mobile ? "100%" : "70%"}}
                         onChange={(_, is_expanded) => {
                             if (is_expanded) {
                                 set_current_day(_ => Some(day_index))

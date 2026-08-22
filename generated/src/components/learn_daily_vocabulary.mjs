@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
@@ -52,6 +53,7 @@ function Learn_daily_vocabulary(Props) {
   });
   const set_daily_vocabulary_progression = match$3[1];
   const daily_vocabulary_progression = match$3[0];
+  const is_mobile = UseMediaQuery("(max-width:599px)");
   const words_list = [
     [
       [
@@ -645,7 +647,13 @@ function Learn_daily_vocabulary(Props) {
           }),
           JsxRuntime.jsx(Typography, {
             align: "center",
-            children: "Learn 10 Sumerian words every day for 10 days",
+            children: is_mobile ? JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                children: [
+                  "Learn 10 Sumerian words",
+                  JsxRuntime.jsx("br", {}),
+                  "every day for 10 days"
+                ]
+              }) : "Learn 10 Sumerian words every day for 10 days",
             gutterBottom: true,
             variant: Bindings__Material_ui.Typography.Variant.h6
           }),
@@ -811,7 +819,7 @@ function Learn_daily_vocabulary(Props) {
                   }
                 }),
                 sx: {
-                  width: "70%"
+                  width: is_mobile ? "100%" : "70%"
                 }
               }, Key);
             }), words_list),

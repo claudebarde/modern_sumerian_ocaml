@@ -11,16 +11,25 @@ let make = () => {
     open Mui;
 
     let (is_drawer_open, set_drawer_open) = React.useState(() => false);
-    let (current_view, set_current_view) = React.useState(() => Some(DailyVocabulary));
+    let url = ReasonReactRouter.useUrl();
+    let current_view = switch url.path {
+        | ["learn"] => None
+        | ["learn", "daily_vocabulary"] => Some(DailyVocabulary)
+        | ["learn", "flashcards"] => Some(Flashcards)
+        | ["learn", "lessons"] => Some(Lessons)
+        | _ => None
+    };
 
     let drawer_width = is_drawer_open ? "280px" : "64px";
     let drawer_transition = "width 225ms cubic-bezier(0.4, 0, 0.6, 1)";
     let select_view = key => switch key {
-        | "daily_vocabulary" => set_current_view(_ => Some(DailyVocabulary))
-        | "flashcards" => set_current_view(_ => Some(Flashcards))
-        | "lessons" => set_current_view(_ => Some(Lessons))
-        | _ => set_current_view(_ => None)
+        | "daily_vocabulary" => ReasonReactRouter.push("/learn/daily_vocabulary")
+        | "flashcards" => ReasonReactRouter.push("/learn/flashcards")
+        | "lessons" => ReasonReactRouter.push("/learn/lessons")
+        | _ => ReasonReactRouter.push("/learn")
     };
+
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let navigation_item = (~key, ~label, ~icon) =>
         <ListItem key disablePadding=true sx={{"display": "block"}}>
@@ -67,76 +76,82 @@ let make = () => {
         className={css##learnContainer}
         disableGutters=true
     >
-        <Drawer 
-            variant=`permanent 
-            _open=is_drawer_open
-            sx={{                
-                "width": drawer_width,
-                "height": "100%",
-                "flexShrink": 0,
-                "whiteSpace": "nowrap",
-                "transition": drawer_transition,
-                "& .MuiDrawer-paper": {
-                    "position": "absolute",
-                    "top": "0",
-                    "bottom": "0",
-                    "height": "100%",
-                    "width": drawer_width,
-                    "maxWidth": "100%",
-                    "boxSizing": "border-box",
-                    "overflowX": "hidden",
-                    "transition": drawer_transition,
-                    "backgroundColor": Config.colors##cerealFlake,
-                },
-            }}
-        >
-            <Box
-                sx={{
-                    "display": "flex",
-                    "alignItems": "center",
-                    "justifyContent": is_drawer_open ? "flex-end" : "center",
-                    "minHeight": "56px",
-                    "padding": is_drawer_open ? "0 8px" : "0",
-                }}
-            >
-                <IconButton
-                    ariaLabel={is_drawer_open ? "Collapse navigation" : "Expand navigation"}
-                    onClick={_ => set_drawer_open(open_ => !open_)}
+        {
+            if (is_mobile) {
+                React.null
+            } else {
+                <Drawer 
+                    variant=`permanent 
+                    _open=is_drawer_open
+                    sx={{                
+                        "width": drawer_width,
+                        "height": "100%",
+                        "flexShrink": 0,
+                        "whiteSpace": "nowrap",
+                        "transition": drawer_transition,
+                        "& .MuiDrawer-paper": {
+                            "position": "absolute",
+                            "top": "0",
+                            "bottom": "0",
+                            "height": "100%",
+                            "width": drawer_width,
+                            "maxWidth": "100%",
+                            "boxSizing": "border-box",
+                            "overflowX": "hidden",
+                            "transition": drawer_transition,
+                            "backgroundColor": Config.colors##cerealFlake,
+                        },
+                    }}
                 >
-                    {
-                        is_drawer_open
-                            ? <TablerReact.IconChevronLeft color=Config.colors##darkRift />
-                            : <TablerReact.IconChevronRight color=Config.colors##darkRift />
-                    }
-                </IconButton>
-            </Box>
-            <Divider />
-            <List 
-                disablePadding=true
-            >
-                {
-                    navigation_item(
-                        ~key="daily_vocabulary",
-                        ~label="Daily Vocabulary",
-                        ~icon=<TablerReact.IconListCheck color=Config.colors##darkRift />,
-                    )
-                }
-                {
-                    navigation_item(
-                        ~key="lessons",
-                        ~label="Lessons",
-                        ~icon=<TablerReact.IconBook2 color=Config.colors##darkRift />,
-                    )
-                }
-                {
-                    navigation_item(
-                        ~key="flashcards",
-                        ~label="Flashcards",
-                        ~icon=<TablerReact.IconPhoto color=Config.colors##darkRift />,
-                    )
-                }
-            </List>
-        </Drawer>
+                    <Box
+                        sx={{
+                            "display": "flex",
+                            "alignItems": "center",
+                            "justifyContent": is_drawer_open ? "flex-end" : "center",
+                            "minHeight": "56px",
+                            "padding": is_drawer_open ? "0 8px" : "0",
+                        }}
+                    >
+                        <IconButton
+                            ariaLabel={is_drawer_open ? "Collapse navigation" : "Expand navigation"}
+                            onClick={_ => set_drawer_open(open_ => !open_)}
+                        >
+                            {
+                                is_drawer_open
+                                    ? <TablerReact.IconChevronLeft color=Config.colors##darkRift />
+                                    : <TablerReact.IconChevronRight color=Config.colors##darkRift />
+                            }
+                        </IconButton>
+                    </Box>
+                    <Divider />
+                    <List 
+                        disablePadding=true
+                    >
+                        {
+                            navigation_item(
+                                ~key="daily_vocabulary",
+                                ~label="Daily Vocabulary",
+                                ~icon=<TablerReact.IconListCheck color=Config.colors##darkRift />,
+                            )
+                        }
+                        {
+                            navigation_item(
+                                ~key="lessons",
+                                ~label="Lessons",
+                                ~icon=<TablerReact.IconBook2 color=Config.colors##darkRift />,
+                            )
+                        }
+                        {
+                            navigation_item(
+                                ~key="flashcards",
+                                ~label="Flashcards",
+                                ~icon=<TablerReact.IconPhoto color=Config.colors##darkRift />,
+                            )
+                        }
+                    </List>
+                </Drawer>
+            }
+        }
         <Box sx={{"width": "100%"}}>
             {
                 switch current_view {

@@ -1,3 +1,5 @@
+@use "../styles/styles.scss" as *;
+
 .learnContainer {
   position: relative;
   display: flex;
@@ -21,6 +23,10 @@
   height: 100%;
   width: 100%;
   padding: 40px;
+
+  @media (max-width: $breakpoint) {
+    padding: 20px 10px;
+  }
 }
 
 .accordionContainer {
@@ -33,4 +39,8 @@
   justify-content: flex-start;
   align-items: center;
   overflow-y: auto;
+
+  @media (max-width: $breakpoint) {
+    padding: 10px 0px;
+  }
 }

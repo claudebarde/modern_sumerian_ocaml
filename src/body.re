@@ -12,7 +12,10 @@ let make = () => {
                 | ["conjugator"] => <Conjugator_ui />
                 | ["keyboard"] => <Keyboard />
                 | ["links"] => <Links />
-                | ["learn"] => <Learn />
+                | ["learn"]
+                | ["learn", "daily_vocabulary"]
+                | ["learn", "flashcards"]
+                | ["learn", "lessons"] => <Learn />
                 | ["dictionary"] => <Dictionary />
                 | ["games"] => <Games />
                 | ["wordslist"] => <Words_list />

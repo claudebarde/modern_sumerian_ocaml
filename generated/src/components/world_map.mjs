@@ -122,7 +122,16 @@ function World_map(Props) {
           "𒅗𒈾𒁕𒆠"
         ]
       ],
-      tl: /* [] */ 0
+      tl: {
+        hd: [
+          "FI",
+          [
+            "Suumi",
+            "𒋢𒌑𒈪𒆠"
+          ]
+        ],
+        tl: /* [] */ 0
+      }
     }
   });
   const continent_by_code = Js__Js_dict.fromList({
@@ -135,7 +144,13 @@ function World_map(Props) {
         "FR",
         /* Europe */ 2
       ],
-      tl: /* [] */ 0
+      tl: {
+        hd: [
+          "FI",
+          /* Europe */ 2
+        ],
+        tl: /* [] */ 0
+      }
     }
   });
   const mapData = Stdlib__Array.map((function (param) {

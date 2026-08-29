@@ -219,10 +219,21 @@
     "notes": []
   },
   {
+    "label": "shub",
+    "meaning": "fall",
+    "english": { "lemma": "fall" },
+    "stem": "shub",
+    "stem_cuneiforms": ["𒊒"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": []
+  },
+  {
     "label": "shum",
     "meaning": "give",
     "english": { "lemma": "give" },
-    "stem": "šum",
+    "stem": "shum",
     "stem_cuneiforms": ["𒋧"],
     "kind": { "type": "simple" },
     "imperfective": { "type": "other", "value": "shum" },

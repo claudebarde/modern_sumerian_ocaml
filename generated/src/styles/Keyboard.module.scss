@@ -101,23 +101,27 @@ $border-radius: 10px;
       padding: 0px 8px;
     }
 
-    &:hover {
-      background-color: $silver-setting;
-      color: grey;
-      transform: scale(1.1);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: $silver-setting;
+        color: grey;
+        transform: scale(1.1);
 
-      .composedSignEdit {
-        visibility: visible;
+        .composedSignDelete {
+          visibility: visible;
+          pointer-events: auto;
+        }
       }
     }
   }
 
-  .composedSignEdit {
+  .composedSignDelete {
     position: absolute;
     top: 50%;
     right: 50%;
     transform: translate(50%, -50%);
     visibility: hidden;
+    pointer-events: none;
     z-index: 20;
   }
 
@@ -268,13 +272,13 @@ $border-radius: 10px;
   overflow: hidden;
 }
 
-.onlyMobile {
+.keyboardContainer .onlyMobile {
   @media (min-width: ($breakpoint + 1px)) {
     display: none;
   }
 }
 
-.onlyDesktop {
+.keyboardContainer .onlyDesktop {
   width: $container-width;
 
   @media (max-width: $breakpoint) {

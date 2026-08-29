@@ -15,275 +15,360 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
+import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Bindings__Supabase from "../bindings/supabase.mjs";
+import * as Caml_array from "melange.js/caml_array.mjs";
+import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
+import * as Js__Js_json from "melange.js/js_json.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 const css = DownloadsModuleScss;
 
+function decode_string_field(obj, field) {
+  const value = Js__Js_dict.get(obj, field);
+  if (value === undefined) {
+    return "";
+  }
+  const value$1 = Js__Js_json.decodeString(Caml_option.valFromOption(value));
+  if (value$1 !== undefined) {
+    return value$1;
+  } else {
+    return "";
+  }
+}
+
+function decode_number_field(obj, field) {
+  const value = Js__Js_dict.get(obj, field);
+  if (value === undefined) {
+    return 0.0;
+  }
+  const value$1 = Js__Js_json.decodeNumber(Caml_option.valFromOption(value));
+  if (value$1 !== undefined) {
+    return value$1;
+  } else {
+    return 0.0;
+  }
+}
+
+function decode_listing_response(response) {
+  const response_object = Js__Js_json.decodeObject(response);
+  if (response_object === undefined) {
+    return;
+  }
+  const data = Js__Js_dict.get(Caml_option.valFromOption(response_object), "data");
+  if (data === undefined) {
+    return;
+  }
+  const rows = Js__Js_json.decodeArray(Caml_option.valFromOption(data));
+  if (rows === undefined) {
+    return;
+  }
+  if (rows.length === 0) {
+    return;
+  }
+  const row = Js__Js_json.decodeObject(Caml_array.get(rows, 0));
+  if (row === undefined) {
+    return;
+  }
+  const row$1 = Caml_option.valFromOption(row);
+  return {
+    link: decode_string_field(row$1, "link"),
+    description: decode_string_field(row$1, "description"),
+    num_items: decode_number_field(row$1, "num_items") | 0,
+    total_size: decode_number_field(row$1, "total_size"),
+    other: decode_string_field(row$1, "other")
+  };
+}
+
 function Download_etsy(Props) {
   let listing = Props.listing;
-  const listing_urls = Js__Js_dict.fromList({
-    hd: [
-      "listing-1fhXYfB5bvufN_uTyUP0dt2fNfsXBoSCX",
-      {
-        link: "https://drive.google.com/drive/folders/1fhXYfB5bvufN_uTyUP0dt2fNfsXBoSCX?usp=drive_link",
-        description: "Ancient Sumer: Everyday Life",
-        num_items: 3,
-        total_size: 365.7,
-        other: "Color + black and white PNG files"
-      }
-    ],
-    tl: /* [] */ 0
-  });
   const match = React.useState(function () {
-    return Js__Js_dict.get(listing_urls, listing);
+    
   });
   const set_listing_url = match[1];
   const listing_url = match[0];
   const match$1 = React.useState(function () {
-    return "";
-  });
-  const set_listing_id = match$1[1];
-  const listing_id = match$1[0];
-  const match$2 = React.useState(function () {
     return false;
   });
-  const set_listing_search_error = match$2[1];
-  const listing_search_error = match$2[0];
+  const set_listing_loaded = match$1[1];
+  const match$2 = React.useState(function () {
+    return "";
+  });
+  const set_listing_id = match$2[1];
+  const listing_id = match$2[0];
+  const match$3 = React.useState(function () {
+    return false;
+  });
+  const set_listing_search_error = match$3[1];
+  const listing_search_error = match$3[0];
+  const fetch_listing = function (show_search_error, listing_id) {
+    Curry._1(set_listing_loaded, (function (param) {
+      return false;
+    }));
+    Bindings__Supabase.client.rpc("get_etsy_listing", {
+      p_listing_id: listing_id
+    }).then(function (response) {
+      const listing_data = decode_listing_response(response);
+      if (listing_data !== undefined) {
+        Curry._1(set_listing_url, (function (param) {
+          return listing_data;
+        }));
+        Curry._1(set_listing_search_error, (function (param) {
+          return false;
+        }));
+      } else {
+        Curry._1(set_listing_url, (function (param) {
+          
+        }));
+        Curry._1(set_listing_search_error, (function (param) {
+          return show_search_error;
+        }));
+      }
+      Curry._1(set_listing_loaded, (function (param) {
+        return true;
+      }));
+      return Promise.resolve();
+    }).catch(function (error) {
+      console.log("Unable to fetch Etsy listing:", error);
+      Curry._1(set_listing_url, (function (param) {
+        
+      }));
+      Curry._1(set_listing_search_error, (function (param) {
+        return show_search_error;
+      }));
+      Curry._1(set_listing_loaded, (function (param) {
+        return true;
+      }));
+      return Promise.resolve();
+    });
+  };
+  React.useEffect((function () {
+    fetch_listing(false, listing);
+  }), [listing]);
   return JsxRuntime.jsx(Container, {
-    children: listing_url !== undefined ? JsxRuntime.jsxs(Stack, {
-        children: [
-          JsxRuntime.jsxs(Typography, {
+    children: match$1[0] ? (
+        listing_url !== undefined ? JsxRuntime.jsxs(Stack, {
             children: [
-              JsxRuntime.jsx(IconsReact.IconCircleCheck, {}),
-              "Your listing is ready"
-            ],
-            variant: Bindings__Material_ui.Typography.Variant.h5,
-            sx: {
-              display: "flex",
-              alignItems: "center",
-              gap: "8px"
-            }
-          }),
-          JsxRuntime.jsx(Typography, {
-            children: "Thanks for your order. This page stays live, bookmark it and come back any time.",
-            variant: Bindings__Material_ui.Typography.Variant.body1
-          }),
-          JsxRuntime.jsxs(Paper, {
-            children: [
-              JsxRuntime.jsxs(Stack, {
+              JsxRuntime.jsxs(Typography, {
                 children: [
-                  JsxRuntime.jsx(Typography, {
-                    children: "𒅴𒄀",
-                    className: "cuneiforms",
-                    variant: Bindings__Material_ui.Typography.Variant.h6
+                  JsxRuntime.jsx(IconsReact.IconCircleCheck, {
+                    color: Bindings__Config.colors.pacificTeal
                   }),
+                  "Your listing is ready"
+                ],
+                variant: Bindings__Material_ui.Typography.Variant.h5,
+                sx: {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }
+              }),
+              JsxRuntime.jsx(Typography, {
+                children: "Thanks for your order. This page stays live, bookmark it and come back any time.",
+                variant: Bindings__Material_ui.Typography.Variant.body1
+              }),
+              JsxRuntime.jsxs(Paper, {
+                children: [
                   JsxRuntime.jsxs(Stack, {
                     children: [
                       JsxRuntime.jsx(Typography, {
-                        children: JsxRuntime.jsx("strong", {
-                          children: listing_url.description
-                        }),
-                        variant: Bindings__Material_ui.Typography.Variant.body1
+                        children: "𒅴𒄀",
+                        className: "cuneiforms",
+                        variant: Bindings__Material_ui.Typography.Variant.h6
                       }),
-                      JsxRuntime.jsx(Typography, {
-                        children: listing_url.num_items.toString() + (" files / " + (listing_url.total_size.toString() + " MB total")),
-                        variant: Bindings__Material_ui.Typography.Variant.body1,
-                        sx: {
-                          color: "grey"
-                        }
-                      }),
-                      listing_url.other.length !== 0 ? JsxRuntime.jsx(Typography, {
-                          children: listing_url.other,
-                          variant: Bindings__Material_ui.Typography.Variant.body1
-                        }) : null
+                      JsxRuntime.jsxs(Stack, {
+                        children: [
+                          JsxRuntime.jsx(Typography, {
+                            children: JsxRuntime.jsx("strong", {
+                              children: listing_url.description
+                            }),
+                            variant: Bindings__Material_ui.Typography.Variant.body1
+                          }),
+                          JsxRuntime.jsx(Typography, {
+                            children: listing_url.num_items.toString() + (" files / " + (listing_url.total_size.toString() + " MB total")),
+                            variant: Bindings__Material_ui.Typography.Variant.body1,
+                            sx: {
+                              color: "grey"
+                            }
+                          }),
+                          listing_url.other.length !== 0 ? JsxRuntime.jsx(Typography, {
+                              children: listing_url.other,
+                              variant: Bindings__Material_ui.Typography.Variant.body1
+                            }) : null
+                        ],
+                        direction: "column"
+                      })
                     ],
-                    direction: "column"
+                    direction: "row",
+                    spacing: 2,
+                    useFlexGap: true
+                  }),
+                  JsxRuntime.jsx(Button, {
+                    children: "Open your bundle in Google Drive",
+                    component: "a",
+                    endIcon: JsxRuntime.jsx(IconsReact.IconExternalLink, {}),
+                    fullWidth: true,
+                    href: listing_url.link,
+                    target: "_blank",
+                    variant: "contained",
+                    sx: {
+                      marginTop: "16px"
+                    }
                   })
                 ],
-                direction: "row",
-                spacing: 2,
-                useFlexGap: true
-              }),
-              JsxRuntime.jsx(Button, {
-                children: "Open your bundle in Google Drive",
-                component: "a",
-                endIcon: JsxRuntime.jsx(IconsReact.IconExternalLink, {}),
-                fullWidth: true,
-                href: listing_url.link,
-                target: "_blank",
-                variant: "contained",
                 sx: {
-                  marginTop: "16px"
+                  padding: "16px"
                 }
-              })
-            ],
-            sx: {
-              padding: "16px"
-            }
-          }),
-          JsxRuntime.jsxs(Paper, {
-            children: [
-              JsxRuntime.jsx(Typography, {
-                children: JsxRuntime.jsx("strong", {
-                  children: "What happens next?"
-                }),
-                variant: Bindings__Material_ui.Typography.Variant.body1
               }),
-              JsxRuntime.jsxs("ol", {
+              JsxRuntime.jsxs(Paper, {
                 children: [
-                  JsxRuntime.jsx("li", {
-                    children: "A Drive folder opens with all the files inside."
+                  JsxRuntime.jsx(Typography, {
+                    children: JsxRuntime.jsx("strong", {
+                      children: "What happens next?"
+                    }),
+                    variant: Bindings__Material_ui.Typography.Variant.body1
                   }),
-                  JsxRuntime.jsx("li", {
-                    children: "Use Download all at the top right for the whole set, or right-click a single file to save just that one."
+                  JsxRuntime.jsxs("ol", {
+                    children: [
+                      JsxRuntime.jsx("li", {
+                        children: "A Drive folder opens with all the files inside."
+                      }),
+                      JsxRuntime.jsx("li", {
+                        children: "Use Download all at the top right for the whole set, or right-click a single file to save just that one."
+                      }),
+                      JsxRuntime.jsx("li", {
+                        children: "The files land in your Downloads. Unzip them to access the images inside."
+                      })
+                    ]
+                  })
+                ],
+                sx: {
+                  padding: "16px"
+                }
+              }),
+              JsxRuntime.jsxs(Alert, {
+                children: [
+                  JsxRuntime.jsx(AlertTitle, {
+                    children: "Seeing a \"request access\" screen?"
                   }),
-                  JsxRuntime.jsx("li", {
-                    children: "The files land in your Downloads. Unzip them to access the images inside."
+                  "That means Drive is using a different Google account than expected. Open the link in a private window, or sign out and try again. If it persists, message us and we'll email the files straight to you."
+                ],
+                severity: "warning"
+              }),
+              JsxRuntime.jsxs(Box, {
+                children: [
+                  JsxRuntime.jsx(Button, {
+                    children: "License and usage"
+                  }),
+                  JsxRuntime.jsx(Button, {
+                    children: "Get help",
+                    component: "a",
+                    href: "mailto:emegir.umee@gmail.com",
+                    target: "_blank"
                   })
                 ]
               })
             ],
-            sx: {
-              padding: "16px"
-            }
-          }),
-          JsxRuntime.jsxs(Alert, {
+            className: css.etsyDownload,
+            spacing: 2,
+            useFlexGap: true
+          }) : JsxRuntime.jsxs(Stack, {
             children: [
-              JsxRuntime.jsx(AlertTitle, {
-                children: "Seeing a \"request access\" screen?"
+              JsxRuntime.jsxs(Typography, {
+                children: [
+                  JsxRuntime.jsx(IconsReact.IconSearch, {}),
+                  "We couldn't find that listing"
+                ],
+                variant: Bindings__Material_ui.Typography.Variant.h5,
+                sx: {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }
               }),
-              "That means Drive is using a different Google account than expected. Open the link in a private window, or sign out and try again. If it persists, message us and we'll email the files straight to you."
-            ],
-            severity: "warning"
-          }),
-          JsxRuntime.jsxs(Box, {
-            children: [
-              JsxRuntime.jsx(Button, {
-                children: "License and usage"
+              JsxRuntime.jsx(Typography, {
+                children: "The link may have been cut short when it was copied. Enter your listing number and we'll take you straight there.",
+                variant: Bindings__Material_ui.Typography.Variant.body1
               }),
-              JsxRuntime.jsx(Button, {
-                children: "Get help",
-                component: "a",
-                href: "mailto:emegir.umee@gmail.com",
-                target: "_blank"
-              })
-            ]
-          })
-        ],
-        className: css.etsyDownload,
-        spacing: 2,
-        useFlexGap: true
-      }) : JsxRuntime.jsxs(Stack, {
-        children: [
-          JsxRuntime.jsxs(Typography, {
-            children: [
-              JsxRuntime.jsx(IconsReact.IconSearch, {}),
-              "We couldn't find that listing"
-            ],
-            variant: Bindings__Material_ui.Typography.Variant.h5,
-            sx: {
-              display: "flex",
-              alignItems: "center",
-              gap: "8px"
-            }
-          }),
-          JsxRuntime.jsx(Typography, {
-            children: "The link may have been cut short when it was copied. Enter your listing number and we'll take you straight there.",
-            variant: Bindings__Material_ui.Typography.Variant.body1
-          }),
-          JsxRuntime.jsx(Paper, {
-            children: JsxRuntime.jsxs(FormControl, {
-              children: [
-                JsxRuntime.jsx(InputLabel, {
-                  children: "Listing ID",
-                  htmlFor: "listing-id",
-                  sx: {
-                    backgroundColor: "background.paper",
-                    padding: "0 8px"
-                  }
-                }),
-                JsxRuntime.jsx(OutlinedInput, {
-                  endAdornment: JsxRuntime.jsx(IconButton, {
-                    children: JsxRuntime.jsx(IconsReact.IconSearch, {}),
-                    onClick: (function (param) {
-                      const url = Js__Js_dict.get(listing_urls, listing_id);
-                      if (url !== undefined) {
-                        Curry._1(set_listing_url, (function (param) {
-                          return url;
-                        }));
-                        return Curry._1(set_listing_search_error, (function (param) {
-                          return false;
-                        }));
-                      } else {
-                        Curry._1(set_listing_url, (function (param) {
-                          
-                        }));
-                        return Curry._1(set_listing_search_error, (function (param) {
-                          return true;
-                        }));
-                      }
-                    })
-                  }),
-                  id: "listing-id",
-                  onChange: (function ($$event) {
-                    Curry._1(set_listing_id, $$event.target.value);
-                  }),
-                  value: listing_id
-                }),
-                listing_search_error === false ? JsxRuntime.jsx(FormHelperText, {
-                    children: "It's a long string of letters and numbers that starts with \"listing-\". You will find it in the PDF you received on Etsy."
-                  }) : JsxRuntime.jsx(FormHelperText, {
-                    children: "This listing number doesn't exist."
-                  })
-              ],
-              error: listing_search_error,
-              fullWidth: true
-            }),
-            sx: {
-              padding: "16px"
-            }
-          }),
-          JsxRuntime.jsx(Paper, {
-            children: JsxRuntime.jsxs(Typography, {
-              children: [
-                JsxRuntime.jsxs(Box, {
+              JsxRuntime.jsx(Paper, {
+                children: JsxRuntime.jsxs(FormControl, {
                   children: [
-                    JsxRuntime.jsx(IconsReact.IconMail, {}),
-                    "Still stuck? Send us an email and we'll send you the correct link."
+                    JsxRuntime.jsx(InputLabel, {
+                      children: "Listing ID",
+                      htmlFor: "listing-id",
+                      sx: {
+                        backgroundColor: "background.paper",
+                        padding: "0 8px"
+                      }
+                    }),
+                    JsxRuntime.jsx(OutlinedInput, {
+                      endAdornment: JsxRuntime.jsx(IconButton, {
+                        children: JsxRuntime.jsx(IconsReact.IconSearch, {}),
+                        onClick: (function (param) {
+                          fetch_listing(true, listing_id);
+                        })
+                      }),
+                      id: "listing-id",
+                      onChange: (function ($$event) {
+                        Curry._1(set_listing_id, $$event.target.value);
+                      }),
+                      value: listing_id
+                    }),
+                    listing_search_error === false ? JsxRuntime.jsx(FormHelperText, {
+                        children: "It's a long string of letters and numbers that starts with \"listing-\". You will find it in the PDF you received on Etsy."
+                      }) : JsxRuntime.jsx(FormHelperText, {
+                        children: "This listing number doesn't exist."
+                      })
                   ],
+                  error: listing_search_error,
+                  fullWidth: true
+                }),
+                sx: {
+                  padding: "16px"
+                }
+              }),
+              JsxRuntime.jsx(Paper, {
+                children: JsxRuntime.jsxs(Typography, {
+                  children: [
+                    JsxRuntime.jsxs(Box, {
+                      children: [
+                        JsxRuntime.jsx(IconsReact.IconMail, {}),
+                        "Still stuck? Send us an email and we'll send you the correct link."
+                      ],
+                      sx: {
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px"
+                      }
+                    }),
+                    JsxRuntime.jsx("a", {
+                      children: "Get help",
+                      href: "mailto:emegir.umee@gmail.com",
+                      target: "_blank"
+                    })
+                  ],
+                  variant: Bindings__Material_ui.Typography.Variant.body1,
                   sx: {
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "space-between",
                     gap: "8px"
                   }
                 }),
-                JsxRuntime.jsx("a", {
-                  children: "Get help",
-                  href: "mailto:emegir.umee@gmail.com",
-                  target: "_blank"
-                })
-              ],
-              variant: Bindings__Material_ui.Typography.Variant.body1,
-              sx: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "8px"
-              }
-            }),
-            sx: {
-              padding: "16px"
-            }
+                sx: {
+                  padding: "16px"
+                }
+              })
+            ],
+            className: css.etsyDownload,
+            spacing: 2,
+            useFlexGap: true
           })
-        ],
-        className: css.etsyDownload,
-        spacing: 2,
-        useFlexGap: true
-      }),
+      ) : null,
     className: css.etsyDownloadContainer
   });
 }
@@ -292,6 +377,9 @@ const make = Download_etsy;
 
 export {
   css,
+  decode_string_field,
+  decode_number_field,
+  decode_listing_response,
   make,
 }
 /* css Not a pure module */

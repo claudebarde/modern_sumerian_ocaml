@@ -8,38 +8,117 @@ type listing_data = {
     other: string
 };
 
+let decode_string_field = (obj, field) =>
+    switch (Js.Dict.get(obj, field)) {
+    | Some(value) =>
+        switch (Js.Json.decodeString(value)) {
+        | Some(value) => value
+        | None => ""
+        }
+    | None => ""
+    };
+
+let decode_number_field = (obj, field) =>
+    switch (Js.Dict.get(obj, field)) {
+    | Some(value) =>
+        switch (Js.Json.decodeNumber(value)) {
+        | Some(value) => value
+        | None => 0.0
+        }
+    | None => 0.0
+    };
+
+let decode_listing_response = response =>
+    switch (Js.Json.decodeObject(response)) {
+    | Some(response_object) =>
+        switch (Js.Dict.get(response_object, "data")) {
+        | Some(data) =>
+            switch (Js.Json.decodeArray(data)) {
+            | Some(rows) when Array.length(rows) > 0 =>
+                switch (Js.Json.decodeObject(rows[0])) {
+                | Some(row) =>
+                    Some({
+                        link: decode_string_field(row, "link"),
+                        description: decode_string_field(row, "description"),
+                        num_items:
+                            decode_number_field(row, "num_items")
+                            |> int_of_float,
+                        total_size: decode_number_field(row, "total_size"),
+                        other: decode_string_field(row, "other"),
+                    })
+                | None => None
+                }
+            | _ => None
+            }
+        | None => None
+        }
+    | None => None
+    };
+
 [@react.component]
 let make = (~listing: string) => {
     open Bindings;
     open Mui;
 
-    let listing_urls: Js.Dict.t(listing_data) = Js.Dict.fromList(
-        [
-            ("listing-1fhXYfB5bvufN_uTyUP0dt2fNfsXBoSCX", 
-            {
-                link: "https://drive.google.com/drive/folders/1fhXYfB5bvufN_uTyUP0dt2fNfsXBoSCX?usp=drive_link",
-                description: "Ancient Sumer: Everyday Life",
-                num_items: 3,
-                total_size: 365.7,
-                other: "Color + black and white PNG files",
-            })
-        ]
-    );
-
-    let (listing_url, set_listing_url) = React.useState(() => Js.Dict.get(listing_urls, listing));
+    let (listing_url, set_listing_url) =
+        React.useState(() => (None: option(listing_data)));
+    let (listing_loaded, set_listing_loaded) = React.useState(() => false);
     let (listing_id, set_listing_id) = React.useState(() => "");
     let (listing_search_error, set_listing_search_error) = React.useState(() => false);
 
+    let fetch_listing = (~show_search_error, listing_id) => {
+        set_listing_loaded(_ => false);
+
+        let _ =
+            Supabase.client
+            |> Supabase.Query.rpc_etsy_listing(
+                "get_etsy_listing",
+                Supabase.Query.etsy_listing_params(
+                    ~p_listing_id=listing_id,
+                    (),
+                ),
+            )
+            |> Js.Promise.then_(response => {
+                switch (decode_listing_response(response)) {
+                | Some(listing_data) => {
+                    set_listing_url(_ => Some(listing_data));
+                    set_listing_search_error(_ => false);
+                }
+                | None => {
+                    set_listing_url(_ => None);
+                    set_listing_search_error(_ => show_search_error);
+                }
+                };
+                set_listing_loaded(_ => true);
+                Js.Promise.resolve();
+            })
+            |> Js.Promise.catch(error => {
+                Js.log2("Unable to fetch Etsy listing:", error);
+                set_listing_url(_ => None);
+                set_listing_search_error(_ => show_search_error);
+                set_listing_loaded(_ => true);
+                Js.Promise.resolve();
+            });
+        ();
+    };
+
+    React.useEffect1(() => {
+        fetch_listing(~show_search_error=false, listing);
+        None;
+    }, [|listing|]);
+
     <Container className=css##etsyDownloadContainer>
         {
-            switch (listing_url) {
+            if (!listing_loaded) {
+                React.null;
+            } else switch (listing_url) {
             | Some(listing_data) => 
                 <Stack className=css##etsyDownload spacing=`Number(2) useFlexGap=true>
                     <Typography
                         variant=Typography.Variant.h5
                         sx={{"display": "flex", "alignItems": "center", "gap": "8px"}}
                     >
-                        <TablerReact.IconCircleCheck />
+                        <TablerReact.IconCircleCheck color=Config.colors##pacificTeal />
                         {"Your listing is ready" |> React.string}
                     </Typography>
                     <Typography
@@ -163,18 +242,12 @@ let make = (~listing: string) => {
                                 value=listing_id                                
                                 endAdornment={
                                     <IconButton
-                                        onClick={_ => {
-                                            switch (Js.Dict.get(listing_urls, listing_id)) {
-                                                | Some(url) => {
-                                                    set_listing_url(_ => Some(url));
-                                                    set_listing_search_error(_ => false);
-                                                }
-                                                | None => {
-                                                    set_listing_url(_ => None);
-                                                    set_listing_search_error(_ => true);
-                                                }
-                                            }                                            
-                                        }}
+                                        onClick={_ =>
+                                            fetch_listing(
+                                                ~show_search_error=true,
+                                                listing_id,
+                                            )
+                                        }
                                     >
                                         <TablerReact.IconSearch />
                                     </IconButton>

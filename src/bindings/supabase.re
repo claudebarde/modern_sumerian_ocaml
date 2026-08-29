@@ -48,12 +48,21 @@ module Query = {
     /** Arguments shared by the English and Sumerian dictionary search RPCs. */
     type dictionary_search_params;
 
+    /** Arguments for the protected Etsy listing lookup RPC. */
+    type etsy_listing_params;
+
     [@mel.obj]
     external dictionary_search_params: (
       ~search_text: string,
       ~contains_match: bool,
       unit,
     ) => dictionary_search_params = "";
+
+    [@mel.obj]
+    external etsy_listing_params: (
+      ~p_listing_id: string,
+      unit,
+    ) => etsy_listing_params = "";
 
     /** Start a query against a table or view. */
     [@mel.send]
@@ -68,6 +77,14 @@ module Query = {
     external rpc: (
       string,
       dictionary_search_params,
+      [@mel.this] client,
+    ) => Js.Promise.t(Js.Json.t) = "rpc";
+
+    /** Call the protected Etsy listing lookup Postgres function. */
+    [@mel.send]
+    external rpc_etsy_listing: (
+      string,
+      etsy_listing_params,
       [@mel.this] client,
     ) => Js.Promise.t(Js.Json.t) = "rpc";
 };

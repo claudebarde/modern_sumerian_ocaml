@@ -80,6 +80,12 @@ let make = () => {
     open Bindings;
     open Mui;
 
+    let url = ReasonReactRouter.useUrl();
+    let verb_from_url = switch url.path {
+    | ["conjugator", verb] => Some(verb)
+    | _ => None
+    };
+
     let (error, set_error) = React.useState(_ => None);
     let (verb_stem, set_verb_stem) = React.useState(_ => None);
     let (verb_form, set_verb_form) = React.useState(_ => None);
@@ -717,6 +723,24 @@ let make = () => {
         | _ => ()
         }
     };
+
+    React.useEffect1(() => {
+        switch verb_from_url {
+        | Some(verb) => {
+            // If a verb is provided, set it as the current verb stem after
+            // checking that it exists in the list of Sumerian verbs.
+            let selected_verb: option(verb_data) =
+                Array.find_opt(
+                    (candidate: verb_data) => candidate.label === verb,
+                    available_verbs,
+                );
+            set_new_verb_stem(selected_verb);
+        }
+        | None => ()
+        };
+
+        None;
+    }, [|verb_from_url|]);
 
     <Container className=css##mainContainer>
         <h1>{"Sumerian Verb Conjugator"|>React.string}</h1>

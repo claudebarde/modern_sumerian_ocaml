@@ -9,7 +9,8 @@ let make = () => {
     <div className={css##body}>
         {
             switch (url.path) {
-                | ["conjugator"] => <Conjugator_ui />
+                | ["conjugator"]
+                | ["conjugator", _] => <Conjugator_ui />
                 | ["keyboard"] => <Keyboard />
                 | ["links"] => <Links />
                 | ["learn"]

@@ -24,8 +24,13 @@ function Body(Props) {
   if (match) {
     switch (match.hd) {
       case "conjugator" :
-        if (match.tl) {
-          exit = 1;
+        const match$1 = match.tl;
+        if (match$1) {
+          if (match$1.tl) {
+            exit = 1;
+          } else {
+            tmp = JsxRuntime.jsx(Components__Conjugator_ui.make, {});
+          }
         } else {
           tmp = JsxRuntime.jsx(Components__Conjugator_ui.make, {});
         }
@@ -59,10 +64,10 @@ function Body(Props) {
         }
         break;
       case "learn" :
-        const match$1 = match.tl;
-        if (match$1) {
+        const match$2 = match.tl;
+        if (match$2) {
           let exit$1 = 0;
-          switch (match$1.hd) {
+          switch (match$2.hd) {
             case "daily_vocabulary" :
             case "flashcards" :
             case "lessons" :
@@ -72,7 +77,7 @@ function Body(Props) {
               exit = 1;
           }
           if (exit$1 === 2) {
-            if (match$1.tl) {
+            if (match$2.tl) {
               exit = 1;
             } else {
               tmp = JsxRuntime.jsx(Components__Learn.make, {});

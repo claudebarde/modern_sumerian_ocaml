@@ -33,6 +33,7 @@ import * as Components__Web_utils from "./web_utils.mjs";
 import * as Conjugator from "../conjugator/conjugator.mjs";
 import * as Conjugator__Utils from "../conjugator/utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
+import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__List from "melange/list.mjs";
@@ -131,110 +132,119 @@ const Utils = {
 };
 
 function Conjugator_ui(Props) {
-  const match = React.useState(function () {
-    
-  });
-  const set_error = match[1];
-  const error = match[0];
-  const match$1 = React.useState(function () {
-    
-  });
-  const set_verb_stem = match$1[1];
-  const verb_stem = match$1[0];
+  const url = ReasonReactRouter.useUrl(undefined, undefined);
+  const match = url.path;
+  let verb_from_url;
+  if (match && match.hd === "conjugator") {
+    const match$1 = match.tl;
+    verb_from_url = match$1 && !match$1.tl ? match$1.hd : undefined;
+  } else {
+    verb_from_url = undefined;
+  }
   const match$2 = React.useState(function () {
     
   });
-  const set_verb_form = match$2[1];
-  const verb_form = match$2[0];
+  const set_error = match$2[1];
+  const error = match$2[0];
   const match$3 = React.useState(function () {
     
   });
-  const set_is_perfective = match$3[1];
-  const is_perfective = match$3[0];
+  const set_verb_stem = match$3[1];
+  const verb_stem = match$3[0];
   const match$4 = React.useState(function () {
     
   });
-  const set_is_transitive = match$4[1];
-  const is_transitive = match$4[0];
+  const set_verb_form = match$4[1];
+  const verb_form = match$4[0];
   const match$5 = React.useState(function () {
     
   });
-  const set_preformative = match$5[1];
-  const preformative = match$5[0];
+  const set_is_perfective = match$5[1];
+  const is_perfective = match$5[0];
   const match$6 = React.useState(function () {
     
   });
-  const set_modal_prefix = match$6[1];
-  const modal_prefix = match$6[0];
+  const set_is_transitive = match$6[1];
+  const is_transitive = match$6[0];
   const match$7 = React.useState(function () {
-    return false;
+    
   });
-  const set_ventive = match$7[1];
-  const ventive = match$7[0];
+  const set_preformative = match$7[1];
+  const preformative = match$7[0];
   const match$8 = React.useState(function () {
-    return false;
+    
   });
-  const set_comitative = match$8[1];
-  const comitative = match$8[0];
+  const set_modal_prefix = match$8[1];
+  const modal_prefix = match$8[0];
   const match$9 = React.useState(function () {
     return false;
   });
-  const set_ablative = match$9[1];
-  const ablative = match$9[0];
+  const set_ventive = match$9[1];
+  const ventive = match$9[0];
   const match$10 = React.useState(function () {
     return false;
   });
-  const set_terminative = match$10[1];
-  const terminative = match$10[0];
+  const set_comitative = match$10[1];
+  const comitative = match$10[0];
   const match$11 = React.useState(function () {
-    
+    return false;
   });
-  const set_locative = match$11[1];
-  const locative = match$11[0];
+  const set_ablative = match$11[1];
+  const ablative = match$11[0];
   const match$12 = React.useState(function () {
     return false;
   });
-  const set_middle_prefix = match$12[1];
-  const middle_prefix = match$12[0];
+  const set_terminative = match$12[1];
+  const terminative = match$12[0];
   const match$13 = React.useState(function () {
+    
+  });
+  const set_locative = match$13[1];
+  const locative = match$13[0];
+  const match$14 = React.useState(function () {
     return false;
   });
-  const set_coordinator = match$13[1];
-  const coordinator = match$13[0];
-  const match$14 = React.useState(function () {
+  const set_middle_prefix = match$14[1];
+  const middle_prefix = match$14[0];
+  const match$15 = React.useState(function () {
+    return false;
+  });
+  const set_coordinator = match$15[1];
+  const coordinator = match$15[0];
+  const match$16 = React.useState(function () {
     return null;
   });
-  const set_initial_person_prefix = match$14[1];
-  const initial_person_prefix = match$14[0];
-  const match$15 = React.useState(function () {
-    
-  });
-  const set_subject = match$15[1];
-  const subject = match$15[0];
-  const match$16 = React.useState(function () {
-    
-  });
-  const set_object = match$16[1];
-  const object_ = match$16[0];
+  const set_initial_person_prefix = match$16[1];
+  const initial_person_prefix = match$16[0];
   const match$17 = React.useState(function () {
     
   });
-  const set_indirect_object = match$17[1];
-  const indirect_object = match$17[0];
+  const set_subject = match$17[1];
+  const subject = match$17[0];
   const match$18 = React.useState(function () {
-    return false;
+    
   });
-  const set_is_modal_open = match$18[1];
+  const set_object = match$18[1];
+  const object_ = match$18[0];
   const match$19 = React.useState(function () {
     
   });
-  const set_prefix_warning = match$19[1];
-  const prefix_warning = match$19[0];
+  const set_indirect_object = match$19[1];
+  const indirect_object = match$19[0];
   const match$20 = React.useState(function () {
+    return false;
+  });
+  const set_is_modal_open = match$20[1];
+  const match$21 = React.useState(function () {
     
   });
-  const set_general_warning = match$20[1];
-  const general_warning = match$20[0];
+  const set_prefix_warning = match$21[1];
+  const prefix_warning = match$21[0];
+  const match$22 = React.useState(function () {
+    
+  });
+  const set_general_warning = match$22[1];
+  const general_warning = match$22[0];
   const marginTop = "20px";
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const available_verbs = Components__Web_utils.SumerianVerbs.verbs;
@@ -856,6 +866,30 @@ function Conjugator_ui(Props) {
       
     }));
   };
+  const set_new_verb_stem = function (value) {
+    reset();
+    Curry._1(set_verb_stem, (function (param) {
+      return value;
+    }));
+    if (value === undefined) {
+      return;
+    }
+    const new_verb = Conjugator.create(value.stem);
+    const new_verb$1 = value.transitive ? Conjugator.is_transitive(new_verb) : Conjugator.is_intransitive(new_verb);
+    const new_verb$2 = Conjugator.is_perfective(new_verb$1);
+    Curry._1(set_verb_form, (function (param) {
+      return new_verb$2;
+    }));
+    Curry._1(set_is_transitive, (function (param) {
+      return value.transitive;
+    }));
+    Curry._1(set_is_perfective, (function (param) {
+      return true;
+    }));
+    Curry._1(set_error, (function (param) {
+      
+    }));
+  };
   const switch_transitive = function (checked) {
     const apply_transitivity = function (verb) {
       if (checked !== undefined) {
@@ -1010,6 +1044,14 @@ function Conjugator_ui(Props) {
     }
     
   };
+  React.useEffect((function () {
+    if (verb_from_url !== undefined) {
+      set_new_verb_stem(Stdlib__Array.find_opt((function (candidate) {
+        return candidate.label === verb_from_url;
+      }), available_verbs));
+    }
+    
+  }), [verb_from_url]);
   let tmp;
   if (verb_stem !== undefined) {
     const link = Components__Web_utils.EpsdDict.get_epsd_link(verb_dictionary_value(verb_stem));
@@ -1042,29 +1084,7 @@ function Conjugator_ui(Props) {
                       return verb.firstLetter.toUpperCase();
                     }),
                     onChange: (function (_event, newValue) {
-                      let value = (newValue == null) ? undefined : Caml_option.some(newValue);
-                      reset();
-                      Curry._1(set_verb_stem, (function (param) {
-                        return value;
-                      }));
-                      if (value === undefined) {
-                        return;
-                      }
-                      const new_verb = Conjugator.create(value.stem);
-                      const new_verb$1 = value.transitive ? Conjugator.is_transitive(new_verb) : Conjugator.is_intransitive(new_verb);
-                      const new_verb$2 = Conjugator.is_perfective(new_verb$1);
-                      Curry._1(set_verb_form, (function (param) {
-                        return new_verb$2;
-                      }));
-                      Curry._1(set_is_transitive, (function (param) {
-                        return value.transitive;
-                      }));
-                      Curry._1(set_is_perfective, (function (param) {
-                        return true;
-                      }));
-                      Curry._1(set_error, (function (param) {
-                        
-                      }));
+                      set_new_verb_stem((newValue == null) ? undefined : Caml_option.some(newValue));
                     }),
                     options: available_verbs,
                     renderInput: (function (params) {
@@ -1833,7 +1853,7 @@ function Conjugator_ui(Props) {
         children: JsxRuntime.jsx(Components__Verb_error_form.make, {
           verb: verb_form
         }),
-        is_open: match$18[0],
+        is_open: match$20[0],
         close: (function (param) {
           Curry._1(set_is_modal_open, (function (param) {
             return false;

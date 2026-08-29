@@ -70,8 +70,44 @@ external get_element_by_id: string => option(Dom.element) = "getElementById";
 external set_inner_html: (Dom.element, string) => unit = "innerHTML";
 
 module Clipboard = {
-  [@mel.scope ("navigator", "clipboard")]
-  external write_text: string => Js.Promise.t(unit) = "writeText";
+  /**
+   * Copy text with the modern Clipboard API when available, then fall back to
+   * a temporary textarea for browsers or contexts that reject that API.
+   */
+  let write_text: string => Js.Promise.t(unit) = [%mel.raw {|
+    text => {
+      const copyWithTextarea = () => new Promise((resolve, reject) => {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+
+        try {
+          const copied = document.execCommand("copy");
+          if (copied) {
+            resolve();
+          } else {
+            reject(new Error("The browser rejected the copy command."));
+          }
+        } catch (error) {
+          reject(error);
+        } finally {
+          textarea.remove();
+        }
+      });
+
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        return navigator.clipboard.writeText(text).catch(() => copyWithTextarea());
+      }
+
+      return copyWithTextarea();
+    }
+  |}];
 };
 
 module Fetch = {

@@ -12,6 +12,15 @@ let rows_for_page = (~page: int, ~rows_per_page: int, rows: array('a)): array('a
 type select_lang_options = EngToSum | SumToEng;
 type selected_search_shape = ExactWord | Contains;
 
+let display_part_of_speech = (part_of_speech: string): string =>
+    switch part_of_speech {
+    | "N" => "Noun" 
+    | "V/t" => "Transitive Verb"
+    | "V/i" => "Intransitive Verb"
+    | "AJ" => "Adjective"   
+    | _ => part_of_speech
+    };
+
 [@react.component]
 let make = () => {
     open Bindings;
@@ -417,13 +426,7 @@ let make = () => {
                                                         {result.translation |> React.string}
                                                     </TableCell>
                                                     <TableCell>
-                                                        {switch result.part_of_speech {
-                                                            | "N" => "Noun" 
-                                                            | "V/t" => "Transitive Verb"
-                                                            | "V/i" => "Intransitive Verb"
-                                                            | "AJ" => "Adjective"   
-                                                            | _ => result.part_of_speech
-                                                        } |> React.string}
+                                                        {result.part_of_speech |> display_part_of_speech |> React.string}
                                                     </TableCell>
                                                     <TableCell>
                                                         {result.icount |> Js.Int.toString |> React.string}
@@ -521,15 +524,12 @@ let make = () => {
                                                             {result.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}
                                                         </Typography>
                                                     }
-                                                    subheader={(
-                                                        result.translation 
-                                                        ++ switch result.part_of_speech {
-                                                        | "N" => " (Noun)" 
-                                                        | "V/t" => " (Transitive Verb)"
-                                                        | "V/i" => " (Intransitive Verb)"
-                                                        | "AJ" => " (Adjective)"
-                                                        | _ => " (" ++ result.part_of_speech ++ ")"
-                                                    }) |> React.string}
+                                                    subheader={
+                                                        <>
+                                                            {result.translation |> React.string}
+                                                            {" " ++ display_part_of_speech(result.part_of_speech) |> React.string}
+                                                        </>
+                                                    }
                                                 />
                                                 <CardContent sx={{"display": "flex", "justifyContent": "space-between"}}>
                                                     <div>

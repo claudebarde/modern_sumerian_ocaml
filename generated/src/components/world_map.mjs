@@ -478,8 +478,7 @@ function World_map(Props) {
                               Curry._1(set_open_add_name_dialog, (function (param) {
                                 return true;
                               }));
-                            }),
-                            variant: "contained"
+                            })
                           }),
                           position: "end_"
                         }),

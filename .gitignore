@@ -61,3 +61,6 @@ Thumbs.db
 
 # Local Netlify folder
 .netlify
+
+# Local project todo list maintained with Codex
+TODO.local.md

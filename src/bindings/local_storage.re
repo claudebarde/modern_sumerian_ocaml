@@ -20,13 +20,26 @@ external clear: unit => unit = "clear";
 /**
  * The value stored under the "keyboard" key:
  * {
- *   "word": ["𒀀", "𒁀"],
- *   "another-word": ["𒂊"]
+ *   "word": [
+ *     {
+ *       "cuneiform": "𒀀",
+ *       "icount": 42,
+ *       "part_of_speech": "noun",
+ *       "translation": "water"
+ *     }
+ *   ]
  * }
  *
  * A Js.Dict is used instead of a Reason record because the keys are dynamic.
  */
-type keyboard = Js.Dict.t(array(string));
+type keyboard_entry = {
+    cuneiform: string,
+    icount: int,
+    part_of_speech: string,
+    translation: string,
+};
+
+type keyboard = Js.Dict.t(array(keyboard_entry));
 
 /** Encode a keyboard dictionary as a JSON string suitable for localStorage. */
 let encode_keyboard = (keyboard: keyboard): string =>
@@ -35,41 +48,78 @@ let encode_keyboard = (keyboard: keyboard): string =>
     | None => "{}"
     };
 
-let decode_string_array = (json: Js.Json.t): option(array(string)) =>
+let decode_keyboard_entry = (json: Js.Json.t): option(keyboard_entry) =>
+    switch (Js.Json.decodeObject(json)) {
+    | Some(object_) =>
+        switch (
+            Js.Dict.get(object_, "cuneiform"),
+            Js.Dict.get(object_, "icount"),
+            Js.Dict.get(object_, "part_of_speech"),
+            Js.Dict.get(object_, "translation"),
+        ) {
+        | (Some(cuneiform), Some(icount), Some(part_of_speech), Some(translation)) =>
+            switch (
+                Js.Json.decodeString(cuneiform),
+                Js.Json.decodeNumber(icount),
+                Js.Json.decodeString(part_of_speech),
+                Js.Json.decodeString(translation),
+            ) {
+            | (Some(cuneiform), Some(icount), Some(part_of_speech), Some(translation)) =>
+                Some({
+                    cuneiform,
+                    icount: int_of_float(icount),
+                    part_of_speech,
+                    translation,
+                })
+            | _ => None
+            }
+        | _ => None
+        }
+    | None => None
+    };
+
+let decode_keyboard_entry_array = (json: Js.Json.t): option(array(keyboard_entry)) =>
     switch (Js.Json.decodeArray(json)) {
     | None => None
     | Some(values) =>
-        values
-        |> Array.fold_left((decoded, value) =>
-            switch (decoded, Js.Json.decodeString(value)) {
-            | (Some(items), Some(item)) => Some([item, ...items])
-            | _ => None
-            }, Some([]))
-        |> Option.map(items => items |> List.rev |> Array.of_list)
+        Some(
+            values
+            |> Array.fold_left((decoded, value) =>
+                switch (decode_keyboard_entry(value)) {
+                | Some(entry) => [entry, ...decoded]
+                | None => decoded
+                }, [])
+            |> List.rev
+            |> Array.of_list
+        )
     };
 
 /**
  * Decode and validate a keyboard JSON string.
- * Returns None for malformed JSON or for values that are not string arrays.
+ * Legacy string-only entries are ignored so they cannot replace database
+ * results that contain part-of-speech and translation metadata.
  */
 let decode_keyboard = (value: string): option(keyboard) =>
-    switch (value |> Js.Json.parseExn |> Js.Json.decodeObject) {
-    | None => None
-    | Some(object_) =>
-        object_
-        |> Js.Dict.entries
-        |> Array.fold_left((decoded, (key, json)) =>
-            switch (decoded, decode_string_array(json)) {
-            | (Some(entries), Some(values)) =>
-                Some([(key, values), ...entries])
-            | _ => None
-            }, Some([]))
-        |> Option.map(entries =>
-            entries
-            |> List.rev
-            |> Array.of_list
-            |> Js.Dict.fromArray
-        )
+    try (
+        switch (value |> Js.Json.parseExn |> Js.Json.decodeObject) {
+        | None => None
+        | Some(object_) => {
+            let keyboard =
+                object_
+                |> Js.Dict.entries
+                |> Array.fold_left((decoded, (key, json)) =>
+                    switch (decode_keyboard_entry_array(json)) {
+                    | Some(values) => [(key, values), ...decoded]
+                    | None => decoded
+                    }, [])
+                |> List.rev
+                |> Array.of_list
+                |> Js.Dict.fromArray;
+            Some(keyboard);
+        }
+        }
+    ) {
+    | _ => None
     };
 
 /**

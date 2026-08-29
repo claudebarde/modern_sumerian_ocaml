@@ -44,13 +44,13 @@
     "notes": []
   },
   {
-    "label": "gu",
-    "meaning": "eat",
-    "english": { "lemma": "eat" },
-    "stem": "gu",
-    "stem_cuneiforms": ["𒅥"],
+    "label": "gaz",
+    "meaning": "kill",
+    "english": { "lemma": "kill" },
+    "stem": "gaz",
+    "stem_cuneiforms": ["𒄤"],
     "kind": { "type": "simple" },
-    "imperfective": { "type": "other", "value": "gu" },
+    "imperfective": { "type": "reduplicate" },
     "transitive": true,
     "notes": []
   },
@@ -63,6 +63,17 @@
     "kind": { "type": "simple" },
     "imperfective": { "type": "reduplicate" },
     "transitive": false,
+    "notes": []
+  },
+  {
+    "label": "gu",
+    "meaning": "eat",
+    "english": { "lemma": "eat" },
+    "stem": "gu",
+    "stem_cuneiforms": ["𒅥"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "gu" },
+    "transitive": true,
     "notes": []
   },
   {

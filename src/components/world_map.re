@@ -350,7 +350,6 @@ let make = () => {
                                                 edge=`end_
                                                 ariaLabel="Open the add-country dialog"
                                                 disabled={Option.is_none(matching_country)}
-                                                variant=`contained
                                                 color=Color.primary
                                                 onClick={_ =>
                                                     switch matching_country {

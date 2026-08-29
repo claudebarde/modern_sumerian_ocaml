@@ -21,4 +21,9 @@ let colors = {
   "crustoseLichen": "#c04e01",
   "botanicalNight": "#12403c",
   "darkRift": "#060b14",
+  "pacificTeal": "#3e8083",
+  "moroccanBlue": "#115674",
+  "oxfordBlue": "#002147",
+  "seaBlue": "#afc9dc",
+  "aspenGold": "#ffd662"
 };

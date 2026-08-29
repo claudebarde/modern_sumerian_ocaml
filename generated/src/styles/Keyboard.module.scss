@@ -1,6 +1,6 @@
 @use "../styles/styles.scss" as *;
 
-$container-width: 60%;
+$container-width: 80%;
 $container-padding: 5px;
 $border-radius: 10px;
 
@@ -26,26 +26,15 @@ $border-radius: 10px;
     }
   }
 
-  //   .cuneiformDisplayContainer {
-  //     width: $container-width;
-  //     display: flex;
-  //     flex-direction: row;
-  //     justify-content: space-between;
-  //     align-items: flex-start;
-  //     gap: 0px;
-  //     padding: 0px;
-
   .cuneiformDisplay {
+    box-sizing: border-box;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    // gap: 0px;
-    // border: solid 1px $proton-red;
-    // border-radius: $border-radius;
     min-height: 70px;
     width: calc(100% - 2 * #{$container-padding});
-    overflow-y: auto;
+    overflow: visible;
     // background-color: white;
     padding: $container-padding;
 
@@ -59,9 +48,10 @@ $border-radius: 10px;
   .cuneiformDisplayButtons {
     $padding: 5px;
     height: calc(100% - 2 * #{$padding});
+    width: $container-width;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     padding: $padding;
 
@@ -79,20 +69,71 @@ $border-radius: 10px;
     text-align: left;
     font-style: italic;
     min-height: 30px;
-    // border: solid 1px $proton-red;
-    // border-radius: $border-radius;
-    // width: $container-width;
-    // padding: $container-padding;
-    // background-color: white;
   }
 
-  //   .cuneiformSelectionContainer {
-  //     width: $container-width;
-  //     display: flex;
-  //     flex-direction: column;
-  //     justify-content: center;
-  //     align-items: center;
-  //     gap: 0px;
+  .composedSigns {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    height: auto;
+    padding: 0;
+
+    &.composedSignsVisualAid {
+      gap: 12px;
+    }
+  }
+
+  .composedSign {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0px;
+    position: relative;
+    z-index: 10;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    &.composedSignVisualAid {
+      padding: 0px 8px;
+    }
+
+    &:hover {
+      background-color: $silver-setting;
+      color: grey;
+      transform: scale(1.1);
+
+      .composedSignEdit {
+        visibility: visible;
+      }
+    }
+  }
+
+  .composedSignEdit {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    visibility: hidden;
+    z-index: 20;
+  }
+
+  .composedSignPhonetic {
+    color: $dark-rift;
+    font-size: 0.8rem;
+  }
+
+  .composedWordDivider {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .hiddenComposedWordDivider {
+    display: none;
+  }
 
   .cuneiformSelection {
     display: flex;
@@ -100,11 +141,6 @@ $border-radius: 10px;
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
-    // border: solid 1px $proton-red;
-    // border-radius: $border-radius;
-    // border-bottom-left-radius: 0px;
-    // border-bottom-right-radius: 0px;
-    // border-bottom: none;
     height: 70px;
     width: calc(100% - 2 * (15px - #{$container-padding}));
     overflow-x: auto;
@@ -140,50 +176,54 @@ $border-radius: 10px;
     width: calc(100% - 2 * 15px);
     padding: $container-padding 15px;
     background-color: transparent;
-    // border: solid 1px $proton-red;
-    // border-radius: $border-radius;
-    // border-top-left-radius: 0px;
-    // border-top-right-radius: 0px;
-    // border-top: none;
   }
-  // }
-
-  //   .controls {
-  //     display: grid;
-  //     grid-template-columns: repeat(3, 1fr);
-  //     place-items: center;
-  //     gap: 10px;
-  //     width: $container-width;
-
-  //     > :nth-child(2) {
-  //       justify-self: stretch;
-  //       width: 100%;
-  //     }
-  //   }
-
-  //   .typingArea {
-  //     width: $container-width;
-  //     display: flex;
-  //     flex-direction: row;
-  //     justify-content: center;
-  //     align-items: center;
-
-  //     input {
-  //       width: 50%;
-  //     }
-  //   }
 
   @media (max-width: $breakpoint) {
     padding: 20px;
   }
 }
 
-.controls {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  place-items: center;
-  gap: 10px;
+.searchFieldContainer {
   width: $container-width;
+
+  .searchField {
+    background-color: white;
+    width: 100%;
+  }
+}
+
+.searchFieldResult {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.searchFieldResultLeft {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchFieldResultIndex {
+  margin-right: 12px;
+  color: grey;
+}
+
+.searchFieldResultOccurences {
+  color: grey;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: $container-width;
+  padding: 0px 20px;
 }
 
 .refreshIcon {
@@ -210,6 +250,7 @@ $border-radius: 10px;
 }
 
 .paper {
+  box-sizing: border-box;
   width: $container-width;
   min-height: 70px;
   padding: 10px;
@@ -217,6 +258,14 @@ $border-radius: 10px;
   @media (max-width: $breakpoint) {
     width: 100%;
   }
+}
+
+.composedSignsPaper {
+  display: block;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: fit-content;
+  overflow: hidden;
 }
 
 .onlyMobile {

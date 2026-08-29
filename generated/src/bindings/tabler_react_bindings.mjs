@@ -83,6 +83,8 @@ const IconMoodHappy = {};
 
 const IconMoodSadDizzy = {};
 
+const IconPencil = {};
+
 const IconPencilPlus = {};
 
 const IconPhoto = {};
@@ -102,6 +104,8 @@ const IconSun = {};
 const IconTable = {};
 
 const IconTrashFilled = {};
+
+const IconTrash = {};
 
 const IconTrashX = {};
 
@@ -155,6 +159,7 @@ export {
   IconMenu2,
   IconMoodHappy,
   IconMoodSadDizzy,
+  IconPencil,
   IconPencilPlus,
   IconPhoto,
   IconQuestionMark,
@@ -165,6 +170,7 @@ export {
   IconSun,
   IconTable,
   IconTrashFilled,
+  IconTrash,
   IconTrashX,
   IconTrashXFilled,
   IconWind,

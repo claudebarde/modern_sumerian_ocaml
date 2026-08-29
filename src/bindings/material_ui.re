@@ -232,7 +232,7 @@ module Autocomplete = {
         ~id: string=?,
         ~includeInputInList: bool=?,
         ~inputValue: string=?,
-        ~isOptionEqualToValue: ('value, 'value => bool)=?,
+        ~isOptionEqualToValue: (('value, 'value) => bool)=?,
         ~limitTags: int=?,
         ~loading: bool=?,
         ~loadingText: React.element=?,
@@ -245,7 +245,12 @@ module Autocomplete = {
             Js.Nullable.t('option),
             [`keyboard | `mouse | `touch],
         ) => unit=?,
-        ~onInputChange: (React.Event.Synthetic.t, string) => unit=?,
+        ~onInputChange: (
+            React.Event.Synthetic.t,
+            string,
+            [`blur | `clear | `input | `removeOption | `reset | `selectOption],
+        ) => unit=?,
+        ~onKeyDown: (React.Event.Keyboard.t => unit)=?,
         ~onOpen: (React.Event.Synthetic.t => unit)=?,
         ~_open: bool=?,
         ~openOnFocus: bool=?,
@@ -874,7 +879,6 @@ module IconButton = {
     ~size: [`small | `medium | `large]=?, // TODO: a string can be passed to size
     ~startIcon: React.element=?,
     ~target: string=?,
-    ~variant: [`text | `outlined | `contained]=?, // TODO: a string can be passed to variant
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";
@@ -1353,6 +1357,7 @@ module RadioGroup = {
 };
 
 module Select = {
+  // TODO: implement props from OutlinedInput
   module Value = {
     type t;
 

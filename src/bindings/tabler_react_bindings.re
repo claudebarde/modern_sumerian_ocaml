@@ -496,6 +496,18 @@ module IconMoodSadDizzy = {
   ) => React.element = "IconMoodSadDizzy";
 };
 
+module IconPencil = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconPencil";
+};
+
 module IconPencilPlus = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -614,6 +626,18 @@ module IconTrashFilled = {
     ~title: string=?,
     unit
   ) => React.element = "IconTrashFilled";
+};
+
+module IconTrash = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconTrash";
 };
 
 module IconTrashX = {

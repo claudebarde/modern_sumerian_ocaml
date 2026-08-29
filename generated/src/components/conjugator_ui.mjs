@@ -21,6 +21,7 @@ import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import UseMediaQuery from "@mui/material/useMediaQuery";
+import * as Bindings__Browser from "../bindings/browser.mjs";
 import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
@@ -1786,7 +1787,7 @@ function Conjugator_ui(Props) {
                       const error = Conjugator.print(verb_form, undefined);
                       if (error.TAG === /* Ok */ 0) {
                         const cuneiforms = Components__Web_utils.build_result_cuneiform_string(error._0.verb, verb_form.stem, verb_stem.stem, verb_stem.stem_cuneiforms, verb_stem.imperfective, verb_fixed_element(verb_stem));
-                        navigator.clipboard.writeText(cuneiforms).catch(function (error) {
+                        Bindings__Browser.Clipboard.write_text(cuneiforms).catch(function (error) {
                           console.log("Could not copy the conjugated cuneiforms:", error);
                           return Promise.resolve();
                         });

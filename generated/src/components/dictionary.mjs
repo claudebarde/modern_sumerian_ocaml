@@ -27,6 +27,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
+import * as Bindings__Browser from "../bindings/browser.mjs";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Bindings__Supabase from "../bindings/supabase.mjs";
@@ -43,6 +44,21 @@ const css = DictionaryModuleScss;
 function rows_for_page(page, rows_per_page, rows) {
   const start = Math.imul(page, rows_per_page);
   return rows.slice(start, start + rows_per_page | 0);
+}
+
+function display_part_of_speech(part_of_speech) {
+  switch (part_of_speech) {
+    case "AJ" :
+      return "Adjective";
+    case "N" :
+      return "Noun";
+    case "V/i" :
+      return "Intransitive Verb";
+    case "V/t" :
+      return "Transitive Verb";
+    default:
+      return part_of_speech;
+  }
 }
 
 function Dictionary(Props) {
@@ -270,27 +286,9 @@ function Dictionary(Props) {
                             tmp = "Uncertain";
                             break;
                         }
-                        const match$1 = result.part_of_speech;
+                        const match$1 = result.marker;
                         let tmp$1;
-                        switch (match$1) {
-                          case "AJ" :
-                            tmp$1 = "Adjective";
-                            break;
-                          case "N" :
-                            tmp$1 = "Noun";
-                            break;
-                          case "V/i" :
-                            tmp$1 = "Intransitive Verb";
-                            break;
-                          case "V/t" :
-                            tmp$1 = "Transitive Verb";
-                            break;
-                          default:
-                            tmp$1 = result.part_of_speech;
-                        }
-                        const match$2 = result.marker;
-                        let tmp$2;
-                        tmp$2 = match$2 === /* A */ 0 ? JsxRuntime.jsx("a", {
+                        tmp$1 = match$1 === /* A */ 0 ? JsxRuntime.jsx("a", {
                             children: "EPSD2 link",
                             href: "https://oracc.museum.upenn.edu/epsd2/sux/" + result.id,
                             rel: "noopener noreferrer",
@@ -316,13 +314,13 @@ function Dictionary(Props) {
                               children: result.translation
                             }),
                             JsxRuntime.jsx(TableCell, {
-                              children: tmp$1
+                              children: display_part_of_speech(result.part_of_speech)
                             }),
                             JsxRuntime.jsx(TableCell, {
                               children: result.icount.toString()
                             }),
                             JsxRuntime.jsx(TableCell, {
-                              children: tmp$2
+                              children: tmp$1
                             }),
                             JsxRuntime.jsx(TableCell, {
                               align: "center",
@@ -394,55 +392,37 @@ function Dictionary(Props) {
                 }),
                 Stdlib__Array.map((function (result) {
                   const Key = result.id;
-                  const match = result.part_of_speech;
+                  const match = result.marker;
                   let tmp;
                   switch (match) {
-                    case "AJ" :
-                      tmp = " (Adjective)";
+                    case /* A */ 0 :
+                      tmp = "Ancien Sumerian";
                       break;
-                    case "N" :
-                      tmp = " (Noun)";
+                    case /* E */ 1 :
+                      tmp = "Modern Extension";
                       break;
-                    case "V/i" :
-                      tmp = " (Intransitive Verb)";
+                    case /* N */ 2 :
+                      tmp = "Native Neologism";
                       break;
-                    case "V/t" :
-                      tmp = " (Transitive Verb)";
+                    case /* C */ 3 :
+                      tmp = "Calque";
                       break;
-                    default:
-                      tmp = " (" + (result.part_of_speech + ")");
+                    case /* L_Akk */ 4 :
+                      tmp = "Akkadian Loanword";
+                      break;
+                    case /* L_Anc */ 5 :
+                      tmp = "Ancien Loanword";
+                      break;
+                    case /* L_Mod */ 6 :
+                      tmp = "Modern Loanword";
+                      break;
+                    case /* X */ 7 :
+                      tmp = "Uncertain";
+                      break;
                   }
                   const match$1 = result.marker;
                   let tmp$1;
-                  switch (match$1) {
-                    case /* A */ 0 :
-                      tmp$1 = "Ancien Sumerian";
-                      break;
-                    case /* E */ 1 :
-                      tmp$1 = "Modern Extension";
-                      break;
-                    case /* N */ 2 :
-                      tmp$1 = "Native Neologism";
-                      break;
-                    case /* C */ 3 :
-                      tmp$1 = "Calque";
-                      break;
-                    case /* L_Akk */ 4 :
-                      tmp$1 = "Akkadian Loanword";
-                      break;
-                    case /* L_Anc */ 5 :
-                      tmp$1 = "Ancien Loanword";
-                      break;
-                    case /* L_Mod */ 6 :
-                      tmp$1 = "Modern Loanword";
-                      break;
-                    case /* X */ 7 :
-                      tmp$1 = "Uncertain";
-                      break;
-                  }
-                  const match$2 = result.marker;
-                  let tmp$2;
-                  tmp$2 = match$2 === /* A */ 0 ? JsxRuntime.jsx(Button, {
+                  tmp$1 = match$1 === /* A */ 0 ? JsxRuntime.jsx(Button, {
                       children: "EPSD2 link",
                       href: "https://oracc.museum.upenn.edu/epsd2/sux/" + result.id,
                       rel: "noopener noreferrer",
@@ -456,7 +436,12 @@ function Dictionary(Props) {
                           children: result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X",
                           className: "cuneiforms small"
                         }),
-                        subheader: result.translation + tmp,
+                        subheader: JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                          children: [
+                            result.translation,
+                            " " + display_part_of_speech(result.part_of_speech)
+                          ]
+                        }),
                         title: JsxRuntime.jsx(Typography, {
                           children: Components__Web_utils.Format.from_phonetic_to_standard(result.word),
                           variant: Bindings__Material_ui.Typography.Variant.h6
@@ -465,7 +450,7 @@ function Dictionary(Props) {
                       JsxRuntime.jsxs(CardContent, {
                         children: [
                           JsxRuntime.jsx("div", {
-                            children: tmp$1
+                            children: tmp
                           }),
                           JsxRuntime.jsx("div", {
                             children: result.icount.toString() + (" occurrence" + (
@@ -480,11 +465,11 @@ function Dictionary(Props) {
                       }),
                       JsxRuntime.jsxs(CardActions, {
                         children: [
-                          tmp$2,
+                          tmp$1,
                           JsxRuntime.jsx(Button, {
                             children: "Copy",
                             onClick: (function (param) {
-                              navigator.clipboard.writeText(result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X").catch(function (error) {
+                              Bindings__Browser.Clipboard.write_text(result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "X").catch(function (error) {
                                 console.log("Could not copy text:", error);
                                 return Promise.resolve();
                               });
@@ -708,6 +693,7 @@ const make = Dictionary;
 export {
   css,
   rows_for_page,
+  display_part_of_speech,
   make,
 }
 /* css Not a pure module */

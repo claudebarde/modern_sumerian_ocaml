@@ -13,7 +13,12 @@ const colors = {
   cerealFlake: "#efd7ab",
   crustoseLichen: "#c04e01",
   botanicalNight: "#12403c",
-  darkRift: "#060b14"
+  darkRift: "#060b14",
+  pacificTeal: "#3e8083",
+  moroccanBlue: "#115674",
+  oxfordBlue: "#002147",
+  seaBlue: "#afc9dc",
+  aspenGold: "#ffd662"
 };
 
 const max_keyboard_search_results = 30;

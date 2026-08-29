@@ -18,45 +18,86 @@ function encode_keyboard(keyboard) {
   }
 }
 
-function decode_string_array(json) {
+function decode_keyboard_entry(json) {
+  const object_ = Js__Js_json.decodeObject(json);
+  if (object_ === undefined) {
+    return;
+  }
+  const object_$1 = Caml_option.valFromOption(object_);
+  const match = Js__Js_dict.get(object_$1, "cuneiform");
+  const match$1 = Js__Js_dict.get(object_$1, "icount");
+  const match$2 = Js__Js_dict.get(object_$1, "part_of_speech");
+  const match$3 = Js__Js_dict.get(object_$1, "translation");
+  if (match === undefined) {
+    return;
+  }
+  if (match$1 === undefined) {
+    return;
+  }
+  if (match$2 === undefined) {
+    return;
+  }
+  if (match$3 === undefined) {
+    return;
+  }
+  const match$4 = Js__Js_json.decodeString(Caml_option.valFromOption(match));
+  const match$5 = Js__Js_json.decodeNumber(Caml_option.valFromOption(match$1));
+  const match$6 = Js__Js_json.decodeString(Caml_option.valFromOption(match$2));
+  const match$7 = Js__Js_json.decodeString(Caml_option.valFromOption(match$3));
+  if (match$4 !== undefined && match$5 !== undefined && match$6 !== undefined && match$7 !== undefined) {
+    return {
+      cuneiform: match$4,
+      icount: match$5 | 0,
+      part_of_speech: match$6,
+      translation: match$7
+    };
+  }
+  
+}
+
+function decode_keyboard_entry_array(json) {
   const values = Js__Js_json.decodeArray(json);
   if (values !== undefined) {
-    return Stdlib__Option.map((function (items) {
-      return Stdlib__Array.of_list(Stdlib__List.rev(items));
-    }), Stdlib__Array.fold_left((function (decoded, value) {
-      const match = Js__Js_json.decodeString(value);
-      if (decoded !== undefined && match !== undefined) {
+    return Stdlib__Array.of_list(Stdlib__List.rev(Stdlib__Array.fold_left((function (decoded, value) {
+      const entry = decode_keyboard_entry(value);
+      if (entry !== undefined) {
         return {
-          hd: match,
+          hd: entry,
           tl: decoded
         };
+      } else {
+        return decoded;
       }
-      
-    }), /* [] */ 0, values));
+    }), /* [] */ 0, values)));
   }
   
 }
 
 function decode_keyboard(value) {
-  const object_ = Js__Js_json.decodeObject(JSON.parse(value));
-  if (object_ !== undefined) {
-    return Stdlib__Option.map((function (entries) {
-      return Js__Js_dict.fromArray(Stdlib__Array.of_list(Stdlib__List.rev(entries)));
-    }), Stdlib__Array.fold_left((function (decoded, param) {
-      const match = decode_string_array(param[1]);
-      if (decoded !== undefined && match !== undefined) {
-        return {
-          hd: [
-            param[0],
-            match
-          ],
-          tl: decoded
-        };
-      }
-      
-    }), /* [] */ 0, Js__Js_dict.entries(Caml_option.valFromOption(object_))));
+  try {
+    const object_ = Js__Js_json.decodeObject(JSON.parse(value));
+    if (object_ !== undefined) {
+      return Caml_option.some(Js__Js_dict.fromArray(Stdlib__Array.of_list(Stdlib__List.rev(Stdlib__Array.fold_left((function (decoded, param) {
+        const values = decode_keyboard_entry_array(param[1]);
+        if (values !== undefined) {
+          return {
+            hd: [
+              param[0],
+              values
+            ],
+            tl: decoded
+          };
+        } else {
+          return decoded;
+        }
+      }), /* [] */ 0, Js__Js_dict.entries(Caml_option.valFromOption(object_)))))));
+    } else {
+      return;
+    }
   }
-  
+  catch (exn){
+    return;
+  }
 }
 
 function encode_location($$location) {
@@ -327,7 +368,8 @@ function reset_daily_vocabulary_day(day_index) {
 
 export {
   encode_keyboard,
-  decode_string_array,
+  decode_keyboard_entry,
+  decode_keyboard_entry_array,
   decode_keyboard,
   encode_location,
   decode_lat_long,

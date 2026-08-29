@@ -39,6 +39,8 @@ const IconChevronRight = {};
 
 const IconCheck = {};
 
+const IconCircleCheck = {};
+
 const IconCircleNumber1 = {};
 
 const IconCircleNumber2 = {};
@@ -63,6 +65,10 @@ const IconCopyFilled = {};
 
 const IconCurrencyBitcoin = {};
 
+const IconDownload = {};
+
+const IconExternalLink = {};
+
 const IconFileText = {};
 
 const IconHome = {};
@@ -76,6 +82,8 @@ const IconLink = {};
 const IconList = {};
 
 const IconListCheck = {};
+
+const IconMail = {};
 
 const IconMenu2 = {};
 
@@ -137,6 +145,7 @@ export {
   IconChevronLeft,
   IconChevronRight,
   IconCheck,
+  IconCircleCheck,
   IconCircleNumber1,
   IconCircleNumber2,
   IconCircleNumber3,
@@ -149,6 +158,8 @@ export {
   IconCopy,
   IconCopyFilled,
   IconCurrencyBitcoin,
+  IconDownload,
+  IconExternalLink,
   IconFileText,
   IconHome,
   IconInfoTriangle,
@@ -156,6 +167,7 @@ export {
   IconLink,
   IconList,
   IconListCheck,
+  IconMail,
   IconMenu2,
   IconMoodHappy,
   IconMoodSadDizzy,

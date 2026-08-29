@@ -37,6 +37,8 @@ const Alert = {
   IconMapping
 };
 
+const AlertTitle = {};
+
 const AppBar = {};
 
 const BlurOnSelect = {
@@ -297,6 +299,7 @@ export {
   AccordionDetails,
   AccordionSummary,
   Alert,
+  AlertTitle,
   AppBar,
   Autocomplete,
   Avatar,

@@ -21,6 +21,7 @@ let make = () => {
                 | ["games"] => <Games />
                 | ["wordslist"] => <Words_list />
                 | ["worldmap"] => <World_map />
+                | ["download", "etsy", listing] => <Download_etsy listing=listing />
                 | [] | ["home"] => <Home />
                 | _ => <Page_not_found/>
             }

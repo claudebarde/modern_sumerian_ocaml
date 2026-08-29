@@ -142,6 +142,17 @@ module Alert = {
     ) => React.element = "default";
 };
 
+module AlertTitle = {
+    [@mel.module "@mui/material/AlertTitle"] [@react.component]
+    external make: (
+        ~children: React.element=?,
+        ~classes: Js.t({..})=?,
+        ~className: string=?,
+        ~sx: Js.t({..})=?,
+        unit
+    ) => React.element = "default";
+};
+
 module AppBar = {
     [@mel.module "@mui/material/AppBar"] [@react.component]
     external make: (

@@ -232,6 +232,18 @@ module IconCheck = {
   ) => React.element = "IconCheck";
 };
 
+module IconCircleCheck = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconCircleCheck";
+};
+
 module IconCircleNumber1 = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -376,6 +388,30 @@ module IconCurrencyBitcoin = {
   ) => React.element = "IconCurrencyBitcoin";
 };
 
+module IconDownload = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconDownload";
+};
+
+module IconExternalLink = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconExternalLink";
+};
+
 module IconFileText = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -458,6 +494,18 @@ module IconListCheck = {
     ~title: string=?,
     unit
   ) => React.element = "IconListCheck";
+};
+
+module IconMail = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconMail";
 };
 
 module IconMenu2 = {

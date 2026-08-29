@@ -3,6 +3,7 @@
 import BodyModuleScss from "./Body.module.scss";
 import * as Components__Conjugator_ui from "./components/conjugator_ui.mjs";
 import * as Components__Dictionary from "./components/dictionary.mjs";
+import * as Components__Download_etsy from "./components/download_etsy.mjs";
 import * as Components__Games from "./components/games.mjs";
 import * as Components__Home from "./components/home.mjs";
 import * as Components__Keyboard from "./components/keyboard.mjs";
@@ -42,6 +43,21 @@ function Body(Props) {
           tmp = JsxRuntime.jsx(Components__Dictionary.make, {});
         }
         break;
+      case "download" :
+        const match$2 = match.tl;
+        if (match$2 && match$2.hd === "etsy") {
+          const match$3 = match$2.tl;
+          if (match$3 && !match$3.tl) {
+            tmp = JsxRuntime.jsx(Components__Download_etsy.make, {
+              listing: match$3.hd
+            });
+          } else {
+            exit = 1;
+          }
+        } else {
+          exit = 1;
+        }
+        break;
       case "games" :
         if (match.tl) {
           exit = 1;
@@ -64,10 +80,10 @@ function Body(Props) {
         }
         break;
       case "learn" :
-        const match$2 = match.tl;
-        if (match$2) {
+        const match$4 = match.tl;
+        if (match$4) {
           let exit$1 = 0;
-          switch (match$2.hd) {
+          switch (match$4.hd) {
             case "daily_vocabulary" :
             case "flashcards" :
             case "lessons" :
@@ -77,7 +93,7 @@ function Body(Props) {
               exit = 1;
           }
           if (exit$1 === 2) {
-            if (match$2.tl) {
+            if (match$4.tl) {
               exit = 1;
             } else {
               tmp = JsxRuntime.jsx(Components__Learn.make, {});

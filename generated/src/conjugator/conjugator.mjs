@@ -517,24 +517,41 @@ function set_object(verb, person) {
         break;
     }
     const newrecord = Caml_obj.caml_obj_dup(verb);
-    newrecord.object_ = {
-      TAG: /* Object_suffix */ 1,
-      _0: Conjugator__Infixes.FinalPersonSuffix.to_person(suffix)
+    return {
+      TAG: /* Ok */ 0,
+      _0: (newrecord.object_ = {
+        TAG: /* Object_suffix */ 1,
+        _0: Conjugator__Infixes.FinalPersonSuffix.to_person(suffix)
+      }, newrecord.final_person_suffix = suffix, newrecord)
     };
-    newrecord.final_person_suffix = suffix;
-    return newrecord;
   }
   if (!(verb.is_transitive && !verb.is_perfective)) {
-    return verb;
+    return {
+      TAG: /* Error */ 1,
+      _0: "Cannot set an object on an intransitive verb"
+    };
   }
-  const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(person);
-  const newrecord$1 = Caml_obj.caml_obj_dup(verb);
-  newrecord$1.object_ = {
-    TAG: /* Object_prefix */ 0,
-    _0: Conjugator__Infixes.FinalPersonPrefix.to_person(prefix)
-  };
-  newrecord$1.final_person_prefix = prefix;
-  return newrecord$1;
+  try {
+    const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(person);
+    const newrecord$1 = Caml_obj.caml_obj_dup(verb);
+    return {
+      TAG: /* Ok */ 0,
+      _0: (newrecord$1.object_ = {
+        TAG: /* Object_prefix */ 0,
+        _0: Conjugator__Infixes.FinalPersonPrefix.to_person(prefix)
+      }, newrecord$1.final_person_prefix = prefix, newrecord$1)
+    };
+  }
+  catch (raw_exn){
+    const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+    if (exn.MEL_EXN_ID === Stdlib.Failure) {
+      return {
+        TAG: /* Error */ 1,
+        _0: exn._1
+      };
+    }
+    throw exn;
+  }
 }
 
 function reset_subject(verb) {
@@ -545,8 +562,13 @@ function reset_subject(verb) {
   const match = verb.object_;
   if (/* tag */ typeof match !== "object" && typeof match !== "function") {
     return newrecord;
+  }
+  match.TAG === /* Object_prefix */ 0;
+  const updated_verb = set_object(newrecord, match._0);
+  if (updated_verb.TAG === /* Ok */ 0) {
+    return updated_verb._0;
   } else {
-    return set_object(newrecord, match._0);
+    return newrecord;
   }
 }
 

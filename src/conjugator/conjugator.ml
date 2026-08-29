@@ -222,7 +222,7 @@ let set_subject (verb: t) (person: PersonParam.t): (t, string) result =
             | Second_plur -> Second_plur
             | Third_plur_human -> Third_plur_human
             | Third_plur_non_human -> Third_plur_non_human
-        in Ok { 
+        in Ok {
                 verb with 
                     final_person_suffix = Some suffix; 
                     subject = Subject_suffix (suffix |> FinalPersonSuffix.to_person) 
@@ -238,7 +238,7 @@ let set_subject (verb: t) (person: PersonParam.t): (t, string) result =
         with
         | Failure exn -> Error exn
 
-let set_object (verb: t) (person: PersonParam.t): t =
+let set_object (verb: t) (person: PersonParam.t): (t, string) result =
     let open FinalPersonSuffix in
     if verb.is_transitive && verb.is_perfective
     then let suffix: FinalPersonSuffix.t = match person with
@@ -250,24 +250,24 @@ let set_object (verb: t) (person: PersonParam.t): t =
             | Second_plur -> Second_plur
             | Third_plur_human -> Third_plur_human
             | Third_plur_non_human -> Third_plur_non_human
-        in { 
+        in Ok {
                 verb with 
                     final_person_suffix = Some suffix; 
                     object_ = Object_suffix (suffix |> FinalPersonSuffix.to_person) 
             }
     else if verb.is_transitive && not verb.is_perfective
-    then 
-        let prefix = FinalPersonPrefix.from_person person
-        in { 
-                verb with 
-                    final_person_prefix = Some prefix; 
-                    object_ = Object_prefix (prefix |> FinalPersonPrefix.to_person) 
-            }
+    then
+        try
+            let prefix = FinalPersonPrefix.from_person person
+            in Ok {
+                    verb with
+                        final_person_prefix = Some prefix;
+                        object_ = Object_prefix (prefix |> FinalPersonPrefix.to_person)
+                }
+        with
+        | Failure exn -> Error exn
     else
-        (* cannot set the object of an intransitive verb
-        TODO = may be worth throwing an error here
-        but it will mess with the verb building with pipes *)
-        verb
+        Error "Cannot set an object on an intransitive verb"
 
 let reset_subject (verb: t): t =
     let reset_verb = {
@@ -278,7 +278,9 @@ let reset_subject (verb: t): t =
     } in
     match verb.object_ with
     | Object_prefix person | Object_suffix person ->
-        set_object reset_verb person
+        (match set_object reset_verb person with
+        | Ok updated_verb -> updated_verb
+        | Error _ -> reset_verb)
     | None -> reset_verb
 
 let reset_object (verb: t): t =

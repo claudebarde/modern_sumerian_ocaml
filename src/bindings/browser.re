@@ -213,6 +213,9 @@ module ResizeObserver = {
 module Window = {
   type keyboard_event;
 
+  [@mel.scope ("window", "location")]
+  external location_origin: string = "origin";
+
   [@mel.get]
   external key: keyboard_event => string = "key";
 

@@ -20,6 +20,7 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
 import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as Bindings__Browser from "../bindings/browser.mjs";
 import * as Bindings__Config from "../bindings/config.mjs";
@@ -33,6 +34,7 @@ import * as Components__Web_utils from "./web_utils.mjs";
 import * as Conjugator from "../conjugator/conjugator.mjs";
 import * as Conjugator__Utils from "../conjugator/utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
+import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
@@ -245,6 +247,30 @@ function Conjugator_ui(Props) {
   });
   const set_general_warning = match$22[1];
   const general_warning = match$22[0];
+  const match$23 = React.useState(function () {
+    return false;
+  });
+  const set_cuneiform_copy_tooltip_open = match$23[1];
+  const match$24 = React.useState(function () {
+    return false;
+  });
+  const set_share_link_tooltip_open = match$24[1];
+  const cuneiform_copy_tooltip_timeout = React.useRef(undefined);
+  const share_link_tooltip_timeout = React.useRef(undefined);
+  React.useEffect((function () {
+    return (function (param) {
+      const timeout_id = cuneiform_copy_tooltip_timeout.current;
+      if (timeout_id !== undefined) {
+        clearTimeout(Caml_option.valFromOption(timeout_id));
+      }
+      const timeout_id$1 = share_link_tooltip_timeout.current;
+      if (timeout_id$1 !== undefined) {
+        clearTimeout(Caml_option.valFromOption(timeout_id$1));
+        return;
+      }
+      
+    });
+  }), []);
   const marginTop = "20px";
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const available_verbs = Components__Web_utils.SumerianVerbs.verbs;
@@ -392,6 +418,61 @@ function Conjugator_ui(Props) {
       value: "third-plur-nonhuman"
     }
   ];
+  const person_param_to_url_code = function (person) {
+    switch (person) {
+      case /* First_sing */ 0 :
+        return "1";
+      case /* Second_sing */ 1 :
+        return "2";
+      case /* Third_sing_human */ 2 :
+        return "3";
+      case /* Third_sing_non_human */ 3 :
+        return "4";
+      case /* First_plur */ 4 :
+        return "5";
+      case /* Second_plur */ 5 :
+        return "6";
+      case /* Third_plur_human */ 6 :
+        return "7";
+      case /* Third_plur_non_human */ 7 :
+        return "8";
+    }
+  };
+  const apply_subject_and_object = function (verb, selected_subject, selected_object, selected_indirect_object) {
+    const verb_with_subject = selected_subject !== undefined ? Conjugator.set_subject(verb, selected_subject) : ({
+        TAG: /* Ok */ 0,
+        _0: verb
+      });
+    if (verb_with_subject.TAG !== /* Ok */ 0) {
+      return {
+        TAG: /* Error */ 1,
+        _0: verb_with_subject._0
+      };
+    }
+    const verb$1 = verb_with_subject._0;
+    const result = selected_object !== undefined ? Conjugator.set_object(verb$1, selected_object) : ({
+        TAG: /* Ok */ 0,
+        _0: verb$1
+      });
+    if (result.TAG !== /* Ok */ 0) {
+      return {
+        TAG: /* Error */ 1,
+        _0: result._0
+      };
+    }
+    const verb$2 = result._0;
+    if (selected_indirect_object !== undefined) {
+      return {
+        TAG: /* Ok */ 0,
+        _0: Conjugator.set_indirect_object(verb$2, selected_indirect_object)
+      };
+    } else {
+      return {
+        TAG: /* Ok */ 0,
+        _0: verb$2
+      };
+    }
+  };
   const change_pronoun = function (value, pronoun) {
     if (Stdlib__Option.is_none(is_perfective) && Stdlib__Option.is_none(is_transitive)) {
       return Curry._1(set_error, (function (param) {
@@ -438,16 +519,24 @@ function Conjugator_ui(Props) {
         case "object" :
           if (match !== undefined) {
             return Curry._1(set_verb_form, (function (prev_verb_form) {
-              if (prev_verb_form !== undefined) {
+              if (prev_verb_form === undefined) {
+                return;
+              }
+              const updated_verb = Conjugator.set_object(prev_verb_form, match);
+              if (updated_verb.TAG === /* Ok */ 0) {
                 Curry._1(set_error, (function (param) {
                   
                 }));
                 Curry._1(set_object, (function (param) {
                   return match;
                 }));
-                return Conjugator.set_object(prev_verb_form, match);
+                return updated_verb._0;
               }
-              
+              const error = updated_verb._0;
+              Curry._1(set_error, (function (param) {
+                return error;
+              }));
+              return prev_verb_form;
             }));
           } else {
             return;
@@ -906,50 +995,22 @@ function Conjugator_ui(Props) {
       if (prev_verb_form === undefined) {
         return;
       }
+      const updated_verb = apply_transitivity(Conjugator.reset_subject_object(prev_verb_form));
+      const updated_verb$1 = apply_subject_and_object(updated_verb, subject, object_, indirect_object);
+      if (updated_verb$1.TAG === /* Ok */ 0) {
+        Curry._1(set_error, (function (param) {
+          
+        }));
+        Curry._1(set_is_transitive, (function (param) {
+          return checked;
+        }));
+        return updated_verb$1._0;
+      }
+      const error = updated_verb$1._0;
       Curry._1(set_error, (function (param) {
-        
+        return error;
       }));
-      Curry._1(set_is_transitive, (function (param) {
-        return checked;
-      }));
-      if (subject === undefined) {
-        if (object_ !== undefined) {
-          return Conjugator.set_object(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), object_);
-        } else {
-          return apply_transitivity(prev_verb_form);
-        }
-      }
-      if (object_ !== undefined) {
-        try {
-          return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
-        }
-        catch (raw_err){
-          const err = Caml_js_exceptions.internalToOCamlException(raw_err);
-          if (err.MEL_EXN_ID === Conjugator__Utils.Todo) {
-            const err$1 = err._1;
-            Curry._1(set_error, (function (param) {
-              return err$1;
-            }));
-            return prev_verb_form;
-          }
-          throw err;
-        }
-      } else {
-        try {
-          return Stdlib__Result.get_ok(Conjugator.set_subject(apply_transitivity(Conjugator.reset_subject_object(prev_verb_form)), subject));
-        }
-        catch (raw_err$1){
-          const err$2 = Caml_js_exceptions.internalToOCamlException(raw_err$1);
-          if (err$2.MEL_EXN_ID === Conjugator__Utils.Todo) {
-            const err$3 = err$2._1;
-            Curry._1(set_error, (function (param) {
-              return err$3;
-            }));
-            return prev_verb_form;
-          }
-          throw err$2;
-        }
-      }
+      return prev_verb_form;
     }));
   };
   const switch_perfective = function (value) {
@@ -957,33 +1018,6 @@ function Conjugator_ui(Props) {
       return Curry._1(set_verb_form, (function (prev_verb_form) {
         if (prev_verb_form === undefined) {
           return;
-        }
-        Curry._1(set_error, (function (param) {
-          
-        }));
-        Curry._1(set_is_perfective, (function (param) {
-          return value;
-        }));
-        let exit = 0;
-        if (value !== undefined && !(value || preformative === undefined)) {
-          switch (preformative) {
-            case /* A */ 0 :
-            case /* I */ 1 :
-              exit = 1;
-              break;
-            case /* U */ 2 :
-              Curry._1(set_general_warning, (function (param) {
-                return /* PreformativeUOnlyInPerfective */ 3;
-              }));
-              break;
-          }
-        } else {
-          exit = 1;
-        }
-        if (exit === 1) {
-          Curry._1(set_general_warning, (function (param) {
-            
-          }));
         }
         const apply_aspect = function (verb) {
           if (value !== undefined) {
@@ -1002,56 +1036,286 @@ function Conjugator_ui(Props) {
             return verb;
           }
         };
-        if (subject === undefined) {
-          if (object_ !== undefined) {
-            return Conjugator.set_object(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), object_);
+        const updated_verb = apply_aspect(Conjugator.reset_subject_object(prev_verb_form));
+        const updated_verb$1 = apply_subject_and_object(updated_verb, subject, object_, indirect_object);
+        if (updated_verb$1.TAG === /* Ok */ 0) {
+          Curry._1(set_error, (function (param) {
+            
+          }));
+          Curry._1(set_is_perfective, (function (param) {
+            return value;
+          }));
+          let exit = 0;
+          if (value !== undefined && !(value || preformative === undefined)) {
+            switch (preformative) {
+              case /* A */ 0 :
+              case /* I */ 1 :
+                exit = 1;
+                break;
+              case /* U */ 2 :
+                Curry._1(set_general_warning, (function (param) {
+                  return /* PreformativeUOnlyInPerfective */ 3;
+                }));
+                break;
+            }
           } else {
-            return apply_aspect(prev_verb_form);
+            exit = 1;
           }
+          if (exit === 1) {
+            Curry._1(set_general_warning, (function (param) {
+              
+            }));
+          }
+          return updated_verb$1._0;
         }
-        if (object_ !== undefined) {
-          try {
-            return Conjugator.set_object(Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject)), object_);
-          }
-          catch (raw_err){
-            const err = Caml_js_exceptions.internalToOCamlException(raw_err);
-            if (err.MEL_EXN_ID === Conjugator__Utils.Todo) {
-              const err$1 = err._1;
-              Curry._1(set_error, (function (param) {
-                return err$1;
-              }));
-              return prev_verb_form;
-            }
-            throw err;
-          }
-        } else {
-          try {
-            return Stdlib__Result.get_ok(Conjugator.set_subject(apply_aspect(Conjugator.reset_subject_object(prev_verb_form)), subject));
-          }
-          catch (raw_err$1){
-            const err$2 = Caml_js_exceptions.internalToOCamlException(raw_err$1);
-            if (err$2.MEL_EXN_ID === Conjugator__Utils.Todo) {
-              const err$3 = err$2._1;
-              Curry._1(set_error, (function (param) {
-                return err$3;
-              }));
-              return prev_verb_form;
-            }
-            throw err$2;
-          }
-        }
+        const error = updated_verb$1._0;
+        Curry._1(set_error, (function (param) {
+          return error;
+        }));
+        return prev_verb_form;
       }));
     }
     
   };
+  const show_cuneiform_copy_tooltip = function (param) {
+    const timeout_id = cuneiform_copy_tooltip_timeout.current;
+    if (timeout_id !== undefined) {
+      clearTimeout(Caml_option.valFromOption(timeout_id));
+    }
+    Curry._1(set_cuneiform_copy_tooltip_open, (function (param) {
+      return true;
+    }));
+    const timeout_id$1 = setTimeout((function (param) {
+      Curry._1(set_cuneiform_copy_tooltip_open, (function (param) {
+        return false;
+      }));
+      cuneiform_copy_tooltip_timeout.current = undefined;
+    }), 1500);
+    cuneiform_copy_tooltip_timeout.current = Caml_option.some(timeout_id$1);
+  };
+  const show_share_link_tooltip = function (param) {
+    const timeout_id = share_link_tooltip_timeout.current;
+    if (timeout_id !== undefined) {
+      clearTimeout(Caml_option.valFromOption(timeout_id));
+    }
+    Curry._1(set_share_link_tooltip_open, (function (param) {
+      return true;
+    }));
+    const timeout_id$1 = setTimeout((function (param) {
+      Curry._1(set_share_link_tooltip_open, (function (param) {
+        return false;
+      }));
+      share_link_tooltip_timeout.current = undefined;
+    }), 1500);
+    share_link_tooltip_timeout.current = Caml_option.some(timeout_id$1);
+  };
   React.useEffect((function () {
     if (verb_from_url !== undefined) {
-      set_new_verb_stem(Stdlib__Array.find_opt((function (candidate) {
-        return candidate.label === verb_from_url;
-      }), available_verbs));
+      const decoded_verb = decodeURIComponent(verb_from_url);
+      const selected_verb = Stdlib__Array.find_opt((function (candidate) {
+        return candidate.label === decoded_verb;
+      }), available_verbs);
+      if (selected_verb !== undefined) {
+        const search = url.search.startsWith("?") ? url.search.slice(1) : url.search;
+        const url_params = url.search.length !== 0 ? Js__Js_dict.fromList(Stdlib__Array.to_list(Stdlib__Array.map((function (param) {
+            const match = param.split("=");
+            if (match.length !== 2) {
+              return [
+                "",
+                ""
+              ];
+            }
+            const key = match[0];
+            const value = match[1];
+            return [
+              key,
+              value
+            ];
+          }), search.split("&")))) : ({});
+        const match = Js__Js_dict.get(url_params, "aspect");
+        const selected_aspect = match === "impfv" ? false : true;
+        const match$1 = Js__Js_dict.get(url_params, "pref");
+        let selected_preformative;
+        if (match$1 !== undefined) {
+          switch (match$1) {
+            case "a" :
+              selected_preformative = /* A */ 0;
+              break;
+            case "i" :
+              selected_preformative = /* I */ 1;
+              break;
+            case "u" :
+              selected_preformative = /* U */ 2;
+              break;
+            default:
+              selected_preformative = undefined;
+          }
+        } else {
+          selected_preformative = undefined;
+        }
+        const match$2 = Js__Js_dict.get(url_params, "subj");
+        let selected_subject;
+        if (match$2 !== undefined) {
+          switch (match$2) {
+            case "1" :
+              selected_subject = /* First_sing */ 0;
+              break;
+            case "2" :
+              selected_subject = /* Second_sing */ 1;
+              break;
+            case "3" :
+              selected_subject = /* Third_sing_human */ 2;
+              break;
+            case "4" :
+              selected_subject = /* Third_sing_non_human */ 3;
+              break;
+            case "5" :
+              selected_subject = /* First_plur */ 4;
+              break;
+            case "6" :
+              selected_subject = /* Second_plur */ 5;
+              break;
+            case "7" :
+              selected_subject = /* Third_plur_human */ 6;
+              break;
+            case "8" :
+              selected_subject = /* Third_plur_non_human */ 7;
+              break;
+            default:
+              selected_subject = undefined;
+          }
+        } else {
+          selected_subject = undefined;
+        }
+        const match$3 = Js__Js_dict.get(url_params, "obj");
+        let selected_object;
+        if (match$3 !== undefined) {
+          switch (match$3) {
+            case "1" :
+              selected_object = /* First_sing */ 0;
+              break;
+            case "2" :
+              selected_object = /* Second_sing */ 1;
+              break;
+            case "3" :
+              selected_object = /* Third_sing_human */ 2;
+              break;
+            case "4" :
+              selected_object = /* Third_sing_non_human */ 3;
+              break;
+            case "5" :
+              selected_object = /* First_plur */ 4;
+              break;
+            case "6" :
+              selected_object = /* Second_plur */ 5;
+              break;
+            case "7" :
+              selected_object = /* Third_plur_human */ 6;
+              break;
+            case "8" :
+              selected_object = /* Third_plur_non_human */ 7;
+              break;
+            default:
+              selected_object = undefined;
+          }
+        } else {
+          selected_object = undefined;
+        }
+        const match$4 = Js__Js_dict.get(url_params, "indobj");
+        let selected_indirect_object;
+        if (match$4 !== undefined) {
+          switch (match$4) {
+            case "1" :
+              selected_indirect_object = /* First_sing */ 0;
+              break;
+            case "2" :
+              selected_indirect_object = /* Second_sing */ 1;
+              break;
+            case "3" :
+              selected_indirect_object = /* Third_sing_human */ 2;
+              break;
+            case "4" :
+              selected_indirect_object = /* Third_sing_non_human */ 3;
+              break;
+            case "5" :
+              selected_indirect_object = /* First_plur */ 4;
+              break;
+            case "6" :
+              selected_indirect_object = /* Second_plur */ 5;
+              break;
+            case "7" :
+              selected_indirect_object = /* Third_plur_human */ 6;
+              break;
+            case "8" :
+              selected_indirect_object = /* Third_plur_non_human */ 7;
+              break;
+            default:
+              selected_indirect_object = undefined;
+          }
+        } else {
+          selected_indirect_object = undefined;
+        }
+        const initialized_verb = Conjugator.create(selected_verb.stem);
+        const initialized_verb$1 = selected_verb.transitive ? Conjugator.is_transitive(initialized_verb) : Conjugator.is_intransitive(initialized_verb);
+        const initialized_verb$2 = selected_aspect ? Conjugator.is_perfective(initialized_verb$1) : Conjugator.is_imperfective(initialized_verb$1, selected_verb.imperfective);
+        const initialized_verb$3 = selected_preformative !== undefined ? Conjugator.set_preformative(initialized_verb$2, selected_preformative) : initialized_verb$2;
+        const verb = apply_subject_and_object(initialized_verb$3, selected_subject, selected_object, selected_indirect_object);
+        let match$5;
+        match$5 = verb.TAG === /* Ok */ 0 ? [
+            verb._0,
+            undefined,
+            selected_subject,
+            selected_object,
+            selected_indirect_object
+          ] : [
+            initialized_verb$3,
+            verb._0,
+            undefined,
+            undefined,
+            undefined
+          ];
+        const initialized_indirect_object = match$5[4];
+        const initialized_object = match$5[3];
+        const initialized_subject = match$5[2];
+        const initialization_error = match$5[1];
+        const initialized_verb$4 = match$5[0];
+        reset();
+        Curry._1(set_verb_stem, (function (param) {
+          return selected_verb;
+        }));
+        Curry._1(set_verb_form, (function (param) {
+          return initialized_verb$4;
+        }));
+        Curry._1(set_is_transitive, (function (param) {
+          return selected_verb.transitive;
+        }));
+        Curry._1(set_is_perfective, (function (param) {
+          return selected_aspect;
+        }));
+        Curry._1(set_preformative, (function (param) {
+          return selected_preformative;
+        }));
+        Curry._1(set_subject, (function (param) {
+          return initialized_subject;
+        }));
+        Curry._1(set_object, (function (param) {
+          return initialized_object;
+        }));
+        Curry._1(set_indirect_object, (function (param) {
+          return initialized_indirect_object;
+        }));
+        Curry._1(set_error, (function (param) {
+          return initialization_error;
+        }));
+      } else {
+        set_new_verb_stem(undefined);
+      }
     }
     
-  }), [verb_from_url]);
+  }), [
+    verb_from_url,
+    url.search
+  ]);
   let tmp;
   if (verb_stem !== undefined) {
     const link = Components__Web_utils.EpsdDict.get_epsd_link(verb_dictionary_value(verb_stem));
@@ -1794,28 +2058,146 @@ function Conjugator_ui(Props) {
                     }),
                     variant: "contained"
                   }),
-                  JsxRuntime.jsx(Button, {
-                    children: "Copy",
-                    disabled: Stdlib__Option.is_none(verb_form),
-                    onClick: (function (param) {
-                      if (verb_form === undefined) {
-                        return;
-                      }
-                      if (verb_stem === undefined) {
-                        return;
-                      }
-                      const error = Conjugator.print(verb_form, undefined);
-                      if (error.TAG === /* Ok */ 0) {
-                        const cuneiforms = Components__Web_utils.build_result_cuneiform_string(error._0.verb, verb_form.stem, verb_stem.stem, verb_stem.stem_cuneiforms, verb_stem.imperfective, verb_fixed_element(verb_stem));
-                        Bindings__Browser.Clipboard.write_text(cuneiforms).catch(function (error) {
-                          console.log("Could not copy the conjugated cuneiforms:", error);
+                  JsxRuntime.jsx(Tooltip, {
+                    children: JsxRuntime.jsx(Button, {
+                      children: "Copy",
+                      disabled: Stdlib__Option.is_none(verb_form),
+                      onClick: (function (param) {
+                        if (verb_form === undefined) {
+                          return;
+                        }
+                        if (verb_stem === undefined) {
+                          return;
+                        }
+                        const error = Conjugator.print(verb_form, undefined);
+                        if (error.TAG === /* Ok */ 0) {
+                          const cuneiforms = Components__Web_utils.build_result_cuneiform_string(error._0.verb, verb_form.stem, verb_stem.stem, verb_stem.stem_cuneiforms, verb_stem.imperfective, verb_fixed_element(verb_stem));
+                          Bindings__Browser.Clipboard.write_text(cuneiforms).then(function (param) {
+                            show_cuneiform_copy_tooltip();
+                            return Promise.resolve();
+                          }).catch(function (error) {
+                            console.log("Could not copy the conjugated cuneiforms:", error);
+                            return Promise.resolve();
+                          });
+                          return;
+                        }
+                        console.log("Could not generate the conjugated cuneiforms:", error._0);
+                      }),
+                      variant: "contained"
+                    }),
+                    disableFocusListener: true,
+                    disableHoverListener: true,
+                    disableTouchListener: true,
+                    onClose: (function (param) {
+                      Curry._1(set_cuneiform_copy_tooltip_open, (function (param) {
+                        return false;
+                      }));
+                    }),
+                    open: match$23[0],
+                    title: "Cuneiform copied!"
+                  }),
+                  JsxRuntime.jsx(Tooltip, {
+                    children: JsxRuntime.jsx(Button, {
+                      children: "Share",
+                      disabled: Stdlib__Option.is_none(verb_form),
+                      onClick: (function (param) {
+                        if (verb_stem === undefined) {
+                          return;
+                        }
+                        let tmp;
+                        if (preformative !== undefined) {
+                          switch (preformative) {
+                            case /* A */ 0 :
+                              tmp = [
+                                "pref",
+                                "a"
+                              ];
+                              break;
+                            case /* I */ 1 :
+                              tmp = [
+                                "pref",
+                                "i"
+                              ];
+                              break;
+                            case /* U */ 2 :
+                              tmp = [
+                                "pref",
+                                "u"
+                              ];
+                              break;
+                          }
+                        } else {
+                          tmp = undefined;
+                        }
+                        const params_0 = is_perfective !== undefined ? (
+                            is_perfective ? [
+                                "aspect",
+                                "pfv"
+                              ] : [
+                                "aspect",
+                                "impfv"
+                              ]
+                          ) : undefined;
+                        const params_1 = {
+                          hd: tmp,
+                          tl: {
+                            hd: Stdlib__Option.map((function (person) {
+                              return [
+                                "subj",
+                                person_param_to_url_code(person)
+                              ];
+                            }), subject),
+                            tl: {
+                              hd: Stdlib__Option.map((function (person) {
+                                return [
+                                  "obj",
+                                  person_param_to_url_code(person)
+                                ];
+                              }), object_),
+                              tl: {
+                                hd: Stdlib__Option.map((function (person) {
+                                  return [
+                                    "indobj",
+                                    person_param_to_url_code(person)
+                                  ];
+                                }), indirect_object),
+                                tl: /* [] */ 0
+                              }
+                            }
+                          }
+                        };
+                        const params = {
+                          hd: params_0,
+                          tl: params_1
+                        };
+                        const query = Stdlib__Array.map((function (param) {
+                          return encodeURIComponent(param[0]) + ("=" + encodeURIComponent(param[1]));
+                        }), Stdlib__Array.of_list(Stdlib__List.filter_map((function (param) {
+                          return param;
+                        }), params))).join("&");
+                        const shareable_link = window.location.origin + ("/conjugator/" + (encodeURIComponent(verb_stem.label) + (
+                          query.length !== 0 ? "?" + query : ""
+                        )));
+                        Bindings__Browser.Clipboard.write_text(shareable_link).then(function (param) {
+                          show_share_link_tooltip();
+                          return Promise.resolve();
+                        }).catch(function (error) {
+                          console.log("Could not copy the shareable link:", error);
                           return Promise.resolve();
                         });
-                        return;
-                      }
-                      console.log("Could not generate the conjugated cuneiforms:", error._0);
+                      }),
+                      variant: "contained"
                     }),
-                    variant: "contained"
+                    disableFocusListener: true,
+                    disableHoverListener: true,
+                    disableTouchListener: true,
+                    onClose: (function (param) {
+                      Curry._1(set_share_link_tooltip_open, (function (param) {
+                        return false;
+                      }));
+                    }),
+                    open: match$24[0],
+                    title: "Link copied!"
                   }),
                   JsxRuntime.jsx(Button, {
                     children: "Report an error",

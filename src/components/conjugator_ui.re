@@ -107,6 +107,28 @@ let make = () => {
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
     let (prefix_warning, set_prefix_warning) = React.useState(_ => None);
     let (general_warning, set_general_warning) = React.useState(_ => None);
+    let (cuneiform_copy_tooltip_open, set_cuneiform_copy_tooltip_open) =
+        React.useState(_ => false);
+    let (share_link_tooltip_open, set_share_link_tooltip_open) =
+        React.useState(_ => false);
+
+    let cuneiform_copy_tooltip_timeout =
+        React.useRef((None: option(Js.Global.timeoutId)));
+    let share_link_tooltip_timeout =
+        React.useRef((None: option(Js.Global.timeoutId)));
+
+    React.useEffect0(() =>
+        Some(() => {
+            switch cuneiform_copy_tooltip_timeout.current {
+            | Some(timeout_id) => Js.Global.clearTimeout(timeout_id)
+            | None => ()
+            };
+            switch share_link_tooltip_timeout.current {
+            | Some(timeout_id) => Js.Global.clearTimeout(timeout_id)
+            | None => ()
+            };
+        })
+    );
 
     let marginTop = "20px";
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
@@ -169,6 +191,49 @@ let make = () => {
         {label: "Them (human)", value: "third-plur-human"},
         {label: "Them (non-human)", value: "third-plur-nonhuman"},
     |];
+
+    let person_param_to_url_code = (person: Conjugator.PersonParam.t): string => {
+        open Conjugator.PersonParam;
+        switch person {
+        | First_sing => "1"
+        | Second_sing => "2"
+        | Third_sing_human => "3"
+        | Third_sing_non_human => "4"
+        | First_plur => "5"
+        | Second_plur => "6"
+        | Third_plur_human => "7"
+        | Third_plur_non_human => "8"
+        };
+    };
+
+    let apply_subject_and_object = (
+        verb: Conjugator.t,
+        selected_subject: option(Conjugator.PersonParam.t),
+        selected_object: option(Conjugator.PersonParam.t),
+        selected_indirect_object: option(Conjugator.PersonParam.t),
+    ): result(Conjugator.t, string) => {
+        let verb_with_subject = switch selected_subject {
+        | Some(person) => Conjugator.set_subject(verb, person)
+        | None => Ok(verb)
+        };
+
+        switch verb_with_subject {
+        | Error(error) => Error(error)
+        | Ok(verb) =>
+            switch selected_object {
+            | Some(person) => Conjugator.set_object(verb, person)
+            | None => Ok(verb)
+            }
+            |> (result => switch result {
+                | Error(error) => Error(error)
+                | Ok(verb) =>
+                    switch selected_indirect_object {
+                    | Some(person) => Ok(Conjugator.set_indirect_object(verb, person))
+                    | None => Ok(verb)
+                    }
+            })
+        };
+    };
 
     let change_pronoun = (value: option(Utils.select_option), pronoun: string) => {
         if (Option.is_none(is_perfective) && Option.is_none(is_transitive)) {
@@ -254,12 +319,19 @@ let make = () => {
                     | ("object", Some(person_param)) => {
                         set_verb_form(prev_verb_form => {
                             switch prev_verb_form {
-                                | Some(verb) => {
-                                    set_error(_ => None)
-                                    set_object(_ => Some(person_param))
-                                    Some(Conjugator.set_object(verb, person_param))
+                            | Some(verb) =>
+                                switch (Conjugator.set_object(verb, person_param)) {
+                                | Ok(updated_verb) => {
+                                    set_error(_ => None);
+                                    set_object(_ => Some(person_param));
+                                    Some(updated_verb);
                                 }
-                                | None => None
+                                | Error(error) => {
+                                    set_error(_ => Some(error));
+                                    prev_verb_form;
+                                }
+                                }
+                            | None => None
                             }
                         })
                     }
@@ -569,41 +641,27 @@ let make = () => {
         set_verb_form(prev_verb_form => {
             switch prev_verb_form {
             | Some(verb) => {
-                set_error(_ => None)
-                set_is_transitive(_ => checked)
-                switch (subject, object_) {
-                    | (Some(subj), Some(obj)) =>
-                        try (verb
-                        ->Conjugator.reset_subject_object
-                        ->apply_transitivity
-                        ->Conjugator.set_subject(subj)
-                        ->Result.get_ok
-                        ->Conjugator.set_object(obj)
-                        ->Some) {
-                            | Conjugator__Utils.Todo(err) => {
-                                set_error(_ => Some(err))
-                                prev_verb_form
-                            }
-                        }
-                    | (Some(subj), _) => 
-                        try (verb
-                        ->Conjugator.reset_subject_object
-                        ->apply_transitivity
-                        ->Conjugator.set_subject(subj)
-                        ->Result.get_ok
-                        ->Some) {
-                            | Conjugator__Utils.Todo(err) => {
-                                set_error(_ => Some(err))
-                                prev_verb_form
-                            }
-                        }
-                    | (_, Some(obj)) => 
-                        verb
-                        ->Conjugator.reset_subject_object
-                        ->apply_transitivity
-                        ->Conjugator.set_object(obj)
-                        ->Some
-                    | _ => Some(apply_transitivity(verb))
+                let updated_verb =
+                    verb
+                    ->Conjugator.reset_subject_object
+                    ->apply_transitivity;
+                switch (
+                    apply_subject_and_object(
+                        updated_verb,
+                        subject,
+                        object_,
+                        indirect_object,
+                    )
+                ) {
+                | Ok(updated_verb) => {
+                    set_error(_ => None);
+                    set_is_transitive(_ => checked);
+                    Some(updated_verb);
+                }
+                | Error(error) => {
+                    set_error(_ => Some(error));
+                    prev_verb_form;
+                }
                 }
             }
             | None => None
@@ -620,16 +678,6 @@ let make = () => {
             set_verb_form(prev_verb_form => {
                 switch prev_verb_form {
                 | Some(verb) => {
-                    set_error(_ => None)
-                    set_is_perfective(_ => value)
-
-                    // Jagersma 24.2.1: The preformative {u} is only found in perfective forms.
-                    switch (value, preformative) {
-                    | (Some(false), Some(Conjugator.Preformative.U)) =>
-                        set_general_warning(_ => Some(Warnings.PreformativeUOnlyInPerfective))
-                    | _ => set_general_warning(_ => None)
-                    }
-
                     let apply_aspect = verb =>
                         switch (value, verb_stem) {
                         | (Some(true), Some(verb_data)) =>
@@ -643,49 +691,64 @@ let make = () => {
                         | _ => verb
                         };
 
-                    switch (subject, object_) {
-                        | (Some(subj), Some(obj)) => {
-                            try (verb
-                            ->Conjugator.reset_subject_object
-                            ->apply_aspect
-                            ->Conjugator.set_subject(subj)
-                            ->Result.get_ok
-                            ->Conjugator.set_object(obj)
-                            ->Some) {
-                                | Conjugator__Utils.Todo(err) => {
-                                    set_error(_ => Some(err))
-                                    prev_verb_form
-                                }
-                            }
-                        }
-                        | (Some(subj), _) => {
-                            try (verb
-                            ->Conjugator.reset_subject_object
-                            ->apply_aspect
-                            ->Conjugator.set_subject(subj)
-                            ->Result.get_ok
-                            ->Some) {
-                                | Conjugator__Utils.Todo(err) => {
-                                    set_error(_ => Some(err))
-                                    prev_verb_form
-                                }
-                            }
-                        }
-                        | (_, Some(obj)) =>
-                            verb
-                            ->Conjugator.reset_subject_object
-                            ->apply_aspect
-                            ->Conjugator.set_object(obj)
-                            ->Some
-                        | _ => verb
-                            ->apply_aspect
-                            ->Some
+                    let updated_verb =
+                        verb
+                        ->Conjugator.reset_subject_object
+                        ->apply_aspect;
+                    switch (apply_subject_and_object(updated_verb, subject, object_, indirect_object)) {
+                    | Ok(updated_verb) => {
+                        set_error(_ => None);
+                        set_is_perfective(_ => value);
+                        // Jagersma 24.2.1: The preformative {u} is only found in perfective forms.
+                        switch (value, preformative) {
+                        | (Some(false), Some(Conjugator.Preformative.U)) =>
+                            set_general_warning(_ => Some(Warnings.PreformativeUOnlyInPerfective))
+                        | _ => set_general_warning(_ => None)
+                        };
+                        Some(updated_verb);
+                    }
+                    | Error(error) => {
+                        set_error(_ => Some(error));
+                        prev_verb_form;
+                    }
                     }
                 }
                 | None => None
                 }
             })
         };
+
+    let show_cuneiform_copy_tooltip = () => {
+        switch cuneiform_copy_tooltip_timeout.current {
+        | Some(timeout_id) => Js.Global.clearTimeout(timeout_id)
+        | None => ()
+        };
+        set_cuneiform_copy_tooltip_open(_ => true);
+        let timeout_id = Js.Global.setTimeout(
+            ~f=() => {
+                set_cuneiform_copy_tooltip_open(_ => false);
+                cuneiform_copy_tooltip_timeout.current = None;
+            },
+            1500,
+        );
+        cuneiform_copy_tooltip_timeout.current = Some(timeout_id);
+    };
+
+    let show_share_link_tooltip = () => {
+        switch share_link_tooltip_timeout.current {
+        | Some(timeout_id) => Js.Global.clearTimeout(timeout_id)
+        | None => ()
+        };
+        set_share_link_tooltip_open(_ => true);
+        let timeout_id = Js.Global.setTimeout(
+            ~f=() => {
+                set_share_link_tooltip_open(_ => false);
+                share_link_tooltip_timeout.current = None;
+            },
+            1500,
+        );
+        share_link_tooltip_timeout.current = Some(timeout_id);
+    };
 
     let copy_result_cuneiforms = () => {
         switch (verb_form, verb_stem) {
@@ -704,6 +767,10 @@ let make = () => {
                 let _ =
                     cuneiforms
                     |> Bindings.Browser.Clipboard.write_text
+                    |> Js.Promise.then_(_ => {
+                        show_cuneiform_copy_tooltip();
+                        Js.Promise.resolve();
+                    })
                     |> Js.Promise.catch(error => {
                         Js.log2(
                             "Could not copy the conjugated cuneiforms:",
@@ -724,23 +791,207 @@ let make = () => {
         }
     };
 
-    React.useEffect1(() => {
+    let build_shareable_link = () => {
+        switch verb_stem {
+        | Some(selected_verb) => {
+            let params: list(option((string, string))) = [
+                switch is_perfective {
+                | Some(true) => Some(("aspect", "pfv"))
+                | Some(false) => Some(("aspect", "impfv"))
+                | None => None
+                },
+                switch preformative {
+                | Some(Conjugator.Preformative.A) => Some(("pref", "a"))
+                | Some(Conjugator.Preformative.U) => Some(("pref", "u"))
+                | Some(Conjugator.Preformative.I) => Some(("pref", "i"))
+                | None => None
+                },
+                subject
+                |> Option.map(person =>
+                    ("subj", person_param_to_url_code(person))
+                ),
+                object_
+                |> Option.map(person =>
+                    ("obj", person_param_to_url_code(person))
+                ),
+                indirect_object
+                |> Option.map(person =>
+                    ("indobj", person_param_to_url_code(person))
+                ),
+            ];
+            let query =
+                params
+                |> Stdlib.List.filter_map(param => param)
+                |> Array.of_list
+                |> Array.map(((key, value)) =>
+                    Js.Global.encodeURIComponent(key)
+                    ++ "="
+                    ++ Js.Global.encodeURIComponent(value)
+                )
+                |> Js.Array.join(~sep="&");
+            let shareable_link =
+                Browser.Window.location_origin
+                ++ "/conjugator/"
+                ++ Js.Global.encodeURIComponent(selected_verb.label)
+                ++ (String.length(query) > 0 ? "?" ++ query : "");
+            let _ =
+                shareable_link
+                |> Browser.Clipboard.write_text
+                |> Js.Promise.then_(_ => {
+                    show_share_link_tooltip();
+                    Js.Promise.resolve();
+                })
+                |> Js.Promise.catch(error => {
+                    Js.log2("Could not copy the shareable link:", error);
+                    Js.Promise.resolve();
+                });
+            ();
+        }
+        | None => ()
+        }
+    };
+
+    React.useEffect2(() => {
+        // finds if there is a verb in the URL
         switch verb_from_url {
         | Some(verb) => {
             // If a verb is provided, set it as the current verb stem after
             // checking that it exists in the list of Sumerian verbs.
+            let decoded_verb = Js.Global.decodeURIComponent(verb);
             let selected_verb: option(verb_data) =
                 Array.find_opt(
-                    (candidate: verb_data) => candidate.label === verb,
+                    (candidate: verb_data) => candidate.label === decoded_verb,
                     available_verbs,
                 );
-            set_new_verb_stem(selected_verb);
+            switch selected_verb {
+            | Some(selected_verb) => {
+                let search =
+                    Js.String.startsWith(~prefix="?", url.search)
+                        ? url.search |> Js.String.slice(~start=1)
+                        : url.search;
+                let url_params =
+                    if (String.length(url.search) > 0) {
+                        Js.Dict.fromList(
+                            search
+                            |> Js.String.split(~sep="&")
+                            |> Array.map(param => {
+                                switch (param |> Js.String.split(~sep="=")) {
+                                | [|key, value|] => (key, value)
+                                | _ => ("", "")
+                                }
+                            })
+                            |> Array.to_list
+                        )
+                    } else {
+                        Js.Dict.empty()
+                    };
+                let selected_aspect = switch (Js.Dict.get(url_params, "aspect")) {
+                | Some("impfv") => false
+                | _ => true
+                };
+                let selected_preformative = switch (Js.Dict.get(url_params, "pref")) {
+                | Some("a") => Some(Conjugator__Infixes.Preformative.A)
+                | Some("u") => Some(Conjugator__Infixes.Preformative.U)
+                | Some("i") => Some(Conjugator__Infixes.Preformative.I)
+                | _ => None
+                };
+                let selected_subject = switch (Js.Dict.get(url_params, "subj")) {
+                | Some("1") => Some(Conjugator__Infixes.PersonParam.First_sing)
+                | Some("2") => Some(Conjugator__Infixes.PersonParam.Second_sing)
+                | Some("3") => Some(Conjugator__Infixes.PersonParam.Third_sing_human)
+                | Some("4") => Some(Conjugator__Infixes.PersonParam.Third_sing_non_human)
+                | Some("5") => Some(Conjugator__Infixes.PersonParam.First_plur)
+                | Some("6") => Some(Conjugator__Infixes.PersonParam.Second_plur)
+                | Some("7") => Some(Conjugator__Infixes.PersonParam.Third_plur_human)
+                | Some("8") => Some(Conjugator__Infixes.PersonParam.Third_plur_non_human)
+                | _ => None
+                };
+                let selected_object = switch (Js.Dict.get(url_params, "obj")) {
+                | Some("1") => Some(Conjugator__Infixes.PersonParam.First_sing)
+                | Some("2") => Some(Conjugator__Infixes.PersonParam.Second_sing)
+                | Some("3") => Some(Conjugator__Infixes.PersonParam.Third_sing_human)
+                | Some("4") => Some(Conjugator__Infixes.PersonParam.Third_sing_non_human)
+                | Some("5") => Some(Conjugator__Infixes.PersonParam.First_plur)
+                | Some("6") => Some(Conjugator__Infixes.PersonParam.Second_plur)
+                | Some("7") => Some(Conjugator__Infixes.PersonParam.Third_plur_human)
+                | Some("8") => Some(Conjugator__Infixes.PersonParam.Third_plur_non_human)
+                | _ => None
+                };
+                let selected_indirect_object = switch (Js.Dict.get(url_params, "indobj")) {
+                | Some("1") => Some(Conjugator__Infixes.PersonParam.First_sing)
+                | Some("2") => Some(Conjugator__Infixes.PersonParam.Second_sing)
+                | Some("3") => Some(Conjugator__Infixes.PersonParam.Third_sing_human)
+                | Some("4") => Some(Conjugator__Infixes.PersonParam.Third_sing_non_human)
+                | Some("5") => Some(Conjugator__Infixes.PersonParam.First_plur)
+                | Some("6") => Some(Conjugator__Infixes.PersonParam.Second_plur)
+                | Some("7") => Some(Conjugator__Infixes.PersonParam.Third_plur_human)
+                | Some("8") => Some(Conjugator__Infixes.PersonParam.Third_plur_non_human)
+                | _ => None
+                };
+
+                let initialized_verb = Conjugator.create(selected_verb.stem);
+                let initialized_verb =
+                    selected_verb.transitive
+                        ? Conjugator.is_transitive(initialized_verb)
+                        : Conjugator.is_intransitive(initialized_verb);
+                let initialized_verb =
+                    selected_aspect
+                        ? Conjugator.is_perfective(initialized_verb)
+                        : Conjugator.is_imperfective(
+                            initialized_verb,
+                            Some(selected_verb.imperfective),
+                        );
+                let initialized_verb =
+                    switch (selected_preformative) {
+                    | Some(pref) => Conjugator.set_preformative(initialized_verb, pref)
+                    | None => initialized_verb
+                    };
+
+                let (
+                    initialized_verb,
+                    initialization_error,
+                    initialized_subject,
+                    initialized_object,
+                    initialized_indirect_object,
+                ) = switch (
+                    apply_subject_and_object(
+                        initialized_verb,
+                        selected_subject,
+                        selected_object,
+                        selected_indirect_object,
+                    )
+                ) {
+                | Ok(verb) =>
+                    (
+                        verb,
+                        None,
+                        selected_subject,
+                        selected_object,
+                        selected_indirect_object,
+                    )
+                | Error(error) =>
+                    (initialized_verb, Some(error), None, None, None)
+                    };
+
+                reset();
+                set_verb_stem(_ => Some(selected_verb));
+                set_verb_form(_ => Some(initialized_verb));
+                set_is_transitive(_ => Some(selected_verb.transitive));
+                set_is_perfective(_ => Some(selected_aspect));
+                set_preformative(_ => selected_preformative);
+                set_subject(_ => initialized_subject);
+                set_object(_ => initialized_object);
+                set_indirect_object(_ => initialized_indirect_object);
+                set_error(_ => initialization_error);
+            }
+            | None => set_new_verb_stem(None)
+            };
         }
         | None => ()
         };
 
         None;
-    }, [|verb_from_url|]);
+    }, (verb_from_url, url.search));
 
     <Container className=css##mainContainer>
         <h1>{"Sumerian Verb Conjugator"|>React.string}</h1>
@@ -1553,13 +1804,38 @@ let make = () => {
                     >
                         {"Reset" |> React.string}
                     </Button>
-                    <Button 
-                        variant=`contained
-                        onClick={_ => copy_result_cuneiforms()}
-                        disabled={verb_form |> Option.is_none}
+                    <Tooltip
+                        title={"Cuneiform copied!" |> React.string}
+                        disableFocusListener=true
+                        disableHoverListener=true
+                        disableTouchListener=true
+                        _open=cuneiform_copy_tooltip_open
+                        onClose={_ => set_cuneiform_copy_tooltip_open(_ => false)}
                     >
-                        {"Copy" |> React.string}
-                    </Button>
+                        <Button
+                            variant=`contained
+                            onClick={_ => copy_result_cuneiforms()}
+                            disabled={verb_form |> Option.is_none}
+                        >
+                            {"Copy" |> React.string}
+                        </Button>
+                    </Tooltip>
+                    <Tooltip
+                        title={"Link copied!" |> React.string}
+                        disableFocusListener=true
+                        disableHoverListener=true
+                        disableTouchListener=true
+                        _open=share_link_tooltip_open
+                        onClose={_ => set_share_link_tooltip_open(_ => false)}
+                    >
+                        <Button
+                            variant=`contained
+                            onClick={_ => build_shareable_link()}
+                            disabled={verb_form |> Option.is_none}
+                        >
+                            {"Share" |> React.string}
+                        </Button>
+                    </Tooltip>
                     <Button
                         variant=`contained
                         onClick={_ => set_is_modal_open(_ => true)}

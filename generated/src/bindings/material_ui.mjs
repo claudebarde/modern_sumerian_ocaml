@@ -164,6 +164,25 @@ const Popover = {
   Actions
 };
 
+const Placement = {
+  bottom: "bottom",
+  bottomEnd: "bottom-end",
+  bottomStart: "bottom-start",
+  left: "left",
+  leftEnd: "left-end",
+  leftStart: "left-start",
+  right: "right",
+  rightEnd: "right-end",
+  rightStart: "right-start",
+  top: "top",
+  topEnd: "top-end",
+  topStart: "top-start"
+};
+
+const Popper = {
+  Placement
+};
+
 const Radio = {};
 
 const RadioGroup = {};
@@ -226,7 +245,7 @@ const Toolbar = {
   Variant
 };
 
-const Placement = {
+const Placement$1 = {
   auto: "auto",
   autoEnd: "auto-end",
   autoStart: "auto-start",
@@ -245,7 +264,7 @@ const Placement = {
 };
 
 const Tooltip = {
-  Placement
+  Placement: Placement$1
 };
 
 const Variant$1 = {
@@ -351,6 +370,7 @@ export {
   OutlinedInput,
   Paper,
   Popover,
+  Popper,
   Radio,
   RadioGroup,
   Select,

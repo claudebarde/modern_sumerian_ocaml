@@ -1326,6 +1326,46 @@ module Popover = {
     ) => React.element = "default";
 };
 
+module Popper = {
+  module Placement = {
+    type t;
+
+    external fromString: string => t = "%identity";
+
+    let bottom = fromString("bottom");
+    let bottomEnd = fromString("bottom-end");
+    let bottomStart = fromString("bottom-start");
+    let left = fromString("left");
+    let leftEnd = fromString("left-end");
+    let leftStart = fromString("left-start");
+    let right = fromString("right");
+    let rightEnd = fromString("right-end");
+    let rightStart = fromString("right-start");
+    let top = fromString("top");
+    let topEnd = fromString("top-end");
+    let topStart = fromString("top-start");
+  };
+
+  [@mel.module "@mui/material/Popper"] [@react.component]
+  external make: (
+    ~anchorEl: Js.Nullable.t(Dom.element)=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~disablePortal: bool=?,
+    ~keepMounted: bool=?,
+    ~modifiers: array(Js.t({..}))=?, // TODO: define the type for Popper.js modifiers
+    ~_open: bool=?,
+    ~placement: Placement.t=?,
+    ~popperOptions: Js.t({..})=?, // TODO: define the type for Popper.js options
+    ~popperRef: React.ref(Js.Nullable.t(Dom.element))=?,
+    ~sx: Js.t({..})=?,
+    // TODO: define slots and slotProps
+    ~transition: bool=?,
+    unit
+  ) => React.element = "default";
+};
+
 module Radio = {
   [@mel.module "@mui/material/Radio"] [@react.component]
   external make: (

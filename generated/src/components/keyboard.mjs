@@ -2,14 +2,15 @@
 
 import KeyboardModuleScss from "../styles/Keyboard.module.scss";
 import Autocomplete from "@mui/material/Autocomplete";
+import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Divider from "@mui/material/Divider";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import FormHelperText from "@mui/material/FormHelperText";
 import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import ListSubheader from "@mui/material/ListSubheader";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -19,6 +20,8 @@ import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Browser from "../bindings/browser.mjs";
 import * as Bindings__Config from "../bindings/config.mjs";
@@ -34,6 +37,7 @@ import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__List from "melange/list.mjs";
+import * as Stdlib__String from "melange/string.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -160,57 +164,63 @@ function Keyboard(Props) {
   const set_cuneiform_display = match$1[1];
   const cuneiform_display = match$1[0];
   const match$2 = React.useState(function () {
-    
+    return 0;
   });
-  const set_cuneiform_selection = match$2[1];
-  const cuneiform_selection = match$2[0];
+  const set_cursor_pos = match$2[1];
+  const cursor_pos = match$2[0];
   const match$3 = React.useState(function () {
     
   });
-  const set_active_cuneiform_selection = match$3[1];
-  const active_cuneiform_selection = match$3[0];
+  const set_cuneiform_selection = match$3[1];
+  const cuneiform_selection = match$3[0];
   const match$4 = React.useState(function () {
+    
+  });
+  const set_active_cuneiform_selection = match$4[1];
+  const active_cuneiform_selection = match$4[0];
+  const match$5 = React.useState(function () {
     return true;
   });
-  const set_has_word_divider = match$4[1];
-  const has_word_divider = match$4[0];
-  const match$5 = React.useState(function () {
-    return false;
-  });
-  const set_cuneiform_copy_tooltip_open = match$5[1];
+  const set_has_word_divider = match$5[1];
+  const has_word_divider = match$5[0];
   const match$6 = React.useState(function () {
     return false;
   });
-  const set_transliteration_copy_tooltip_open = match$6[1];
+  const set_cuneiform_copy_tooltip_open = match$6[1];
   const match$7 = React.useState(function () {
     return false;
   });
-  const set_visual_aid = match$7[1];
-  const visual_aid = match$7[0];
+  const set_transliteration_copy_tooltip_open = match$7[1];
   const match$8 = React.useState(function () {
     return false;
   });
-  const set_dictionary_search = match$8[1];
-  const dictionary_search = match$8[0];
+  const set_visual_aid = match$8[1];
+  const visual_aid = match$8[0];
   const match$9 = React.useState(function () {
+    return false;
+  });
+  const set_dictionary_search = match$9[1];
+  const dictionary_search = match$9[0];
+  const match$10 = React.useState(function () {
     
   });
-  const set_keyboard_dictionary = match$9[1];
-  const keyboard_dictionary = match$9[0];
-  const match$10 = React.useState(function () {
+  const set_keyboard_dictionary = match$10[1];
+  const keyboard_dictionary = match$10[0];
+  const match$11 = React.useState(function () {
     return "";
   });
-  const set_selected_determinative = match$10[1];
-  const match$11 = React.useState(function () {
+  const set_selected_determinative = match$11[1];
+  const match$12 = React.useState(function () {
     return null;
   });
-  const set_determinatives_menu_anchor = match$11[1];
-  const determinatives_menu_anchor = match$11[0];
+  const set_determinatives_menu_anchor = match$12[1];
+  const determinatives_menu_anchor = match$12[0];
   const determinatives_menu_open = !(determinatives_menu_anchor == null);
   const latest_search_id = React.useRef(0);
   const cuneiform_selection_ref = React.useRef(null);
   const cuneiform_copy_tooltip_timeout = React.useRef(undefined);
   const transliteration_copy_tooltip_timeout = React.useRef(undefined);
+  const is_mobile = UseMediaQuery("(max-width:599px)");
   React.useEffect((function () {
     return (function (param) {
       const timeout_id = cuneiform_copy_tooltip_timeout.current;
@@ -565,6 +575,9 @@ function Keyboard(Props) {
     Curry._1(set_cuneiform_display, (function (param) {
       
     }));
+    Curry._1(set_cursor_pos, (function (param) {
+      return 0;
+    }));
     Curry._1(set_input, (function (param) {
       
     }));
@@ -579,6 +592,7 @@ function Keyboard(Props) {
     }));
   };
   const select_determinative = function (option) {
+    const next_cursor_pos = cuneiform_display !== undefined ? cuneiform_display.length + 1 | 0 : 1;
     Curry._1(set_cuneiform_display, (function (prev) {
       const composed_sign_cuneiform = option.symbol;
       const composed_sign_phonetic = "D=" + option.phonetic;
@@ -594,6 +608,9 @@ function Keyboard(Props) {
             tl: /* [] */ 0
           }
         }) : [composed_sign];
+    }));
+    Curry._1(set_cursor_pos, (function (param) {
+      return next_cursor_pos;
     }));
     Curry._1(set_selected_determinative, (function (param) {
       return "";
@@ -655,14 +672,31 @@ function Keyboard(Props) {
       phonetic: composed_sign_phonetic,
       part_of_speech: composed_sign_part_of_speech
     };
+    const insertion_index = cuneiform_display !== undefined && cursor_pos >= 0 ? (
+        cursor_pos > cuneiform_display.length ? cuneiform_display.length : cursor_pos
+      ) : 0;
     Curry._1(set_cuneiform_display, (function (prev) {
-      return prev !== undefined ? Caml_array.concat({
-          hd: prev,
+      let tmp;
+      if (prev !== undefined) {
+        const before_cursor = prev.slice(0, insertion_index);
+        const after_cursor = prev.slice(insertion_index, prev.length);
+        tmp = Caml_array.concat({
+          hd: before_cursor,
           tl: {
             hd: [composed_sign],
-            tl: /* [] */ 0
+            tl: {
+              hd: after_cursor,
+              tl: /* [] */ 0
+            }
           }
-        }) : [composed_sign];
+        });
+      } else {
+        tmp = [composed_sign];
+      }
+      return tmp;
+    }));
+    Curry._1(set_cursor_pos, (function (param) {
+      return insertion_index + 1 | 0;
     }));
     Curry._1(set_input, (function (param) {
       
@@ -672,6 +706,28 @@ function Keyboard(Props) {
     }));
     Curry._1(set_active_cuneiform_selection, (function (param) {
       
+    }));
+  };
+  const remove_composed_sign = function (index) {
+    Curry._1(set_cuneiform_display, (function (previous) {
+      if (previous === undefined) {
+        return;
+      }
+      const updated_display = previous.filter(function (param, current_index) {
+        return current_index !== index;
+      });
+      if (updated_display.length === 0) {
+        return;
+      } else {
+        return updated_display;
+      }
+    }));
+    Curry._1(set_cursor_pos, (function (previous_cursor) {
+      if (index < previous_cursor) {
+        return previous_cursor - 1 | 0;
+      } else {
+        return previous_cursor;
+      }
     }));
   };
   const handleKeyDown = function ($$event) {
@@ -683,99 +739,58 @@ function Keyboard(Props) {
         return;
       }
     }
-    if ($$event.key !== " ") {
-      if ($$event.key === "ArrowLeft") {
-        $$event.preventDefault();
-        return Curry._1(set_active_cuneiform_selection, (function (prev) {
-          if (prev === undefined) {
-            if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
-              return Caml_array.get(cuneiform_selection, 0);
-            } else {
-              return;
-            }
-          }
-          if (cuneiform_selection === undefined) {
-            return;
-          }
-          const current_index = Stdlib__Array.find_index((function (sel) {
-            return sel.id === prev.id;
-          }), cuneiform_selection);
-          if (current_index !== undefined) {
-            if (current_index > 0) {
-              return Caml_array.get(cuneiform_selection, current_index - 1 | 0);
-            } else if (cuneiform_selection.length !== 0) {
-              return Caml_array.get(cuneiform_selection, cuneiform_selection.length - 1 | 0);
-            } else {
-              return;
-            }
-          } else {
-            return prev;
-          }
-        }));
-      } else if ($$event.key === "ArrowRight") {
-        $$event.preventDefault();
-        return Curry._1(set_active_cuneiform_selection, (function (prev) {
-          if (prev === undefined) {
-            if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
-              return Caml_array.get(cuneiform_selection, 0);
-            } else {
-              return;
-            }
-          }
-          if (cuneiform_selection === undefined) {
-            return;
-          }
-          const current_index = Stdlib__Array.find_index((function (sel) {
-            return sel.id === prev.id;
-          }), cuneiform_selection);
-          if (current_index !== undefined) {
-            if (current_index < (cuneiform_selection.length - 1 | 0)) {
-              return Caml_array.get(cuneiform_selection, current_index + 1 | 0);
-            } else if (cuneiform_selection.length !== 0) {
-              return Caml_array.get(cuneiform_selection, 0);
-            } else {
-              return;
-            }
-          } else {
-            return prev;
-          }
-        }));
-      } else {
+    if ($$event.key === " ") {
+      $$event.preventDefault();
+      if (cuneiform_display === undefined && input === undefined) {
         return;
       }
-    }
-    $$event.preventDefault();
-    if (cuneiform_display === undefined && input === undefined) {
-      return;
-    }
-    if (active_cuneiform_selection !== undefined) {
-      const active_sign_cuneiform = Caml_array.get(active_cuneiform_selection.cuneiforms, 0);
-      const active_sign_phonetic = active_cuneiform_selection.word;
-      const active_sign_part_of_speech = active_cuneiform_selection.part_of_speech;
-      const active_sign = {
-        cuneiform: active_sign_cuneiform,
-        phonetic: active_sign_phonetic,
-        part_of_speech: active_sign_part_of_speech
-      };
       const divider = {
         cuneiform: "wd",
         phonetic: "wd",
         part_of_speech: ""
       };
+      let elements_to_insert;
+      if (active_cuneiform_selection !== undefined) {
+        const active_sign_cuneiform = Caml_array.get(active_cuneiform_selection.cuneiforms, 0);
+        const active_sign_phonetic = active_cuneiform_selection.word;
+        const active_sign_part_of_speech = active_cuneiform_selection.part_of_speech;
+        const active_sign = {
+          cuneiform: active_sign_cuneiform,
+          phonetic: active_sign_phonetic,
+          part_of_speech: active_sign_part_of_speech
+        };
+        elements_to_insert = [
+          active_sign,
+          divider
+        ];
+      } else {
+        elements_to_insert = [divider];
+      }
+      const insertion_index = cuneiform_display !== undefined && cursor_pos >= 0 ? (
+          cursor_pos > cuneiform_display.length ? cuneiform_display.length : cursor_pos
+        ) : 0;
       Curry._1(set_cuneiform_display, (function (prev) {
-        return prev !== undefined ? Caml_array.concat({
-            hd: prev,
+        let tmp;
+        if (prev !== undefined) {
+          const before_cursor = prev.slice(0, insertion_index);
+          const after_cursor = prev.slice(insertion_index, prev.length);
+          tmp = Caml_array.concat({
+            hd: before_cursor,
             tl: {
-              hd: [
-                active_sign,
-                divider
-              ],
-              tl: /* [] */ 0
+              hd: elements_to_insert,
+              tl: {
+                hd: after_cursor,
+                tl: /* [] */ 0
+              }
             }
-          }) : [
-            active_sign,
-            divider
-          ];
+          });
+        } else {
+          tmp = elements_to_insert;
+        }
+        return tmp;
+      }));
+      Curry._1(set_cursor_pos, (function (param) {
+        return insertion_index + elements_to_insert.length | 0;
       }));
       Curry._1(set_input, (function (param) {
         
@@ -787,35 +802,273 @@ function Keyboard(Props) {
         
       }));
     }
-    const divider$1 = {
-      cuneiform: "wd",
-      phonetic: "wd",
-      part_of_speech: ""
-    };
-    Curry._1(set_cuneiform_display, (function (prev) {
-      return prev !== undefined ? Caml_array.concat({
-          hd: prev,
-          tl: {
-            hd: [divider$1],
-            tl: /* [] */ 0
+    if ($$event.key === "ArrowLeft") {
+      $$event.preventDefault();
+      Curry._1(set_cursor_pos, (function (prev) {
+        if (prev > 0) {
+          return prev - 1 | 0;
+        } else {
+          return 0;
+        }
+      }));
+      return Curry._1(set_active_cuneiform_selection, (function (prev) {
+        if (prev === undefined) {
+          if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
+            return Caml_array.get(cuneiform_selection, 0);
+          } else {
+            return;
           }
-        }) : [divider$1];
-    }));
-    Curry._1(set_input, (function (param) {
-      
-    }));
-    Curry._1(set_cuneiform_selection, (function (param) {
-      
-    }));
-    Curry._1(set_active_cuneiform_selection, (function (param) {
-      
-    }));
+        }
+        if (cuneiform_selection === undefined) {
+          return;
+        }
+        const current_index = Stdlib__Array.find_index((function (sel) {
+          return sel.id === prev.id;
+        }), cuneiform_selection);
+        if (current_index !== undefined) {
+          if (current_index > 0) {
+            return Caml_array.get(cuneiform_selection, current_index - 1 | 0);
+          } else {
+            return Caml_array.get(cuneiform_selection, 0);
+          }
+        } else {
+          return prev;
+        }
+      }));
+    }
+    if ($$event.key === "ArrowRight") {
+      $$event.preventDefault();
+      Curry._1(set_cursor_pos, (function (prev) {
+        if (cuneiform_display !== undefined) {
+          if (prev < cuneiform_display.length) {
+            return prev + 1 | 0;
+          } else {
+            return cuneiform_display.length;
+          }
+        } else {
+          return 0;
+        }
+      }));
+      return Curry._1(set_active_cuneiform_selection, (function (prev) {
+        if (prev === undefined) {
+          if (cuneiform_selection !== undefined && cuneiform_selection.length !== 0) {
+            return Caml_array.get(cuneiform_selection, 0);
+          } else {
+            return;
+          }
+        }
+        if (cuneiform_selection === undefined) {
+          return;
+        }
+        const current_index = Stdlib__Array.find_index((function (sel) {
+          return sel.id === prev.id;
+        }), cuneiform_selection);
+        if (current_index !== undefined) {
+          if (current_index < (cuneiform_selection.length - 1 | 0)) {
+            return Caml_array.get(cuneiform_selection, current_index + 1 | 0);
+          } else {
+            return Caml_array.get(cuneiform_selection, cuneiform_selection.length - 1 | 0);
+          }
+        } else {
+          return prev;
+        }
+      }));
+    }
+    if ($$event.key !== "Backspace") {
+      return;
+    }
+    if (input !== undefined && input.length !== 0) {
+      return;
+    }
+    if (cuneiform_display !== undefined && cursor_pos > 0) {
+      $$event.preventDefault();
+      return remove_composed_sign(cursor_pos - 1 | 0);
+    }
+    
   };
+  const composed_input = JsxRuntime.jsx(TextField, {
+    autoFocus: true,
+    margin: "dense",
+    onChange: (function ($$event) {
+      const value = Stdlib__String.trim($$event.target.value);
+      if (value.length === 0) {
+        return Curry._1(set_input, (function (param) {
+          
+        }));
+      } else {
+        return Curry._1(set_input, (function (param) {
+          return value;
+        }));
+      }
+    }),
+    onKeyDown: handleKeyDown,
+    sx: {
+      width: "6rem",
+      "& input": {
+        caretColor: "transparent"
+      }
+    },
+    value: input !== undefined ? input : "",
+    variant: "standard"
+  });
+  const composed_cursor = JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [
+      JsxRuntime.jsx("span", {
+        "aria-hidden": true,
+        className: css.composedSignsCursor
+      }),
+      composed_input
+    ]
+  });
+  const cursor_element = is_mobile ? null : JsxRuntime.jsx(React.Fragment, {
+      children: composed_cursor
+    }, "composed-cursor");
+  let tmp;
+  if (cuneiform_display !== undefined && cuneiform_display.length !== 0) {
+    const rendered_elements = Caml_array.concat(Stdlib__Array.to_list(Stdlib__Array.mapi((function (index, composed_sign) {
+      const cuneiform = composed_sign.cuneiform;
+      const phonetic = composed_sign.phonetic;
+      const Key = index.toString() + ("-" + cuneiform);
+      let tmp;
+      if (cuneiform === "wd" && has_word_divider) {
+        tmp = JsxRuntime.jsx("span", {
+          children: String.fromCodePoint(183),
+          className: css.composedWordDivider
+        });
+      } else if (cuneiform === "wd" && !has_word_divider) {
+        tmp = JsxRuntime.jsx("span", {
+          className: css.hiddenComposedWordDivider
+        });
+      } else {
+        const phonetic_label = Components__Web_utils.Format.from_phonetic_to_standard(phonetic.replace("D=", ""));
+        tmp = JsxRuntime.jsxs(Paper, {
+          children: [
+            JsxRuntime.jsx(IconButton, {
+              children: JsxRuntime.jsx(IconsReact.IconTrash, {}),
+              className: css.composedSignDelete,
+              onClick: (function (param) {
+                remove_composed_sign(index);
+              }),
+              size: "small",
+              sx: {
+                backgroundColor: "primary.main",
+                color: "primary.contrastText",
+                "&:hover": {
+                  backgroundColor: "primary.dark"
+                }
+              }
+            }),
+            JsxRuntime.jsxs(Stack, {
+              children: [
+                JsxRuntime.jsx("strong", {
+                  children: cuneiform,
+                  className: "cuneiforms " + css.composedSignCuneiform
+                }),
+                JsxRuntime.jsx("span", {
+                  children: phonetic_label,
+                  className: css.composedSignPhonetic
+                })
+              ],
+              spacing: 0,
+              sx: {
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center"
+              },
+              useFlexGap: true
+            })
+          ],
+          className: css.composedSign + (
+            visual_aid ? " " + css.composedSignVisualAid : ""
+          ),
+          elevation: visual_aid ? 1 : 0
+        });
+      }
+      const sign_element = JsxRuntime.jsx(React.Fragment, {
+        children: tmp
+      }, Key);
+      if (index === cursor_pos) {
+        return [
+          cursor_element,
+          sign_element
+        ];
+      } else {
+        return [sign_element];
+      }
+    }), cuneiform_display)));
+    tmp = cursor_pos === cuneiform_display.length ? Caml_array.concat({
+        hd: rendered_elements,
+        tl: {
+          hd: [cursor_element],
+          tl: /* [] */ 0
+        }
+      }) : rendered_elements;
+  } else {
+    tmp = cursor_element;
+  }
+  let tmp$1;
+  let exit = 0;
+  if (cuneiform_selection !== undefined && active_cuneiform_selection !== undefined) {
+    tmp$1 = Stdlib__Array.mapi((function (index, item) {
+      const Key = item.word + ("-" + Stdlib__Int.to_string(index));
+      return JsxRuntime.jsx(Badge, {
+        badgeContent: Stdlib__Int.to_string(item.icount) + "×",
+        children: JsxRuntime.jsx(ListItem, {
+          children: JsxRuntime.jsx(Tooltip, {
+            children: JsxRuntime.jsx(Button, {
+              children: JsxRuntime.jsxs("span", {
+                children: [
+                  JsxRuntime.jsx("span", {
+                    children: Caml_array.get(item.cuneiforms, 0),
+                    className: "cuneiforms x-small"
+                  }),
+                  JsxRuntime.jsx("span", {
+                    children: item.word
+                  }),
+                  JsxRuntime.jsx("span", {
+                    children: " (" + (Stdlib__Int.to_string(item.icount) + ("×" + ")"))
+                  })
+                ]
+              }),
+              size: "small",
+              variant: active_cuneiform_selection.id === item.id ? "contained" : "outlined",
+              sx: {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+                minWidth: "100px"
+              }
+            }),
+            title: item.translation
+          }),
+          className: css.cuneiformSelectionItem,
+          sx: {
+            padding: "0px"
+          }
+        }),
+        color: Bindings__Material_ui.Color.primary,
+        invisible: true
+      }, Key);
+    }), cuneiform_selection);
+  } else {
+    exit = 1;
+  }
+  if (exit === 1) {
+    tmp$1 = JsxRuntime.jsx(ListItem, {
+      children: "No selection"
+    });
+  }
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("h1", {
         children: "Sumerian Keyboard"
       }),
+      is_mobile ? JsxRuntime.jsx(Typography, {
+          align: "center",
+          children: "Note: switch to desktop to enjoy all the features of the Sumerian keyboard",
+          variant: Bindings__Material_ui.Typography.Variant.subtitle2
+        }) : null,
       JsxRuntime.jsxs(Stack, {
         children: [
           JsxRuntime.jsxs("div", {
@@ -854,7 +1107,7 @@ function Keyboard(Props) {
                             return false;
                           }));
                         }),
-                        open: match$5[0],
+                        open: match$6[0],
                         title: "Copied!"
                       }),
                       JsxRuntime.jsx(Tooltip, {
@@ -884,7 +1137,7 @@ function Keyboard(Props) {
                             return false;
                           }));
                         }),
-                        open: match$6[0],
+                        open: match$7[0],
                         title: "Copied!"
                       }),
                       JsxRuntime.jsx(Button, {
@@ -911,91 +1164,96 @@ function Keyboard(Props) {
               }),
               JsxRuntime.jsx(Paper, {
                 children: JsxRuntime.jsx("div", {
-                  children: cuneiform_display !== undefined ? (
-                      cuneiform_display.length !== 0 ? Stdlib__Array.mapi((function (index, composed_sign) {
-                          const cuneiform = composed_sign.cuneiform;
-                          const phonetic = composed_sign.phonetic;
-                          if (cuneiform === "wd" && has_word_divider) {
-                            const Key = index.toString() + ("-" + cuneiform);
-                            return JsxRuntime.jsx("span", {
-                              children: String.fromCodePoint(183),
-                              className: css.composedWordDivider
-                            }, Key);
-                          }
-                          if (cuneiform === "wd" && !has_word_divider) {
-                            const Key$1 = index.toString() + ("-" + cuneiform);
-                            return JsxRuntime.jsx("span", {
-                              className: css.hiddenComposedWordDivider
-                            }, Key$1);
-                          }
-                          const phonetic_label = Components__Web_utils.Format.from_phonetic_to_standard(phonetic.replace("D=", ""));
-                          const Key$2 = index.toString() + ("-" + cuneiform);
-                          return JsxRuntime.jsxs(Paper, {
-                            children: [
-                              JsxRuntime.jsx(IconButton, {
-                                children: JsxRuntime.jsx(IconsReact.IconTrash, {}),
-                                className: css.composedSignDelete,
-                                onClick: (function (param) {
-                                  Curry._1(set_cuneiform_display, (function (previous) {
-                                    if (previous === undefined) {
-                                      return;
-                                    }
-                                    const updated_display = previous.filter(function (param, current_index) {
-                                      return current_index !== index;
-                                    });
-                                    if (updated_display.length === 0) {
-                                      return;
-                                    } else {
-                                      return updated_display;
-                                    }
-                                  }));
-                                }),
-                                size: "small",
-                                sx: {
-                                  backgroundColor: "primary.main",
-                                  color: "primary.contrastText",
-                                  "&:hover": {
-                                    backgroundColor: "primary.dark"
-                                  }
-                                }
-                              }),
-                              JsxRuntime.jsxs(Stack, {
-                                children: [
-                                  JsxRuntime.jsx("strong", {
-                                    children: cuneiform,
-                                    className: "cuneiforms " + css.composedSignCuneiform
-                                  }),
-                                  JsxRuntime.jsx("span", {
-                                    children: phonetic_label,
-                                    className: css.composedSignPhonetic
-                                  })
-                                ],
-                                spacing: 0,
-                                sx: {
-                                  flexDirection: "column",
-                                  justifyContent: "center",
-                                  alignItems: "center"
-                                },
-                                useFlexGap: true
-                              })
-                            ],
-                            className: css.composedSign + (
-                              visual_aid ? " " + css.composedSignVisualAid : ""
-                            ),
-                            elevation: visual_aid ? 1 : 0
-                          }, Key$2);
-                        }), cuneiform_display) : JsxRuntime.jsx("div", {
-                          children: "Nothing to show yet."
-                        })
-                    ) : JsxRuntime.jsx("div", {
-                      children: "Nothing to show yet."
-                    }),
+                  children: tmp,
                   className: css.composedSigns + (
                     visual_aid ? " " + css.composedSignsVisualAid : ""
                   )
                 }),
                 className: css.paper + (" " + css.composedSignsPaper),
                 elevation: 0
+              }),
+              JsxRuntime.jsxs(Box, {
+                children: [
+                  JsxRuntime.jsx(List, {
+                    children: tmp$1,
+                    className: css.cuneiformSelectionList
+                  }),
+                  JsxRuntime.jsxs(Box, {
+                    children: [
+                      JsxRuntime.jsxs(Select, {
+                        autoWidth: true,
+                        children: [
+                          JsxRuntime.jsx(ListSubheader, {
+                            children: "Front"
+                          }),
+                          Stdlib__Array.map((function (option) {
+                            const Key = option.symbol;
+                            return JsxRuntime.jsx(MenuItem, {
+                              children: JsxRuntime.jsx("span", {
+                                children: option.label,
+                                className: "cuneiforms x-small"
+                              }),
+                              value: option.phonetic
+                            }, Key);
+                          }), Caml_array.get(determinative_groups, 0).options),
+                          JsxRuntime.jsx(ListSubheader, {
+                            children: "End"
+                          }),
+                          Stdlib__Array.map((function (option) {
+                            const Key = option.symbol;
+                            return JsxRuntime.jsx(MenuItem, {
+                              children: JsxRuntime.jsx("span", {
+                                children: option.label,
+                                className: "cuneiforms x-small"
+                              }),
+                              value: option.phonetic
+                            }, Key);
+                          }), Caml_array.get(determinative_groups, 1).options)
+                        ],
+                        displayEmpty: true,
+                        onChange: (function ($$event, param) {
+                          const selected_value = $$event.target.value;
+                          const option = Stdlib__Array.find_opt((function (option) {
+                            return option.phonetic === selected_value;
+                          }), determinative_options);
+                          if (option !== undefined) {
+                            return select_determinative(option);
+                          }
+                          
+                        }),
+                        renderValue: (function (param) {
+                          return "Determinatives";
+                        }),
+                        value: match$11[0],
+                        sx: {
+                          backgroundColor: "white"
+                        }
+                      }),
+                      dictionary_search ? JsxRuntime.jsx(IconsReact.IconRefresh, {
+                          size: 20,
+                          stroke: 3.0,
+                          className: css.refreshIcon + (" " + css.active)
+                        }) : JsxRuntime.jsx(IconsReact.IconRefresh, {
+                          size: 20,
+                          stroke: 3.0,
+                          className: css.refreshIcon
+                        })
+                    ],
+                    className: css.paper + (" " + css.searchFieldContainer),
+                    sx: {
+                      display: {
+                        xs: "none",
+                        sm: "flex"
+                      },
+                      flexDirection: "row",
+                      justifyContent: "stretch",
+                      alignItems: "flex-start",
+                      backgroundColor: "transparent",
+                      gap: "10px"
+                    }
+                  })
+                ],
+                className: css.cuneiformSelectionBar + (" " + css.onlyDesktop)
               }),
               JsxRuntime.jsxs("div", {
                 children: [
@@ -1125,216 +1383,6 @@ function Keyboard(Props) {
               })
             ],
             className: css.controls + (" " + css.onlyDesktop)
-          }),
-          JsxRuntime.jsxs(Box, {
-            children: [
-              JsxRuntime.jsxs(Select, {
-                autoWidth: true,
-                children: [
-                  JsxRuntime.jsx(ListSubheader, {
-                    children: "Front"
-                  }),
-                  Stdlib__Array.map((function (option) {
-                    const Key = option.symbol;
-                    return JsxRuntime.jsx(MenuItem, {
-                      children: option.label,
-                      value: option.phonetic
-                    }, Key);
-                  }), Caml_array.get(determinative_groups, 0).options),
-                  JsxRuntime.jsx(ListSubheader, {
-                    children: "End"
-                  }),
-                  Stdlib__Array.map((function (option) {
-                    const Key = option.symbol;
-                    return JsxRuntime.jsx(MenuItem, {
-                      children: option.label,
-                      value: option.phonetic
-                    }, Key);
-                  }), Caml_array.get(determinative_groups, 1).options)
-                ],
-                displayEmpty: true,
-                onChange: (function ($$event, param) {
-                  const selected_value = $$event.target.value;
-                  const option = Stdlib__Array.find_opt((function (option) {
-                    return option.phonetic === selected_value;
-                  }), determinative_options);
-                  if (option !== undefined) {
-                    return select_determinative(option);
-                  }
-                  
-                }),
-                renderValue: (function (param) {
-                  return "Determinatives";
-                }),
-                value: match$10[0],
-                sx: {
-                  backgroundColor: "white"
-                }
-              }),
-              JsxRuntime.jsxs(FormControl, {
-                children: [
-                  JsxRuntime.jsx(Autocomplete, {
-                    autoHighlight: true,
-                    className: css.searchField,
-                    filterOptions: (function (options, param) {
-                      return options;
-                    }),
-                    fullWidth: true,
-                    getOptionKey: (function (selection) {
-                      return selection.id;
-                    }),
-                    getOptionLabel: (function (selection) {
-                      return Components__Web_utils.Format.from_phonetic_to_standard(selection.word);
-                    }),
-                    inputValue: input !== undefined ? input : "",
-                    isOptionEqualToValue: (function (option, value) {
-                      return option.id === value.id;
-                    }),
-                    loading: dictionary_search,
-                    loadingText: "Searching the dictionary...",
-                    noOptionsText: input !== undefined && input.trim().length > 0 ? "No cuneiform signs found" : "Type a syllable or word to search",
-                    onChange: (function (_event, selection) {
-                      Curry._1(set_active_cuneiform_selection, (function (param) {
-                        if (selection == null) {
-                          return;
-                        } else {
-                          return Caml_option.some(selection);
-                        }
-                      }));
-                    }),
-                    onHighlightChange: (function (_event, selection, _reason) {
-                      if (!(selection == null)) {
-                        return Curry._1(set_active_cuneiform_selection, (function (param) {
-                          return selection;
-                        }));
-                      }
-                      
-                    }),
-                    onInputChange: (function (_event, value, reason) {
-                      if (reason === "clear") {
-                        Curry._1(set_input, (function (param) {
-                          
-                        }));
-                        Curry._1(set_cuneiform_selection, (function (param) {
-                          
-                        }));
-                        return Curry._1(set_active_cuneiform_selection, (function (param) {
-                          
-                        }));
-                      } else if (reason === "input") {
-                        return Curry._1(set_input, (function (param) {
-                          return value;
-                        }));
-                      } else {
-                        return;
-                      }
-                    }),
-                    onKeyDown: handleKeyDown,
-                    options: cuneiform_selection !== undefined ? cuneiform_selection : [],
-                    renderInput: (function (params) {
-                      return React.cloneElement(JsxRuntime.jsx(TextField, {
-                        autoFocus: true,
-                        label: "Search for a syllable or a word",
-                        placeholder: "Type here...",
-                        type: "text"
-                      }), params);
-                    }),
-                    renderOption: (function (props, selection, state, _ownerState) {
-                      const option_props = Object.assign({}, props, {
-                        onClick: (function (_event) {
-                          validateCuneiformSelection(selection);
-                        })
-                      });
-                      const Key = selection.id;
-                      return React.cloneElement(JsxRuntime.jsx("li", {
-                        children: JsxRuntime.jsxs("div", {
-                          children: [
-                            JsxRuntime.jsxs("div", {
-                              children: [
-                                JsxRuntime.jsx("span", {
-                                  children: Stdlib__Int.to_string(state.index + 1 | 0) + ".",
-                                  className: css.searchFieldResultIndex
-                                }),
-                                JsxRuntime.jsx("strong", {
-                                  children: Caml_array.get(selection.cuneiforms, 0),
-                                  className: "cuneiforms small"
-                                }),
-                                JsxRuntime.jsxs("div", {
-                                  children: [
-                                    JsxRuntime.jsxs("span", {
-                                      children: [
-                                        JsxRuntime.jsx("span", {
-                                          children: Components__Web_utils.Format.from_phonetic_to_standard(selection.word)
-                                        }),
-                                        JsxRuntime.jsx("span", {
-                                          children: " (" + (Components__Dictionary.display_part_of_speech(selection.part_of_speech).toLowerCase() + ")"),
-                                          style: {
-                                            color: "grey"
-                                          }
-                                        })
-                                      ]
-                                    }),
-                                    JsxRuntime.jsx("span", {
-                                      children: selection.translation,
-                                      style: {
-                                        fontSize: "0.8rem"
-                                      }
-                                    })
-                                  ],
-                                  style: {
-                                    display: "flex",
-                                    marginLeft: "12px",
-                                    alignItems: "flex-start",
-                                    flexDirection: "column",
-                                    justifyContent: "center"
-                                  }
-                                })
-                              ],
-                              className: css.searchFieldResultLeft
-                            }),
-                            JsxRuntime.jsx("div", {
-                              children: JsxRuntime.jsx("span", {
-                                children: Stdlib__Int.to_string(selection.icount) + "×",
-                                className: css.searchFieldResultOccurences
-                              })
-                            })
-                          ],
-                          className: css.searchFieldResult
-                        })
-                      }, Key), option_props);
-                    }),
-                    value: active_cuneiform_selection !== undefined ? active_cuneiform_selection : null
-                  }),
-                  JsxRuntime.jsx(FormHelperText, {
-                    children: "Use a hyphen instead of a space for compound words"
-                  })
-                ],
-                sx: {
-                  width: "100%"
-                }
-              }),
-              dictionary_search ? JsxRuntime.jsx(IconsReact.IconRefresh, {
-                  size: 20,
-                  stroke: 3.0,
-                  className: css.refreshIcon + (" " + css.active)
-                }) : JsxRuntime.jsx(IconsReact.IconRefresh, {
-                  size: 20,
-                  stroke: 3.0,
-                  className: css.refreshIcon
-                })
-            ],
-            className: css.paper + (" " + css.searchFieldContainer),
-            sx: {
-              display: {
-                xs: "none",
-                sm: "flex"
-              },
-              flexDirection: "row",
-              justifyContent: "stretch",
-              alignItems: "flex-start",
-              backgroundColor: "transparent",
-              gap: "10px"
-            }
           }),
           JsxRuntime.jsxs(Paper, {
             children: [

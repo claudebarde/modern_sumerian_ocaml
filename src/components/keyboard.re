@@ -129,6 +129,7 @@ let make = () => {
     let (input, set_input) = React.useState(_ => None);
     let (cuneiform_display, set_cuneiform_display) =
         React.useState(_ => (None: option(array(composed_sign))));
+    let (cursor_pos, set_cursor_pos) = React.useState(_ => 0);
     let (cuneiform_selection, set_cuneiform_selection) = React.useState(_ => (None: option(array(cuneiform_selection))));
     let (active_cuneiform_selection, set_active_cuneiform_selection) =
         React.useState(_ => (None: option(cuneiform_selection)));
@@ -158,6 +159,8 @@ let make = () => {
         React.useRef((None: option(Js.Global.timeoutId)));
     let transliteration_copy_tooltip_timeout =
         React.useRef((None: option(Js.Global.timeoutId)));
+
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     React.useEffect0(() =>
         Some(() => {
@@ -536,6 +539,7 @@ let make = () => {
 
     let reset = () => {
         set_cuneiform_display(_ => None);
+        set_cursor_pos(_ => 0);
         set_input(_ => None);
         set_cuneiform_selection(_ => None);
         set_active_cuneiform_selection(_ => None);
@@ -543,6 +547,10 @@ let make = () => {
     };
 
     let select_determinative = (option: Determinatives.select_option) => {
+        let next_cursor_pos = switch cuneiform_display {
+        | Some(display) => Array.length(display) + 1
+        | None => 1
+        };
         set_cuneiform_display(prev => {
             let composed_sign: composed_sign = {
                 cuneiform: option.symbol,
@@ -556,6 +564,7 @@ let make = () => {
             };
             Some(new_display);
         });
+        set_cursor_pos(_ => next_cursor_pos);
         set_selected_determinative(_ => "");
         set_determinatives_menu_anchor(_ => Js.Nullable.null);
     };
@@ -615,13 +624,41 @@ let make = () => {
             phonetic: selection.word,
             part_of_speech: selection.part_of_speech,
         };
+        let insertion_index = switch cuneiform_display {
+        | Some(display) =>
+            if (cursor_pos < 0) {
+                0
+            } else if (cursor_pos > Array.length(display)) {
+                Array.length(display)
+            } else {
+                cursor_pos
+            }
+        | None => 0
+        };
         set_cuneiform_display((prev: option(array(composed_sign))) => {
             let new_display = switch prev {
-                | Some(display) => Array.concat([display, [|composed_sign|]])
+                | Some(display) => {
+                    let before_cursor =
+                        display
+                        |> Js.Array.slice(~start=0, ~end_=insertion_index);
+                    let after_cursor =
+                        display
+                        |> Js.Array.slice(
+                            ~start=insertion_index,
+                            ~end_=Array.length(display),
+                        );
+
+                    Array.concat([
+                        before_cursor,
+                        [|composed_sign|],
+                        after_cursor,
+                    ]);
+                }
                 | None => [|composed_sign|]
             };
             Some(new_display);
         });
+        set_cursor_pos(_ => insertion_index + 1);
         set_input(_ => None);
         set_cuneiform_selection(_ => None);
         set_active_cuneiform_selection(_ => None);
@@ -662,6 +699,13 @@ let make = () => {
             | None => None
             }
         );
+        set_cursor_pos(previous_cursor =>
+            if (index < previous_cursor) {
+                previous_cursor - 1
+            } else {
+                previous_cursor
+            }
+        );
     };
 
     let handleKeyDown = (event: React.Event.Keyboard.t) => {
@@ -679,51 +723,67 @@ let make = () => {
                 // when the user presses Space, it adds a word divider and clears the input field and cuneiform selection
                 // if there is already an input value, it will act as the Enter key and add the current active cuneiform selection before adding the space
                 // "wd" is "word delimiter"
-                switch active_cuneiform_selection {
+                let divider: composed_sign = {
+                    cuneiform: "wd",
+                    phonetic: "wd",
+                    part_of_speech: "",
+                };
+                let elements_to_insert = switch active_cuneiform_selection {
                 | Some(active) => {
                     let active_sign: composed_sign = {
                         cuneiform: active.cuneiforms[0],
                         phonetic: active.word,
                         part_of_speech: active.part_of_speech,
                     };
-                    let divider: composed_sign = {
-                        cuneiform: "wd",
-                        phonetic: "wd",
-                        part_of_speech: "",
+                    [|active_sign, divider|];
+                }
+                | None => [|divider|]
+                };
+                let insertion_index = switch cuneiform_display {
+                | Some(display) =>
+                    if (cursor_pos < 0) {
+                        0
+                    } else if (cursor_pos > Array.length(display)) {
+                        Array.length(display)
+                    } else {
+                        cursor_pos
+                    }
+                | None => 0
+                };
+
+                set_cuneiform_display((prev: option(array(composed_sign))) => {
+                    let new_display = switch prev {
+                    | Some(display) => {
+                        let before_cursor =
+                            display
+                            |> Js.Array.slice(~start=0, ~end_=insertion_index);
+                        let after_cursor =
+                            display
+                            |> Js.Array.slice(
+                                ~start=insertion_index,
+                                ~end_=Array.length(display),
+                            );
+
+                        Array.concat([
+                            before_cursor,
+                            elements_to_insert,
+                            after_cursor,
+                        ]);
+                    }
+                    | None => elements_to_insert
                     };
-                    set_cuneiform_display((prev: option(array(composed_sign))) => {
-                        let new_display = switch prev {
-                            | Some(display) => Array.concat([display, [|active_sign, divider|]])
-                            | None => [|active_sign, divider|]
-                        };
-                        Some(new_display);
-                    });
-                    set_input(_ => None);
-                    set_cuneiform_selection(_ => None);
-                    set_active_cuneiform_selection(_ => None);
-                }
-                | None => {
-                    let divider: composed_sign = {
-                        cuneiform: "wd",
-                        phonetic: "wd",
-                        part_of_speech: "",
-                    };
-                    set_cuneiform_display((prev: option(array(composed_sign))) => {
-                        let new_display = switch prev {
-                            | Some(display) => Array.concat([display, [|divider|]])
-                            | None => [|divider|]
-                        };
-                        Some(new_display);
-                    });
-                    set_input(_ => None);
-                    set_cuneiform_selection(_ => None);
-                    set_active_cuneiform_selection(_ => None);
-                }
-                }
+                    Some(new_display);
+                });
+                set_cursor_pos(_ => insertion_index + Array.length(elements_to_insert));
+                set_input(_ => None);
+                set_cuneiform_selection(_ => None);
+                set_active_cuneiform_selection(_ => None);
             }
             }
         } else if (React.Event.Keyboard.key(event) === "ArrowLeft") {
             React.Event.Keyboard.preventDefault(event);
+            // moves the virtual cursor to the left
+            set_cursor_pos(prev => if (prev > 0) { prev - 1 } else { 0 });
             // moves the active selection to the left
             set_active_cuneiform_selection(prev =>  
                 switch prev {
@@ -735,10 +795,8 @@ let make = () => {
                             | Some(index) =>
                                 if (index > 0) {
                                     Some(selections[index - 1])
-                                } else if (Array.length(selections) > 0) {
-                                    Some(selections[Array.length(selections) - 1])
                                 } else {
-                                    None
+                                    Some(selections[0])
                                 }
                             | None => Some(active)
                         }
@@ -758,6 +816,18 @@ let make = () => {
             );
         } else if (React.Event.Keyboard.key(event) === "ArrowRight") {
             React.Event.Keyboard.preventDefault(event);
+            // moves the virtual cursor to the right
+            set_cursor_pos(prev => {
+                switch cuneiform_display {
+                | Some(display) =>
+                    if (prev < Array.length(display)) {
+                        prev + 1
+                    } else {
+                        Array.length(display)
+                    }
+                | None => 0
+                }
+            });
             // moves the active selection to the right
             set_active_cuneiform_selection(prev =>  
                 switch prev {
@@ -769,10 +839,8 @@ let make = () => {
                             | Some(index) =>
                                 if (index < Array.length(selections) - 1) {
                                     Some(selections[index + 1])
-                                } else if (Array.length(selections) > 0) {
-                                    Some(selections[0])
                                 } else {
-                                    None
+                                    Some(selections[Array.length(selections) - 1])
                                 }
                             | None => Some(active)
                         }
@@ -790,11 +858,73 @@ let make = () => {
                     }
                 }
             );
+        } else if (React.Event.Keyboard.key(event) === "Backspace") {
+            // input must be empty to trigger cuneiform deletion
+            switch (input, cuneiform_display) {
+                | (Some(value), _) when String.length(value) > 0 => ()
+                | (_, Some(_)) when cursor_pos > 0 => {
+                    React.Event.Keyboard.preventDefault(event);
+                    // removes the sign immediately to the left of the cursor
+                    remove_composed_sign(cursor_pos - 1);
+                }
+                | _ => ()
+            }
         }
     };
 
+    let composed_input = 
+        <TextField
+            autoFocus=true
+            margin=`dense
+            variant=`standard
+            value={
+                switch input {
+                | Some(value) => value
+                | None => ""
+                }
+            }
+            onChange={event => {
+                let value = event -> React.Event.Form.target##value |> String.trim;
+                if (String.length(value) == 0) {
+                    set_input(_ => None);
+                } else {
+                    set_input(_ => Some(value));
+                }
+            }}
+            onKeyDown={handleKeyDown}
+            sx={{
+                "width": "6rem",
+                "& input": {
+                    "caretColor": "transparent",
+                },
+            }}
+        />;
+
+    let composed_cursor =
+        <>
+            <span
+                className={css##composedSignsCursor}
+                ariaHidden=true
+            />
+            {composed_input}
+        </>;
+
+    let cursor_element =
+        is_mobile
+            ? React.null
+            : <React.Fragment key="composed-cursor">
+                {composed_cursor}
+            </React.Fragment>;
+
     <div className=css##keyboardContainer>
         <h1>{"Sumerian Keyboard"|>React.string}</h1>
+        {
+            is_mobile 
+            ? <Typography variant=Typography.Variant.subtitle2 align=`center>
+                {"Note: switch to desktop to enjoy all the features of the Sumerian keyboard" |> React.string}
+            </Typography> 
+            : React.null
+        }
         <Stack 
             direction=`column 
             spacing={`Object(Stack.ResponsiveSpacing.make(~xs=4, ~sm=2, ()))} 
@@ -866,76 +996,214 @@ let make = () => {
                         switch cuneiform_display {
                         | Some(display) => 
                             if (Array.length(display) > 0) {
-                                display
-                                |> Array.mapi((index, composed_sign: composed_sign) => {
-                                    let cuneiform = composed_sign.cuneiform;
-                                    let phonetic = composed_sign.phonetic;
-                                    if (cuneiform === "wd" && has_word_divider) {
-                                        <span 
-                                            key={Js.Int.toString(index) ++ "-" ++ cuneiform} 
-                                            className=css##composedWordDivider
-                                        >
-                                            {React.string(Js.String.fromCodePoint(0x00B7))}
-                                        </span>
-                                    } else if (cuneiform === "wd" && !has_word_divider) {
-                                        <span
-                                            key={Js.Int.toString(index) ++ "-" ++ cuneiform}
-                                            className=css##hiddenComposedWordDivider
-                                        />
-                                    } else {
-                                        let phonetic_label =
-                                            phonetic
-                                            |> Js.String.replace(
-                                                ~search="D=",
-                                                ~replacement="",
-                                            )
-                                            |> Web_utils.Format.from_phonetic_to_standard;
-                                        <Paper
-                                            key={Js.Int.toString(index) ++ "-" ++ cuneiform}
-                                            className={css##composedSign ++ (visual_aid ? " " ++ css##composedSignVisualAid : "")}
-                                            elevation={visual_aid ? 1 : 0}
-                                        >
-                                            <IconButton 
-                                                className=css##composedSignDelete
-                                                size=`small
-                                                sx={{
-                                                    "backgroundColor": "primary.main",
-                                                    "color": "primary.contrastText",
-                                                    "&:hover": {
-                                                        "backgroundColor": "primary.dark",
-                                                    },
-                                                }}
-                                                onClick={_ => remove_composed_sign(index)}
+                                let rendered_elements =
+                                    display
+                                    |> Array.mapi((index, composed_sign: composed_sign) => {
+                                        let cuneiform = composed_sign.cuneiform;
+                                        let phonetic = composed_sign.phonetic;
+                                        let sign_element =
+                                            <React.Fragment
+                                                key={Js.Int.toString(index) ++ "-" ++ cuneiform}
                                             >
-                                                <TablerReact.IconTrash />
-                                            </IconButton>
-                                            <Stack
-                                                sx={{"flexDirection": "column", "justifyContent": "center", "alignItems": "center"}}
-                                                spacing=`Number(0)
-                                                useFlexGap=true
-                                            >
-                                                <strong 
-                                                    className={"cuneiforms " ++ css##composedSignCuneiform}
-                                                    // style={visual_aid ? composedSignColor(composed_sign.part_of_speech) : ReactDOM.Style.make(())}
-                                                >
-                                                    {cuneiform |> React.string}
-                                                </strong>
-                                                <span className=css##composedSignPhonetic>
-                                                    {phonetic_label |> React.string}
-                                                </span>
-                                            </Stack>
-                                        </Paper>
-                                    }
-                                })
-                                |> React.array
+                                                {
+                                                    if (cuneiform === "wd" && has_word_divider) {
+                                                        <span className=css##composedWordDivider>
+                                                            {React.string(Js.String.fromCodePoint(0x00B7))}
+                                                        </span>
+                                                    } else if (cuneiform === "wd" && !has_word_divider) {
+                                                        <span className=css##hiddenComposedWordDivider />
+                                                    } else {
+                                                        let phonetic_label =
+                                                            phonetic
+                                                            |> Js.String.replace(
+                                                                ~search="D=",
+                                                                ~replacement="",
+                                                            )
+                                                            |> Web_utils.Format.from_phonetic_to_standard;
+
+                                                        <Paper
+                                                            className={css##composedSign ++ (visual_aid ? " " ++ css##composedSignVisualAid : "")}
+                                                            elevation={visual_aid ? 1 : 0}
+                                                        >
+                                                            <IconButton 
+                                                                className=css##composedSignDelete
+                                                                size=`small
+                                                                sx={{
+                                                                    "backgroundColor": "primary.main",
+                                                                    "color": "primary.contrastText",
+                                                                    "&:hover": {
+                                                                        "backgroundColor": "primary.dark",
+                                                                    },
+                                                                }}
+                                                                onClick={_ => remove_composed_sign(index)}
+                                                            >
+                                                                <TablerReact.IconTrash />
+                                                            </IconButton>
+                                                            <Stack
+                                                                sx={{"flexDirection": "column", "justifyContent": "center", "alignItems": "center"}}
+                                                                spacing=`Number(0)
+                                                                useFlexGap=true
+                                                            >
+                                                                <strong 
+                                                                    className={"cuneiforms " ++ css##composedSignCuneiform}
+                                                                    // style={visual_aid ? composedSignColor(composed_sign.part_of_speech) : ReactDOM.Style.make(())}
+                                                                >
+                                                                    {cuneiform |> React.string}
+                                                                </strong>
+                                                                <span className=css##composedSignPhonetic>
+                                                                    {phonetic_label |> React.string}
+                                                                </span>
+                                                            </Stack>
+                                                        </Paper>
+                                                    }
+                                                }
+                                            </React.Fragment>;
+
+                                        index == cursor_pos
+                                            ? [|cursor_element, sign_element|]
+                                            : [|sign_element|];
+                                    })
+                                    |> Array.to_list
+                                    |> Array.concat;
+                                let rendered_elements =
+                                    cursor_pos == Array.length(display)
+                                        ? Array.concat([rendered_elements, [|cursor_element|]])
+                                        : rendered_elements;
+
+                                rendered_elements |> React.array;
                             } else {
-                                <div>{"Nothing to show yet." |> React.string}</div>
+                                cursor_element
                             }
-                        | None => <div>{"Nothing to show yet." |> React.string}</div>
+                            | None => cursor_element
                         }
-                    }
+                    }   
                     </div>
                 </Paper>
+                <Box className={css##cuneiformSelectionBar ++ " " ++ css##onlyDesktop}>
+                    <List
+                        className={css##cuneiformSelectionList}
+                    >
+                    {
+                        switch (cuneiform_selection, active_cuneiform_selection) {
+                            | (Some(selection), Some(active_selection)) => {
+                                selection
+                                |> Array.mapi((index, item) => 
+                                    <Badge
+                                        key={item.word ++ "-" ++ (index |> Int.to_string)}
+                                        badgeContent={(item.icount |> Int.to_string) ++ {js|×|js} |> React.string}
+                                        color=Color.primary
+                                        invisible=true
+                                    >
+                                        <ListItem 
+                                            className={css##cuneiformSelectionItem}
+                                            sx={{"padding": "0px"}}
+                                        >
+                                            <Tooltip title={item.translation |> React.string}>
+                                                <Button
+                                                    variant={active_selection.id == item.id ? `contained : `outlined}
+                                                    sx={{
+                                                        "display": "flex",
+                                                        "flexDirection": "column",
+                                                        "alignItems": "flex-start",
+                                                        "justifyContent": "flex-start",
+                                                        "minWidth": "100px"
+                                                    }}
+                                                    size=`small
+                                                >
+                                                    <span>
+                                                        <span className="cuneiforms x-small">
+                                                            {item.cuneiforms[0] |> React.string}
+                                                        </span>
+                                                        <span>
+                                                            {item.word |> React.string}
+                                                        </span>
+                                                        <span>
+                                                            {" (" ++ (item.icount |> Int.to_string) ++ {js|×|js} ++ ")" |> React.string}
+                                                        </span>
+                                                    </span>
+                                                </Button>
+                                            </Tooltip>
+                                        </ListItem>
+                                    </Badge>
+                                )
+                                |> React.array
+                            }
+                            | _ => <ListItem>{"No selection" |> React.string}</ListItem>
+                        }
+                    }
+                    </List>
+                    // DETERMINATIVES DESKTOP VIEW
+                    <Box 
+                        className={css##paper ++ " " ++ css##searchFieldContainer}
+                        sx={{
+                            "display": {"xs": "none", "sm": "flex"},
+                            "flexDirection": "row",
+                            "justifyContent": "stretch",
+                            "alignItems": "flex-start",
+                            "backgroundColor": "transparent",
+                            "gap": "10px"
+                        }}
+                    >
+                        <Select
+                            autoWidth=true
+                            displayEmpty=true
+                            renderValue={_ => "Determinatives" |> React.string}
+                            value={Select.Value.fromString(selected_determinative)}
+                            onChange={(event, _) => {
+                                let selected_value = event##target##value;
+                                switch (
+                                    determinative_options
+                                    |> Array.find_opt((option: Determinatives.select_option) =>
+                                        option.phonetic === selected_value
+                                    )
+                                ) {
+                                | Some(option) => select_determinative(option)
+                                | None => ()
+                                };
+                            }}
+                            sx={{"backgroundColor": "white"}}
+                        >
+                            <ListSubheader>{"Front" |> React.string}</ListSubheader>
+                            {
+                                determinative_groups[0].options
+                                |> Array.map((option: Determinatives.select_option) =>
+                                    <MenuItem
+                                        key={option.symbol}
+                                        value={option.phonetic}
+                                    >
+                                        <span className="cuneiforms x-small">
+                                            {option.label |> React.string}
+                                        </span>
+                                    </MenuItem>
+                                )
+                                |> React.array
+                            }
+                            <ListSubheader>{"End" |> React.string}</ListSubheader>
+                            {
+                                determinative_groups[1].options
+                                |> Array.map((option: Determinatives.select_option) =>
+                                    <MenuItem
+                                        key={option.symbol}
+                                        value={option.phonetic}
+                                    >
+                                        <span className="cuneiforms x-small">
+                                            {option.label |> React.string}
+                                        </span>
+                                    </MenuItem>
+                                )
+                                |> React.array
+                            }
+                        </Select>
+                        {dictionary_search ? 
+                            <TablerReact.IconRefresh 
+                                className={css##refreshIcon ++ " " ++ css##active}
+                                size=20 
+                                stroke=3.0 
+                                /> : 
+                            <TablerReact.IconRefresh className=css##refreshIcon size=20 stroke=3.0 />
+                        }
+                    </Box>
+                </Box>
                 <div className={css##cuneiformDisplayButtons ++ " " ++ css##onlyMobile}>
                     // MOBILE BUTTONS
                     <span>
@@ -989,71 +1257,6 @@ let make = () => {
                     </ButtonGroup>
                 </div>
             </div>
-            /* <Paper className=css##paper>
-                <div
-                    className=css##cuneiformSelection
-                    ref={ReactDOM.Ref.domRef(cuneiform_selection_ref)}
-                >
-                // This is where the cuneiform selection area is implemented. 
-                // It allows users to select cuneiform characters to input into the cuneiform display area.
-                    {
-                        switch cuneiform_selection {
-                        | Some(selections) => 
-                            if (Array.length(selections) === 0) {
-                                <div>{"No cuneiforms found for \"" ++ (switch input {
-                                    | Some(value) => value
-                                    | None => ""
-                                }) ++ "\"." |> React.string}</div>
-                            } else {
-                                {
-                                    selections
-                                    |> Array.mapi((index, selection: cuneiform_selection) => {
-                                        <div 
-                                            key={selection.id} 
-                                            id={"cuneiform-selection-" ++ Js.Int.toString(index)}
-                                            className=css##cuneiformSelectionItem
-                                            ariaSelected={switch active_cuneiform_selection {
-                                                | Some(active) => active.id === selection.id
-                                                | None => index === 0
-                                            }}
-                                            onClick={_ => {
-                                                set_active_cuneiform_selection(_ => Some(selection));
-                                            }}
-                                        >
-                                            <strong className="cuneiforms">
-                                                {selection.cuneiforms[0] |> React.string}
-                                            </strong>
-                                        </div>
-                                    }
-                                    )
-                                    |> React.array
-                                }
-                            }
-                        | None => <div>{"Enter a word to search for its cuneiforms." |> React.string}</div>
-                        }
-                    }
-                </div>
-                <div className=css##cuneiformSelectionInfo>
-                    {
-                        switch active_cuneiform_selection {
-                        | Some(active) => {
-                                <>
-                                    <span>{active.word |> Web_utils.Format.from_phonetic_to_standard |> React.string}</span>
-                                    <span>{
-                                        switch cuneiform_selection {
-                                            | Some(selection) => {
-                                                ((selection |> Array.length |> Js.Int.toString) ++ " cuneiform(s) found")  |> React.string
-                                            }
-                                            | None => React.null
-                                        }
-                                    }</span>
-                                </>
-                            }
-                        | None => <span>{Js.String.fromCodePoint(0x00A0) |> React.string}</span>
-                        }
-                    }
-                </div>
-            </Paper> */
             <Box className={css##controls ++ " " ++ css##onlyDesktop}>
                 <div>
                     <FormControlLabel
@@ -1096,196 +1299,7 @@ let make = () => {
                     </span>
                 </div>
             </Box> 
-            // DESKTOP VIEW
-            <Box 
-                className={css##paper ++ " " ++ css##searchFieldContainer}
-                sx={{
-                    "display": {"xs": "none", "sm": "flex"},
-                    "flexDirection": "row",
-                    "justifyContent": "stretch",
-                    "alignItems": "flex-start",
-                    "backgroundColor": "transparent",
-                    "gap": "10px"
-                }}
-            >
-                <Select
-                    autoWidth=true
-                    displayEmpty=true
-                    renderValue={_ => "Determinatives" |> React.string}
-                    value={Select.Value.fromString(selected_determinative)}
-                    onChange={(event, _) => {
-                        let selected_value = event##target##value;
-                        switch (
-                            determinative_options
-                            |> Array.find_opt((option: Determinatives.select_option) =>
-                                option.phonetic === selected_value
-                            )
-                        ) {
-                        | Some(option) => select_determinative(option)
-                        | None => ()
-                        };
-                    }}
-                    sx={{"backgroundColor": "white"}}
-                >
-                    <ListSubheader>{"Front" |> React.string}</ListSubheader>
-                    {
-                        determinative_groups[0].options
-                        |> Array.map((option: Determinatives.select_option) =>
-                            <MenuItem
-                                key={option.symbol}
-                                value={option.phonetic}
-                            >
-                                {option.label |> React.string}
-                            </MenuItem>
-                        )
-                        |> React.array
-                    }
-                    <ListSubheader>{"End" |> React.string}</ListSubheader>
-                    {
-                        determinative_groups[1].options
-                        |> Array.map((option: Determinatives.select_option) =>
-                            <MenuItem
-                                key={option.symbol}
-                                value={option.phonetic}
-                            >
-                                {option.label |> React.string}
-                            </MenuItem>
-                        )
-                        |> React.array
-                    }
-                </Select>
-                <FormControl sx={{"width": "100%"}}>
-                    <Autocomplete
-                        autoHighlight=true
-                        fullWidth=true
-                        className={css##searchField}
-                        options={switch cuneiform_selection {
-                            | Some(selections) => selections
-                            | None => [||]
-                        }}
-                        value={switch active_cuneiform_selection {
-                            | Some(selection) => Js.Nullable.return(selection)
-                            | None => Js.Nullable.null
-                        }}
-                        inputValue={switch input {
-                            | Some(value) => value
-                            | None => ""
-                        }}
-                        getOptionLabel={(selection: cuneiform_selection) =>
-                            selection.word
-                            |> Web_utils.Format.from_phonetic_to_standard
-                        }
-                        getOptionKey={(selection: cuneiform_selection) =>
-                            Autocomplete.OptionKey.fromString(selection.id)
-                        }
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        filterOptions={(options, _) => options}
-                        loading=dictionary_search
-                        loadingText={"Searching the dictionary..." |> React.string}
-                        noOptionsText={switch input {
-                            | Some(value) when value |> Js.String.trim |> Js.String.length > 0 =>
-                                "No cuneiform signs found" |> React.string
-                            | _ => "Type a syllable or word to search" |> React.string
-                        }}
-                        onInputChange={(_event, value, reason) => {
-                            switch reason {
-                            | `input => set_input(_ => Some(value))
-                            | `clear => {
-                                set_input(_ => None);
-                                set_cuneiform_selection(_ => None);
-                                set_active_cuneiform_selection(_ => None);
-                            }
-                            | `blur
-                            | `removeOption
-                            | `reset
-                            | `selectOption => ()
-                            }
-                        }}
-                        onChange={(_event, selection) =>
-                            set_active_cuneiform_selection(_ => selection |> Js.Nullable.toOption)
-                        }
-                        onHighlightChange={(_event, selection, _reason) =>
-                            switch (selection |> Js.Nullable.toOption) {
-                            | Some(selection) =>
-                                set_active_cuneiform_selection(_ => Some(selection))
-                            | None => ()
-                            }
-                        }
-                        onKeyDown={handleKeyDown}
-                        renderInput={params =>
-                            React.cloneElement(
-                                <TextField
-                                    type_="text"
-                                    placeholder="Type here..."
-                                    label={"Search for a syllable or a word" |> React.string}
-                                    autoFocus=true
-                                />,
-                                params,
-                            )
-                        }
-                        renderOption={(props, selection, state, _ownerState) => {
-                            let option_props = Js.Obj.merge(
-                                props,
-                                {
-                                    "onClick": (_event: React.Event.Mouse.t) =>
-                                        validateCuneiformSelection(selection),
-                                },
-                            );
-                            React.cloneElement(
-                                <li key={selection.id}>
-                                    <div className=css##searchFieldResult>
-                                        <div className=css##searchFieldResultLeft>
-                                            <span className=css##searchFieldResultIndex>{((state##index + 1) |> Int.to_string) ++ "." |> React.string}</span>
-                                            <strong className="cuneiforms small">
-                                                {selection.cuneiforms[0] |> React.string}
-                                            </strong>
-                                            <div style={ReactDOM.Style.make(~marginLeft="12px", ~display="flex", ~flexDirection="column", ~justifyContent="center", ~alignItems="flex-start", ())}>
-                                                <span>
-                                                    <span>
-                                                    {
-                                                        (selection.word
-                                                        |> Web_utils.Format.from_phonetic_to_standard)
-                                                        |> React.string
-                                                    }
-                                                    </span>
-                                                    <span style={ReactDOM.Style.make(~color="grey", ())}>
-                                                        {
-                                                            " (" 
-                                                            ++ (Dictionary.display_part_of_speech(selection.part_of_speech) |> Js.String.toLowerCase)
-                                                            ++ ")" 
-                                                            |> React.string
-                                                        }
-                                                    </span>
-                                                </span>
-                                                <span style={ReactDOM.Style.make(~fontSize="0.8rem", ())}>
-                                                    {selection.translation |> React.string}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <span className=css##searchFieldResultOccurences>
-                                                {(selection.icount |> Int.to_string) ++ {js|×|js} |> React.string}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>,
-                                option_props,
-                            )
-                        }}
-                    />
-                    <FormHelperText>
-                        {"Use a hyphen instead of a space for compound words" |> React.string}
-                    </FormHelperText>
-                </FormControl>
-                {dictionary_search ? 
-                    <TablerReact.IconRefresh 
-                        className={css##refreshIcon ++ " " ++ css##active}
-                        size=20 
-                        stroke=3.0 
-                        /> : 
-                    <TablerReact.IconRefresh className=css##refreshIcon size=20 stroke=3.0 />
-                }
-            </Box>
+            
             // MOBILE VIEW
             <Paper 
                 elevation=0

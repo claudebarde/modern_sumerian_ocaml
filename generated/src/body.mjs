@@ -84,24 +84,24 @@ function Body(Props) {
         if (match$4) {
           let exit$1 = 0;
           switch (match$4.hd) {
+            case "grammar_notes" :
+              const match$5 = match$4.tl;
+              exit = match$5 && match$5.tl ? 1 : 2;
+              break;
             case "daily_vocabulary" :
             case "flashcards" :
             case "lessons" :
-              exit$1 = 2;
+              exit$1 = 3;
               break;
             default:
               exit = 1;
           }
-          if (exit$1 === 2) {
-            if (match$4.tl) {
-              exit = 1;
-            } else {
-              tmp = JsxRuntime.jsx(Components__Learn.make, {});
-            }
+          if (exit$1 === 3) {
+            exit = match$4.tl ? 1 : 2;
           }
           
         } else {
-          tmp = JsxRuntime.jsx(Components__Learn.make, {});
+          exit = 2;
         }
         break;
       case "links" :
@@ -131,8 +131,13 @@ function Body(Props) {
   } else {
     tmp = JsxRuntime.jsx(Components__Home.make, {});
   }
-  if (exit === 1) {
-    tmp = JsxRuntime.jsx(Components__Page_not_found.make, {});
+  switch (exit) {
+    case 1 :
+      tmp = JsxRuntime.jsx(Components__Page_not_found.make, {});
+      break;
+    case 2 :
+      tmp = JsxRuntime.jsx(Components__Learn.make, {});
+      break;
   }
   return JsxRuntime.jsx("div", {
     children: tmp,

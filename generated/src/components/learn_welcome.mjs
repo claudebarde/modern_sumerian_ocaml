@@ -85,6 +85,27 @@ function Learn_welcome(Props) {
                   Curry._1(set_current_view, "flashcards");
                 })
               })
+            }),
+            JsxRuntime.jsxs(ListItem, {
+              children: [
+                JsxRuntime.jsx(ListItemAvatar, {
+                  children: JsxRuntime.jsx(Avatar, {
+                    children: JsxRuntime.jsx(IconsReact.IconPencil, {})
+                  })
+                }),
+                JsxRuntime.jsx(ListItemText, {
+                  primary: "Read Grammar Notes to understand Sumerian grammar.",
+                  secondary: "Grammar Notes provide detailed explanations and examples"
+                })
+              ],
+              secondaryAction: JsxRuntime.jsx(IconButton, {
+                "aria-label": "Open Grammar Notes",
+                children: JsxRuntime.jsx(IconsReact.IconArrowBigUpFilled, {}),
+                edge: "end_",
+                onClick: (function (param) {
+                  Curry._1(set_current_view, "grammar_notes");
+                })
+              })
             })
           ]
         })

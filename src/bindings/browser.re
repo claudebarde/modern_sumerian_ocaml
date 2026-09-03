@@ -113,6 +113,11 @@ module Clipboard = {
 module Fetch = {
   type response;
   type request_options;
+  type headers;
+
+  /** Perform a GET request using the browser's default fetch options. */
+  [@mel.scope "window"]
+  external get: string => Js.Promise.t(response) = "fetch";
 
   [@mel.obj]
   external make_request_options: (
@@ -127,6 +132,18 @@ module Fetch = {
 
   [@mel.get]
   external ok: response => bool = "ok";
+
+  [@mel.get]
+  external headers: response => headers = "headers";
+
+  [@mel.send] [@mel.return nullable]
+  external get_header: (string, [@mel.this] headers) => option(string) = "get";
+
+  [@mel.send]
+  external json: ([@mel.this] response) => Js.Promise.t(Js.Json.t) = "json";
+
+  [@mel.send]
+  external text: ([@mel.this] response) => Js.Promise.t(string) = "text";
 };
 
 module Geolocation = {

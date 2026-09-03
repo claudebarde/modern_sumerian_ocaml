@@ -64,6 +64,18 @@ module IconArrowBigUpFilled = {
   ) => React.element = "IconArrowBigUpFilled";
 };
 
+module IconArrowBigUpLinesFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconArrowBigUpLinesFilled";
+};
+
 module IconBolt = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -542,6 +554,18 @@ module IconMoodSadDizzy = {
     ~title: string=?,
     unit
   ) => React.element = "IconMoodSadDizzy";
+};
+
+module IconNote = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconNote"; 
 };
 
 module IconPencil = {

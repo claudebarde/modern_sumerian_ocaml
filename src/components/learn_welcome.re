@@ -77,6 +77,27 @@ let make = (~set_current_view) => {
                         secondary={React.string("Flashcards help reinforce your learning")}
                     />
                 </ListItem>
+                <ListItem 
+                    secondaryAction={
+                        <IconButton
+                            edge=`end_
+                            ariaLabel="Open Grammar Notes"
+                            onClick={_ => set_current_view("grammar_notes")}
+                        >
+                            <TablerReact.IconArrowBigUpFilled />
+                        </IconButton>
+                    }
+                >
+                    <ListItemAvatar>
+                        <Avatar>
+                            <TablerReact.IconPencil />
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={React.string("Read Grammar Notes to understand Sumerian grammar.")}
+                        secondary={React.string("Grammar Notes provide detailed explanations and examples")}
+                    />
+                </ListItem>
             </List>
         </div>
     </div>

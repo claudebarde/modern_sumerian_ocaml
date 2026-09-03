@@ -1,4 +1,7 @@
+@use "sass:color";
 @use "../styles/styles.scss" as *;
+
+$transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
 
 .learnContainer {
   position: relative;
@@ -43,4 +46,96 @@
   @media (max-width: $breakpoint) {
     padding: 10px 0px;
   }
+}
+
+.grammarNotesContainer {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.grammarNote {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.grammarNoteTitle {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: 0 0 auto;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    height: 48px;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color.change($white-smoke, $alpha: 0.85),
+      color.change($white-smoke, $alpha: 0)
+    );
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    mask-image: linear-gradient(to bottom, black, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  }
+}
+
+.grammarNoteContent {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 800px;
+  overflow: visible;
+  padding: 20px 0px;
+
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    border: 1px solid $silver-setting;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: $transparent-white-smoke;
+    font-weight: 600;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: $transparent-white-smoke;
+  }
+}
+
+.readProgress {
+  display: inline-flex;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.scrollToTopButton {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
 }

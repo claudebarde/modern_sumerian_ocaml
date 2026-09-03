@@ -577,6 +577,7 @@ module Container = {
     ~disableGutters: bool=?,
     ~fixed: bool=?,
     ~maxWidth: MaxWidth.t=?,
+    ~onScroll: (React.Event.UI.t => unit)=?,
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";

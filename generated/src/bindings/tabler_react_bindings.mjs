@@ -11,6 +11,8 @@ const IconArrowBigUp = {};
 
 const IconArrowBigUpFilled = {};
 
+const IconArrowBigUpLinesFilled = {};
+
 const IconBolt = {};
 
 const IconBook2 = {};
@@ -91,6 +93,8 @@ const IconMoodHappy = {};
 
 const IconMoodSadDizzy = {};
 
+const IconNote = {};
+
 const IconPencil = {};
 
 const IconPencilPlus = {};
@@ -131,6 +135,7 @@ export {
   IconArrowBarBoth,
   IconArrowBigUp,
   IconArrowBigUpFilled,
+  IconArrowBigUpLinesFilled,
   IconBolt,
   IconBook2,
   IconBorderAll,
@@ -171,6 +176,7 @@ export {
   IconMenu2,
   IconMoodHappy,
   IconMoodSadDizzy,
+  IconNote,
   IconPencil,
   IconPencilPlus,
   IconPhoto,

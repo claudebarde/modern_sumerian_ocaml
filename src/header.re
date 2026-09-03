@@ -146,15 +146,14 @@ let make = () => {
                 >
                     {"Learn" |> React.string}
                 </Button>
-                <Button
-                    variant=`text
+                <IconButton
                     color=Color.fromString(Config.colors##protonRed)
                     onClick={_ => ReasonReactRouter.push("/links")}
                 >
-                    {"Links" |> React.string}
-                </Button>
+                    <TablerReact.IconLink />
+                </IconButton>
             </Box>
-            // SMALLER SCREEN MENU
+            // MOBILE VIEW MENU
             <Box className=css##hamburgerMenu>
                 <IconButton 
                     color=Color.secondary

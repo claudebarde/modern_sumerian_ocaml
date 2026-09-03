@@ -41,6 +41,185 @@ type dictionary_row = {
 [@mel.module "@supabase/supabase-js"]
 external createClient: (~supabase_url: string, ~supabase_key: string) => client = "createClient";
 
+module Auth = {
+    /** The Supabase Auth client available through `supabase.auth`. */
+    type t;
+
+    /** Opaque values returned by Supabase Auth. */
+    type user;
+    type session;
+    type auth_error;
+    type response('data);
+    type auth_data;
+    type session_data;
+    type user_data;
+    type sign_out_response;
+    type subscription;
+    type subscription_data;
+    type subscription_response;
+
+    /** Input objects used by the email/password authentication methods. */
+    type sign_up_options;
+    type sign_up_credentials;
+    type sign_in_options;
+    type sign_in_credentials;
+    type sign_out_options;
+
+    [@mel.get]
+    external from_client: client => t = "auth";
+
+    [@mel.obj]
+    external make_sign_up_options: (
+      ~emailRedirectTo: string=?,
+      ~data: Js.Dict.t(Js.Json.t)=?,
+      ~captchaToken: string=?,
+      unit,
+    ) => sign_up_options = "";
+
+    [@mel.obj]
+    external make_sign_up_credentials: (
+      ~email: string,
+      ~password: string,
+      ~options: sign_up_options=?,
+      unit,
+    ) => sign_up_credentials = "";
+
+    [@mel.obj]
+    external make_sign_in_options: (
+      ~captchaToken: string=?,
+      unit,
+    ) => sign_in_options = "";
+
+    [@mel.obj]
+    external make_sign_in_credentials: (
+      ~email: string,
+      ~password: string,
+      ~options: sign_in_options=?,
+      unit,
+    ) => sign_in_credentials = "";
+
+    [@mel.obj]
+    external make_sign_out_options: (
+      ~scope: [
+        | `global
+        | `local
+        | `others
+      ],
+      unit,
+    ) => sign_out_options = "";
+
+    [@mel.send]
+    external sign_up: (
+      sign_up_credentials,
+      [@mel.this] t,
+    ) => Js.Promise.t(response(auth_data)) = "signUp";
+
+    [@mel.send]
+    external sign_in_with_password: (
+      sign_in_credentials,
+      [@mel.this] t,
+    ) => Js.Promise.t(response(auth_data)) = "signInWithPassword";
+
+    /** Sign out with Supabase's default global scope. */
+    [@mel.send]
+    external sign_out: (
+      [@mel.this] t,
+    ) => Js.Promise.t(sign_out_response) = "signOut";
+
+    /** Pass `{scope: `local}` to sign out only the current browser session. */
+    [@mel.send]
+    external sign_out_with_options: (
+      sign_out_options,
+      [@mel.this] t,
+    ) => Js.Promise.t(sign_out_response) = "signOut";
+
+    [@mel.send]
+    external get_session: (
+      [@mel.this] t,
+    ) => Js.Promise.t(response(session_data)) = "getSession";
+
+    [@mel.send]
+    external get_user: (
+      [@mel.this] t,
+    ) => Js.Promise.t(response(user_data)) = "getUser";
+
+    /**
+     * Subscribe immediately after creating the client and call `unsubscribe`
+     * from the React effect cleanup function.
+     */
+    [@mel.send]
+    external on_auth_state_change: (
+      (string, Js.Nullable.t(session)) => unit,
+      [@mel.this] t,
+    ) => subscription_response = "onAuthStateChange";
+
+    [@mel.get]
+    external data: response('data) => 'data = "data";
+
+    [@mel.get] [@mel.return nullable]
+    external error: response('data) => option(auth_error) = "error";
+
+    [@mel.get] [@mel.return nullable]
+    external auth_user: auth_data => option(user) = "user";
+
+    [@mel.get] [@mel.return nullable]
+    external auth_session: auth_data => option(session) = "session";
+
+    [@mel.get] [@mel.return nullable]
+    external current_session: session_data => option(session) = "session";
+
+    [@mel.get] [@mel.return nullable]
+    external current_user: user_data => option(user) = "user";
+
+    [@mel.get] [@mel.return nullable]
+    external sign_out_error: sign_out_response => option(auth_error) = "error";
+
+    [@mel.get]
+    external subscription_data: subscription_response => subscription_data = "data";
+
+    [@mel.get]
+    external subscription: subscription_data => subscription = "subscription";
+
+    [@mel.send]
+    external unsubscribe: ([@mel.this] subscription) => unit = "unsubscribe";
+
+    /** User fields needed by the account UI and user-owned database rows. */
+    [@mel.get]
+    external user_id: user => string = "id";
+
+    [@mel.get] [@mel.return nullable]
+    external user_email: user => option(string) = "email";
+
+    [@mel.get]
+    external user_created_at: user => string = "created_at";
+
+    [@mel.get]
+    external user_metadata: user => Js.Json.t = "user_metadata";
+
+    /** Session fields useful for authentication state and authenticated calls. */
+    [@mel.get]
+    external session_user: session => user = "user";
+
+    [@mel.get]
+    external access_token: session => string = "access_token";
+
+    [@mel.get]
+    external refresh_token: session => string = "refresh_token";
+
+    [@mel.get] [@mel.return nullable]
+    external expires_at: session => option(float) = "expires_at";
+
+    /** Stable AuthError fields suitable for displaying or logging failures. */
+    [@mel.get]
+    external error_message: auth_error => string = "message";
+
+    [@mel.get] [@mel.return nullable]
+    external error_status: auth_error => option(int) = "status";
+
+    [@mel.get] [@mel.return nullable]
+    external error_code: auth_error => option(string) = "code";
+};
+
 module Query = {
     /** An opaque PostgREST query builder returned by client.from(table). */
     type query_builder;
@@ -307,3 +486,6 @@ let client =
     ~supabase_url=Config.supabaseUrl,
     ~supabase_key=Config.supabasePublishableKey,
   );
+
+/** Shared Auth client used by account/session components. */
+let auth = Auth.from_client(client);

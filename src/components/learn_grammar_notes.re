@@ -290,7 +290,7 @@ let make = () => {
                                 | (Some(content), _) =>
                                     <ReactMarkdown
                                         markdown=content
-                                        remarkPlugins=[|ReactMarkdown.remarkGfm|]
+                                        remarkPlugins=[|ReactMarkdown.remarkGfmWithoutSingleTilde|]
                                         rehypePlugins=[|ReactMarkdown.rehypeCuneiform|]
                                     />
                                     | (None, Some(message)) =>

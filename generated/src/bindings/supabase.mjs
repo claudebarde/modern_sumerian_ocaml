@@ -7,6 +7,8 @@ import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Js__Js_json from "melange.js/js_json.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 
+const Auth = {};
+
 const Query = {};
 
 function quote_filter_value(value) {
@@ -206,11 +208,15 @@ const $$Response = {
 
 const client = SupabaseJs.createClient(Bindings__Config.supabaseUrl, Bindings__Config.supabasePublishableKey);
 
+const auth = client.auth;
+
 export {
+  Auth,
   Query,
   Filter,
   Modifier,
   $$Response,
   client,
+  auth,
 }
 /* client Not a pure module */

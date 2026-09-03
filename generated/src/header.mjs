@@ -221,13 +221,12 @@ function Header(Props) {
               }),
               variant: "text"
             }),
-            JsxRuntime.jsx(Button, {
-              children: "Links",
+            JsxRuntime.jsx(IconButton, {
+              children: JsxRuntime.jsx(IconsReact.IconLink, {}),
               color: Bindings__Config.colors.protonRed,
               onClick: (function (param) {
                 ReasonReactRouter.push("/links");
-              }),
-              variant: "text"
+              })
             })
           ],
           className: css.navMenu

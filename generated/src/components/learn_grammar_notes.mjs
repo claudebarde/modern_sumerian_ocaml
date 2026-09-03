@@ -31,7 +31,6 @@ import * as Stdlib__List from "melange/list.mjs";
 import * as React from "react";
 import ReactMarkdown from "react-markdown";
 import * as JsxRuntime from "react/jsx-runtime";
-import RemarkGfm from "remark-gfm";
 
 const css = LearnModuleScss;
 
@@ -289,7 +288,7 @@ function Learn_grammar_notes(Props) {
                   children: markdown !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
                       children: markdown,
                       rehypePlugins: [Bindings__React_markdown.rehypeCuneiform],
-                      remarkPlugins: [RemarkGfm]
+                      remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
                     }) : (
                       markdown_error !== undefined ? JsxRuntime.jsx("p", {
                           children: markdown_error

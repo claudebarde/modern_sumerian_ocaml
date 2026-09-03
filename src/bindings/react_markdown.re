@@ -6,10 +6,19 @@
  * Plugin and custom-component bindings can be added separately when needed.
  */
 type remark_plugin;
+type remark_plugin_entry;
 type rehype_plugin;
 
 [@mel.module "remark-gfm"]
 external remarkGfm: remark_plugin = "default";
+
+external remarkPluginEntry: remark_plugin => remark_plugin_entry = "%identity";
+
+let configureRemarkGfm: remark_plugin => remark_plugin_entry = [%mel.raw {|
+  plugin => [plugin, {singleTilde: false}]
+|}];
+
+let remarkGfmWithoutSingleTilde = configureRemarkGfm(remarkGfm);
 
 /**
  * Wrap runs of Unicode cuneiform characters in
@@ -69,7 +78,7 @@ external make: (
     ~allowedElements: array(string)=?,
     ~disallowedElements: array(string)=?,
     ~rehypePlugins: array(rehype_plugin)=?,
-    ~remarkPlugins: array(remark_plugin)=?,
+    ~remarkPlugins: array(remark_plugin_entry)=?,
     ~skipHtml: bool=?,
     ~unwrapDisallowed: bool=?,
     unit,

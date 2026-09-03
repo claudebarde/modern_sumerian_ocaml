@@ -32,16 +32,18 @@ let make = () => {
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     let countryData: Js.Dict.t((string, string)) = Js.Dict.fromList([
-        ("FR", ("Paransa", {js|𒉺𒁺𒀭𒊓𒆠|js})),
-        ("CA", ("Kanada", {js|𒅗𒈾𒁕𒆠|js})),
-        ("FI", ("Suumi", {js|𒋢𒌑𒈪𒆠|js}))
+        ("FR", ("Paransa", {js|𒉺𒁺𒀭𒊓𒆠|js})), // France
+        ("CA", ("Kanada", {js|𒅗𒈾𒁕𒆠|js})), // Canada
+        ("FI", ("Suumi", {js|𒋢𒌑𒈪𒆠|js})), // Finland
+        ("CN", ("Shin", {js|𒅆𒅔𒆠|js})) // China
     ]);
 
     let continent_by_code: Js.Dict.t(continent) =
         Js.Dict.fromList([
             ("CA", NorthAmerica),
             ("FR", Europe),
-            ("FI", Europe)
+            ("FI", Europe),
+            ("CN", Asia),
         ]);
 
     let mapData = Js.Dict.entries(countryData)

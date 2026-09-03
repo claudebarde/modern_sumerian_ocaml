@@ -233,6 +233,9 @@ module Window = {
   [@mel.scope ("window", "location")]
   external location_origin: string = "origin";
 
+  [@mel.scope ("window", "location")]
+  external location_href: string = "href";
+
   [@mel.get]
   external key: keyboard_event => string = "key";
 

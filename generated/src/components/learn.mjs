@@ -52,7 +52,7 @@ function Learn(Props) {
   const set_drawer_open = match$3[1];
   const is_drawer_open = match$3[0];
   const match$4 = React.useState(function () {
-    return true;
+    return is_grammar_notes_route;
   });
   const set_grammar_notes_nav_open = match$4[1];
   const grammar_notes_nav_open = match$4[0];
@@ -106,6 +106,9 @@ function Learn(Props) {
       Curry._1(set_drawer_open, (function (param) {
         return true;
       }));
+      Curry._1(set_grammar_notes_nav_open, (function (param) {
+        return true;
+      }));
     }
     
   }), [is_grammar_notes_route]);
@@ -136,12 +139,18 @@ function Learn(Props) {
   const drawer_width = is_drawer_open ? "280px" : "64px";
   const drawer_transition = "width 225ms cubic-bezier(0.4, 0, 0.6, 1)";
   const select_view = function (key) {
+    Curry._1(set_grammar_notes_nav_open, (function (param) {
+      return false;
+    }));
     switch (key) {
       case "daily_vocabulary" :
         return ReasonReactRouter.push("/learn/daily_vocabulary");
       case "flashcards" :
         return ReasonReactRouter.push("/learn/flashcards");
       case "grammar_notes" :
+        Curry._1(set_grammar_notes_nav_open, (function (param) {
+          return true;
+        }));
         return ReasonReactRouter.push("/learn/grammar_notes");
       case "lessons" :
         return ReasonReactRouter.push("/learn/lessons");
@@ -151,7 +160,7 @@ function Learn(Props) {
   };
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const navigation_item = function (key, label, icon) {
-    let tmp = key === "grammar_notes" ? JsxRuntime.jsx(IconButton, {
+    let tmp = key === "grammar_notes" && is_drawer_open === true ? JsxRuntime.jsx(IconButton, {
         "aria-label": grammar_notes_nav_open ? "Collapse grammar notes section" : "Expand grammar notes section",
         children: grammar_notes_nav_open ? JsxRuntime.jsx(IconsReact.IconChevronUp, {}) : JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
         onClick: (function (ev) {
@@ -283,38 +292,38 @@ function Learn(Props) {
                 navigation_item("grammar_notes", "Grammar Notes", JsxRuntime.jsx(IconsReact.IconPencil, {
                   color: Bindings__Config.colors.darkRift
                 })),
-                is_grammar_notes_route ? JsxRuntime.jsx(Collapse, {
-                    children: JsxRuntime.jsx(List, {
-                      children: Stdlib__Array.map((function (note) {
-                        const Key = note.slug;
-                        return JsxRuntime.jsx(ListItem, {
-                          children: JsxRuntime.jsxs(ListItemButton, {
-                            children: [
-                              JsxRuntime.jsx(ListItemIcon, {
-                                children: JsxRuntime.jsx(IconsReact.IconNote, {})
-                              }),
-                              JsxRuntime.jsx(ListItemText, {
-                                primary: note.title
-                              })
-                            ],
-                            onClick: (function (param) {
-                              ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
+                JsxRuntime.jsx(Collapse, {
+                  children: JsxRuntime.jsx(List, {
+                    children: Stdlib__Array.map((function (note) {
+                      const Key = note.slug;
+                      return JsxRuntime.jsx(ListItem, {
+                        children: JsxRuntime.jsxs(ListItemButton, {
+                          children: [
+                            JsxRuntime.jsx(ListItemIcon, {
+                              children: JsxRuntime.jsx(IconsReact.IconNote, {})
                             }),
-                            selected: Caml_obj.caml_equal(selected_grammar_note_slug, note.slug)
+                            JsxRuntime.jsx(ListItemText, {
+                              primary: note.title
+                            })
+                          ],
+                          onClick: (function (param) {
+                            ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
                           }),
-                          disablePadding: true
-                        }, Key);
-                      }), match$5[0]),
-                      sx: {
-                        margin: "0px",
-                        padding: "0px"
-                      }
-                    }),
-                    in: grammar_notes_nav_open,
+                          selected: Caml_obj.caml_equal(selected_grammar_note_slug, note.slug)
+                        }),
+                        disablePadding: true
+                      }, Key);
+                    }), match$5[0]),
                     sx: {
-                      marginLeft: "16px"
+                      margin: "0px",
+                      padding: "0px"
                     }
-                  }) : null
+                  }),
+                  in: grammar_notes_nav_open,
+                  sx: {
+                    marginLeft: "16px"
+                  }
+                })
               ],
               disablePadding: true
             })

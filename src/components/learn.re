@@ -19,7 +19,8 @@ let make = () => {
     };
     let (is_drawer_open, set_drawer_open) =
         React.useState(() => is_grammar_notes_route);
-    let (grammar_notes_nav_open, set_grammar_notes_nav_open) = React.useState(() => true);
+    let (grammar_notes_nav_open, set_grammar_notes_nav_open) =
+        React.useState(() => is_grammar_notes_route);
     let (grammar_notes, set_grammar_notes) =
         React.useState(() => ([||]: array(Learn_grammar_notes.grammar_note)));
     let selected_grammar_note_slug = switch url.path {
@@ -39,6 +40,7 @@ let make = () => {
     React.useEffect1(() => {
         if (is_grammar_notes_route) {
             set_drawer_open(_ => true);
+            set_grammar_notes_nav_open(_ => true);
         };
         None;
     }, [|is_grammar_notes_route|]);
@@ -73,12 +75,18 @@ let make = () => {
 
     let drawer_width = is_drawer_open ? "280px" : "64px";
     let drawer_transition = "width 225ms cubic-bezier(0.4, 0, 0.6, 1)";
-    let select_view = key => switch key {
-        | "daily_vocabulary" => ReasonReactRouter.push("/learn/daily_vocabulary")
-        | "flashcards" => ReasonReactRouter.push("/learn/flashcards")
-        | "lessons" => ReasonReactRouter.push("/learn/lessons")
-        | "grammar_notes" => ReasonReactRouter.push("/learn/grammar_notes")
-        | _ => ReasonReactRouter.push("/learn")
+    let select_view = key => {
+        set_grammar_notes_nav_open(_ => false)
+        switch key {
+            | "daily_vocabulary" => ReasonReactRouter.push("/learn/daily_vocabulary")
+            | "flashcards" => ReasonReactRouter.push("/learn/flashcards")
+            | "lessons" => ReasonReactRouter.push("/learn/lessons")
+            | "grammar_notes" => {
+                set_grammar_notes_nav_open(_ => true)
+                ReasonReactRouter.push("/learn/grammar_notes")
+            }
+            | _ => ReasonReactRouter.push("/learn")
+        }
     };
 
     let is_mobile = UseMediaQuery.use("(max-width:599px)");
@@ -123,7 +131,7 @@ let make = () => {
                     />
                     {
                         switch key {
-                        | "grammar_notes" =>
+                        | "grammar_notes" when is_drawer_open == true =>
                             <IconButton
                                 ariaLabel={grammar_notes_nav_open ? "Collapse grammar notes section" : "Expand grammar notes section"}
                                 onClick={ev => {
@@ -225,8 +233,7 @@ let make = () => {
                             )
                         }
                         {
-                            is_grammar_notes_route
-                            ? <Collapse in_=grammar_notes_nav_open sx={{"marginLeft": "16px"}}>
+                            <Collapse in_=grammar_notes_nav_open sx={{"marginLeft": "16px"}}>
                                 <List
                                     sx={{"margin": "0px", "padding": "0px"}}
                                 >
@@ -253,7 +260,35 @@ let make = () => {
                                     }
                                 </List>
                             </Collapse>
-                            : React.null
+                            // is_grammar_notes_route
+                            // ? <Collapse in_=grammar_notes_nav_open sx={{"marginLeft": "16px"}}>
+                            //     <List
+                            //         sx={{"margin": "0px", "padding": "0px"}}
+                            //     >
+                            //         {
+                            //             grammar_notes
+                            //             |> Array.map((note: Learn_grammar_notes.grammar_note) =>
+                            //                 <ListItem key=note.slug disablePadding=true>
+                            //                     <ListItemButton
+                            //                         selected={selected_grammar_note_slug == Some(note.slug)}
+                            //                         onClick={_ =>
+                            //                             ReasonReactRouter.push(
+                            //                                 "/learn/grammar_notes/" ++ note.slug,
+                            //                             )
+                            //                         }
+                            //                     >
+                            //                         <ListItemIcon>
+                            //                         <TablerReact.IconNote />
+                            //                         </ListItemIcon>
+                            //                         <ListItemText primary={note.title |> React.string} />
+                            //                     </ListItemButton>
+                            //                 </ListItem>
+                            //             )
+                            //             |> React.array
+                            //         }
+                            //     </List>
+                            // </Collapse>
+                            // : React.null
                         }
                     </List>
                 </Drawer>

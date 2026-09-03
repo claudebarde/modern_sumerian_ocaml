@@ -226,6 +226,17 @@ let make = () => {
         | None => ()
         };
 
+    let share_grammar_note = () => {
+        let _ =
+            Browser.Window.location_href
+            |> Browser.Clipboard.write_text
+            |> Js.Promise.catch(error => {
+                Js.log2("Could not copy the grammar note URL:", error);
+                Js.Promise.resolve();
+            });
+        ();
+    };
+
     <Grid className=css##grammarNotesContainer>
         {
             switch selected_note {
@@ -280,11 +291,12 @@ let make = () => {
                                     <ReactMarkdown
                                         markdown=content
                                         remarkPlugins=[|ReactMarkdown.remarkGfm|]
+                                        rehypePlugins=[|ReactMarkdown.rehypeCuneiform|]
                                     />
                                     | (None, Some(message)) =>
                                         <p> {message |> React.string} </p>
                                     | (None, None) =>
-                                        <p> {"Loading grammar note…" |> React.string} </p>
+                                        <p> {"Loading grammar note..." |> React.string} </p>
                                     }
                                 }
                             </Container>
@@ -293,23 +305,77 @@ let make = () => {
                 | None =>
                     switch index_error {
                     | Some(message) => <p> {message |> React.string} </p>
-                    | None => <p> {"Grammar note not found" |> React.string} </p>
+                    | None =>
+                        <Container
+                            sx={{
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center",
+                                "padding": "40px 20px",
+                            }}
+                        >
+                            <Typography variant=Typography.Variant.h4>
+                                {"Available grammar notes" |> React.string}
+                            </Typography>
+                            <List sx={{"width": "100%", "maxWidth": "600px"}}>
+                                {
+                                    grammar_notes
+                                    |> Array.map(note =>
+                                        <ListItem key=note.slug disablePadding=true>
+                                            <ListItemButton
+                                                onClick={_ =>
+                                                    ReasonReactRouter.push(
+                                                        "/learn/grammar_notes/" ++ note.slug,
+                                                    )
+                                                }
+                                            >
+                                                <ListItemIcon>
+                                                    <TablerReact.IconNote />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={note.title |> React.string}
+                                                />
+                                            </ListItemButton>
+                                        </ListItem>
+                                    )
+                                    |> React.array
+                                }
+                            </List>
+                        </Container>
                     }
             }
         }
-        <IconButton
-            className=css##scrollToTopButton
-            size=`large
-            ariaLabel="Scroll to the top of the grammar note"
-            onClick={_ => scroll_to_top()}
-            sx={{
-                "position": "absolute",
-                "right": "20px",
-                "bottom": "20px",
-                "zIndex": 10,
-            }}
+        <Stack 
+            className=css##sideButtons
+            useFlexGap=true
+            spacing=`Number(1)
         >
-            <TablerReact.IconArrowBigUpLinesFilled />
-        </IconButton>
+            <Tooltip 
+                title={"Share this grammar note" |> React.string}
+                placement=Tooltip.Placement.left
+                arrow=true
+            >
+                <IconButton
+                    size=`small
+                    ariaLabel="Share this grammar note"
+                    onClick={_ => share_grammar_note()}
+                >
+                    <TablerReact.IconLink color=Config.colors##protonRed />
+                </IconButton>
+            </Tooltip>
+            <Tooltip 
+                title={"Scroll to the top" |> React.string}
+                placement=Tooltip.Placement.left
+                arrow=true
+            >
+                <IconButton
+                    size=`small
+                    ariaLabel="Scroll to the top of the grammar note"
+                    onClick={_ => scroll_to_top()}
+                >
+                    <TablerReact.IconArrowBigUpLinesFilled color=Config.colors##protonRed />
+                </IconButton>
+            </Tooltip>
+        </Stack>
     </Grid>
 }

@@ -133,9 +133,13 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
   z-index: 10;
 }
 
-.scrollToTopButton {
+.sideButtons {
   position: absolute;
   bottom: 20px;
   right: 20px;
   z-index: 10;
+  border: solid 2px $proton-red;
+  border-radius: 24px;
+  background-color: $white-smoke;
+  padding: 2px;
 }

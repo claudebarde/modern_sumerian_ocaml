@@ -69,6 +69,10 @@ const IconCurrencyBitcoin = {};
 
 const IconDownload = {};
 
+const IconEye = {};
+
+const IconEyeClosed = {};
+
 const IconExternalLink = {};
 
 const IconFileText = {};
@@ -80,6 +84,8 @@ const IconInfoTriangle = {};
 const IconKeyboard = {};
 
 const IconLink = {};
+
+const IconLinkFilled = {};
 
 const IconList = {};
 
@@ -107,6 +113,10 @@ const IconRefresh = {};
 
 const IconSearch = {};
 
+const IconSettings = {};
+
+const IconSettingsFilled = {};
+
 const IconSnowflake = {};
 
 const IconSquareCheckFilled = {};
@@ -122,6 +132,16 @@ const IconTrash = {};
 const IconTrashX = {};
 
 const IconTrashXFilled = {};
+
+const IconUserCheck = {};
+
+const IconUserFilled = {};
+
+const IconUserOff = {};
+
+const IconUserPlus = {};
+
+const IconUserX = {};
 
 const IconWind = {};
 
@@ -164,12 +184,15 @@ export {
   IconCopyFilled,
   IconCurrencyBitcoin,
   IconDownload,
+  IconEye,
+  IconEyeClosed,
   IconExternalLink,
   IconFileText,
   IconHome,
   IconInfoTriangle,
   IconKeyboard,
   IconLink,
+  IconLinkFilled,
   IconList,
   IconListCheck,
   IconMail,
@@ -183,6 +206,8 @@ export {
   IconQuestionMark,
   IconRefresh,
   IconSearch,
+  IconSettings,
+  IconSettingsFilled,
   IconSnowflake,
   IconSquareCheckFilled,
   IconSun,
@@ -191,6 +216,11 @@ export {
   IconTrash,
   IconTrashX,
   IconTrashXFilled,
+  IconUserCheck,
+  IconUserFilled,
+  IconUserOff,
+  IconUserPlus,
+  IconUserX,
   IconWind,
   IconWorldMap,
   IconX,

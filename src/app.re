@@ -14,7 +14,7 @@ let theme =
         "contrastText": Config.colors##whiteSmoke,
       },
       "secondary": {
-        "main": Config.colors##botanicalNight,
+        "main": Config.colors##darkRift,
         "contrastText": Config.colors##whiteSmoke,
       },
       "background": {

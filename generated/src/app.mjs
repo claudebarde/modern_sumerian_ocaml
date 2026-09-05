@@ -22,7 +22,7 @@ const theme = Styles.createTheme({
       contrastText: Bindings__Config.colors.whiteSmoke
     },
     secondary: {
-      main: Bindings__Config.colors.botanicalNight,
+      main: Bindings__Config.colors.darkRift,
       contrastText: Bindings__Config.colors.whiteSmoke
     },
     background: {

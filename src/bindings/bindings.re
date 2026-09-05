@@ -28,3 +28,4 @@ module ReactSvgWorldmap = React_svg_worldmap;
 module Supabase = Supabase;
 module TablerReact = Tabler_react_bindings;
 module Mui = Material_ui;
+module Zustand = Zustand;

@@ -10,7 +10,7 @@
     "dev": "dune build && concurrently 'npm:vite-dev' 'npm:dune-watch'",
     "dune-watch": "dune build -w",
     "serve": "dune build && vite preview",
-    "vite-dev": "vite _build/default"
+    "vite-dev": "vite _build/default --config ./vite.config.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

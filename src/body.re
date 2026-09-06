@@ -17,6 +17,7 @@ let make = () => {
                 | ["learn", "daily_vocabulary"]
                 | ["learn", "flashcards"]
                 | ["learn", "lessons"]
+                | ["learn", "neologisms"]
                 | ["learn", "grammar_notes"]
                 | ["learn", "grammar_notes", _] => <Learn />
                 | ["dictionary"] => <Dictionary />

@@ -91,6 +91,7 @@ function Body(Props) {
             case "daily_vocabulary" :
             case "flashcards" :
             case "lessons" :
+            case "neologisms" :
               exit$1 = 3;
               break;
             default:

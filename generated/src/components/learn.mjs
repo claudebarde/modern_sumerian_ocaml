@@ -24,6 +24,7 @@ import * as Components__Learn_daily_vocabulary from "./learn_daily_vocabulary.mj
 import * as Components__Learn_flashcards from "./learn_flashcards.mjs";
 import * as Components__Learn_grammar_notes from "./learn_grammar_notes.mjs";
 import * as Components__Learn_lessons from "./learn_lessons.mjs";
+import * as Components__Learn_neologisms from "./learn_neologisms.mjs";
 import * as Components__Learn_welcome from "./learn_welcome.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
@@ -95,6 +96,9 @@ function Learn(Props) {
         case "lessons" :
           current_view = match$10.tl ? undefined : /* Lessons */ 2;
           break;
+        case "neologisms" :
+          current_view = match$10.tl ? undefined : /* Neologisms */ 4;
+          break;
         default:
           current_view = undefined;
       }
@@ -157,6 +161,11 @@ function Learn(Props) {
         return ReasonReactRouter.push("/learn/grammar_notes");
       case "lessons" :
         return ReasonReactRouter.push("/learn/lessons");
+      case "neologisms" :
+        Curry._1(set_grammar_notes_nav_open, (function (param) {
+          return true;
+        }));
+        return ReasonReactRouter.push("/learn/neologisms");
       default:
         return ReasonReactRouter.push("/learn");
     }
@@ -187,6 +196,9 @@ function Learn(Props) {
           break;
         case /* GrammarNotes */ 3 :
           tmp$1 = key === "grammar_notes";
+          break;
+        case /* Neologisms */ 4 :
+          tmp$1 = key === "neologisms";
           break;
       }
     } else {
@@ -268,6 +280,9 @@ function Learn(Props) {
       case /* GrammarNotes */ 3 :
         tmp = JsxRuntime.jsx(Components__Learn_grammar_notes.make, {});
         break;
+      case /* Neologisms */ 4 :
+        tmp = JsxRuntime.jsx(Components__Learn_neologisms.make, {});
+        break;
     }
   } else {
     tmp = JsxRuntime.jsx(Components__Learn_welcome.make, {
@@ -310,6 +325,9 @@ function Learn(Props) {
                   color: Bindings__Config.colors.darkRift
                 })),
                 navigation_item("flashcards", "Flashcards", JsxRuntime.jsx(IconsReact.IconPhoto, {
+                  color: Bindings__Config.colors.darkRift
+                })),
+                navigation_item("neologisms", "Neologisms", JsxRuntime.jsx(IconsReact.IconNews, {
                   color: Bindings__Config.colors.darkRift
                 })),
                 navigation_item("grammar_notes", "Grammar Notes", JsxRuntime.jsx(IconsReact.IconPencil, {

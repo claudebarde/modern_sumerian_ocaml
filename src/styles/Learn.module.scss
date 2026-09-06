@@ -143,3 +143,38 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
   background-color: $white-smoke;
   padding: 2px;
 }
+
+.neologismsContainer {
+  height: 100%;
+  min-height: 0;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 800px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 0px;
+
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    border: 1px solid $silver-setting;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: $transparent-white-smoke;
+    font-weight: 600;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: $transparent-white-smoke;
+  }
+}

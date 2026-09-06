@@ -93,6 +93,8 @@ const IconMoodHappy = {};
 
 const IconMoodSadDizzy = {};
 
+const IconNews = {};
+
 const IconNote = {};
 
 const IconPencil = {};
@@ -176,6 +178,7 @@ export {
   IconMenu2,
   IconMoodHappy,
   IconMoodSadDizzy,
+  IconNews,
   IconNote,
   IconPencil,
   IconPencilPlus,

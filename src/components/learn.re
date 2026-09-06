@@ -4,7 +4,8 @@ type view =
     | DailyVocabulary
     | Flashcards
     | Lessons
-    | GrammarNotes;
+    | GrammarNotes
+    | Neologisms;
 
 [@react.component]
 let make = () => {
@@ -32,6 +33,7 @@ let make = () => {
         | ["learn", "daily_vocabulary"] => Some(DailyVocabulary)
         | ["learn", "flashcards"] => Some(Flashcards)
         | ["learn", "lessons"] => Some(Lessons)
+        | ["learn", "neologisms"] => Some(Neologisms)
         | ["learn", "grammar_notes"]
         | ["learn", "grammar_notes", _] => Some(GrammarNotes)
         | _ => None
@@ -85,6 +87,10 @@ let make = () => {
                 set_grammar_notes_nav_open(_ => true)
                 ReasonReactRouter.push("/learn/grammar_notes")
             }
+            | "neologisms" => {
+                set_grammar_notes_nav_open(_ => true)
+                ReasonReactRouter.push("/learn/neologisms")
+            }
             | _ => ReasonReactRouter.push("/learn")
         }
     };
@@ -104,6 +110,7 @@ let make = () => {
                         | Some(Flashcards) => key == "flashcards"
                         | Some(Lessons) => key == "lessons"
                         | Some(GrammarNotes) => key == "grammar_notes"
+                        | Some(Neologisms) => key == "neologisms"
                         | None => false
                     }}
                     sx={{
@@ -227,6 +234,13 @@ let make = () => {
                         }
                         {
                             navigation_item(
+                                ~key="neologisms",
+                                ~label="Neologisms",
+                                ~icon=<TablerReact.IconNews color=Config.colors##darkRift />,
+                            )
+                        }
+                        {
+                            navigation_item(
                                 ~key="grammar_notes",
                                 ~label="Grammar Notes",
                                 ~icon=<TablerReact.IconPencil color=Config.colors##darkRift />,
@@ -304,6 +318,7 @@ let make = () => {
                             | Flashcards => <Learn_flashcards />
                             | Lessons => <Learn_lessons />
                             | GrammarNotes => <Learn_grammar_notes />
+                            | Neologisms => <Learn_neologisms />
                         }
                 }
             }

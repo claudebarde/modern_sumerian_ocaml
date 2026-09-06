@@ -6,7 +6,6 @@ let make = (
 ) => {
     open Bindings;
     open Mui;
-    open Web_utils;
     open Store;
 
     let displayLanguage =
@@ -25,16 +24,16 @@ let make = (
         }}
     >
         <DialogTitle>
-            {Translation.display_to(~sentence="settings", ~language=displayLanguage, ~size=Some(Translation.Large))}
+            {Ui_translation.display_to(~sentence="settings", ~language=displayLanguage, ~size=Some(Ui_translation.Large))}
         </DialogTitle>
         <DialogContent>
             <FormControl>
                 <FormLabel id="display-language-settings">
                     {
-                        Translation.display_to(
+                        Ui_translation.display_to(
                             ~sentence="language_choice", 
                             ~language=displayLanguage, 
-                            ~size=Some(Translation.Medium)
+                            ~size=Some(Ui_translation.Medium)
                         )
                     }
                 </FormLabel>
@@ -44,25 +43,25 @@ let make = (
                     value=displayLanguage
                 >
                     <FormControlLabel 
-                        value=Translation.English
+                        value=Ui_translation.English
                         control={<Radio />} 
                         label={"English" |> React.string} 
-                        onChange={_ => setDisplayLanguage(Translation.English)}
+                        onChange={_ => setDisplayLanguage(Ui_translation.English)}
                     />
                     <FormControlLabel 
                         className="cuneiforms x-small"
                         disableTypography=true
-                        value=Translation.SuxCuneiform
+                        value=Ui_translation.SuxCuneiform
                         control={<Radio />} 
                         label={{js|𒅴𒄀|js} |> React.string}
-                        onChange={_ => setDisplayLanguage(Translation.SuxCuneiform)}
+                        onChange={_ => setDisplayLanguage(Ui_translation.SuxCuneiform)}
                         sx={{"paddingRight": "16px"}}
                     />
                     <FormControlLabel 
-                        value=Translation.SuxLatin
+                        value=Ui_translation.SuxLatin
                         control={<Radio />} 
                         label={{js|Emeĝir|js} |> React.string} 
-                        onChange={_ => setDisplayLanguage(Translation.SuxLatin)}
+                        onChange={_ => setDisplayLanguage(Ui_translation.SuxLatin)}
                     />
                 </RadioGroup>
             </FormControl>
@@ -72,14 +71,14 @@ let make = (
                 onClick={_ => setSettingsDialogOpen(_ => false)}
             >
                 {
-                    Translation.display_to(~sentence="close", ~language=displayLanguage, ~size=Some(Translation.Small))
+                    Ui_translation.display_to(~sentence="close", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
                 }
             </Button>
             <Button 
                 onClick={_ => setSettingsDialogOpen(_ => false)}
             >
                 {
-                    Translation.display_to(~sentence="save", ~language=displayLanguage, ~size=Some(Translation.Small))
+                    Ui_translation.display_to(~sentence="save", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
                 }
             </Button>
         </DialogActions>

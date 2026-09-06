@@ -8,8 +8,8 @@ external dom_element_from_event_target: Js.t({..}) => Dom.element = "%identity";
 let make = () => {
     open Bindings;
     open Mui;
-    open Components.Web_utils;
-    open Components.Store;
+    open Components;
+    open Store;
 
     let (toolsAnchor, setToolsAnchor) =
         React.useState(() =>
@@ -100,7 +100,9 @@ let make = () => {
                             )
                         }
                     >
-                        {"Tools" |> React.string}
+                        {
+                            Ui_translation.display_to(~sentence="tools", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
+                        }
                     </Button>
                     <Menu
                         _open=openToolsMenu
@@ -165,14 +167,18 @@ let make = () => {
                         color=Color.secondary
                         onClick={_ => ReasonReactRouter.push("/games")}
                     >
-                        {"Games" |> React.string}
+                        {
+                            Ui_translation.display_to(~sentence="games", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
+                        }
                     </Button>
                     <Button
                         variant=`text
                         color=Color.secondary
                         onClick={_ => ReasonReactRouter.push("/learn")}
                     >
-                        {"Learn" |> React.string}
+                        {
+                            Ui_translation.display_to(~sentence="learn", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
+                        }
                     </Button>
                     <Stack direction=`row spacing=`Number(0)>
                         <IconButton
@@ -214,10 +220,10 @@ let make = () => {
                                 <ListItemText>
                                     {
                                         {
-                                            Translation.display_to(
+                                            Components.Ui_translation.display_to(
                                                 ~sentence="sign_up", 
                                                 ~language=displayLanguage, 
-                                                ~size=Some(Translation.Small))
+                                                ~size=Some(Components.Ui_translation.Small))
                                             }
                                     }
                                 </ListItemText>
@@ -230,10 +236,10 @@ let make = () => {
                                 </ListItemIcon>
                                 <ListItemText>
                                     {
-                                        Translation.display_to(
+                                        Components.Ui_translation.display_to(
                                             ~sentence="sign_in", 
                                             ~language=displayLanguage, 
-                                            ~size=Some(Translation.Small))
+                                            ~size=Some(Components.Ui_translation.Small))
                                     }
                                 </ListItemText>
                             </MenuItem>

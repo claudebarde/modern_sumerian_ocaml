@@ -12,11 +12,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 import Tooltip from "@mui/material/Tooltip";
 import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_obj from "melange.js/caml_obj.mjs";
 import * as Components__Learn_daily_vocabulary from "./learn_daily_vocabulary.mjs";
 import * as Components__Learn_flashcards from "./learn_flashcards.mjs";
@@ -60,6 +62,7 @@ function Learn(Props) {
     return [];
   });
   const set_grammar_notes = match$5[1];
+  const grammar_notes = match$5[0];
   const match$6 = url.path;
   let selected_grammar_note_slug;
   if (match$6 && match$6.hd === "learn") {
@@ -230,6 +233,26 @@ function Learn(Props) {
       }
     }, key);
   };
+  const grammar_notes_list_item = function (note) {
+    const Key = note.slug;
+    return JsxRuntime.jsx(ListItem, {
+      children: JsxRuntime.jsxs(ListItemButton, {
+        children: [
+          JsxRuntime.jsx(ListItemIcon, {
+            children: JsxRuntime.jsx(IconsReact.IconNote, {})
+          }),
+          JsxRuntime.jsx(ListItemText, {
+            primary: note.title
+          })
+        ],
+        onClick: (function (param) {
+          ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
+        }),
+        selected: Caml_obj.caml_equal(selected_grammar_note_slug, note.slug)
+      }),
+      disablePadding: true
+    }, Key);
+  };
   let tmp;
   if (current_view !== undefined) {
     switch (current_view) {
@@ -293,27 +316,49 @@ function Learn(Props) {
                   color: Bindings__Config.colors.darkRift
                 })),
                 JsxRuntime.jsx(Collapse, {
-                  children: JsxRuntime.jsx(List, {
-                    children: Stdlib__Array.map((function (note) {
-                      const Key = note.slug;
-                      return JsxRuntime.jsx(ListItem, {
-                        children: JsxRuntime.jsxs(ListItemButton, {
-                          children: [
-                            JsxRuntime.jsx(ListItemIcon, {
-                              children: JsxRuntime.jsx(IconsReact.IconNote, {})
-                            }),
-                            JsxRuntime.jsx(ListItemText, {
-                              primary: note.title
-                            })
-                          ],
-                          onClick: (function (param) {
-                            ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
-                          }),
-                          selected: Caml_obj.caml_equal(selected_grammar_note_slug, note.slug)
-                        }),
-                        disablePadding: true
-                      }, Key);
-                    }), match$5[0]),
+                  children: JsxRuntime.jsxs(List, {
+                    children: [
+                      JsxRuntime.jsx(ListSubheader, {
+                        children: "Nouns",
+                        disableSticky: true,
+                        sx: {
+                          backgroundColor: Bindings__Config.colors.cerealFlake
+                        }
+                      }),
+                      Stdlib__Array.map(grammar_notes_list_item, Stdlib__Array.fold_left((function (acc, note) {
+                        if (note.category === "nouns" && note.visible) {
+                          return Caml_array.concat({
+                            hd: acc,
+                            tl: {
+                              hd: [note],
+                              tl: /* [] */ 0
+                            }
+                          });
+                        } else {
+                          return acc;
+                        }
+                      }), [], grammar_notes)),
+                      JsxRuntime.jsx(ListSubheader, {
+                        children: "Verbs",
+                        disableSticky: true,
+                        sx: {
+                          backgroundColor: Bindings__Config.colors.cerealFlake
+                        }
+                      }),
+                      Stdlib__Array.map(grammar_notes_list_item, Stdlib__Array.fold_left((function (acc, note) {
+                        if (note.category === "verbs" && note.visible) {
+                          return Caml_array.concat({
+                            hd: acc,
+                            tl: {
+                              hd: [note],
+                              tl: /* [] */ 0
+                            }
+                          });
+                        } else {
+                          return acc;
+                        }
+                      }), [], grammar_notes))
+                    ],
                     sx: {
                       margin: "0px",
                       padding: "0px"

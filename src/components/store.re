@@ -1,18 +1,17 @@
 open Bindings;
-open Web_utils;
 
 type app_state = {
-  display_language: Translation.display_language,
+  display_language: Ui_translation.display_language,
   current_user: option(Supabase.Auth.user),
   is_auth_loading: bool,
-  set_display_language: Translation.display_language => unit,
+  set_display_language: Ui_translation.display_language => unit,
   set_current_user: option(Supabase.Auth.user) => unit,
 };
 
 let app_store: Zustand.store(app_state) =
   Zustand.create_store((set, _get, _store) => {
     {
-      display_language: Translation.English,
+      display_language: Ui_translation.English,
       current_user: None,
       is_auth_loading: true,
 

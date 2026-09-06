@@ -13,7 +13,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Bindings__Zustand from "../bindings/zustand.mjs";
 import * as Components__Store from "./store.mjs";
-import * as Components__Web_utils from "./web_utils.mjs";
+import * as Components__Ui_translation from "./ui_translation.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -30,13 +30,13 @@ function Settings_dialog(Props) {
   return JsxRuntime.jsxs(Dialog, {
     children: [
       JsxRuntime.jsx(DialogTitle, {
-        children: Components__Web_utils.Translation.display_to("settings", displayLanguage, /* Large */ 2)
+        children: Components__Ui_translation.display_to("settings", displayLanguage, /* Large */ 2)
       }),
       JsxRuntime.jsx(DialogContent, {
         children: JsxRuntime.jsxs(FormControl, {
           children: [
             JsxRuntime.jsx(FormLabel, {
-              children: Components__Web_utils.Translation.display_to("language_choice", displayLanguage, /* Medium */ 1),
+              children: Components__Ui_translation.display_to("language_choice", displayLanguage, /* Medium */ 1),
               id: "display-language-settings"
             }),
             JsxRuntime.jsxs(RadioGroup, {
@@ -81,7 +81,7 @@ function Settings_dialog(Props) {
       JsxRuntime.jsxs(DialogActions, {
         children: [
           JsxRuntime.jsx(Button, {
-            children: Components__Web_utils.Translation.display_to("close", displayLanguage, /* Small */ 0),
+            children: Components__Ui_translation.display_to("close", displayLanguage, /* Small */ 0),
             onClick: (function (param) {
               Curry._1(setSettingsDialogOpen, (function (param) {
                 return false;
@@ -89,7 +89,7 @@ function Settings_dialog(Props) {
             })
           }),
           JsxRuntime.jsx(Button, {
-            children: Components__Web_utils.Translation.display_to("save", displayLanguage, /* Small */ 0),
+            children: Components__Ui_translation.display_to("save", displayLanguage, /* Small */ 0),
             onClick: (function (param) {
               Curry._1(setSettingsDialogOpen, (function (param) {
                 return false;

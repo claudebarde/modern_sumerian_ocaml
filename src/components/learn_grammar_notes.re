@@ -22,15 +22,37 @@ module ScrollableElement = {
         (scroll_to_options, [@mel.this] Dom.element) => unit = "scrollTo";
 };
 
+module ElementViewport = {
+    type rect;
+
+    [@mel.send]
+    external get_bounding_client_rect: Dom.element => rect = "getBoundingClientRect";
+
+    [@mel.get]
+    external top: rect => float = "top";
+
+    [@mel.get]
+    external bottom: rect => float = "bottom";
+};
+
 type grammar_note = {
     slug: string,
     title: string,
     file: string,
+    banner: string,
+    category: string,
+    visible: bool,
 };
 
 let decode_string_field = (object_, field) =>
     switch (Js.Dict.get(object_, field)) {
     | Some(value) => Js.Json.decodeString(value)
+    | None => None
+    };
+
+let decode_boolean_field = (object_, field) =>
+    switch (Js.Dict.get(object_, field)) {
+    | Some(value) => Js.Json.decodeBoolean(value)
     | None => None
     };
 
@@ -41,9 +63,12 @@ let decode_grammar_note = json =>
             decode_string_field(object_, "slug"),
             decode_string_field(object_, "title"),
             decode_string_field(object_, "file"),
+            decode_string_field(object_, "banner"),
+            decode_string_field(object_, "category"),
+            decode_boolean_field(object_, "visible"),
         ) {
-        | (Some(slug), Some(title), Some(file)) =>
-            Some({slug, title, file})
+        | (Some(slug), Some(title), Some(file), Some(banner), Some(category), Some(visible)) =>
+            Some({slug, title, file, banner, category, visible})
         | _ => None
         }
     | None => None
@@ -90,7 +115,11 @@ let make = () => {
         React.useState(() => (None: option(string)));
     let (scroll_percentage, set_scroll_percentage) =
         React.useState(() => 0);
+    let (is_banner_visible, set_is_banner_visible) =
+        React.useState(() => true);
     let grammar_note_ref: React.ref(Js.nullable(Dom.element)) =
+        React.useRef(Js.Nullable.null);
+    let banner_ref: React.ref(Js.nullable(Dom.element)) =
         React.useRef(Js.Nullable.null);
 
     React.useEffect0(() => {
@@ -134,6 +163,7 @@ let make = () => {
         set_markdown(_ => None);
         set_markdown_error(_ => None);
         set_scroll_percentage(_ => 0);
+        set_is_banner_visible(_ => true);
 
         switch selected_note {
         | Some(note) =>
@@ -210,6 +240,23 @@ let make = () => {
             };
 
         set_scroll_percentage(_ => percentage);
+
+        switch (
+            Js.Nullable.toOption(grammar_note_ref.current),
+            Js.Nullable.toOption(banner_ref.current),
+        ) {
+        | (Some(container), Some(banner)) =>
+            let container_rect = ElementViewport.get_bounding_client_rect(container);
+            let banner_rect = ElementViewport.get_bounding_client_rect(banner);
+            let banner_is_visible =
+                ElementViewport.bottom(banner_rect) > ElementViewport.top(container_rect)
+                && ElementViewport.top(banner_rect) < ElementViewport.bottom(container_rect);
+
+            if (banner_is_visible != is_banner_visible) {
+                set_is_banner_visible(_ => banner_is_visible);
+            }
+        | _ => ()
+        };
     };
 
     let scroll_to_top = () =>
@@ -273,15 +320,42 @@ let make = () => {
                             className=css##grammarNote
                             onScroll=handle_scroll
                             ref={ReactDOM.Ref.domRef(grammar_note_ref)}
+                            style=ReactDOM.Style.make(~position="relative", ())
                         >
-                            <Typography 
-                                variant=Typography.Variant.h3
-                                align=`center
-                                className=css##grammarNoteTitle
-                                sx={{"padding": "20px", "backgroundColor": Config.colors##whiteSmoke}}
-                            > 
-                                {note.title |> React.string}
-                            </Typography>
+                            <Box
+                                sx={{
+                                    "position": "sticky",
+                                    "top": "0",
+                                    "zIndex": 2,
+                                    "height": "0",
+                                    "overflow": "visible",
+                                    "pointerEvents": "none",
+                                }}
+                            >
+                                <Typography 
+                                    variant=Typography.Variant.h3
+                                    align=`center
+                                    className=css##grammarNoteTitle
+                                    sx={{
+                                        "padding": "20px",
+                                        "backgroundColor": Config.colors##whiteSmoke,
+                                        "opacity": is_banner_visible ? 0.0 : 1.0,
+                                        "transform": is_banner_visible
+                                            ? "translateY(-100%)"
+                                            : "translateY(0)",
+                                        "transition":
+                                            "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 900ms ease",
+                                    }}
+                                > 
+                                    {note.title |> React.string}
+                                </Typography>
+                            </Box>
+                            <img 
+                                src={note.banner} 
+                                alt={note.title} 
+                                ref={ReactDOM.Ref.domRef(banner_ref)}
+                                style=ReactDOM.Style.make(~width="100%", ~marginBottom="20px", ())
+                            />
                             <Container
                                 className=css##grammarNoteContent
                             >

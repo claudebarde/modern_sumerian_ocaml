@@ -24,6 +24,7 @@ import * as Bindings__Material_ui from "./bindings/material_ui.mjs";
 import * as Bindings__Zustand from "./bindings/zustand.mjs";
 import * as Components__Settings_dialog from "./components/settings_dialog.mjs";
 import * as Components__Store from "./components/store.mjs";
+import * as Components__Ui_translation from "./components/ui_translation.mjs";
 import * as Components__User_signing from "./components/user_signing.mjs";
 import * as Components__Web_utils from "./components/web_utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
@@ -121,7 +122,7 @@ function Header(Props) {
             JsxRuntime.jsxs(Box, {
               children: [
                 JsxRuntime.jsx(Button, {
-                  children: "Tools",
+                  children: Components__Ui_translation.display_to("tools", displayLanguage, /* Small */ 0),
                   color: Bindings__Material_ui.Color.secondary,
                   endIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
                   onClick: (function ($$event) {
@@ -241,7 +242,7 @@ function Header(Props) {
                   }
                 }),
                 JsxRuntime.jsx(Button, {
-                  children: "Games",
+                  children: Components__Ui_translation.display_to("games", displayLanguage, /* Small */ 0),
                   color: Bindings__Material_ui.Color.secondary,
                   onClick: (function (param) {
                     ReasonReactRouter.push("/games");
@@ -249,7 +250,7 @@ function Header(Props) {
                   variant: "text"
                 }),
                 JsxRuntime.jsx(Button, {
-                  children: "Learn",
+                  children: Components__Ui_translation.display_to("learn", displayLanguage, /* Small */ 0),
                   color: Bindings__Material_ui.Color.secondary,
                   onClick: (function (param) {
                     ReasonReactRouter.push("/learn");
@@ -290,7 +291,7 @@ function Header(Props) {
                               })
                             }),
                             JsxRuntime.jsx(ListItemText, {
-                              children: Components__Web_utils.Translation.display_to("sign_up", displayLanguage, /* Small */ 0)
+                              children: Components__Ui_translation.display_to("sign_up", displayLanguage, /* Small */ 0)
                             })
                           ],
                           onClick: (function (param) {
@@ -310,7 +311,7 @@ function Header(Props) {
                               })
                             }),
                             JsxRuntime.jsx(ListItemText, {
-                              children: Components__Web_utils.Translation.display_to("sign_in", displayLanguage, /* Small */ 0)
+                              children: Components__Ui_translation.display_to("sign_in", displayLanguage, /* Small */ 0)
                             })
                           ],
                           onClick: (function (param) {

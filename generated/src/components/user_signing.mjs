@@ -16,7 +16,7 @@ import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Bindings__Zustand from "../bindings/zustand.mjs";
 import * as Components__Store from "./store.mjs";
-import * as Components__Web_utils from "./web_utils.mjs";
+import * as Components__Ui_translation from "./ui_translation.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
@@ -29,36 +29,52 @@ function User_signing(Props) {
     return store.display_language;
   }), Components__Store.app_store);
   const match = React.useState(function () {
+    
+  });
+  const set_email_address = match[1];
+  const email_address = match[0];
+  const match$1 = React.useState(function () {
+    
+  });
+  const set_password = match$1[1];
+  const password = match$1[0];
+  const match$2 = React.useState(function () {
     return false;
   });
-  const setShowPassword = match[1];
-  const showPassword = match[0];
+  const setShowPassword = match$2[1];
+  const showPassword = match$2[0];
   return JsxRuntime.jsxs(Dialog, {
     children: [
       JsxRuntime.jsx(DialogTitle, {
-        children: Components__Web_utils.Translation.display_to(isSignUp ? "sign_up" : "sign_in", displayLanguage, /* Large */ 2)
+        children: Components__Ui_translation.display_to(isSignUp ? "sign_up" : "sign_in", displayLanguage, /* Large */ 2)
       }),
       JsxRuntime.jsxs(DialogContent, {
         children: [
           JsxRuntime.jsx(DialogContentText, {
-            children: isSignUp ? Components__Web_utils.Translation.display_to("sign_up_message", displayLanguage, /* Medium */ 1) : Components__Web_utils.Translation.display_to("sign_in_message", displayLanguage, /* Medium */ 1),
+            children: isSignUp ? Components__Ui_translation.display_to("sign_up_message", displayLanguage, /* Medium */ 1) : Components__Ui_translation.display_to("sign_in_message", displayLanguage, /* Medium */ 1),
             sx: {
-              "word-wrap": "break-word"
+              wordWrap: "break-word"
             }
           }),
           JsxRuntime.jsx(TextField, {
             autoFocus: true,
             fullWidth: true,
-            label: Components__Web_utils.Translation.display_to("email_address", displayLanguage, /* Small */ 0),
+            label: Components__Ui_translation.display_to("email_address", displayLanguage, /* Small */ 0),
             margin: "dense",
+            onChange: (function ($$event) {
+              Curry._1(set_email_address, (function (param) {
+                return $$event.target.value;
+              }));
+            }),
             required: true,
             type: "email",
+            value: email_address !== undefined ? email_address : "",
             variant: "standard"
           }),
           JsxRuntime.jsxs(FormControl, {
             children: [
               JsxRuntime.jsx(InputLabel, {
-                children: Components__Web_utils.Translation.display_to("password", displayLanguage, /* Small */ 0),
+                children: Components__Ui_translation.display_to("password", displayLanguage, /* Small */ 0),
                 htmlFor: "signing-password-input"
               }),
               JsxRuntime.jsx(Input, {
@@ -76,7 +92,13 @@ function User_signing(Props) {
                   position: "end_"
                 }),
                 id: "signing-password-input",
-                type: showPassword ? "text" : "password"
+                onChange: (function ($$event) {
+                  Curry._1(set_password, (function (param) {
+                    return $$event.target.value;
+                  }));
+                }),
+                type: showPassword ? "text" : "password",
+                value: password !== undefined ? password : ""
               })
             ],
             fullWidth: true,
@@ -90,7 +112,7 @@ function User_signing(Props) {
       JsxRuntime.jsxs(DialogActions, {
         children: [
           JsxRuntime.jsx(Button, {
-            children: Components__Web_utils.Translation.display_to("cancel", displayLanguage, /* Small */ 0),
+            children: Components__Ui_translation.display_to("cancel", displayLanguage, /* Small */ 0),
             onClick: (function (param) {
               Curry._1(setSignupDialogOpen, (function (param) {
                 return false;
@@ -98,7 +120,7 @@ function User_signing(Props) {
             })
           }),
           JsxRuntime.jsx(Button, {
-            children: Components__Web_utils.Translation.display_to(isSignUp ? "sign_up" : "sign_in", displayLanguage, /* Small */ 0)
+            children: Components__Ui_translation.display_to(isSignUp ? "sign_up" : "sign_in", displayLanguage, /* Small */ 0)
           })
         ]
       })

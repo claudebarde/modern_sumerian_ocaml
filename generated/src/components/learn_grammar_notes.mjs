@@ -36,10 +36,20 @@ const css = LearnModuleScss;
 
 const ScrollableElement = {};
 
+const ElementViewport = {};
+
 function decode_string_field(object_, field) {
   const value = Js__Js_dict.get(object_, field);
   if (value !== undefined) {
     return Js__Js_json.decodeString(Caml_option.valFromOption(value));
+  }
+  
+}
+
+function decode_boolean_field(object_, field) {
+  const value = Js__Js_dict.get(object_, field);
+  if (value !== undefined) {
+    return Js__Js_json.decodeBoolean(Caml_option.valFromOption(value));
   }
   
 }
@@ -53,11 +63,17 @@ function decode_grammar_note(json) {
   const match = decode_string_field(object_$1, "slug");
   const match$1 = decode_string_field(object_$1, "title");
   const match$2 = decode_string_field(object_$1, "file");
-  if (match !== undefined && match$1 !== undefined && match$2 !== undefined) {
+  const match$3 = decode_string_field(object_$1, "banner");
+  const match$4 = decode_string_field(object_$1, "category");
+  const match$5 = decode_boolean_field(object_$1, "visible");
+  if (match !== undefined && match$1 !== undefined && match$2 !== undefined && match$3 !== undefined && match$4 !== undefined && match$5 !== undefined) {
     return {
       slug: match,
       title: match$1,
-      file: match$2
+      file: match$2,
+      banner: match$3,
+      category: match$4,
+      visible: match$5
     };
   }
   
@@ -138,7 +154,13 @@ function Learn_grammar_notes(Props) {
   });
   const set_scroll_percentage = match$7[1];
   const scroll_percentage = match$7[0];
+  const match$8 = React.useState(function () {
+    return true;
+  });
+  const set_is_banner_visible = match$8[1];
+  const is_banner_visible = match$8[0];
   const grammar_note_ref = React.useRef(null);
+  const banner_ref = React.useRef(null);
   React.useEffect((function () {
     window.fetch("/grammar_notes/index.json").then(function (response) {
       if (response.ok) {
@@ -186,6 +208,9 @@ function Learn_grammar_notes(Props) {
     }));
     Curry._1(set_scroll_percentage, (function (param) {
       return 0;
+    }));
+    Curry._1(set_is_banner_visible, (function (param) {
+      return true;
     }));
     if (selected_note !== undefined) {
       window.fetch(selected_note.file).then(function (response) {
@@ -236,6 +261,23 @@ function Learn_grammar_notes(Props) {
     Curry._1(set_scroll_percentage, (function (param) {
       return percentage;
     }));
+    const match = grammar_note_ref.current;
+    const match$1 = banner_ref.current;
+    if (match == null) {
+      return;
+    }
+    if (match$1 == null) {
+      return;
+    }
+    const container_rect = match.getBoundingClientRect();
+    const banner_rect = match$1.getBoundingClientRect();
+    const banner_is_visible = banner_rect.bottom > container_rect.top && banner_rect.top < container_rect.bottom;
+    if (banner_is_visible !== is_banner_visible) {
+      return Curry._1(set_is_banner_visible, (function (param) {
+        return banner_is_visible;
+      }));
+    }
+    
   };
   return JsxRuntime.jsxs(Grid, {
     children: [
@@ -274,15 +316,37 @@ function Learn_grammar_notes(Props) {
             JsxRuntime.jsxs("div", {
               ref: grammar_note_ref,
               children: [
-                JsxRuntime.jsx(Typography, {
-                  align: "center",
-                  children: selected_note.title,
-                  className: css.grammarNoteTitle,
-                  variant: Bindings__Material_ui.Typography.Variant.h3,
+                JsxRuntime.jsx(Box, {
+                  children: JsxRuntime.jsx(Typography, {
+                    align: "center",
+                    children: selected_note.title,
+                    className: css.grammarNoteTitle,
+                    variant: Bindings__Material_ui.Typography.Variant.h3,
+                    sx: {
+                      padding: "20px",
+                      backgroundColor: Bindings__Config.colors.whiteSmoke,
+                      opacity: is_banner_visible ? 0.0 : 1.0,
+                      transform: is_banner_visible ? "translateY(-100%)" : "translateY(0)",
+                      transition: "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 900ms ease"
+                    }
+                  }),
                   sx: {
-                    padding: "20px",
-                    backgroundColor: Bindings__Config.colors.whiteSmoke
+                    position: "sticky",
+                    top: "0",
+                    zIndex: 2,
+                    height: "0",
+                    overflow: "visible",
+                    pointerEvents: "none"
                   }
+                }),
+                JsxRuntime.jsx("img", {
+                  ref: banner_ref,
+                  style: {
+                    marginBottom: "20px",
+                    width: "100%"
+                  },
+                  alt: selected_note.title,
+                  src: selected_note.banner
                 }),
                 JsxRuntime.jsx(Container, {
                   children: markdown !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
@@ -300,6 +364,9 @@ function Learn_grammar_notes(Props) {
                 })
               ],
               className: css.grammarNote,
+              style: {
+                position: "relative"
+              },
               onScroll: handle_scroll
             })
           ]
@@ -404,7 +471,9 @@ const make = Learn_grammar_notes;
 export {
   css,
   ScrollableElement,
+  ElementViewport,
   decode_string_field,
+  decode_boolean_field,
   decode_grammar_note,
   parse_grammar_notes_index,
   make,

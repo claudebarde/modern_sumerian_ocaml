@@ -148,6 +148,23 @@ let make = () => {
             </Tooltip>
         </ListItem>;
 
+    let grammar_notes_list_item = (note: Learn_grammar_notes.grammar_note) =>
+        <ListItem key=note.slug disablePadding=true>
+            <ListItemButton
+                selected={selected_grammar_note_slug == Some(note.slug)}
+                onClick={_ =>
+                    ReasonReactRouter.push(
+                        "/learn/grammar_notes/" ++ note.slug,
+                    )
+                }
+            >
+                <ListItemIcon>
+                    <TablerReact.IconNote />
+                </ListItemIcon>
+                <ListItemText primary={note.title |> React.string} />
+            </ListItemButton>
+        </ListItem>;
+
     <Container 
         className={css##learnContainer}
         maxWidth=MaxWidth.disabled
@@ -237,58 +254,42 @@ let make = () => {
                                 <List
                                     sx={{"margin": "0px", "padding": "0px"}}
                                 >
-                                    {
+                                    <ListSubheader
+                                        disableSticky=true
+                                        sx={{"backgroundColor": Config.colors##cerealFlake}}
+                                    >
+                                        {"Nouns" |> React.string}
+                                    </ListSubheader>
+                                    {                                      
                                         grammar_notes
+                                        |> Array.fold_left(
+                                            (acc: array(Learn_grammar_notes.grammar_note), note: Learn_grammar_notes.grammar_note) => 
+                                                if (note.category == "nouns" && note.visible) { Array.concat([acc, [|note|]]) } else { acc }, [||]
+                                        )
                                         |> Array.map((note: Learn_grammar_notes.grammar_note) =>
-                                            <ListItem key=note.slug disablePadding=true>
-                                                <ListItemButton
-                                                    selected={selected_grammar_note_slug == Some(note.slug)}
-                                                    onClick={_ =>
-                                                        ReasonReactRouter.push(
-                                                            "/learn/grammar_notes/" ++ note.slug,
-                                                        )
-                                                    }
-                                                >
-                                                    <ListItemIcon>
-                                                    <TablerReact.IconNote />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={note.title |> React.string} />
-                                                </ListItemButton>
-                                            </ListItem>
+                                            grammar_notes_list_item(note)
+                                        )
+                                        |> React.array
+                                    }
+                                    <ListSubheader
+                                        disableSticky=true
+                                        sx={{"backgroundColor": Config.colors##cerealFlake}}
+                                    >
+                                        {"Verbs" |> React.string}
+                                    </ListSubheader>
+                                    {                                      
+                                        grammar_notes
+                                        |> Array.fold_left(
+                                            (acc: array(Learn_grammar_notes.grammar_note), note: Learn_grammar_notes.grammar_note) => 
+                                                if (note.category == "verbs" && note.visible) { Array.concat([acc, [|note|]]) } else { acc }, [||]
+                                        )
+                                        |> Array.map((note: Learn_grammar_notes.grammar_note) =>
+                                            grammar_notes_list_item(note)
                                         )
                                         |> React.array
                                     }
                                 </List>
                             </Collapse>
-                            // is_grammar_notes_route
-                            // ? <Collapse in_=grammar_notes_nav_open sx={{"marginLeft": "16px"}}>
-                            //     <List
-                            //         sx={{"margin": "0px", "padding": "0px"}}
-                            //     >
-                            //         {
-                            //             grammar_notes
-                            //             |> Array.map((note: Learn_grammar_notes.grammar_note) =>
-                            //                 <ListItem key=note.slug disablePadding=true>
-                            //                     <ListItemButton
-                            //                         selected={selected_grammar_note_slug == Some(note.slug)}
-                            //                         onClick={_ =>
-                            //                             ReasonReactRouter.push(
-                            //                                 "/learn/grammar_notes/" ++ note.slug,
-                            //                             )
-                            //                         }
-                            //                     >
-                            //                         <ListItemIcon>
-                            //                         <TablerReact.IconNote />
-                            //                         </ListItemIcon>
-                            //                         <ListItemText primary={note.title |> React.string} />
-                            //                     </ListItemButton>
-                            //                 </ListItem>
-                            //             )
-                            //             |> React.array
-                            //         }
-                            //     </List>
-                            // </Collapse>
-                            // : React.null
                         }
                     </List>
                 </Drawer>

@@ -1,17 +1,34 @@
 [
   {
     "slug": "noun-cases",
-    "title": "Case System",
-    "file": "/grammar_notes/noun-cases.md"
+    "title": "The Sumerian Case System",
+    "file": "/grammar_notes/noun-cases.md",
+    "banner": "/grammar_notes/banners/noun-cases.jpg",
+    "category": "nouns",
+    "visible": true
   },
   {
     "slug": "compound-verbs",
-    "title": "Compound Verbs",
-    "file": "/grammar_notes/compound-verbs.md"
+    "title": "Sumerian Compound Verbs",
+    "file": "/grammar_notes/compound-verbs.md",
+    "banner": "/grammar_notes/banners/compound-verbs.jpg",
+    "category": "verbs",
+    "visible": true
   },
   {
     "slug": "perfective-vs-imperfective",
     "title": "Perfective vs. Imperfective",
-    "file": "/grammar_notes/perfective-imperfective.md"
+    "file": "/grammar_notes/perfective-imperfective.md",
+    "banner": "/grammar_notes/banners/perfective-imperfective.jpg",
+    "category": "verbs",
+    "visible": true
+  },
+  {
+    "slug": "plurality",
+    "title": "Expressing Plural",
+    "file": "/grammar_notes/expressing-plural.md",
+    "banner": "/grammar_notes/banners/plurality.jpg",
+    "category": "nouns",
+    "visible": true
   }
 ]

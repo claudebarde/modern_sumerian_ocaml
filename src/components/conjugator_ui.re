@@ -1,6 +1,6 @@
 [@mel.module "../styles/Conjugator.module.scss"] external css: Js.t({..}) = "default"; 
 
-open Web_utils;
+open Utils;
 
 type prefix =
   | Negative

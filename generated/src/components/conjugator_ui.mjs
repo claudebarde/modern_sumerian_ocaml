@@ -29,6 +29,7 @@ import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_js_exceptions from "melange.js/caml_js_exceptions.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Components__Modal from "./modal.mjs";
+import * as Components__Utils from "./utils.mjs";
 import * as Components__Verb_error_form from "./verb_error_form.mjs";
 import * as Components__Web_utils from "./web_utils.mjs";
 import * as Conjugator from "../conjugator/conjugator.mjs";
@@ -273,7 +274,7 @@ function Conjugator_ui(Props) {
   }), []);
   const marginTop = "20px";
   const is_mobile = UseMediaQuery("(max-width:599px)");
-  const available_verbs = Components__Web_utils.SumerianVerbs.verbs;
+  const available_verbs = Components__Utils.SumerianVerbs.verbs;
   const prefixes = [
     {
       label: "Modal",

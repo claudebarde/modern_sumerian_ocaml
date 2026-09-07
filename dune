@@ -4,7 +4,7 @@
 ; This stanza excludes the 'node_modules' directory from being 
 ; considered by dune, which is a standard practice to prevent Dune from scanning 
 ; dependency files.
-(dirs :standard \ node_modules)
+(dirs :standard __tests__ \ node_modules)
 
 ; Build the Melange output as part of Dune's default `all` alias.
 (alias
@@ -13,7 +13,6 @@
     index.html
     (alias_rec modern_sumerian_ocaml)))
 
-
 ; The 'melange.emit' block is used to compile ReasonML/OCaml code to JavaScript.
 ; - 'target output' specifies where the compiled JS files will be placed.
 ; - It relies on the 'app' library and compiles using specified module systems 
@@ -21,7 +20,7 @@
   (melange.emit
    (target output)
    (alias modern_sumerian_ocaml)
-   (libraries app)
+   (libraries app melange-jest.jest)
    (module_systems (es6 mjs))
    (runtime_deps 
     (glob_files_rec src/*.scss) 

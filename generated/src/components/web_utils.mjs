@@ -3,7 +3,6 @@
 import ConjugatorModuleScss from "../styles/Conjugator.module.scss";
 import Cuneiform_code_pointsJson from "./cuneiform_code_points.json";
 import * as Epsd_linksJson from "./epsd_links.json";
-import Sumerian_verbsJson from "./sumerian_verbs.json";
 import Alert from "@mui/material/Alert";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
@@ -22,17 +21,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
-import * as Caml from "melange.js/caml.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
-import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Components__Cuneiform_char from "./cuneiform_char.mjs";
 import * as Components__Custom_dict from "./custom_dict.mjs";
 import * as Conjugator from "../conjugator/conjugator.mjs";
 import * as Conjugator__Verb_analysis from "../conjugator/verb_analysis.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
-import * as Js__Js_exn from "melange.js/js_exn.mjs";
-import * as Js__Js_json from "melange.js/js_json.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
 import * as Stdlib__Int from "melange/int.mjs";
 import * as Stdlib__List from "melange/list.mjs";
@@ -40,260 +35,6 @@ import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 const cuneiformCodePoints = Cuneiform_code_pointsJson;
-
-const sumerianVerbsJson = Sumerian_verbsJson;
-
-const get_field = Js__Js_dict.get;
-
-function get_string(object_, field) {
-  const value = Js__Js_dict.get(object_, field);
-  if (value !== undefined) {
-    return Js__Js_json.decodeString(Caml_option.valFromOption(value));
-  }
-  
-}
-
-function get_boolean(object_, field) {
-  const value = Js__Js_dict.get(object_, field);
-  if (value !== undefined) {
-    return Js__Js_json.decodeBoolean(Caml_option.valFromOption(value));
-  }
-  
-}
-
-function get_string_array(object_, field) {
-  const value = Js__Js_dict.get(object_, field);
-  if (value === undefined) {
-    return;
-  }
-  const values = Js__Js_json.decodeArray(Caml_option.valFromOption(value));
-  if (values === undefined) {
-    return;
-  }
-  let _index = 0;
-  let _strings = /* [] */ 0;
-  while (true) {
-    const strings = _strings;
-    const index = _index;
-    if (index >= values.length) {
-      return Stdlib__Array.of_list(Stdlib__List.rev(strings));
-    }
-    const value$1 = Js__Js_json.decodeString(Caml_array.get(values, index));
-    if (value$1 === undefined) {
-      return;
-    }
-    _strings = {
-      hd: value$1,
-      tl: strings
-    };
-    _index = index + 1 | 0;
-    continue;
-  };
-}
-
-function parse_kind(json) {
-  const object_ = Js__Js_json.decodeObject(json);
-  if (object_ === undefined) {
-    return;
-  }
-  const object_$1 = Caml_option.valFromOption(object_);
-  const match = get_string(object_$1, "type");
-  if (match === undefined) {
-    return;
-  }
-  switch (match) {
-    case "compound" :
-      const match$1 = get_string(object_$1, "value");
-      const match$2 = get_string_array(object_$1, "cuneiforms");
-      if (match$1 !== undefined && match$2 !== undefined) {
-        return {
-          TAG: /* Compound */ 0,
-          _0: {
-            value: match$1,
-            cuneiforms: match$2
-          }
-        };
-      } else {
-        return;
-      }
-    case "simple" :
-      return /* Simple */ 0;
-    default:
-      return;
-  }
-}
-
-function parse_imperfective(json) {
-  const object_ = Js__Js_json.decodeObject(json);
-  if (object_ === undefined) {
-    return;
-  }
-  const object_$1 = Caml_option.valFromOption(object_);
-  const match = get_string(object_$1, "type");
-  if (match === undefined) {
-    return;
-  }
-  switch (match) {
-    case "ed_marker" :
-      return /* Ed_marker */ 0;
-    case "other" :
-      const value = get_string(object_$1, "value");
-      if (value !== undefined) {
-        return {
-          TAG: /* Other */ 1,
-          _0: value
-        };
-      } else {
-        return;
-      }
-    case "reduplicate" :
-      return {
-        TAG: /* Reduplicate */ 0,
-        _0: get_string(object_$1, "value")
-      };
-    default:
-      return;
-  }
-}
-
-function parse_english_verb(json) {
-  const object_ = Js__Js_json.decodeObject(json);
-  if (object_ === undefined) {
-    return;
-  }
-  const object_$1 = Caml_option.valFromOption(object_);
-  const value = Js__Js_dict.get(object_$1, "complement");
-  let complement;
-  if (value !== undefined) {
-    const complement$1 = Js__Js_json.decodeString(Caml_option.valFromOption(value));
-    complement = complement$1 !== undefined ? Caml_option.some(complement$1) : undefined;
-  } else {
-    complement = Caml_option.some(undefined);
-  }
-  const match = get_string(object_$1, "complement_placement");
-  let complement_placement;
-  if (match !== undefined) {
-    switch (match) {
-      case "after_object" :
-        complement_placement = /* After_object */ 1;
-        break;
-      case "after_verb" :
-        complement_placement = /* After_verb */ 0;
-        break;
-      default:
-        complement_placement = undefined;
-    }
-  } else {
-    complement_placement = /* After_verb */ 0;
-  }
-  const match$1 = get_string(object_$1, "lemma");
-  if (match$1 !== undefined && complement !== undefined && complement_placement !== undefined) {
-    return {
-      lemma: match$1,
-      complement: Caml_option.valFromOption(complement),
-      complement_placement
-    };
-  }
-  
-}
-
-function parse_verb(json) {
-  const object_ = Js__Js_json.decodeObject(json);
-  if (object_ === undefined) {
-    return;
-  }
-  const object_$1 = Caml_option.valFromOption(object_);
-  const value = Js__Js_dict.get(object_$1, "kind");
-  const kind = value !== undefined ? parse_kind(Caml_option.valFromOption(value)) : undefined;
-  const value$1 = Js__Js_dict.get(object_$1, "imperfective");
-  const imperfective = value$1 !== undefined ? parse_imperfective(Caml_option.valFromOption(value$1)) : undefined;
-  const value$2 = Js__Js_dict.get(object_$1, "english");
-  const english = value$2 !== undefined ? parse_english_verb(Caml_option.valFromOption(value$2)) : undefined;
-  const match = get_string(object_$1, "label");
-  const match$1 = get_string(object_$1, "meaning");
-  const match$2 = get_string(object_$1, "stem");
-  const match$3 = get_string_array(object_$1, "stem_cuneiforms");
-  const match$4 = get_boolean(object_$1, "transitive");
-  const match$5 = get_string_array(object_$1, "notes");
-  if (match !== undefined && match$1 !== undefined && english !== undefined && match$2 !== undefined && match$3 !== undefined && kind !== undefined && imperfective !== undefined && match$4 !== undefined && match$5 !== undefined) {
-    return {
-      label: match,
-      meaning: match$1,
-      english,
-      stem: match$2,
-      stem_cuneiforms: match$3,
-      kind,
-      imperfective,
-      transitive: match$4,
-      notes: match$5,
-      firstLetter: match.charAt(0)
-    };
-  }
-  
-}
-
-function parse_result(json) {
-  const rows = Js__Js_json.decodeArray(json);
-  if (rows === undefined) {
-    return {
-      TAG: /* Error */ 1,
-      _0: "The Sumerian verbs JSON root must be an array"
-    };
-  }
-  let _index = 0;
-  let _verbs = /* [] */ 0;
-  while (true) {
-    const verbs = _verbs;
-    const index = _index;
-    if (index >= rows.length) {
-      return {
-        TAG: /* Ok */ 0,
-        _0: Stdlib__Array.of_list(Stdlib__List.rev(verbs))
-      };
-    }
-    const verb = parse_verb(Caml_array.get(rows, index));
-    if (verb === undefined) {
-      return {
-        TAG: /* Error */ 1,
-        _0: "Invalid Sumerian verb data at array index " + index.toString()
-      };
-    }
-    _verbs = {
-      hd: verb,
-      tl: verbs
-    };
-    _index = index + 1 | 0;
-    continue;
-  };
-}
-
-function parse(json) {
-  const verbs = parse_result(json);
-  if (verbs.TAG !== /* Ok */ 0) {
-    return Js__Js_exn.raiseError(verbs._0);
-  }
-  const verbs$1 = verbs._0;
-  Stdlib__Array.sort((function (a, b) {
-    return Caml.caml_string_compare(a.label, b.label);
-  }), verbs$1);
-  return verbs$1;
-}
-
-const verbs = parse(sumerianVerbsJson);
-
-const SumerianVerbs = {
-  get_field,
-  get_string,
-  get_boolean,
-  get_string_array,
-  parse_kind,
-  parse_imperfective,
-  parse_english_verb,
-  parse_verb,
-  parse_result,
-  parse,
-  verbs
-};
 
 function search_cuneiforms(words) {
   const cuneiformData = JSON.parse(JSON.stringify(cuneiformCodePoints));
@@ -816,8 +557,6 @@ const Format = {
 
 export {
   cuneiformCodePoints,
-  sumerianVerbsJson,
-  SumerianVerbs,
   search_cuneiforms,
   display_cuneiforms,
   pronoun_to_person_param,

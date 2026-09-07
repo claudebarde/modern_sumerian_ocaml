@@ -1,0 +1,13 @@
+(melange.emit
+ (target test)
+ (alias test)
+ (modules conjugation_helpers imperfective_test simple_conjugation_test)
+ (libraries melange-jest.jest components conjugator)
+ (module_systems commonjs)
+ (runtime_deps
+  (glob_files_rec ../src/*.json)
+  (glob_files_rec ../src/*.scss)
+  (glob_files_rec ../src/assets/*)
+  (glob_files_rec ../public/*))
+ (preprocess
+  (pps melange.ppx)))

@@ -135,6 +135,19 @@ function display_to(sentence, language, size) {
           break;
       }
       break;
+    case "sign_in_message" :
+      switch (language) {
+        case /* English */ 0 :
+          result = "Enter your email address and password to sign in";
+          break;
+        case /* SuxCuneiform */ 1 :
+          result = "𒈬𒊬𒊏·𒆥𒄄𒀀𒍪·𒊬𒊏𒀊·𒅗𒀜𒄬𒍪·𒊬𒊏𒀊";
+          break;
+        case /* SuxLatin */ 2 :
+          result = "Musara kiĝgiazu sarab, inim adhalzu sarab";
+          break;
+      }
+      break;
     case "sign_up" :
       switch (language) {
         case /* English */ 0 :

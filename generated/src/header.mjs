@@ -21,6 +21,7 @@ import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Config from "./bindings/config.mjs";
 import * as Bindings__Material_ui from "./bindings/material_ui.mjs";
+import * as Bindings__Supabase from "./bindings/supabase.mjs";
 import * as Bindings__Zustand from "./bindings/zustand.mjs";
 import * as Components__Settings_dialog from "./components/settings_dialog.mjs";
 import * as Components__Store from "./components/store.mjs";
@@ -59,9 +60,13 @@ function Header(Props) {
   });
   const setSignupDialogOpen = match$3[1];
   const match$4 = React.useState(function () {
+    return true;
+  });
+  const setIsSignUp = match$4[1];
+  const match$5 = React.useState(function () {
     return false;
   });
-  const setSettingsDialogOpen = match$4[1];
+  const setSettingsDialogOpen = match$5[1];
   const settingsButtonRef = React.useRef(null);
   const openToolsMenu = !(toolsAnchor == null);
   const openUserMenu = !(userAnchor == null);
@@ -77,6 +82,12 @@ function Header(Props) {
   };
   const displayLanguage = Bindings__Zustand.use_store((function (store) {
     return store.display_language;
+  }), Components__Store.app_store);
+  const clearAuthentication = Bindings__Zustand.use_store((function (store) {
+    return store.clear_authentication;
+  }), Components__Store.app_store);
+  const current_session = Bindings__Zustand.use_store((function (state) {
+    return state.current_session;
   }), Components__Store.app_store);
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
@@ -267,70 +278,147 @@ function Header(Props) {
                       }),
                       size: "small"
                     }),
-                    JsxRuntime.jsx(IconButton, {
-                      children: JsxRuntime.jsx(IconsReact.IconUserOff, {}),
-                      color: Bindings__Material_ui.Color.secondary,
-                      onClick: (function ($$event) {
-                        Curry._1(setUserAnchor, (function (param) {
-                          return $$event.currentTarget;
-                        }));
-                      }),
-                      size: "small"
-                    }),
-                    JsxRuntime.jsxs(Menu, {
-                      anchorOrigin: {
-                        vertical: "bottom",
-                        horizontal: "right"
-                      },
-                      children: [
-                        JsxRuntime.jsxs(MenuItem, {
-                          children: [
-                            JsxRuntime.jsx(ListItemIcon, {
-                              children: JsxRuntime.jsx(IconsReact.IconUserPlus, {
-                                color: Bindings__Config.colors.botanicalNight
+                    current_session !== undefined ? JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                        children: [
+                          JsxRuntime.jsx(IconButton, {
+                            children: JsxRuntime.jsx(IconsReact.IconUserCheck, {}),
+                            color: Bindings__Material_ui.Color.secondary,
+                            onClick: (function ($$event) {
+                              Curry._1(setUserAnchor, (function (param) {
+                                return $$event.currentTarget;
+                              }));
+                            }),
+                            size: "small"
+                          }),
+                          JsxRuntime.jsx(Menu, {
+                            anchorOrigin: {
+                              vertical: "bottom",
+                              horizontal: "right"
+                            },
+                            children: JsxRuntime.jsxs(MenuItem, {
+                              children: [
+                                JsxRuntime.jsx(ListItemIcon, {
+                                  children: JsxRuntime.jsx(IconsReact.IconUserPlus, {
+                                    color: Bindings__Config.colors.botanicalNight
+                                  })
+                                }),
+                                JsxRuntime.jsx(ListItemText, {
+                                  children: Components__Ui_translation.display_to("log_out", displayLanguage, /* Small */ 0)
+                                })
+                              ],
+                              onClick: (function (param) {
+                                Curry._1(setUserAnchor, (function (param) {
+                                  return null;
+                                }));
+                                const options = {
+                                  scope: "local"
+                                };
+                                Bindings__Supabase.auth.signOut(options).then(function (response) {
+                                  const error = response.error;
+                                  if (error == null) {
+                                    Curry._1(clearAuthentication, undefined);
+                                  } else {
+                                    console.log("Unable to sign out:", error.message);
+                                  }
+                                  return Promise.resolve();
+                                }).catch(function (error) {
+                                  console.log("Unable to sign out:", error);
+                                  return Promise.resolve();
+                                });
                               })
                             }),
-                            JsxRuntime.jsx(ListItemText, {
-                              children: Components__Ui_translation.display_to("sign_up", displayLanguage, /* Small */ 0)
-                            })
-                          ],
-                          onClick: (function (param) {
-                            Curry._1(setUserAnchor, (function (param) {
-                              return null;
-                            }));
-                            Curry._1(setSignupDialogOpen, (function (param) {
-                              return true;
-                            }));
-                          })
-                        }),
-                        JsxRuntime.jsxs(MenuItem, {
-                          children: [
-                            JsxRuntime.jsx(ListItemIcon, {
-                              children: JsxRuntime.jsx(IconsReact.IconUserCheck, {
-                                color: Bindings__Config.colors.botanicalNight
-                              })
+                            anchorEl: userAnchor,
+                            onClose: (function (param) {
+                              Curry._1(setUserAnchor, (function (param) {
+                                return null;
+                              }));
                             }),
-                            JsxRuntime.jsx(ListItemText, {
-                              children: Components__Ui_translation.display_to("sign_in", displayLanguage, /* Small */ 0)
-                            })
-                          ],
-                          onClick: (function (param) {
-                            console.log("Sign In clicked");
+                            open: openUserMenu,
+                            transformOrigin: {
+                              vertical: "top",
+                              horizontal: "right"
+                            }
                           })
-                        })
-                      ],
-                      anchorEl: userAnchor,
-                      onClose: (function (param) {
-                        Curry._1(setUserAnchor, (function (param) {
-                          return null;
-                        }));
+                        ]
+                      }) : JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                        children: [
+                          JsxRuntime.jsx(IconButton, {
+                            children: JsxRuntime.jsx(IconsReact.IconUserOff, {}),
+                            color: Bindings__Material_ui.Color.secondary,
+                            onClick: (function ($$event) {
+                              Curry._1(setUserAnchor, (function (param) {
+                                return $$event.currentTarget;
+                              }));
+                            }),
+                            size: "small"
+                          }),
+                          JsxRuntime.jsxs(Menu, {
+                            anchorOrigin: {
+                              vertical: "bottom",
+                              horizontal: "right"
+                            },
+                            children: [
+                              JsxRuntime.jsxs(MenuItem, {
+                                children: [
+                                  JsxRuntime.jsx(ListItemIcon, {
+                                    children: JsxRuntime.jsx(IconsReact.IconUserPlus, {
+                                      color: Bindings__Config.colors.botanicalNight
+                                    })
+                                  }),
+                                  JsxRuntime.jsx(ListItemText, {
+                                    children: Components__Ui_translation.display_to("sign_up", displayLanguage, /* Small */ 0)
+                                  })
+                                ],
+                                onClick: (function (param) {
+                                  Curry._1(setUserAnchor, (function (param) {
+                                    return null;
+                                  }));
+                                  Curry._1(setIsSignUp, (function (param) {
+                                    return true;
+                                  }));
+                                  Curry._1(setSignupDialogOpen, (function (param) {
+                                    return true;
+                                  }));
+                                })
+                              }),
+                              JsxRuntime.jsxs(MenuItem, {
+                                children: [
+                                  JsxRuntime.jsx(ListItemIcon, {
+                                    children: JsxRuntime.jsx(IconsReact.IconUserCheck, {
+                                      color: Bindings__Config.colors.botanicalNight
+                                    })
+                                  }),
+                                  JsxRuntime.jsx(ListItemText, {
+                                    children: Components__Ui_translation.display_to("sign_in", displayLanguage, /* Small */ 0)
+                                  })
+                                ],
+                                onClick: (function (param) {
+                                  Curry._1(setUserAnchor, (function (param) {
+                                    return null;
+                                  }));
+                                  Curry._1(setIsSignUp, (function (param) {
+                                    return false;
+                                  }));
+                                  Curry._1(setSignupDialogOpen, (function (param) {
+                                    return true;
+                                  }));
+                                })
+                              })
+                            ],
+                            anchorEl: userAnchor,
+                            onClose: (function (param) {
+                              Curry._1(setUserAnchor, (function (param) {
+                                return null;
+                              }));
+                            }),
+                            open: openUserMenu,
+                            transformOrigin: {
+                              vertical: "top",
+                              horizontal: "right"
+                            }
+                          })
+                        ]
                       }),
-                      open: openUserMenu,
-                      transformOrigin: {
-                        vertical: "top",
-                        horizontal: "right"
-                      }
-                    }),
                     JsxRuntime.jsx(IconButton, {
                       children: JsxRuntime.jsx(IconsReact.IconSettings, {}),
                       color: Bindings__Material_ui.Color.secondary,
@@ -613,10 +701,10 @@ function Header(Props) {
       JsxRuntime.jsx(Components__User_signing.make, {
         isSignupDialogOpen: match$3[0],
         setSignupDialogOpen,
-        isSignUp: true
+        isSignUp: match$4[0]
       }),
       JsxRuntime.jsx(Components__Settings_dialog.make, {
-        isSettingsDialogOpen: match$4[0],
+        isSettingsDialogOpen: match$5[0],
         setSettingsDialogOpen,
         restoreSettingsButtonFocus
       })

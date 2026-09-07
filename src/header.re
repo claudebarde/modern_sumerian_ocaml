@@ -21,6 +21,7 @@ let make = () => {
         );
     let (mobileMenuOpen, setMobileMenuOpen) = React.useState(() => false);
     let (isSignupDialogOpen, setSignupDialogOpen) = React.useState(() => false);
+    let (isSignUp, setIsSignUp) = React.useState(() => true);
     let (isSettingsDialogOpen, setSettingsDialogOpen) = React.useState(() => false);
     let settingsButtonRef: React.ref(Js.nullable(Dom.element)) =
         React.useRef(Js.Nullable.null);
@@ -47,6 +48,35 @@ let make = () => {
 
     let displayLanguage =
         app_store |> Zustand.use_store(store => store.display_language);
+    let clearAuthentication =
+        app_store |> Zustand.use_store(store => store.clear_authentication);
+
+    let handleSignOut = () => {
+        closeUserMenu();
+
+        let options =
+            Supabase.Auth.make_sign_out_options(~scope=`local, ());
+
+        Supabase.auth
+        |> Supabase.Auth.sign_out_with_options(options)
+        |> Js.Promise.then_(response => {
+            switch (Supabase.Auth.sign_out_error(response)) {
+            | Some(error) =>
+                Js.log2(
+                    "Unable to sign out:",
+                    Supabase.Auth.error_message(error),
+                )
+            | None => clearAuthentication()
+            };
+
+            Js.Promise.resolve();
+        })
+        |> Js.Promise.catch(error => {
+            Js.log2("Unable to sign out:", error);
+            Js.Promise.resolve();
+        })
+        |> ignore;
+    };
 
     <>
         <AppBar 
@@ -188,62 +218,121 @@ let make = () => {
                         >
                             <TablerReact.IconLinkFilled />
                         </IconButton>
-                        <IconButton
-                            color=Color.secondary
-                            size=`small
-                            onClick={event =>
-                                setUserAnchor(_ =>
-                                    React.Event.Mouse.currentTarget(event)
-                                    |> dom_element_from_event_target
-                                    |> Js.Nullable.return
-                                )
+                        {
+                            let current_session =
+                                Store.app_store
+                                |> Zustand.use_store(state => state.current_session);
+
+                            switch current_session {
+                            | Some(_session) => {
+                                <>
+                                    <IconButton
+                                        color=Color.secondary
+                                        size=`small
+                                        onClick={event =>
+                                            setUserAnchor(_ =>
+                                                React.Event.Mouse.currentTarget(event)
+                                                |> dom_element_from_event_target
+                                                |> Js.Nullable.return
+                                            )
+                                        }
+                                    >
+                                        <TablerReact.IconUserCheck />
+                                    </IconButton>
+                                    <Menu
+                                        _open=openUserMenu
+                                        anchorEl=userAnchor
+                                        anchorOrigin={vertical: `bottom, horizontal: `right}
+                                        transformOrigin={vertical: `top, horizontal: `right}
+                                        onClose={_ => closeUserMenu()}
+                                    >
+                                        <MenuItem
+                                            onClick={_ => handleSignOut()}
+                                        >
+                                            <ListItemIcon>
+                                                <TablerReact.IconUserPlus color=Config.colors##botanicalNight />
+                                            </ListItemIcon>
+                                            <ListItemText>
+                                                {
+                                                    {
+                                                        Components.Ui_translation.display_to(
+                                                            ~sentence="log_out",
+                                                            ~language=displayLanguage,
+                                                            ~size=Some(Components.Ui_translation.Small))
+                                                        }
+                                                }
+                                            </ListItemText>
+                                        </MenuItem>
+                                    </Menu>
+                                </>
                             }
-                        >
-                            <TablerReact.IconUserOff />
-                        </IconButton>
-                        <Menu
-                            _open=openUserMenu
-                            anchorEl=userAnchor
-                            anchorOrigin={vertical: `bottom, horizontal: `right}
-                            transformOrigin={vertical: `top, horizontal: `right}
-                            onClose={_ => closeUserMenu()}
-                        >
-                            <MenuItem
-                                onClick={_ => {
-                                    closeUserMenu()
-                                    setSignupDialogOpen(_ => true)
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <TablerReact.IconUserPlus color=Config.colors##botanicalNight />
-                                </ListItemIcon>
-                                <ListItemText>
-                                    {
-                                        {
-                                            Components.Ui_translation.display_to(
-                                                ~sentence="sign_up", 
-                                                ~language=displayLanguage, 
-                                                ~size=Some(Components.Ui_translation.Small))
-                                            }
-                                    }
-                                </ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={_ => Js.log("Sign In clicked")}
-                            >
-                                <ListItemIcon>
-                                    <TablerReact.IconUserCheck color=Config.colors##botanicalNight />
-                                </ListItemIcon>
-                                <ListItemText>
-                                    {
-                                        Components.Ui_translation.display_to(
-                                            ~sentence="sign_in", 
-                                            ~language=displayLanguage, 
-                                            ~size=Some(Components.Ui_translation.Small))
-                                    }
-                                </ListItemText>
-                            </MenuItem>
-                        </Menu>
+                            | None => {
+                                <>
+                                    <IconButton
+                                        color=Color.secondary
+                                        size=`small
+                                        onClick={event =>
+                                            setUserAnchor(_ =>
+                                                React.Event.Mouse.currentTarget(event)
+                                                |> dom_element_from_event_target
+                                                |> Js.Nullable.return
+                                            )
+                                        }
+                                    >
+                                        <TablerReact.IconUserOff />
+                                    </IconButton>
+                                    <Menu
+                                        _open=openUserMenu
+                                        anchorEl=userAnchor
+                                        anchorOrigin={vertical: `bottom, horizontal: `right}
+                                        transformOrigin={vertical: `top, horizontal: `right}
+                                        onClose={_ => closeUserMenu()}
+                                    >
+                                        <MenuItem
+                                            onClick={_ => {
+                                                closeUserMenu();
+                                                setIsSignUp(_ => true);
+                                                setSignupDialogOpen(_ => true)
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <TablerReact.IconUserPlus color=Config.colors##botanicalNight />
+                                            </ListItemIcon>
+                                            <ListItemText>
+                                                {
+                                                    {
+                                                        Components.Ui_translation.display_to(
+                                                            ~sentence="sign_up",
+                                                            ~language=displayLanguage,
+                                                            ~size=Some(Components.Ui_translation.Small))
+                                                        }
+                                                }
+                                            </ListItemText>
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={_ => {
+                                                closeUserMenu();
+                                                setIsSignUp(_ => false);
+                                                setSignupDialogOpen(_ => true);
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <TablerReact.IconUserCheck color=Config.colors##botanicalNight />
+                                            </ListItemIcon>
+                                            <ListItemText>
+                                                {
+                                                    Components.Ui_translation.display_to(
+                                                        ~sentence="sign_in",
+                                                        ~language=displayLanguage,
+                                                        ~size=Some(Components.Ui_translation.Small))
+                                                }
+                                            </ListItemText>
+                                        </MenuItem>
+                                    </Menu>
+                                </>
+                            }
+                            }
+                        }
                         <IconButton
                             color=Color.secondary
                             size=`small
@@ -436,7 +525,7 @@ let make = () => {
         <Components.User_signing 
             isSignupDialogOpen=isSignupDialogOpen
             setSignupDialogOpen=setSignupDialogOpen
-            isSignUp=true
+            isSignUp=isSignUp
         />
         <Components.Settings_dialog
             isSettingsDialogOpen=isSettingsDialogOpen

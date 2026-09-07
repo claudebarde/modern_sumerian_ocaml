@@ -31,6 +31,45 @@ let theme =
 module App = {
   [@react.component]
   let make = () => {
+    open Components.Store;
+
+    let setAuthentication =
+      app_store |> Zustand.use_store(store => store.set_authentication);
+    let setAuthLoading =
+      app_store |> Zustand.use_store(store => store.set_auth_loading);
+
+    React.useEffect0(() => {
+      setAuthLoading(true);
+
+      Supabase.auth
+      |> Supabase.Auth.get_session
+      |> Js.Promise.then_(response => {
+        switch (Supabase.Auth.error(response)) {
+        | Some(error) => {
+            Js.log2(
+              "Unable to restore the Supabase session:",
+              Supabase.Auth.error_message(error),
+            );
+            setAuthentication(None);
+          }
+        | None =>
+          response
+          |> Supabase.Auth.data
+          |> Supabase.Auth.current_session
+          |> setAuthentication
+        };
+
+        Js.Promise.resolve();
+      })
+      |> Js.Promise.catch(_error => {
+        setAuthentication(None);
+        Js.Promise.resolve();
+      })
+      |> ignore;
+
+      None;
+    });
+
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header />
@@ -52,4 +91,3 @@ ReactDOM.querySelector("#root")
         "Failed to start React: couldn't find the #root element",
       )
   );
-

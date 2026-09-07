@@ -62,3 +62,10 @@ Notes:
   arrangement (a subscription) is a third word, not yet settled.
 - *niĝgub* is both singular and plural. Sumerian non-human nouns are not inflected
   for number, and the plural clitic {enē} is human-only.
+
+---
+
+These neologisms are proposals, not settled usage. If you would like to discuss any of
+them — to question a choice, suggest a better word, or ask how one was arrived at — you
+are welcome to join the conversation on the official Modern Sumerian Discord server:
+https://discord.gg/8WSw6nA5h

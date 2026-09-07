@@ -43,7 +43,11 @@ let display_to(
                 | SuxCuneiform => {js|𒃻𒋃·𒀝𒉈·𒈬𒊬𒊏·𒆥𒄄𒀀𒍪·𒊬𒊏𒀊·𒅗𒀜𒄬·𒁺𒁀𒀊|js}
                 | SuxLatin => {js|Niĝkas akede, musara kiĝgiazu sarab, inim adhal gubab|js}
             }
-            // TODO: sign_in_message "Enter your email address and password to sign in"
+            | "sign_in_message" => switch (language) {
+                | English => "Enter your email address and password to sign in"
+                | SuxCuneiform => {js|𒈬𒊬𒊏·𒆥𒄄𒀀𒍪·𒊬𒊏𒀊·𒅗𒀜𒄬𒍪·𒊬𒊏𒀊|js}
+                | SuxLatin => {js|Musara kiĝgiazu sarab, inim adhalzu sarab|js}
+            }
             | "cancel" => switch (language) {
                 | English => "Cancel"
                 | SuxCuneiform => {js|𒍣𒊏𒀊|js}

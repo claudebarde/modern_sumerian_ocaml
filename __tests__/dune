@@ -1,7 +1,7 @@
 (melange.emit
  (target test)
  (alias test)
- (modules imperfective_test)
+ (modules conjugation_helpers imperfective_test simple_conjugation_test)
  (libraries melange-jest.jest components conjugator)
  (module_systems commonjs)
  (runtime_deps

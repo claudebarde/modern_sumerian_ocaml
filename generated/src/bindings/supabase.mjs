@@ -6,6 +6,7 @@ import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Js__Js_json from "melange.js/js_json.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
+import * as Stdlib__List from "melange/list.mjs";
 
 const Auth = {};
 
@@ -197,13 +198,67 @@ function decode(json) {
   };
 }
 
+function decode_words_list_row(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return;
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  return {
+    user_id: decode_string_field(obj$1, "user_id"),
+    dictionary_entry_id: decode_string_field(obj$1, "dictionary_entry_id"),
+    english: decode_string_field(obj$1, "english"),
+    sumerian_cuneiform: decode_string_field(obj$1, "sumerian_cuneiform"),
+    sumerian_transliteration: decode_string_field(obj$1, "sumerian_transliteration"),
+    created_at: decode_string_field(obj$1, "created_at")
+  };
+}
+
+function decode_words_list(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return {
+      success: false,
+      data: [],
+      error: "Supabase returned an invalid words list response"
+    };
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  const error = decode_error(obj$1);
+  const value = Js__Js_dict.get(obj$1, "data");
+  let data;
+  if (value !== undefined) {
+    const rows = Js__Js_json.decodeArray(Caml_option.valFromOption(value));
+    data = rows !== undefined ? Stdlib__Array.of_list(Stdlib__List.rev(Stdlib__Array.fold_left((function (decoded_rows, row) {
+        const row$1 = decode_words_list_row(row);
+        if (row$1 !== undefined) {
+          return {
+            hd: row$1,
+            tl: decoded_rows
+          };
+        } else {
+          return decoded_rows;
+        }
+      }), /* [] */ 0, rows))) : [];
+  } else {
+    data = [];
+  }
+  return {
+    success: error === undefined,
+    data,
+    error
+  };
+}
+
 const $$Response = {
   decode_string_field,
   decode_marker,
   decode_string_array,
   decode_row,
   decode_error,
-  decode
+  decode,
+  decode_words_list_row,
+  decode_words_list
 };
 
 const client = SupabaseJs.createClient(Bindings__Config.supabaseUrl, Bindings__Config.supabasePublishableKey);

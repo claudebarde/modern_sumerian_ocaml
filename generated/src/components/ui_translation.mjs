@@ -83,6 +83,19 @@ function display_to(sentence, language, size) {
           break;
       }
       break;
+    case "log_out" :
+      switch (language) {
+        case /* English */ 0 :
+          result = "Log Out";
+          break;
+        case /* SuxCuneiform */ 1 :
+          result = "𒌓𒁺𒋫";
+          break;
+        case /* SuxLatin */ 2 :
+          result = "Èta";
+          break;
+      }
+      break;
     case "password" :
       switch (language) {
         case /* English */ 0 :

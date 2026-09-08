@@ -37,6 +37,16 @@ type dictionary_row = {
   icount: int,
 };
 
+/** A row returned from the user-owned words_list table. */
+type words_list_row = {
+  user_id: string,
+  dictionary_entry_id: string,
+  english: string,
+  sumerian_cuneiform: string,
+  sumerian_transliteration: string,
+  created_at: string,
+};
+
 /** Binding for the named createClient export from @supabase/supabase-js. */
 [@mel.module "@supabase/supabase-js"]
 external createClient: (~supabase_url: string, ~supabase_key: string) => client = "createClient";
@@ -224,6 +234,13 @@ module Query = {
     /** An opaque PostgREST query builder returned by client.from(table). */
     type query_builder;
 
+    /** A row inserted into the user-owned words_list table. */
+    type words_list_insert;
+
+    /** The response returned by a PostgREST mutation. */
+    type mutation_response;
+    type postgrest_error;
+
     /** Arguments shared by the English and Sumerian dictionary search RPCs. */
     type dictionary_search_params;
 
@@ -243,6 +260,16 @@ module Query = {
       unit,
     ) => etsy_listing_params = "";
 
+    [@mel.obj]
+    external make_words_list_insert: (
+      ~user_id: string,
+      ~dictionary_entry_id: string,
+      ~english: string,
+      ~sumerian_cuneiform: string,
+      ~sumerian_transliteration: string,
+      unit,
+    ) => words_list_insert = "";
+
     /** Start a query against a table or view. */
     [@mel.send]
     external from: (string, [@mel.this] client) => query_builder = "from";
@@ -250,6 +277,33 @@ module Query = {
     /** Execute a query and return the results. */
     [@mel.send]
     external select: (string, [@mel.this] query_builder) => Js.Promise.t(Js.Json.t) = "select";
+
+    /** Insert one or more rows into words_list. */
+    [@mel.send]
+    external insert_words_list: (
+      array(words_list_insert),
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "insert";
+
+    /** Start a deletion from words_list. Filters must be applied before awaiting it. */
+    [@mel.send]
+    external delete_words_list: (
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "delete";
+
+    /** Apply an equality filter to a words_list mutation. */
+    [@mel.send]
+    external eq_words_list_mutation: (
+      ~column: string,
+      ~value: string,
+      [@mel.this] Js.Promise.t(mutation_response),
+    ) => Js.Promise.t(mutation_response) = "eq";
+
+    [@mel.get] [@mel.return nullable]
+    external mutation_error: mutation_response => option(postgrest_error) = "error";
+
+    [@mel.get]
+    external postgrest_error_message: postgrest_error => string = "message";
 
     /** Call a Supabase Postgres function. */
     [@mel.send]
@@ -351,6 +405,12 @@ module Response = {
       data: array(dictionary_row),
       error: option(string)
     }
+
+    type words_list_response = {
+      success: bool,
+      data: array(words_list_row),
+      error: option(string),
+    };
 
     let decode_string_field = (obj, key) =>
       switch (Js.Dict.get(obj, key)) {
@@ -477,6 +537,54 @@ module Response = {
           success: false,
           data: [||],
           error: Some("Supabase returned an invalid response"),
+        }
+      };
+
+    let decode_words_list_row = json =>
+      switch (Js.Json.decodeObject(json)) {
+      | Some(obj) =>
+        Some({
+          user_id: decode_string_field(obj, "user_id"),
+          dictionary_entry_id: decode_string_field(obj, "dictionary_entry_id"),
+          english: decode_string_field(obj, "english"),
+          sumerian_cuneiform: decode_string_field(obj, "sumerian_cuneiform"),
+          sumerian_transliteration: decode_string_field(obj, "sumerian_transliteration"),
+          created_at: decode_string_field(obj, "created_at"),
+        })
+      | None => None
+      };
+
+    let decode_words_list = (json: Js.Json.t): words_list_response =>
+      switch (Js.Json.decodeObject(json)) {
+      | Some(obj) => {
+          let error = decode_error(obj);
+          let data =
+            switch (Js.Dict.get(obj, "data")) {
+            | Some(value) =>
+              switch (Js.Json.decodeArray(value)) {
+              | Some(rows) =>
+                rows
+                |> Array.fold_left((decoded_rows, row) =>
+                  switch (decode_words_list_row(row)) {
+                  | Some(row) => [row, ...decoded_rows]
+                  | None => decoded_rows
+                  }, [])
+                |> List.rev
+                |> Array.of_list
+              | None => [||]
+              }
+            | None => [||]
+            };
+          {
+            success: error === None,
+            data,
+            error,
+          };
+        }
+      | None => {
+          success: false,
+          data: [||],
+          error: Some("Supabase returned an invalid words list response"),
         }
       };
 }

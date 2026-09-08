@@ -31,7 +31,10 @@ import * as Bindings__Browser from "../bindings/browser.mjs";
 import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Bindings__Supabase from "../bindings/supabase.mjs";
+import * as Bindings__Zustand from "../bindings/zustand.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
+import * as Caml_option from "melange.js/caml_option.mjs";
+import * as Components__Store from "./store.mjs";
 import * as Components__Web_utils from "./web_utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
@@ -62,6 +65,9 @@ function display_part_of_speech(part_of_speech) {
 }
 
 function Dictionary(Props) {
+  const current_user = Bindings__Zustand.use_store((function (state) {
+    return state.current_user;
+  }), Components__Store.app_store);
   const match = React.useState(function () {
     return /* EngToSum */ 0;
   });
@@ -186,6 +192,45 @@ function Dictionary(Props) {
   };
   let search_label;
   search_label = selected_lang === /* EngToSum */ 0 ? "English Word" : "Sumerian Word";
+  const save_word = function (result) {
+    if (current_user !== undefined) {
+      const cuneiform = result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "";
+      const row = {
+        user_id: Caml_option.valFromOption(current_user).id,
+        dictionary_entry_id: result.id,
+        english: result.translation,
+        sumerian_cuneiform: cuneiform,
+        sumerian_transliteration: Components__Web_utils.Format.from_phonetic_to_standard(result.word)
+      };
+      Bindings__Supabase.client.from("words_list").insert([row]).then(function (response) {
+        const error = response.error;
+        if (error == null) {
+          const notification_data_0 = result.id;
+          const notification_data_1 = result.word;
+          const notification_data_2 = result.translation;
+          const notification_data = [
+            notification_data_0,
+            notification_data_1,
+            notification_data_2
+          ];
+          Curry._1(set_add_to_my_words_list, (function (param) {
+            return notification_data;
+          }));
+          Curry._1(set_open_snackbar, (function (param) {
+            return true;
+          }));
+        } else {
+          console.log("Unable to save the word:", error.message);
+        }
+        return Promise.resolve();
+      }).catch(function (error) {
+        console.log("Unable to save the word:", error);
+        return Promise.resolve();
+      });
+      return;
+    }
+    console.log("The user must be signed in to save a word.");
+  };
   let tmp;
   tmp = selected_lang === /* EngToSum */ 0 ? "English > Sumerian Dictionary" : "Sumerian > English Dictionary";
   let tmp$1;
@@ -331,22 +376,7 @@ function Dictionary(Props) {
                                 }),
                                 color: Bindings__Material_ui.Color.primary,
                                 onClick: (function (param) {
-                                  const data_0 = result.id;
-                                  const data_1 = result.word;
-                                  const data_2 = result.translation;
-                                  const data = [
-                                    data_0,
-                                    data_1,
-                                    data_2
-                                  ];
-                                  Curry._1(set_add_to_my_words_list, (function (param) {
-                                    return data;
-                                  }));
-                                  Curry._1(set_open_snackbar, (function (param) {
-                                    return true;
-                                  }));
-                                  const cuneiforms = result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "";
-                                  Bindings__Local_storage.add_word(result.translation, cuneiforms, Components__Web_utils.Format.from_phonetic_to_standard(result.word), result.id);
+                                  save_word(result);
                                 })
                               })
                             })
@@ -479,22 +509,7 @@ function Dictionary(Props) {
                           JsxRuntime.jsx(Button, {
                             children: "Add to words list",
                             onClick: (function (param) {
-                              const data_0 = result.id;
-                              const data_1 = result.word;
-                              const data_2 = result.translation;
-                              const data = [
-                                data_0,
-                                data_1,
-                                data_2
-                              ];
-                              Curry._1(set_add_to_my_words_list, (function (param) {
-                                return data;
-                              }));
-                              Curry._1(set_open_snackbar, (function (param) {
-                                return true;
-                              }));
-                              const cuneiforms = result.cuneiforms.length !== 0 ? Caml_array.get(result.cuneiforms, 0) : "";
-                              Bindings__Local_storage.add_word(result.translation, cuneiforms, Components__Web_utils.Format.from_phonetic_to_standard(result.word), result.id);
+                              save_word(result);
                             }),
                             size: "small"
                           })

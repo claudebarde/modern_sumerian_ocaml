@@ -28,6 +28,11 @@ let display_to(
                 | SuxCuneiform => {js|𒃻𒋃𒀀·𒆭|js}
                 | SuxLatin => {js|Niĝkasa kur|js}
             }
+            | "log_out" => switch (language) {
+                | English => "Log Out"
+                | SuxCuneiform => {js|𒌓𒁺𒋫|js}
+                | SuxLatin => {js|Èta|js}
+            }
             | "password" => switch (language) {
                 | English => "Password"
                 | SuxCuneiform => {js|𒅗𒀜𒄬|js}

@@ -25,6 +25,11 @@ let display_part_of_speech = (part_of_speech: string): string =>
 let make = () => {
     open Bindings;
     open Mui;
+    open Store;
+
+    let current_user =
+        app_store
+        |> Zustand.use_store(state => state.current_user);
 
     let (selected_lang, set_selected_lang) = React.useState(_ => EngToSum);
     let selected_lang_value =
@@ -258,6 +263,61 @@ let make = () => {
         | SumToEng => "Sumerian Word" |> React.string
     };
 
+    let save_word = (result: Supabase.dictionary_row) => {
+        switch current_user {
+        | None =>
+            Js.log("The user must be signed in to save a word.")
+        | Some(user) => {
+            let cuneiform =
+                Array.length(result.cuneiforms) > 0
+                    ? Array.get(result.cuneiforms, 0)
+                    : "";
+
+            let row =
+                Supabase.Query.make_words_list_insert(
+                    ~user_id=Supabase.Auth.user_id(user),
+                    ~dictionary_entry_id=result.id,
+                    ~english=result.translation,
+                    ~sumerian_cuneiform=cuneiform,
+                    ~sumerian_transliteration=(
+                        result.word
+                        |> Web_utils.Format.from_phonetic_to_standard
+                    ),
+                    (),
+                );
+
+            Supabase.client
+            |> Supabase.Query.from("words_list")
+            |> Supabase.Query.insert_words_list([|row|])
+            |> Js.Promise.then_(response => {
+                switch (Supabase.Query.mutation_error(response)) {
+                | Some(error) =>
+                    Js.log2(
+                        "Unable to save the word:",
+                        Supabase.Query.postgrest_error_message(error),
+                    )
+                | None => {
+                    let notification_data =
+                        (result.id, result.word, result.translation);
+
+                    set_add_to_my_words_list(_ =>
+                        Some(notification_data)
+                    );
+                    set_open_snackbar(_ => true);
+                }
+                };
+
+                Js.Promise.resolve();
+            })
+            |> Js.Promise.catch(error => {
+                Js.log2("Unable to save the word:", error);
+                Js.Promise.resolve();
+            })
+            |> ignore;
+        }
+        };
+    };
+
     <>
         <div className=css##dictionary>
             <h1>
@@ -447,25 +507,7 @@ let make = () => {
                                                         <IconButton
                                                             ariaLabel="Add to words list"
                                                             color=Color.primary
-                                                            onClick={_ => {
-                                                                let data = (result.id, result.word, result.translation);
-                                                                set_add_to_my_words_list(_ => Some(data));
-                                                                set_open_snackbar(_ => true);
-                                                                // saves the data in local storage
-                                                                let cuneiforms =
-                                                                    Array.length(result.cuneiforms) > 0
-                                                                    ? Array.get(result.cuneiforms, 0)
-                                                                    : "";
-                                                                LocalStorage.add_word(
-                                                                    ~english=result.translation,
-                                                                    ~cuneiforms,
-                                                                    ~sumerian=(
-                                                                        result.word
-                                                                        |> Web_utils.Format.from_phonetic_to_standard
-                                                                    ),
-                                                                    ~epsd_code=result.id,
-                                                                );
-                                                            }}
+                                                            onClick={_ => save_word(result)}
                                                         >
                                                             <TablerReact.IconCirclePlusFilled size=20 />
                                                         </IconButton>
@@ -586,25 +628,7 @@ let make = () => {
                                                     </Button>
                                                     <Button
                                                         size=`small
-                                                        onClick={_ => {
-                                                            let data = (result.id, result.word, result.translation);
-                                                            set_add_to_my_words_list(_ => Some(data));
-                                                            set_open_snackbar(_ => true);
-                                                            // saves the data in local storage
-                                                            let cuneiforms =
-                                                                Array.length(result.cuneiforms) > 0
-                                                                ? Array.get(result.cuneiforms, 0)
-                                                                : "";
-                                                            LocalStorage.add_word(
-                                                                ~english=result.translation,
-                                                                ~cuneiforms,
-                                                                ~sumerian=(
-                                                                    result.word
-                                                                    |> Web_utils.Format.from_phonetic_to_standard
-                                                                ),
-                                                                ~epsd_code=result.id,
-                                                            );
-                                                        }}
+                                                        onClick={_ => save_word(result)}
                                                     >
                                                         {"Add to words list" |> React.string}
                                                     </Button>

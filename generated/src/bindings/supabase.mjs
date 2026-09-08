@@ -250,6 +250,69 @@ function decode_words_list(json) {
   };
 }
 
+function decode_bookmark_row(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return;
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  const value = Js__Js_dict.get(obj$1, "bookmark_type");
+  let tmp;
+  if (value !== undefined) {
+    const number = Js__Js_json.decodeNumber(Caml_option.valFromOption(value));
+    tmp = number !== undefined ? number | 0 : 0;
+  } else {
+    tmp = 0;
+  }
+  return {
+    id: decode_string_field(obj$1, "id"),
+    user_id: decode_string_field(obj$1, "user_id"),
+    grammar_note_slug: decode_string_field(obj$1, "grammar_note_slug"),
+    grammar_note_title: decode_string_field(obj$1, "grammar_note_title"),
+    selected_text: decode_string_field(obj$1, "selected_text"),
+    prefix_context: decode_string_field(obj$1, "prefix_context"),
+    suffix_context: decode_string_field(obj$1, "suffix_context"),
+    bookmark_type: tmp,
+    created_at: decode_string_field(obj$1, "created_at")
+  };
+}
+
+function decode_bookmarks(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return {
+      success: false,
+      data: [],
+      error: "Supabase returned an invalid bookmarks response"
+    };
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  const error = decode_error(obj$1);
+  const value = Js__Js_dict.get(obj$1, "data");
+  let data;
+  if (value !== undefined) {
+    const rows = Js__Js_json.decodeArray(Caml_option.valFromOption(value));
+    data = rows !== undefined ? Stdlib__Array.of_list(Stdlib__List.rev(Stdlib__Array.fold_left((function (decoded_rows, row) {
+        const decoded_row = decode_bookmark_row(row);
+        if (decoded_row !== undefined) {
+          return {
+            hd: decoded_row,
+            tl: decoded_rows
+          };
+        } else {
+          return decoded_rows;
+        }
+      }), /* [] */ 0, rows))) : [];
+  } else {
+    data = [];
+  }
+  return {
+    success: error === undefined,
+    data,
+    error
+  };
+}
+
 const $$Response = {
   decode_string_field,
   decode_marker,
@@ -258,7 +321,9 @@ const $$Response = {
   decode_error,
   decode,
   decode_words_list_row,
-  decode_words_list
+  decode_words_list,
+  decode_bookmark_row,
+  decode_bookmarks
 };
 
 const client = SupabaseJs.createClient(Bindings__Config.supabaseUrl, Bindings__Config.supabasePublishableKey);

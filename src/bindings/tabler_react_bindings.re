@@ -100,6 +100,30 @@ module IconBook2 = {
   ) => React.element = "IconBook2";
 };
 
+module IconBookmark = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBookmark";
+};
+
+module IconBookmarkFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBookmarkFilled";
+};
+
 module IconBorderAll = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (

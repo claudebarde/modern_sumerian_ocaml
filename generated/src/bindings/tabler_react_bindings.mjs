@@ -17,6 +17,10 @@ const IconBolt = {};
 
 const IconBook2 = {};
 
+const IconBookmark = {};
+
+const IconBookmarkFilled = {};
+
 const IconBorderAll = {};
 
 const IconBrain = {};
@@ -160,6 +164,8 @@ export {
   IconArrowBigUpLinesFilled,
   IconBolt,
   IconBook2,
+  IconBookmark,
+  IconBookmarkFilled,
   IconBorderAll,
   IconBrain,
   IconBrandDiscord,

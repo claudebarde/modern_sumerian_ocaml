@@ -44,6 +44,23 @@ type grammar_note = {
     visible: bool,
 };
 
+type bookmark_notification =
+    | BookmarkSaved
+    | NoBookmarkTextSelected
+    | BookmarkSaveFailed;
+
+type rendered_text_segment = {
+    node: Dom.node,
+    start_offset: int,
+    end_offset: int,
+};
+
+type bookmark_marker = {
+    id: string,
+    bookmark_type: int,
+    top: float,
+};
+
 let decode_string_field = (object_, field) =>
     switch (Js.Dict.get(object_, field)) {
     | Some(value) => Js.Json.decodeString(value)
@@ -99,6 +116,11 @@ let parse_grammar_notes_index = json =>
 let make = () => {
     open Bindings;
     open Mui; 
+    open Store;
+
+    let current_user =
+        app_store
+        |> Zustand.use_store(state => state.current_user);
 
     let url = ReasonReactRouter.useUrl();
     let slug = switch url.path {
@@ -121,6 +143,43 @@ let make = () => {
         React.useRef(Js.Nullable.null);
     let banner_ref: React.ref(Js.nullable(Dom.element)) =
         React.useRef(Js.Nullable.null);
+    let grammar_note_content_ref: React.ref(Js.nullable(Dom.element)) =
+        React.useRef(Js.Nullable.null);
+    let (bookmark_popover_open, set_bookmark_popover_open) =
+        React.useState(() => false);
+    let (bookmark_popover_pos, set_bookmark_popover_pos) =
+        React.useState(() => ({left: 0, top: 0}: Popover.anchorPos));
+    let (bookmark_text, set_bookmark_text) =
+        React.useState(() => None);
+    let (bookmark_prefix_context, set_bookmark_prefix_context) =
+        React.useState(() => "");
+    let (bookmark_suffix_context, set_bookmark_suffix_context) =
+        React.useState(() => "");
+    let (bookmark_snackbar_open, set_bookmark_snackbar_open) =
+        React.useState(() => false);
+    let (bookmark_notification, set_bookmark_notification) =
+        React.useState(() => (None: option(bookmark_notification)));
+    let (saving_bookmark, set_saving_bookmark) =
+        React.useState(() => None);
+    let (bookmark_highlight_revision, set_bookmark_highlight_revision) =
+        React.useState(() => 0);
+    let (bookmark_layout_revision, set_bookmark_layout_revision) =
+        React.useState(() => 0);
+    let (bookmark_markers, set_bookmark_markers) =
+        React.useState(() => ([||]: array(bookmark_marker)));
+
+    React.useEffect1(() => {
+        switch (Js.Nullable.toOption(grammar_note_content_ref.current)) {
+        | Some(content_element) =>
+            let observer =
+                Browser.ResizeObserver.make((_entries, _observer) =>
+                    set_bookmark_layout_revision(revision => revision + 1)
+                );
+            Browser.ResizeObserver.observe(observer, content_element);
+            Some(() => Browser.ResizeObserver.disconnect(observer));
+        | None => None
+        };
+    }, [|markdown|]);
 
     React.useEffect0(() => {
         Browser.Fetch.get("/grammar_notes/index.json")
@@ -284,6 +343,461 @@ let make = () => {
         ();
     };
 
+    let close_bookmark_popover = () => {
+        switch (Browser.Document.active_element) {
+        | Some(element) => Browser.Element.blur(element)
+        | None => ()
+        };
+        set_bookmark_popover_open(_ => false);
+    };
+
+    let show_bookmark_notification = notification => {
+        set_bookmark_notification(_ => Some(notification));
+        set_bookmark_snackbar_open(_ => true);
+    };
+
+    let get_bookmark_context = (range, content_element) => {
+        let start_container = Browser.Range.start_container(range);
+        let end_container = Browser.Range.end_container(range);
+
+        if (
+            Browser.Element.contains(start_container, content_element)
+            && Browser.Element.contains(end_container, content_element)
+        ) {
+            let prefix_range = Browser.Range.clone_range(range);
+            Browser.Range.select_node_contents(content_element, prefix_range);
+            Browser.Range.set_end(
+                start_container,
+                Browser.Range.start_offset(range),
+                prefix_range,
+            );
+
+            let suffix_range = Browser.Range.clone_range(range);
+            Browser.Range.select_node_contents(content_element, suffix_range);
+            Browser.Range.set_start(
+                end_container,
+                Browser.Range.end_offset(range),
+                suffix_range,
+            );
+
+            let complete_prefix = Browser.Range.to_string(prefix_range);
+            let complete_suffix = Browser.Range.to_string(suffix_range);
+            let prefix_length = Js.String.length(complete_prefix);
+            let context_length = 250;
+            let prefix_start =
+                prefix_length > context_length
+                    ? prefix_length - context_length
+                    : 0;
+
+            Some((
+                complete_prefix |> Js.String.slice(~start=prefix_start),
+                complete_suffix
+                |> Js.String.slice(~start=0, ~end_=context_length),
+            ));
+        } else {
+            None;
+        };
+    };
+
+    let collect_rendered_text = content_element => {
+        let walker =
+            Browser.Document.create_tree_walker(
+                content_element,
+                Browser.Document.show_text,
+            );
+
+        let rec collect = (offset, segments, text_parts) =>
+            switch (Browser.TreeWalker.next_node(walker)) {
+            | Some(node) =>
+                let text =
+                    switch (Browser.Node.value(node)) {
+                    | Some(value) => value
+                    | None => ""
+                    };
+                let length = Js.String.length(text);
+                let segment = {
+                    node,
+                    start_offset: offset,
+                    end_offset: offset + length,
+                };
+                collect(
+                    offset + length,
+                    length > 0 ? [segment, ...segments] : segments,
+                    length > 0 ? [text, ...text_parts] : text_parts,
+                );
+            | None =>
+                (
+                    segments |> Stdlib.List.rev |> Array.of_list,
+                    text_parts
+                    |> Stdlib.List.rev
+                    |> Array.of_list
+                    |> Js.Array.join(~sep=""),
+                )
+            };
+
+        collect(0, [], []);
+    };
+
+    let common_prefix_length = (first, second) => {
+        let maximum =
+            Js.String.length(first) < Js.String.length(second)
+                ? Js.String.length(first)
+                : Js.String.length(second);
+        let rec compare = index =>
+            if (
+                index < maximum
+                && Js.String.charAt(~index, first) == Js.String.charAt(~index, second)
+            ) {
+                compare(index + 1);
+            } else {
+                index;
+            };
+        compare(0);
+    };
+
+    let common_suffix_length = (first, second) => {
+        let first_length = Js.String.length(first);
+        let second_length = Js.String.length(second);
+        let maximum = first_length < second_length ? first_length : second_length;
+        let rec compare = matched =>
+            if (
+                matched < maximum
+                && Js.String.charAt(~index=first_length - matched - 1, first)
+                    == Js.String.charAt(~index=second_length - matched - 1, second)
+            ) {
+                compare(matched + 1);
+            } else {
+                matched;
+            };
+        compare(0);
+    };
+
+    let find_bookmark_offset = (rendered_text, bookmark: Supabase.bookmark_row) => {
+        let selected_length = Js.String.length(bookmark.selected_text);
+        let prefix_length = Js.String.length(bookmark.prefix_context);
+        let suffix_length = Js.String.length(bookmark.suffix_context);
+
+        if (selected_length === 0) {
+            None;
+        } else {
+            let rec find = (search_start, best_offset, best_score) => {
+                let candidate =
+                    rendered_text
+                    |> Js.String.indexOf(
+                        ~search=bookmark.selected_text,
+                        ~start=search_start,
+                    );
+
+                if (candidate < 0) {
+                    best_offset;
+                } else {
+                    let prefix_start =
+                        candidate > prefix_length
+                            ? candidate - prefix_length
+                            : 0;
+                    let candidate_prefix =
+                        rendered_text
+                        |> Js.String.slice(
+                            ~start=prefix_start,
+                            ~end_=candidate,
+                        );
+                    let candidate_suffix =
+                        rendered_text
+                        |> Js.String.slice(
+                            ~start=candidate + selected_length,
+                            ~end_=candidate + selected_length + suffix_length,
+                        );
+                    let score =
+                        common_suffix_length(
+                            candidate_prefix,
+                            bookmark.prefix_context,
+                        )
+                        + common_prefix_length(
+                            candidate_suffix,
+                            bookmark.suffix_context,
+                        );
+                    let (next_best_offset, next_best_score) =
+                        score > best_score
+                            ? (Some(candidate), score)
+                            : (best_offset, best_score);
+
+                    find(
+                        candidate + selected_length,
+                        next_best_offset,
+                        next_best_score,
+                    );
+                };
+            };
+
+            find(0, None, -1);
+        };
+    };
+
+    let range_from_offsets = (segments, start_offset, end_offset) => {
+        let start_segment =
+            segments
+            |> Array.find_opt((segment: rendered_text_segment) =>
+                start_offset >= segment.start_offset
+                && start_offset <= segment.end_offset
+            );
+        let end_segment =
+            segments
+            |> Array.find_opt((segment: rendered_text_segment) =>
+                end_offset >= segment.start_offset
+                && end_offset <= segment.end_offset
+            );
+
+        switch (start_segment, end_segment) {
+        | (Some(start_segment), Some(end_segment)) =>
+            let range = Browser.Document.create_range();
+            Browser.Range.set_start(
+                start_segment.node,
+                start_offset - start_segment.start_offset,
+                range,
+            );
+            Browser.Range.set_end(
+                end_segment.node,
+                end_offset - end_segment.start_offset,
+                range,
+            );
+            Some(range);
+        | _ => None
+        };
+    };
+
+    let highlight_names = [|
+        "grammar-bookmark-pink",
+        "grammar-bookmark-salmon",
+        "grammar-bookmark-teal",
+        "grammar-bookmark-blue",
+    |];
+
+    let remove_bookmark_highlights = registry =>
+        highlight_names
+        |> Array.iter(name => {
+            Browser.CssHighlights.delete(name, registry) |> ignore;
+        });
+
+    React.useEffect5(() => {
+        let cancelled = ref(false);
+        let registry = Browser.CssHighlights.registry;
+
+        set_bookmark_markers(_ => [||]);
+
+        switch registry {
+        | Some(registry) => remove_bookmark_highlights(registry)
+        | None => ()
+        };
+
+        switch (
+            current_user,
+            selected_note,
+            markdown,
+            Js.Nullable.toOption(grammar_note_content_ref.current),
+            registry,
+        ) {
+        | (Some(user), Some(note), Some(_), Some(content_element), Some(registry)) =>
+            Supabase.client
+            |> Supabase.Query.from("bookmarks")
+            |> Supabase.Query.select(
+                "id,user_id,grammar_note_slug,grammar_note_title,selected_text,prefix_context,suffix_context,bookmark_type,created_at",
+            )
+            |> Supabase.Filter.eq(
+                ~column="user_id",
+                ~value=Supabase.Auth.user_id(user),
+            )
+            |> Supabase.Filter.eq(
+                ~column="grammar_note_slug",
+                ~value=note.slug,
+            )
+            |> Js.Promise.then_(response => {
+                if (!cancelled^) {
+                    let decoded = Supabase.Response.decode_bookmarks(response);
+
+                    if (decoded.success) {
+                        let (segments, rendered_text) =
+                            collect_rendered_text(content_element);
+                        let content_top =
+                            content_element
+                            |> ElementViewport.get_bounding_client_rect
+                            |> ElementViewport.top;
+                        let resolved_markers: ref(list(bookmark_marker)) = ref([]);
+
+                        let register_bookmark_type = (bookmark_type, name) => {
+                            let ranges =
+                                decoded.data
+                                |> Array.fold_left((ranges, (bookmark: Supabase.bookmark_row)) =>
+                                    if (bookmark.bookmark_type === bookmark_type) {
+                                        switch (find_bookmark_offset(rendered_text, bookmark)) {
+                                        | Some(start_offset) =>
+                                            let end_offset =
+                                                start_offset
+                                                + Js.String.length(bookmark.selected_text);
+                                            switch (
+                                                range_from_offsets(
+                                                    segments,
+                                                    start_offset,
+                                                    end_offset,
+                                                )
+                                            ) {
+                                            | Some(range) => {
+                                                let client_rects =
+                                                    Browser.Range.get_client_rects(range);
+                                                let marker_rect =
+                                                    switch (
+                                                        Browser.DomRectList.item(
+                                                            0,
+                                                            client_rects,
+                                                        )
+                                                    ) {
+                                                    | Some(rect) => rect
+                                                    | None =>
+                                                        Browser.Range.get_bounding_client_rect(
+                                                            range,
+                                                        )
+                                                    };
+                                                resolved_markers := [{
+                                                    id: bookmark.id,
+                                                    bookmark_type,
+                                                    top:
+                                                        Browser.DomRect.top(marker_rect)
+                                                        -. content_top
+                                                        +. Browser.DomRect.height(marker_rect)
+                                                        /. 2.0,
+                                                }, ...resolved_markers^];
+                                                [range, ...ranges];
+                                            }
+                                            | None => ranges
+                                            }
+                                        | None => ranges
+                                        };
+                                    } else {
+                                        ranges;
+                                    }
+                                , []);
+
+                            switch ranges {
+                            | [] => ()
+                            | ranges =>
+                                Browser.CssHighlights.set(
+                                    name,
+                                    Browser.Highlight.make(
+                                        ranges
+                                        |> Stdlib.List.rev
+                                        |> Array.of_list,
+                                    ),
+                                    registry,
+                                )
+                            };
+                        };
+
+                        register_bookmark_type(0, highlight_names[0]);
+                        register_bookmark_type(1, highlight_names[1]);
+                        register_bookmark_type(2, highlight_names[2]);
+                        register_bookmark_type(3, highlight_names[3]);
+                        set_bookmark_markers(_ =>
+                            resolved_markers^
+                            |> Stdlib.List.rev
+                            |> Array.of_list
+                        );
+                    } else {
+                        switch decoded.error {
+                        | Some(error) => Js.log2("Unable to fetch bookmarks:", error)
+                        | None => ()
+                        };
+                    };
+                };
+
+                Js.Promise.resolve();
+            })
+            |> Js.Promise.catch(error => {
+                if (!cancelled^) {
+                    Js.log2("Unable to fetch bookmarks:", error);
+                };
+                Js.Promise.resolve();
+            })
+            |> ignore
+        | _ => ()
+        };
+
+        Some(() => {
+            cancelled := true;
+            switch registry {
+            | Some(registry) => remove_bookmark_highlights(registry)
+            | None => ()
+            };
+        });
+    }, (
+        current_user,
+        selected_note_file,
+        markdown,
+        bookmark_highlight_revision,
+        bookmark_layout_revision,
+    ));
+
+    let bookmark_marker_color = bookmark_type =>
+        switch bookmark_type {
+        | 0 => Config.bookmarkColors##pink
+        | 1 => Config.bookmarkColors##salmon
+        | 2 => Config.bookmarkColors##teal
+        | _ => Config.bookmarkColors##blue
+        };
+
+    let save_bookmark = (bookmark_type: int) =>
+        switch bookmark_text {
+        | Some(text) =>
+            switch (current_user, selected_note) {
+            | (Some(user), Some(note)) =>
+                set_saving_bookmark(_ => Some(bookmark_type));
+
+                let row =
+                    Supabase.Query.make_bookmark_insert(
+                        ~user_id=Supabase.Auth.user_id(user),
+                        ~grammar_note_slug=note.slug,
+                        ~grammar_note_title=note.title,
+                        ~selected_text=text,
+                        ~prefix_context=bookmark_prefix_context,
+                        ~suffix_context=bookmark_suffix_context,
+                        ~bookmark_type,
+                        (),
+                    );
+
+                Supabase.client
+                |> Supabase.Query.from("bookmarks")
+                |> Supabase.Query.insert_bookmarks([|row|])
+                |> Js.Promise.then_(response => {
+                    switch (Supabase.Query.mutation_error(response)) {
+                    | Some(error) => {
+                        Js.log2(
+                            "Unable to save the bookmark:",
+                            Supabase.Query.postgrest_error_message(error),
+                        );
+                        show_bookmark_notification(BookmarkSaveFailed);
+                    }
+                    | None => {
+                        show_bookmark_notification(BookmarkSaved);
+                        set_bookmark_highlight_revision(revision => revision + 1);
+                        close_bookmark_popover();
+                    }
+                    };
+
+                    set_saving_bookmark(_ => None);
+                    Js.Promise.resolve();
+                })
+                |> Js.Promise.catch(error => {
+                    Js.log2("Unable to save the bookmark:", error);
+                    show_bookmark_notification(BookmarkSaveFailed);
+                    set_saving_bookmark(_ => None);
+                    Js.Promise.resolve();
+                })
+                |> ignore
+            | _ => show_bookmark_notification(BookmarkSaveFailed)
+            }
+        | None =>
+            show_bookmark_notification(NoBookmarkTextSelected);
+        };
+
+    <>
     <Grid className=css##grammarNotesContainer>
         {
             switch selected_note {
@@ -358,7 +872,122 @@ let make = () => {
                             />
                             <Container
                                 className=css##grammarNoteContent
+                                ref={ReactDOM.Ref.domRef(grammar_note_content_ref)}
+                                onMouseUp={event => {
+                                    switch (Browser.Window.get_selection()) {
+                                    | Some(selection)
+                                        when Browser.Selection.range_count(selection) > 0
+                                        && !Browser.Selection.is_collapsed(selection) =>
+                                        let text = Browser.Selection.to_string(selection);
+                                        let range = Browser.Selection.get_range_at(0, selection);
+                                        let rect = Browser.Range.get_bounding_client_rect(range);
+                                        let content_element =
+                                            event
+                                            |> React.Event.UI.currentTarget
+                                            |> dom_element_from_event_target;
+
+                                        let left =
+                                            (
+                                                Browser.DomRect.left(rect)
+                                                +. Browser.DomRect.width(rect) /. 2.
+                                            )
+                                            |> Js.Math.round
+                                            |> int_of_float;
+
+                                        let top =
+                                            Browser.DomRect.top(rect)
+                                            |> Js.Math.round
+                                            |> int_of_float;
+
+                                        set_bookmark_popover_pos(_ => {left, top});
+                                        set_bookmark_popover_open(_ => true);
+                                        set_bookmark_text(_ => Some(text));
+                                        switch (get_bookmark_context(range, content_element)) {
+                                        | Some((prefix_context, suffix_context)) => {
+                                            set_bookmark_prefix_context(_ => prefix_context);
+                                            set_bookmark_suffix_context(_ => suffix_context);
+                                        }
+                                        | None => {
+                                            set_bookmark_prefix_context(_ => "");
+                                            set_bookmark_suffix_context(_ => "");
+                                        }
+                                        };
+                                    | _ => ()
+                                    };
+                                }}
                             >
+                                {
+                                    bookmark_markers
+                                    |> Array.map((marker: bookmark_marker) =>
+                                        <IconButton
+                                            key=marker.id
+                                            className=css##bookmarkMarker
+                                            size=`small
+                                            ariaLabel="Saved bookmark"
+                                            sx={{"top": marker.top}}
+                                        >
+                                            <TablerReact.IconBookmarkFilled
+                                                color={bookmark_marker_color(
+                                                    marker.bookmark_type,
+                                                )}
+                                            />
+                                        </IconButton>
+                                    )
+                                    |> React.array
+                                }
+                                <Popover
+                                    _open=bookmark_popover_open
+                                    anchorReference=`anchorPosition
+                                    anchorPosition=bookmark_popover_pos
+                                    disableAutoFocus=true
+                                    transformOrigin={{
+                                        vertical: `bottom,
+                                        horizontal: `center,
+                                    }}
+                                    onClose={_event => close_bookmark_popover()}
+                                    sx={{"padding": "16px 8px"}}
+                                >
+                                    {
+                                        switch current_user {
+                                            | Some(_) => {
+                                                switch (saving_bookmark) {
+                                                | Some(color) =>
+                                                    <Stack direction=`row sx={{"alignItems": "center", "justifyContent": "center" }}>
+                                                        {color !== 0 ? <IconButton size=`small disabled=true>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##pink />
+                                                        </IconButton> : <CircularProgress size=`Number(24) />}
+                                                        {color !== 1 ? <IconButton size=`small disabled=true>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##salmon />
+                                                        </IconButton> : <CircularProgress size=`Number(24) />}
+                                                        {color !== 2 ? <IconButton size=`small disabled=true>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##teal />
+                                                        </IconButton> : <CircularProgress size=`Number(24) />}
+                                                        {color !== 3 ? <IconButton size=`small disabled=true>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##blue />
+                                                        </IconButton> : <CircularProgress size=`Number(24) />}
+                                                    </Stack>
+                                                | None =>
+                                                    <Stack direction=`row sx={{"alignItems": "center", "justifyContent": "center" }}>
+                                                        <IconButton size=`small onClick={_ => save_bookmark(Config.get_bookmark_number(Config.Pink))}>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##pink />
+                                                        </IconButton>
+                                                        <IconButton size=`small onClick={_ => save_bookmark(Config.get_bookmark_number(Config.Salmon))}>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##salmon />
+                                                        </IconButton>
+                                                        <IconButton size=`small onClick={_ => save_bookmark(Config.get_bookmark_number(Config.Teal))}>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##teal />
+                                                        </IconButton>
+                                                        <IconButton size=`small onClick={_ => save_bookmark(Config.get_bookmark_number(Config.Blue))}>
+                                                            <TablerReact.IconBookmarkFilled color=Config.bookmarkColors##blue />
+                                                        </IconButton>
+                                                    </Stack>
+                                                }
+                                            }
+                                            | None =>
+                                                <div> {"You must be logged in to bookmark notes." |> React.string} </div>
+                                        }
+                                    }
+                                </Popover>
                                 {
                                 switch (markdown, markdown_error) {
                                 | (Some(content), _) =>
@@ -452,4 +1081,32 @@ let make = () => {
             </Tooltip>
         </Stack>
     </Grid>
+    <Snackbar
+        _open=bookmark_snackbar_open
+        anchorOrigin={{
+            vertical: `bottom,
+            horizontal: `right,
+        }}
+        autoHideDuration=3000
+        onClose={_ => set_bookmark_snackbar_open(_ => false)}
+    >
+        {
+            switch bookmark_notification {
+            | Some(BookmarkSaved) =>
+                <Alert severity=`success variant=`filled sx={{"width": "100%"}}>
+                    {"Bookmark saved." |> React.string}
+                </Alert>
+            | Some(NoBookmarkTextSelected) =>
+                <Alert severity=`warning variant=`filled sx={{"width": "100%"}}>
+                    {"No text was selected." |> React.string}
+                </Alert>
+            | Some(BookmarkSaveFailed) =>
+                <Alert severity=`error variant=`filled sx={{"width": "100%"}}>
+                    {"The bookmark could not be saved." |> React.string}
+                </Alert>
+            | None => React.null
+            }
+        }
+    </Snackbar>
+    </>
 }

@@ -21,6 +21,26 @@ const colors = {
   aspenGold: "#ffd662"
 };
 
+const bookmarkColors = {
+  salmon: "#FFBE98",
+  pink: "#F05A7E",
+  teal: "#0B8494",
+  blue: "#125B9A"
+};
+
+function get_bookmark_number(value) {
+  switch (value) {
+    case /* Pink */ 0 :
+      return 0;
+    case /* Salmon */ 1 :
+      return 1;
+    case /* Teal */ 2 :
+      return 2;
+    case /* Blue */ 3 :
+      return 3;
+  }
+}
+
 const max_keyboard_search_results = 30;
 
 export {
@@ -28,5 +48,7 @@ export {
   supabasePublishableKey,
   max_keyboard_search_results,
   colors,
+  bookmarkColors,
+  get_bookmark_number,
 }
 /* supabaseUrl Not a pure module */

@@ -12,11 +12,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
 import * as Bindings__Browser from "../bindings/browser.mjs";
 import * as Bindings__Config from "../bindings/config.mjs";
@@ -224,6 +227,18 @@ function Learn_grammar_notes(Props) {
     return [];
   });
   const set_bookmark_markers = match$19[1];
+  const match$20 = React.useState(function () {
+    return null;
+  });
+  const set_bookmark_menu_anchor = match$20[1];
+  const bookmark_menu_anchor = match$20[0];
+  const bookmark_menu_open = !(bookmark_menu_anchor == null);
+  const match$21 = React.useState(function () {
+    
+  });
+  const set_selected_bookmark_id = match$21[1];
+  const selected_bookmark_id = match$21[0];
+  const is_mobile = UseMediaQuery("(max-width:599px)");
   React.useEffect((function () {
     const content_element = grammar_note_content_ref.current;
     if (content_element == null) {
@@ -364,6 +379,18 @@ function Learn_grammar_notes(Props) {
     }
     Curry._1(set_bookmark_popover_open, (function (param) {
       return false;
+    }));
+  };
+  const close_bookmark_menu = function (param) {
+    const element = document.activeElement;
+    if (!(element == null)) {
+      element.blur();
+    }
+    Curry._1(set_bookmark_menu_anchor, (function (param) {
+      return null;
+    }));
+    Curry._1(set_selected_bookmark_id, (function (param) {
+      
     }));
   };
   const show_bookmark_notification = function (notification) {
@@ -720,6 +747,36 @@ function Learn_grammar_notes(Props) {
           variant: "filled"
         });
         break;
+      case /* BookmarkRemoved */ 3 :
+        tmp = JsxRuntime.jsx(Alert, {
+          children: "Bookmark removed.",
+          severity: "success",
+          sx: {
+            width: "100%"
+          },
+          variant: "filled"
+        });
+        break;
+      case /* BookmarkRemoveFailed */ 4 :
+        tmp = JsxRuntime.jsx(Alert, {
+          children: "The bookmark could not be removed.",
+          severity: "error",
+          sx: {
+            width: "100%"
+          },
+          variant: "filled"
+        });
+        break;
+      case /* BookmarkAuthenticationRequired */ 5 :
+        tmp = JsxRuntime.jsx(Alert, {
+          children: "You must be logged in to remove a bookmark.",
+          severity: "warning",
+          sx: {
+            width: "100%"
+          },
+          variant: "filled"
+        });
+        break;
     }
   } else {
     tmp = null;
@@ -797,20 +854,81 @@ function Learn_grammar_notes(Props) {
                     }),
                     JsxRuntime.jsxs(Container, {
                       children: [
-                        Stdlib__Array.map((function (marker) {
-                          const Key = marker.id;
-                          return JsxRuntime.jsx(IconButton, {
-                            "aria-label": "Saved bookmark",
-                            children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                              color: bookmark_marker_color(marker.bookmark_type)
-                            }),
-                            className: css.bookmarkMarker,
-                            size: "small",
-                            sx: {
-                              top: marker.top
-                            }
-                          }, Key);
-                        }), match$19[0]),
+                        is_mobile ? null : Stdlib__Array.map((function (marker) {
+                            const Key = marker.id;
+                            return JsxRuntime.jsx(IconButton, {
+                              "aria-label": "Saved bookmark",
+                              children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                color: bookmark_marker_color(marker.bookmark_type)
+                              }),
+                              className: css.bookmarkMarker,
+                              onClick: (function ($$event) {
+                                Curry._1(set_bookmark_menu_anchor, (function (param) {
+                                  return $$event.currentTarget;
+                                }));
+                                Curry._1(set_selected_bookmark_id, (function (param) {
+                                  return marker.id;
+                                }));
+                              }),
+                              size: "small",
+                              sx: {
+                                top: marker.top
+                              }
+                            }, Key);
+                          }), match$19[0]),
+                        JsxRuntime.jsx(Menu, {
+                          anchorOrigin: {
+                            vertical: "center",
+                            horizontal: "right"
+                          },
+                          children: JsxRuntime.jsxs(MenuItem, {
+                            children: [
+                              JsxRuntime.jsx(ListItemIcon, {
+                                children: JsxRuntime.jsx(IconsReact.IconTrash, {})
+                              }),
+                              JsxRuntime.jsx(ListItemText, {
+                                children: "Remove"
+                              })
+                            ],
+                            dense: true,
+                            onClick: (function (_event) {
+                              if (current_user !== undefined) {
+                                if (selected_bookmark_id !== undefined) {
+                                  Bindings__Supabase.client.from("bookmarks").delete().eq("user_id", Caml_option.valFromOption(current_user).id).eq("id", selected_bookmark_id).then(function (response) {
+                                    const error = response.error;
+                                    if (error == null) {
+                                      show_bookmark_notification(/* BookmarkRemoved */ 3);
+                                      Curry._1(set_bookmark_highlight_revision, (function (revision) {
+                                        return revision + 1 | 0;
+                                      }));
+                                    } else {
+                                      console.log("Unable to remove the bookmark:", error.message);
+                                      show_bookmark_notification(/* BookmarkRemoveFailed */ 4);
+                                    }
+                                    close_bookmark_menu();
+                                    return Promise.resolve();
+                                  }).catch(function (error) {
+                                    console.log("Unable to remove the bookmark:", error);
+                                    show_bookmark_notification(/* BookmarkRemoveFailed */ 4);
+                                    close_bookmark_menu();
+                                    return Promise.resolve();
+                                  });
+                                  return;
+                                } else {
+                                  return close_bookmark_menu();
+                                }
+                              } else {
+                                show_bookmark_notification(/* BookmarkAuthenticationRequired */ 5);
+                                return close_bookmark_menu();
+                              }
+                            })
+                          }),
+                          anchorEl: bookmark_menu_anchor,
+                          onClose: (function (_event) {
+                            close_bookmark_menu();
+                          }),
+                          open: bookmark_menu_open
+                        }),
                         JsxRuntime.jsx(Popover, {
                           anchorPosition: match$10[0],
                           anchorReference: "anchorPosition",
@@ -934,15 +1052,18 @@ function Learn_grammar_notes(Props) {
                       ],
                       className: css.grammarNoteContent,
                       onMouseUp: (function ($$event) {
-                        const selection = window.getSelection();
-                        if (selection == null) {
+                        const match = window.getSelection();
+                        if (match == null) {
                           return;
                         }
-                        if (!(selection.rangeCount > 0 && !selection.isCollapsed)) {
+                        if (current_user === undefined) {
                           return;
                         }
-                        const text = selection.toString();
-                        const range = selection.getRangeAt(0);
+                        if (!(match.rangeCount > 0 && !match.isCollapsed)) {
+                          return;
+                        }
+                        const text = match.toString();
+                        const range = match.getRangeAt(0);
                         const rect = range.getBoundingClientRect();
                         const content_element = $$event.currentTarget;
                         const left = Math.round(rect.left + rect.width / 2) | 0;
@@ -959,10 +1080,10 @@ function Learn_grammar_notes(Props) {
                         Curry._1(set_bookmark_text, (function (param) {
                           return text;
                         }));
-                        const match = get_bookmark_context(range, content_element);
-                        if (match !== undefined) {
-                          const suffix_context = match[1];
-                          const prefix_context = match[0];
+                        const match$1 = get_bookmark_context(range, content_element);
+                        if (match$1 !== undefined) {
+                          const suffix_context = match$1[1];
+                          const prefix_context = match$1[0];
                           Curry._1(set_bookmark_prefix_context, (function (param) {
                             return prefix_context;
                           }));

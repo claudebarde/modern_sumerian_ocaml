@@ -320,6 +320,20 @@ module Query = {
       [@mel.this] query_builder,
     ) => Js.Promise.t(mutation_response) = "insert";
 
+    /** Start a deletion from bookmarks. Filters must be applied before awaiting it. */
+    [@mel.send]
+    external delete_bookmarks: (
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "delete";
+
+    /** Apply an equality filter to a bookmarks mutation. */
+    [@mel.send]
+    external eq_bookmarks_mutation: (
+      ~column: string,
+      ~value: string,
+      [@mel.this] Js.Promise.t(mutation_response),
+    ) => Js.Promise.t(mutation_response) = "eq";
+
     /** Start a deletion from words_list. Filters must be applied before awaiting it. */
     [@mel.send]
     external delete_words_list: (

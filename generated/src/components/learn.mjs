@@ -382,7 +382,7 @@ function Learn(Props) {
                       padding: "0px"
                     }
                   }),
-                  in: grammar_notes_nav_open,
+                  in: grammar_notes_nav_open && is_drawer_open,
                   sx: {
                     marginLeft: "16px"
                   }

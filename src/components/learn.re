@@ -264,7 +264,7 @@ let make = () => {
                             )
                         }
                         {
-                            <Collapse in_=grammar_notes_nav_open sx={{"marginLeft": "16px"}}>
+                            <Collapse in_={grammar_notes_nav_open && is_drawer_open} sx={{"marginLeft": "16px"}}>
                                 <List
                                     sx={{"margin": "0px", "padding": "0px"}}
                                 >

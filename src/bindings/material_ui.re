@@ -1228,6 +1228,23 @@ module MenuItem = {
   ) => React.element = "default";
 };
 
+module MenuList = {
+  [@mel.module "@mui/material/MenuList"] [@react.component]
+  external make: (
+    // TODO: implement List props
+    ~autoFocus: bool=?,
+    ~autoFocusItem: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~dense: bool=?,
+    ~disableItemFocusable: bool=?,
+    ~disableListWrap: bool=?,
+    ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
 module OutlinedInput = {
   // TODO: implement the props of the InputBase component
   [@mel.module "@mui/material/OutlinedInput"] [@react.component]

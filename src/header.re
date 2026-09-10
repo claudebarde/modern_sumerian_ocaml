@@ -48,6 +48,8 @@ let make = () => {
 
     let displayLanguage =
         app_store |> Zustand.use_store(store => store.display_language);
+    let current_session =
+        app_store |> Zustand.use_store(state => state.current_session);
     let clearAuthentication =
         app_store |> Zustand.use_store(store => store.clear_authentication);
 
@@ -219,10 +221,6 @@ let make = () => {
                             <TablerReact.IconLinkFilled />
                         </IconButton>
                         {
-                            let current_session =
-                                Store.app_store
-                                |> Zustand.use_store(state => state.current_session);
-
                             switch current_session {
                             | Some(_session) => {
                                 <>
@@ -250,7 +248,7 @@ let make = () => {
                                             onClick={_ => handleSignOut()}
                                         >
                                             <ListItemIcon>
-                                                <TablerReact.IconUserPlus color=Config.colors##botanicalNight />
+                                                <TablerReact.IconUserOff color=Config.colors##botanicalNight />
                                             </ListItemIcon>
                                             <ListItemText>
                                                 {
@@ -354,11 +352,26 @@ let make = () => {
                         color=Color.secondary
                         onClick={_ => setMobileMenuOpen(state => !state)}
                     >
-                        {
-                            mobileMenuOpen 
-                            ? <TablerReact.IconX color=Config.colors##botanicalNight /> 
-                            : <TablerReact.IconMenu2 color=Config.colors##botanicalNight />
-                        }
+                        <Badge
+                            color={
+                                switch current_session {
+                                | Some(_) => Color.success
+                                | None => Color.error
+                                }
+                            }
+                            variant=`dot
+                            overlap=`circular
+                            anchorOrigin={{
+                                vertical: `top,
+                                horizontal: `right,
+                            }}
+                        >
+                            {
+                                mobileMenuOpen 
+                                ? <TablerReact.IconX color=Config.colors##botanicalNight /> 
+                                : <TablerReact.IconMenu2 color=Config.colors##botanicalNight />
+                            }
+                        </Badge>
                     </IconButton>
                     <Drawer
                         anchor=`right
@@ -386,6 +399,50 @@ let make = () => {
                                     {"Home" |> React.string}
                                 </ListItemText>
                             </ListItemButton>
+                            {
+                                switch current_session {
+                                | Some(_) =>
+                                    <ListItemButton
+                                        onClick={_ => {
+                                            setMobileMenuOpen(_ => false);
+                                            handleSignOut();
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <TablerReact.IconUserOff
+                                                color=Config.colors##botanicalNight
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText>
+                                            {
+                                                Ui_translation.display_to(
+                                                    ~sentence="log_out",
+                                                    ~language=displayLanguage,
+                                                    ~size=Some(Ui_translation.Small),
+                                                )
+                                            }
+                                        </ListItemText>
+                                    </ListItemButton>
+                                | None =>
+                                    <ListItemButton
+                                        onClick={_ => {
+                                            setMobileMenuOpen(_ => false);
+                                            setIsSignUp(_ => false);
+                                            setSignupDialogOpen(_ => true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <TablerReact.IconUserPlus
+                                                color=Config.colors##botanicalNight
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText>
+                                            {"Sign up / Sign in" |> React.string}
+                                        </ListItemText>
+                                    </ListItemButton>
+                                }
+                            }
+                            <Divider />
                             <ListSubheader>
                                 {"Tools" |> React.string}
                             </ListSubheader>
@@ -526,6 +583,7 @@ let make = () => {
             isSignupDialogOpen=isSignupDialogOpen
             setSignupDialogOpen=setSignupDialogOpen
             isSignUp=isSignUp
+            setIsSignUp=setIsSignUp
         />
         <Components.Settings_dialog
             isSettingsDialogOpen=isSettingsDialogOpen

@@ -3,7 +3,12 @@ let is_valid_email: string => bool = [%mel.raw {|
 |}];
 
 [@react.component]
-let make = (~isSignupDialogOpen, ~setSignupDialogOpen, ~isSignUp) => {
+let make = (
+    ~isSignupDialogOpen,
+    ~setSignupDialogOpen,
+    ~isSignUp,
+    ~setIsSignUp,
+) => {
     open Bindings;
     open Mui;
     open Store;
@@ -256,22 +261,40 @@ let make = (~isSignupDialogOpen, ~setSignupDialogOpen, ~isSignUp) => {
             {
                 switch authentication_message {
                     | None => {
-                        <Button
-                            disabled=is_authenticating
-                            onClick={_ => {
-                                if (isSignUp) {
-                                    handleSignUp()
-                                } else {
-                                    handleSignIn()
+                        <>
+                            <Button
+                                disabled=is_authenticating
+                                onClick={_ => {
+                                    set_authentication_error(_ => None);
+                                    set_authentication_message(_ => None);
+                                    setIsSignUp(current => !current);
+                                }}
+                            >
+                                {
+                                    Ui_translation.display_to(
+                                        ~sentence=(isSignUp ? "sign_in" : "sign_up"),
+                                        ~language=displayLanguage,
+                                        ~size=Some(Ui_translation.Small),
+                                    )
                                 }
-                            }}
-                        >
-                            {
-                                is_authenticating
-                                    ? (isSignUp ? "Creating account..." : "Signing in...") |> React.string
-                                    : Ui_translation.display_to(~sentence=(isSignUp ? "sign_up" : "sign_in"), ~language=displayLanguage, ~size=Some(Ui_translation.Small))
-                            }
-                        </Button>
+                            </Button>
+                            <Button
+                                disabled=is_authenticating
+                                onClick={_ => {
+                                    if (isSignUp) {
+                                        handleSignUp()
+                                    } else {
+                                        handleSignIn()
+                                    }
+                                }}
+                            >
+                                {
+                                    is_authenticating
+                                        ? (isSignUp ? "Creating account..." : "Signing in...") |> React.string
+                                        : Ui_translation.display_to(~sentence=(isSignUp ? "sign_up" : "sign_in"), ~language=displayLanguage, ~size=Some(Ui_translation.Small))
+                                }
+                            </Button>
+                        </>
                     }
                     | Some(_) => {
                         <Button

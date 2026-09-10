@@ -47,7 +47,10 @@ type grammar_note = {
 type bookmark_notification =
     | BookmarkSaved
     | NoBookmarkTextSelected
-    | BookmarkSaveFailed;
+    | BookmarkSaveFailed
+    | BookmarkRemoved
+    | BookmarkRemoveFailed
+    | BookmarkAuthenticationRequired;
 
 type rendered_text_segment = {
     node: Dom.node,
@@ -167,6 +170,15 @@ let make = () => {
         React.useState(() => 0);
     let (bookmark_markers, set_bookmark_markers) =
         React.useState(() => ([||]: array(bookmark_marker)));
+    let (bookmark_menu_anchor, set_bookmark_menu_anchor) =
+        React.useState(() =>
+            (Js.Nullable.null: Js.Nullable.t(Dom.element))
+        );
+    let bookmark_menu_open = !Js.Nullable.isNullable(bookmark_menu_anchor);
+    let (selected_bookmark_id, set_selected_bookmark_id) =
+        React.useState(() => (None: option(string)));
+
+    let is_mobile = UseMediaQuery.use("(max-width:599px)");
 
     React.useEffect1(() => {
         switch (Js.Nullable.toOption(grammar_note_content_ref.current)) {
@@ -349,6 +361,15 @@ let make = () => {
         | None => ()
         };
         set_bookmark_popover_open(_ => false);
+    };
+
+    let close_bookmark_menu = () => {
+        switch (Browser.Document.active_element) {
+        | Some(element) => Browser.Element.blur(element)
+        | None => ()
+        };
+        set_bookmark_menu_anchor(_ => Js.Nullable.null);
+        set_selected_bookmark_id(_ => None);
     };
 
     let show_bookmark_notification = notification => {
@@ -797,6 +818,52 @@ let make = () => {
             show_bookmark_notification(NoBookmarkTextSelected);
         };
 
+    let remove_bookmark = () =>
+        switch (current_user, selected_bookmark_id) {
+        | (Some(user), Some(bookmark_id)) =>
+            Supabase.client
+            |> Supabase.Query.from("bookmarks")
+            |> Supabase.Query.delete_bookmarks
+            |> Supabase.Query.eq_bookmarks_mutation(
+                ~column="user_id",
+                ~value=Supabase.Auth.user_id(user),
+            )
+            |> Supabase.Query.eq_bookmarks_mutation(
+                ~column="id",
+                ~value=bookmark_id,
+            )
+            |> Js.Promise.then_(response => {
+                switch (Supabase.Query.mutation_error(response)) {
+                | Some(error) => {
+                    Js.log2(
+                        "Unable to remove the bookmark:",
+                        Supabase.Query.postgrest_error_message(error),
+                    );
+                    show_bookmark_notification(BookmarkRemoveFailed);
+                }
+                | None => {
+                    show_bookmark_notification(BookmarkRemoved);
+                    set_bookmark_highlight_revision(revision => revision + 1);
+                }
+                };
+
+                close_bookmark_menu();
+                Js.Promise.resolve();
+            })
+            |> Js.Promise.catch(error => {
+                Js.log2("Unable to remove the bookmark:", error);
+                show_bookmark_notification(BookmarkRemoveFailed);
+                close_bookmark_menu();
+                Js.Promise.resolve();
+            })
+            |> ignore
+        | (None, _) => {
+            show_bookmark_notification(BookmarkAuthenticationRequired);
+            close_bookmark_menu();
+        }
+        | (_, None) => close_bookmark_menu()
+        };
+
     <>
     <Grid className=css##grammarNotesContainer>
         {
@@ -874,8 +941,8 @@ let make = () => {
                                 className=css##grammarNoteContent
                                 ref={ReactDOM.Ref.domRef(grammar_note_content_ref)}
                                 onMouseUp={event => {
-                                    switch (Browser.Window.get_selection()) {
-                                    | Some(selection)
+                                    switch (Browser.Window.get_selection(), current_user) {
+                                    | (Some(selection), Some(_))
                                         when Browser.Selection.range_count(selection) > 0
                                         && !Browser.Selection.is_collapsed(selection) =>
                                         let text = Browser.Selection.to_string(selection);
@@ -917,24 +984,53 @@ let make = () => {
                                 }}
                             >
                                 {
-                                    bookmark_markers
-                                    |> Array.map((marker: bookmark_marker) =>
-                                        <IconButton
-                                            key=marker.id
-                                            className=css##bookmarkMarker
-                                            size=`small
-                                            ariaLabel="Saved bookmark"
-                                            sx={{"top": marker.top}}
-                                        >
-                                            <TablerReact.IconBookmarkFilled
-                                                color={bookmark_marker_color(
-                                                    marker.bookmark_type,
-                                                )}
-                                            />
-                                        </IconButton>
-                                    )
-                                    |> React.array
+                                    is_mobile ? 
+                                        React.null : 
+                                        bookmark_markers
+                                        |> Array.map((marker: bookmark_marker) =>
+                                            <IconButton
+                                                key=marker.id
+                                                className=css##bookmarkMarker
+                                                size=`small
+                                                ariaLabel="Saved bookmark"
+                                                sx={{"top": marker.top}}
+                                                onClick={event => {
+                                                    set_bookmark_menu_anchor(_ =>
+                                                        event
+                                                        |> React.Event.Mouse.currentTarget
+                                                        |> dom_element_from_event_target
+                                                        |> Js.Nullable.return
+                                                    );
+                                                    set_selected_bookmark_id(_ => Some(marker.id));
+                                                }}
+                                            >
+                                                <TablerReact.IconBookmarkFilled
+                                                    color={bookmark_marker_color(
+                                                        marker.bookmark_type,
+                                                    )}
+                                                />
+                                            </IconButton>
+                                        )
+                                        |> React.array
                                 }
+                                <Menu
+                                    anchorEl=bookmark_menu_anchor
+                                    _open=bookmark_menu_open
+                                    anchorOrigin={{
+                                        vertical: `center,
+                                        horizontal: `right,
+                                    }}
+                                    onClose={_event => close_bookmark_menu()}
+                                >
+                                    <MenuItem dense=true onClick={_event => remove_bookmark()}>
+                                        <ListItemIcon>
+                                            <TablerReact.IconTrash />
+                                        </ListItemIcon>
+                                        <ListItemText>
+                                            {"Remove" |> React.string}
+                                        </ListItemText>
+                                    </MenuItem>
+                                </Menu>
                                 <Popover
                                     _open=bookmark_popover_open
                                     anchorReference=`anchorPosition
@@ -1103,6 +1199,18 @@ let make = () => {
             | Some(BookmarkSaveFailed) =>
                 <Alert severity=`error variant=`filled sx={{"width": "100%"}}>
                     {"The bookmark could not be saved." |> React.string}
+                </Alert>
+            | Some(BookmarkRemoved) =>
+                <Alert severity=`success variant=`filled sx={{"width": "100%"}}>
+                    {"Bookmark removed." |> React.string}
+                </Alert>
+            | Some(BookmarkRemoveFailed) =>
+                <Alert severity=`error variant=`filled sx={{"width": "100%"}}>
+                    {"The bookmark could not be removed." |> React.string}
+                </Alert>
+            | Some(BookmarkAuthenticationRequired) =>
+                <Alert severity=`warning variant=`filled sx={{"width": "100%"}}>
+                    {"You must be logged in to remove a bookmark." |> React.string}
                 </Alert>
             | None => React.null
             }

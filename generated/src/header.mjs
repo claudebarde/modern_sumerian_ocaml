@@ -3,6 +3,7 @@
 import HeaderModuleScss from "./Header.module.scss";
 import LogoPng from "./assets/logo.png";
 import AppBar from "@mui/material/AppBar";
+import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -83,12 +84,32 @@ function Header(Props) {
   const displayLanguage = Bindings__Zustand.use_store((function (store) {
     return store.display_language;
   }), Components__Store.app_store);
-  const clearAuthentication = Bindings__Zustand.use_store((function (store) {
-    return store.clear_authentication;
-  }), Components__Store.app_store);
   const current_session = Bindings__Zustand.use_store((function (state) {
     return state.current_session;
   }), Components__Store.app_store);
+  const clearAuthentication = Bindings__Zustand.use_store((function (store) {
+    return store.clear_authentication;
+  }), Components__Store.app_store);
+  const handleSignOut = function (param) {
+    Curry._1(setUserAnchor, (function (param) {
+      return null;
+    }));
+    const options = {
+      scope: "local"
+    };
+    Bindings__Supabase.auth.signOut(options).then(function (response) {
+      const error = response.error;
+      if (error == null) {
+        Curry._1(clearAuthentication, undefined);
+      } else {
+        console.log("Unable to sign out:", error.message);
+      }
+      return Promise.resolve();
+    }).catch(function (error) {
+      console.log("Unable to sign out:", error);
+      return Promise.resolve();
+    });
+  };
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
       JsxRuntime.jsx(AppBar, {
@@ -298,7 +319,7 @@ function Header(Props) {
                             children: JsxRuntime.jsxs(MenuItem, {
                               children: [
                                 JsxRuntime.jsx(ListItemIcon, {
-                                  children: JsxRuntime.jsx(IconsReact.IconUserPlus, {
+                                  children: JsxRuntime.jsx(IconsReact.IconUserOff, {
                                     color: Bindings__Config.colors.botanicalNight
                                   })
                                 }),
@@ -307,24 +328,7 @@ function Header(Props) {
                                 })
                               ],
                               onClick: (function (param) {
-                                Curry._1(setUserAnchor, (function (param) {
-                                  return null;
-                                }));
-                                const options = {
-                                  scope: "local"
-                                };
-                                Bindings__Supabase.auth.signOut(options).then(function (response) {
-                                  const error = response.error;
-                                  if (error == null) {
-                                    Curry._1(clearAuthentication, undefined);
-                                  } else {
-                                    console.log("Unable to sign out:", error.message);
-                                  }
-                                  return Promise.resolve();
-                                }).catch(function (error) {
-                                  console.log("Unable to sign out:", error);
-                                  return Promise.resolve();
-                                });
+                                handleSignOut();
                               })
                             }),
                             anchorEl: userAnchor,
@@ -440,11 +444,20 @@ function Header(Props) {
             JsxRuntime.jsxs(Box, {
               children: [
                 JsxRuntime.jsx(IconButton, {
-                  children: mobileMenuOpen ? JsxRuntime.jsx(IconsReact.IconX, {
-                      color: Bindings__Config.colors.botanicalNight
-                    }) : JsxRuntime.jsx(IconsReact.IconMenu2, {
-                      color: Bindings__Config.colors.botanicalNight
-                    }),
+                  children: JsxRuntime.jsx(Badge, {
+                    anchorOrigin: {
+                      vertical: "top",
+                      horizontal: "right"
+                    },
+                    children: mobileMenuOpen ? JsxRuntime.jsx(IconsReact.IconX, {
+                        color: Bindings__Config.colors.botanicalNight
+                      }) : JsxRuntime.jsx(IconsReact.IconMenu2, {
+                        color: Bindings__Config.colors.botanicalNight
+                      }),
+                    color: current_session !== undefined ? Bindings__Material_ui.Color.success : Bindings__Material_ui.Color.error,
+                    overlap: "circular",
+                    variant: "dot"
+                  }),
                   color: Bindings__Material_ui.Color.secondary,
                   onClick: (function (param) {
                     Curry._1(setMobileMenuOpen, (function (state) {
@@ -474,6 +487,47 @@ function Header(Props) {
                           }));
                         })
                       }),
+                      current_session !== undefined ? JsxRuntime.jsxs(ListItemButton, {
+                          children: [
+                            JsxRuntime.jsx(ListItemIcon, {
+                              children: JsxRuntime.jsx(IconsReact.IconUserOff, {
+                                color: Bindings__Config.colors.botanicalNight
+                              })
+                            }),
+                            JsxRuntime.jsx(ListItemText, {
+                              children: Components__Ui_translation.display_to("log_out", displayLanguage, /* Small */ 0)
+                            })
+                          ],
+                          onClick: (function (param) {
+                            Curry._1(setMobileMenuOpen, (function (param) {
+                              return false;
+                            }));
+                            handleSignOut();
+                          })
+                        }) : JsxRuntime.jsxs(ListItemButton, {
+                          children: [
+                            JsxRuntime.jsx(ListItemIcon, {
+                              children: JsxRuntime.jsx(IconsReact.IconUserPlus, {
+                                color: Bindings__Config.colors.botanicalNight
+                              })
+                            }),
+                            JsxRuntime.jsx(ListItemText, {
+                              children: "Sign up / Sign in"
+                            })
+                          ],
+                          onClick: (function (param) {
+                            Curry._1(setMobileMenuOpen, (function (param) {
+                              return false;
+                            }));
+                            Curry._1(setIsSignUp, (function (param) {
+                              return false;
+                            }));
+                            Curry._1(setSignupDialogOpen, (function (param) {
+                              return true;
+                            }));
+                          })
+                        }),
+                      JsxRuntime.jsx(Divider, {}),
                       JsxRuntime.jsx(ListSubheader, {
                         children: "Tools"
                       }),
@@ -701,7 +755,8 @@ function Header(Props) {
       JsxRuntime.jsx(Components__User_signing.make, {
         isSignupDialogOpen: match$3[0],
         setSignupDialogOpen,
-        isSignUp: match$4[0]
+        isSignUp: match$4[0],
+        setIsSignUp
       }),
       JsxRuntime.jsx(Components__Settings_dialog.make, {
         isSettingsDialogOpen: match$5[0],

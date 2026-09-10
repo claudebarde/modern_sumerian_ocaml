@@ -32,6 +32,7 @@ function User_signing(Props) {
   let isSignupDialogOpen = Props.isSignupDialogOpen;
   let setSignupDialogOpen = Props.setSignupDialogOpen;
   let isSignUp = Props.isSignUp;
+  let setIsSignUp = Props.setIsSignUp;
   const displayLanguage = Bindings__Zustand.use_store((function (store) {
     return store.display_language;
   }), Components__Store.app_store);
@@ -177,151 +178,170 @@ function User_signing(Props) {
                   return false;
                 }));
               })
-            }) : JsxRuntime.jsx(Button, {
-              children: is_authenticating ? (
-                  isSignUp ? "Creating account..." : "Signing in..."
-                ) : Components__Ui_translation.display_to(isSignUp ? "sign_up" : "sign_in", displayLanguage, /* Small */ 0),
-              disabled: is_authenticating,
-              onClick: (function (param) {
-                if (isSignUp) {
-                  const email = email_address !== undefined ? Stdlib__String.trim(email_address) : "";
-                  const password_value = password !== undefined ? password : "";
-                  Curry._1(set_authentication_error, (function (param) {
-                    
-                  }));
-                  Curry._1(set_authentication_message, (function (param) {
-                    
-                  }));
-                  if (email === "") {
-                    return Curry._1(set_authentication_error, (function (param) {
-                      return "Enter your email address.";
+            }) : JsxRuntime.jsxs(JsxRuntime.Fragment, {
+              children: [
+                JsxRuntime.jsx(Button, {
+                  children: Components__Ui_translation.display_to(isSignUp ? "sign_in" : "sign_up", displayLanguage, /* Small */ 0),
+                  disabled: is_authenticating,
+                  onClick: (function (param) {
+                    Curry._1(set_authentication_error, (function (param) {
+                      
                     }));
-                  }
-                  if (!is_valid_email(email)) {
-                    return Curry._1(set_authentication_error, (function (param) {
-                      return "Enter a valid email address.";
+                    Curry._1(set_authentication_message, (function (param) {
+                      
                     }));
-                  }
-                  if (password_value.length < 8) {
-                    return Curry._1(set_authentication_error, (function (param) {
-                      return "Your password must contain at least 8 characters.";
+                    Curry._1(setIsSignUp, (function (current) {
+                      return !current;
                     }));
-                  }
-                  Curry._1(set_is_authenticating, (function (param) {
-                    return true;
-                  }));
-                  const credentials = {
-                    email,
-                    password: password_value
-                  };
-                  Bindings__Supabase.auth.signUp(credentials).then(function (response) {
-                    Curry._1(set_is_authenticating, (function (param) {
-                      return false;
-                    }));
-                    const error = response.error;
-                    if (error == null) {
-                      const auth_data = response.data;
-                      const session = auth_data.session;
-                      if (session == null) {
-                        Curry._1(setAuthentication, undefined);
-                        Curry._1(set_authentication_message, (function (param) {
-                          return "Your account has been created. Check your email to confirm it.";
-                        }));
-                      } else {
-                        Curry._1(setAuthentication, Caml_option.some(session));
-                        Curry._1(set_authentication_message, (function (param) {
-                          return "Your account has been created and you are signed in.";
+                  })
+                }),
+                JsxRuntime.jsx(Button, {
+                  children: is_authenticating ? (
+                      isSignUp ? "Creating account..." : "Signing in..."
+                    ) : Components__Ui_translation.display_to(isSignUp ? "sign_up" : "sign_in", displayLanguage, /* Small */ 0),
+                  disabled: is_authenticating,
+                  onClick: (function (param) {
+                    if (isSignUp) {
+                      const email = email_address !== undefined ? Stdlib__String.trim(email_address) : "";
+                      const password_value = password !== undefined ? password : "";
+                      Curry._1(set_authentication_error, (function (param) {
+                        
+                      }));
+                      Curry._1(set_authentication_message, (function (param) {
+                        
+                      }));
+                      if (email === "") {
+                        return Curry._1(set_authentication_error, (function (param) {
+                          return "Enter your email address.";
                         }));
                       }
-                    } else {
-                      Curry._1(set_authentication_error, (function (param) {
-                        return error.message;
+                      if (!is_valid_email(email)) {
+                        return Curry._1(set_authentication_error, (function (param) {
+                          return "Enter a valid email address.";
+                        }));
+                      }
+                      if (password_value.length < 8) {
+                        return Curry._1(set_authentication_error, (function (param) {
+                          return "Your password must contain at least 8 characters.";
+                        }));
+                      }
+                      Curry._1(set_is_authenticating, (function (param) {
+                        return true;
                       }));
-                    }
-                    return Promise.resolve();
-                  }).catch(function (_error) {
-                    Curry._1(set_is_authenticating, (function (param) {
-                      return false;
-                    }));
-                    Curry._1(set_authentication_error, (function (param) {
-                      return "Unable to create your account. Check your connection and try again.";
-                    }));
-                    return Promise.resolve();
-                  });
-                  return;
-                } else {
-                  const email$1 = email_address !== undefined ? Stdlib__String.trim(email_address) : "";
-                  const password_value$1 = password !== undefined ? password : "";
-                  Curry._1(set_authentication_error, (function (param) {
-                    
-                  }));
-                  Curry._1(set_authentication_message, (function (param) {
-                    
-                  }));
-                  if (email$1 === "") {
-                    return Curry._1(set_authentication_error, (function (param) {
-                      return "Enter your email address.";
-                    }));
-                  }
-                  if (!is_valid_email(email$1)) {
-                    return Curry._1(set_authentication_error, (function (param) {
-                      return "Enter a valid email address.";
-                    }));
-                  }
-                  if (password_value$1 === "") {
-                    return Curry._1(set_authentication_error, (function (param) {
-                      return "Enter your password.";
-                    }));
-                  }
-                  Curry._1(set_is_authenticating, (function (param) {
-                    return true;
-                  }));
-                  const credentials$1 = {
-                    email: email$1,
-                    password: password_value$1
-                  };
-                  Bindings__Supabase.auth.signInWithPassword(credentials$1).then(function (response) {
-                    Curry._1(set_is_authenticating, (function (param) {
-                      return false;
-                    }));
-                    const error = response.error;
-                    if (error == null) {
-                      const auth_data = response.data;
-                      const session = auth_data.session;
-                      if (session == null) {
-                        Curry._1(set_authentication_error, (function (param) {
-                          return "Unable to start your session. Please try again.";
-                        }));
-                      } else {
-                        Curry._1(setAuthentication, Caml_option.some(session));
-                        Curry._1(set_email_address, (function (param) {
-                          
-                        }));
-                        Curry._1(set_password, (function (param) {
-                          
-                        }));
-                        Curry._1(setSignupDialogOpen, (function (param) {
+                      const credentials = {
+                        email,
+                        password: password_value
+                      };
+                      Bindings__Supabase.auth.signUp(credentials).then(function (response) {
+                        Curry._1(set_is_authenticating, (function (param) {
                           return false;
                         }));
-                      }
+                        const error = response.error;
+                        if (error == null) {
+                          const auth_data = response.data;
+                          const session = auth_data.session;
+                          if (session == null) {
+                            Curry._1(setAuthentication, undefined);
+                            Curry._1(set_authentication_message, (function (param) {
+                              return "Your account has been created. Check your email to confirm it.";
+                            }));
+                          } else {
+                            Curry._1(setAuthentication, Caml_option.some(session));
+                            Curry._1(set_authentication_message, (function (param) {
+                              return "Your account has been created and you are signed in.";
+                            }));
+                          }
+                        } else {
+                          Curry._1(set_authentication_error, (function (param) {
+                            return error.message;
+                          }));
+                        }
+                        return Promise.resolve();
+                      }).catch(function (_error) {
+                        Curry._1(set_is_authenticating, (function (param) {
+                          return false;
+                        }));
+                        Curry._1(set_authentication_error, (function (param) {
+                          return "Unable to create your account. Check your connection and try again.";
+                        }));
+                        return Promise.resolve();
+                      });
+                      return;
                     } else {
+                      const email$1 = email_address !== undefined ? Stdlib__String.trim(email_address) : "";
+                      const password_value$1 = password !== undefined ? password : "";
                       Curry._1(set_authentication_error, (function (param) {
-                        return error.message;
+                        
                       }));
+                      Curry._1(set_authentication_message, (function (param) {
+                        
+                      }));
+                      if (email$1 === "") {
+                        return Curry._1(set_authentication_error, (function (param) {
+                          return "Enter your email address.";
+                        }));
+                      }
+                      if (!is_valid_email(email$1)) {
+                        return Curry._1(set_authentication_error, (function (param) {
+                          return "Enter a valid email address.";
+                        }));
+                      }
+                      if (password_value$1 === "") {
+                        return Curry._1(set_authentication_error, (function (param) {
+                          return "Enter your password.";
+                        }));
+                      }
+                      Curry._1(set_is_authenticating, (function (param) {
+                        return true;
+                      }));
+                      const credentials$1 = {
+                        email: email$1,
+                        password: password_value$1
+                      };
+                      Bindings__Supabase.auth.signInWithPassword(credentials$1).then(function (response) {
+                        Curry._1(set_is_authenticating, (function (param) {
+                          return false;
+                        }));
+                        const error = response.error;
+                        if (error == null) {
+                          const auth_data = response.data;
+                          const session = auth_data.session;
+                          if (session == null) {
+                            Curry._1(set_authentication_error, (function (param) {
+                              return "Unable to start your session. Please try again.";
+                            }));
+                          } else {
+                            Curry._1(setAuthentication, Caml_option.some(session));
+                            Curry._1(set_email_address, (function (param) {
+                              
+                            }));
+                            Curry._1(set_password, (function (param) {
+                              
+                            }));
+                            Curry._1(setSignupDialogOpen, (function (param) {
+                              return false;
+                            }));
+                          }
+                        } else {
+                          Curry._1(set_authentication_error, (function (param) {
+                            return error.message;
+                          }));
+                        }
+                        return Promise.resolve();
+                      }).catch(function (_error) {
+                        Curry._1(set_is_authenticating, (function (param) {
+                          return false;
+                        }));
+                        Curry._1(set_authentication_error, (function (param) {
+                          return "Unable to sign in. Check your connection and try again.";
+                        }));
+                        return Promise.resolve();
+                      });
+                      return;
                     }
-                    return Promise.resolve();
-                  }).catch(function (_error) {
-                    Curry._1(set_is_authenticating, (function (param) {
-                      return false;
-                    }));
-                    Curry._1(set_authentication_error, (function (param) {
-                      return "Unable to sign in. Check your connection and try again.";
-                    }));
-                    return Promise.resolve();
-                  });
-                  return;
-                }
-              })
+                  })
+                })
+              ]
             })
         ]
       })

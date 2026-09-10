@@ -493,25 +493,136 @@ let make = () => {
         compare(0);
     };
 
-    let find_bookmark_offset = (rendered_text, bookmark: Supabase.bookmark_row) => {
-        let selected_length = Js.String.length(bookmark.selected_text);
-        let prefix_length = Js.String.length(bookmark.prefix_context);
-        let suffix_length = Js.String.length(bookmark.suffix_context);
+    let remove_markdown_escapes = text =>
+        text
+        |> Js.String.replaceByRe(
+            ~regexp=Js.Re.fromStringWithFlags(
+                {js|\\\\(.)|js},
+                ~flags="g",
+            ),
+            ~replacement="$1",
+        );
 
-        if (selected_length === 0) {
+    let normalize_whitespace = text =>
+        text
+        |> Js.String.replaceByRe(
+            ~regexp=Js.Re.fromStringWithFlags("\\s+", ~flags="g"),
+            ~replacement=" ",
+        );
+
+    let is_whitespace = character =>
+        character != "" && (character |> Js.String.trim) == "";
+
+    /* Return offsets in the original rendered text while allowing whitespace in
+       the stored selection to differ from the Markdown DOM. Browsers collapse a
+       source newline visually, but Range.toString/text nodes still retain it. */
+    let find_flexible_text_match = (rendered_text, search_text, search_start) => {
+        let rendered_length = Js.String.length(rendered_text);
+        let search_length = Js.String.length(search_text);
+
+        let rec skip_whitespace = (text, index, length) =>
+            if (
+                index < length
+                && (text |> Js.String.charAt(~index) |> is_whitespace)
+            ) {
+                skip_whitespace(text, index + 1, length);
+            } else {
+                index;
+            };
+
+        let rec matches_at = (rendered_index, search_index) =>
+            if (search_index >= search_length) {
+                Some(rendered_index);
+            } else if (rendered_index >= rendered_length) {
+                None;
+            } else {
+                let rendered_character =
+                    rendered_text |> Js.String.charAt(~index=rendered_index);
+                let search_character =
+                    search_text |> Js.String.charAt(~index=search_index);
+
+                if (
+                    is_whitespace(rendered_character)
+                    && is_whitespace(search_character)
+                ) {
+                    matches_at(
+                        skip_whitespace(
+                            rendered_text,
+                            rendered_index,
+                            rendered_length,
+                        ),
+                        skip_whitespace(search_text, search_index, search_length),
+                    );
+                } else if (rendered_character == search_character) {
+                    matches_at(rendered_index + 1, search_index + 1);
+                } else {
+                    None;
+                };
+            };
+
+        let rec try_at = candidate =>
+            if (candidate >= rendered_length) {
+                None;
+            } else {
+                switch (matches_at(candidate, 0)) {
+                | Some(end_offset) => Some((candidate, end_offset))
+                | None => try_at(candidate + 1)
+                };
+            };
+
+        if (search_length === 0) {
+            None;
+        } else {
+            let exact_offset =
+                rendered_text
+                |> Js.String.indexOf(~search=search_text, ~start=search_start);
+            if (exact_offset >= 0) {
+                Some((exact_offset, exact_offset + search_length));
+            } else {
+                try_at(search_start);
+            };
+        };
+    };
+
+    let find_bookmark_offset = (rendered_text, bookmark: Supabase.bookmark_row) => {
+        /* Bookmarks normally contain text selected from the rendered DOM. Older or
+           imported rows may contain Markdown source escapes (for example `\*`),
+           which ReactMarkdown removes before rendering. Prefer an exact match so
+           that a real backslash remains meaningful, and only unescape as a
+           compatibility fallback. */
+        let exact_text_is_present =
+            rendered_text
+            |> Js.String.indexOf(~search=bookmark.selected_text, ~start=0)
+            >= 0;
+        let selected_text =
+            exact_text_is_present
+                ? bookmark.selected_text
+                : remove_markdown_escapes(bookmark.selected_text);
+        let prefix_context =
+            exact_text_is_present
+                ? bookmark.prefix_context
+                : remove_markdown_escapes(bookmark.prefix_context);
+        let suffix_context =
+            exact_text_is_present
+                ? bookmark.suffix_context
+                : remove_markdown_escapes(bookmark.suffix_context);
+        let prefix_length = Js.String.length(prefix_context);
+        let suffix_length = Js.String.length(suffix_context);
+
+        if (Js.String.length(selected_text) === 0) {
             None;
         } else {
             let rec find = (search_start, best_offset, best_score) => {
-                let candidate =
-                    rendered_text
-                    |> Js.String.indexOf(
-                        ~search=bookmark.selected_text,
-                        ~start=search_start,
-                    );
-
-                if (candidate < 0) {
+                switch (
+                    find_flexible_text_match(
+                        rendered_text,
+                        selected_text,
+                        search_start,
+                    )
+                ) {
+                | None =>
                     best_offset;
-                } else {
+                | Some((candidate, end_offset)) =>
                     let prefix_start =
                         candidate > prefix_length
                             ? candidate - prefix_length
@@ -525,25 +636,25 @@ let make = () => {
                     let candidate_suffix =
                         rendered_text
                         |> Js.String.slice(
-                            ~start=candidate + selected_length,
-                            ~end_=candidate + selected_length + suffix_length,
+                            ~start=end_offset,
+                            ~end_=end_offset + suffix_length,
                         );
                     let score =
                         common_suffix_length(
-                            candidate_prefix,
-                            bookmark.prefix_context,
+                            normalize_whitespace(candidate_prefix),
+                            normalize_whitespace(prefix_context),
                         )
                         + common_prefix_length(
-                            candidate_suffix,
-                            bookmark.suffix_context,
+                            normalize_whitespace(candidate_suffix),
+                            normalize_whitespace(suffix_context),
                         );
                     let (next_best_offset, next_best_score) =
                         score > best_score
-                            ? (Some(candidate), score)
+                            ? (Some((candidate, end_offset)), score)
                             : (best_offset, best_score);
 
                     find(
-                        candidate + selected_length,
+                        candidate + 1,
                         next_best_offset,
                         next_best_score,
                     );
@@ -559,12 +670,12 @@ let make = () => {
             segments
             |> Array.find_opt((segment: rendered_text_segment) =>
                 start_offset >= segment.start_offset
-                && start_offset <= segment.end_offset
+                && start_offset < segment.end_offset
             );
         let end_segment =
             segments
             |> Array.find_opt((segment: rendered_text_segment) =>
-                end_offset >= segment.start_offset
+                end_offset > segment.start_offset
                 && end_offset <= segment.end_offset
             );
 
@@ -650,10 +761,7 @@ let make = () => {
                                 |> Array.fold_left((ranges, (bookmark: Supabase.bookmark_row)) =>
                                     if (bookmark.bookmark_type === bookmark_type) {
                                         switch (find_bookmark_offset(rendered_text, bookmark)) {
-                                        | Some(start_offset) =>
-                                            let end_offset =
-                                                start_offset
-                                                + Js.String.length(bookmark.selected_text);
+                                        | Some((start_offset, end_offset)) =>
                                             switch (
                                                 range_from_offsets(
                                                     segments,

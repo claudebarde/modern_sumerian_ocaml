@@ -485,11 +485,93 @@ function Learn_grammar_notes(Props) {
       continue;
     };
   };
+  const remove_markdown_escapes = function (text) {
+    return text.replace(new RegExp("\\\\(.)", "g"), "$1");
+  };
+  const normalize_whitespace = function (text) {
+    return text.replace(new RegExp("\\s+", "g"), " ");
+  };
+  const is_whitespace = function (character) {
+    if (character !== "") {
+      return character.trim() === "";
+    } else {
+      return false;
+    }
+  };
+  const find_flexible_text_match = function (rendered_text, search_text, search_start) {
+    const rendered_length = rendered_text.length;
+    const search_length = search_text.length;
+    const skip_whitespace = function (text, _index, length) {
+      while (true) {
+        const index = _index;
+        if (!(index < length && is_whitespace(text.charAt(index)))) {
+          return index;
+        }
+        _index = index + 1 | 0;
+        continue;
+      };
+    };
+    const matches_at = function (_rendered_index, _search_index) {
+      while (true) {
+        const search_index = _search_index;
+        const rendered_index = _rendered_index;
+        if (search_index >= search_length) {
+          return rendered_index;
+        }
+        if (rendered_index >= rendered_length) {
+          return;
+        }
+        const rendered_character = rendered_text.charAt(rendered_index);
+        const search_character = search_text.charAt(search_index);
+        if (is_whitespace(rendered_character) && is_whitespace(search_character)) {
+          _search_index = skip_whitespace(search_text, search_index, search_length);
+          _rendered_index = skip_whitespace(rendered_text, rendered_index, rendered_length);
+          continue;
+        }
+        if (rendered_character !== search_character) {
+          return;
+        }
+        _search_index = search_index + 1 | 0;
+        _rendered_index = rendered_index + 1 | 0;
+        continue;
+      };
+    };
+    if (search_length === 0) {
+      return;
+    }
+    const exact_offset = rendered_text.indexOf(search_text, search_start);
+    if (exact_offset >= 0) {
+      return [
+        exact_offset,
+        exact_offset + search_length | 0
+      ];
+    } else {
+      let _candidate = search_start;
+      while (true) {
+        const candidate = _candidate;
+        if (candidate >= rendered_length) {
+          return;
+        }
+        const end_offset = matches_at(candidate, 0);
+        if (end_offset !== undefined) {
+          return [
+            candidate,
+            end_offset
+          ];
+        }
+        _candidate = candidate + 1 | 0;
+        continue;
+      };
+    }
+  };
   const find_bookmark_offset = function (rendered_text, bookmark) {
-    const selected_length = bookmark.selected_text.length;
-    const prefix_length = bookmark.prefix_context.length;
-    const suffix_length = bookmark.suffix_context.length;
-    if (selected_length === 0) {
+    const exact_text_is_present = rendered_text.indexOf(bookmark.selected_text, 0) >= 0;
+    const selected_text = exact_text_is_present ? bookmark.selected_text : remove_markdown_escapes(bookmark.selected_text);
+    const prefix_context = exact_text_is_present ? bookmark.prefix_context : remove_markdown_escapes(bookmark.prefix_context);
+    const suffix_context = exact_text_is_present ? bookmark.suffix_context : remove_markdown_escapes(bookmark.suffix_context);
+    const prefix_length = prefix_context.length;
+    const suffix_length = suffix_context.length;
+    if (selected_text.length === 0) {
       return;
     }
     let _search_start = 0;
@@ -499,37 +581,42 @@ function Learn_grammar_notes(Props) {
       const best_score = _best_score;
       const best_offset = _best_offset;
       const search_start = _search_start;
-      const candidate = rendered_text.indexOf(bookmark.selected_text, search_start);
-      if (candidate < 0) {
+      const match = find_flexible_text_match(rendered_text, selected_text, search_start);
+      if (match === undefined) {
         return best_offset;
       }
+      const end_offset = match[1];
+      const candidate = match[0];
       const prefix_start = candidate > prefix_length ? candidate - prefix_length | 0 : 0;
       const candidate_prefix = rendered_text.slice(prefix_start, candidate);
-      const candidate_suffix = rendered_text.slice(candidate + selected_length | 0, (candidate + selected_length | 0) + suffix_length | 0);
-      const score = common_suffix_length(candidate_prefix, bookmark.prefix_context) + common_prefix_length(candidate_suffix, bookmark.suffix_context) | 0;
-      const match = score > best_score ? [
-          candidate,
+      const candidate_suffix = rendered_text.slice(end_offset, end_offset + suffix_length | 0);
+      const score = common_suffix_length(normalize_whitespace(candidate_prefix), normalize_whitespace(prefix_context)) + common_prefix_length(normalize_whitespace(candidate_suffix), normalize_whitespace(suffix_context)) | 0;
+      const match$1 = score > best_score ? [
+          [
+            candidate,
+            end_offset
+          ],
           score
         ] : [
           best_offset,
           best_score
         ];
-      _best_score = match[1];
-      _best_offset = match[0];
-      _search_start = candidate + selected_length | 0;
+      _best_score = match$1[1];
+      _best_offset = match$1[0];
+      _search_start = candidate + 1 | 0;
       continue;
     };
   };
   const range_from_offsets = function (segments, start_offset, end_offset) {
     const start_segment = Stdlib__Array.find_opt((function (segment) {
       if (start_offset >= segment.start_offset) {
-        return start_offset <= segment.end_offset;
+        return start_offset < segment.end_offset;
       } else {
         return false;
       }
     }), segments);
     const end_segment = Stdlib__Array.find_opt((function (segment) {
-      if (end_offset >= segment.start_offset) {
+      if (end_offset > segment.start_offset) {
         return end_offset <= segment.end_offset;
       } else {
         return false;
@@ -586,12 +673,11 @@ function Learn_grammar_notes(Props) {
                 if (bookmark.bookmark_type !== bookmark_type) {
                   return ranges;
                 }
-                const start_offset = find_bookmark_offset(rendered_text, bookmark);
-                if (start_offset === undefined) {
+                const match = find_bookmark_offset(rendered_text, bookmark);
+                if (match === undefined) {
                   return ranges;
                 }
-                const end_offset = start_offset + bookmark.selected_text.length | 0;
-                const range = range_from_offsets(segments, start_offset, end_offset);
+                const range = range_from_offsets(segments, match[0], match[1]);
                 if (range === undefined) {
                   return ranges;
                 }

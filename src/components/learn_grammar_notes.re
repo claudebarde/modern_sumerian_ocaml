@@ -1192,20 +1192,22 @@ let make = () => {
                                         }
                                     }
                                 </Popover>
-                                {
-                                switch (markdown, markdown_error) {
-                                | (Some(content), _) =>
-                                    <ReactMarkdown
-                                        markdown=content
-                                        remarkPlugins=[|ReactMarkdown.remarkGfmWithoutSingleTilde|]
-                                        rehypePlugins=[|ReactMarkdown.rehypeCuneiform|]
-                                    />
-                                    | (None, Some(message)) =>
-                                        <p> {message |> React.string} </p>
-                                    | (None, None) =>
-                                        <p> {"Loading grammar note..." |> React.string} </p>
+                                <div className=css##grammarNoteMarkdown>
+                                    {
+                                    switch (markdown, markdown_error) {
+                                    | (Some(content), _) =>
+                                        <ReactMarkdown
+                                            markdown=content
+                                            remarkPlugins=[|ReactMarkdown.remarkGfmWithoutSingleTilde|]
+                                            rehypePlugins=[|ReactMarkdown.rehypeCuneiform|]
+                                        />
+                                        | (None, Some(message)) =>
+                                            <p> {message |> React.string} </p>
+                                        | (None, None) =>
+                                            <p> {"Loading grammar note..." |> React.string} </p>
+                                        }
                                     }
-                                }
+                                </div>
                             </Container>
                         </div>
                     </>

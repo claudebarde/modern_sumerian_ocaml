@@ -1124,17 +1124,20 @@ function Learn_grammar_notes(Props) {
                             horizontal: "center"
                           }
                         }),
-                        markdown !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
-                            children: markdown,
-                            rehypePlugins: [Bindings__React_markdown.rehypeCuneiform],
-                            remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
-                          }) : (
-                            markdown_error !== undefined ? JsxRuntime.jsx("p", {
-                                children: markdown_error
-                              }) : JsxRuntime.jsx("p", {
-                                children: "Loading grammar note..."
-                              })
-                          )
+                        JsxRuntime.jsx("div", {
+                          children: markdown !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
+                              children: markdown,
+                              rehypePlugins: [Bindings__React_markdown.rehypeCuneiform],
+                              remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
+                            }) : (
+                              markdown_error !== undefined ? JsxRuntime.jsx("p", {
+                                  children: markdown_error
+                                }) : JsxRuntime.jsx("p", {
+                                  children: "Loading grammar note..."
+                                })
+                            ),
+                          className: css.grammarNoteMarkdown
+                        })
                       ],
                       className: css.grammarNoteContent,
                       onMouseUp: (function ($$event) {

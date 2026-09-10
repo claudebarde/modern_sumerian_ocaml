@@ -2,6 +2,7 @@
 @use "../styles/styles.scss" as *;
 
 $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
+$bookmark-marker-gutter: 24px;
 
 .grammarNoteContent::highlight(grammar-bookmark-pink),
 .grammarNoteContent *::highlight(grammar-bookmark-pink) {
@@ -121,13 +122,13 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
   position: relative;
   flex: 0 0 auto;
   width: 100%;
-  max-width: 800px;
+  max-width: calc(800px + $bookmark-marker-gutter);
+  box-sizing: border-box;
   overflow: visible;
-  padding: 20px 0px;
+  padding: 20px 0;
 
   @media (max-width: $breakpoint) {
-    box-sizing: border-box;
-    padding-left: 44px;
+    max-width: 800px;
   }
 
   table {
@@ -155,17 +156,22 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
   }
 }
 
-.bookmarkMarker {
-  position: absolute !important;
-  left: 5px;
-  z-index: 1;
-  background-color: $white-smoke !important;
-  transform: translate(-100%, -50%);
+.grammarNoteMarkdown {
+  width: calc(100% - $bookmark-marker-gutter);
+  margin-left: $bookmark-marker-gutter;
 
   @media (max-width: $breakpoint) {
-    left: 4px;
-    transform: translateY(-50%);
+    width: 100%;
+    margin-left: 0;
   }
+}
+
+.bookmarkMarker {
+  position: absolute !important;
+  left: 4px;
+  z-index: 1;
+  background-color: $white-smoke !important;
+  transform: translateY(-50%);
 }
 
 .readProgress {

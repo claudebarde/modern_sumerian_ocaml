@@ -45,6 +45,28 @@ const $$Geolocation = {};
 
 const $$ResizeObserver = {};
 
+const DomRect = {};
+
+const DomRectList = {};
+
+const $$Range = {};
+
+const $$Node = {};
+
+const $$TreeWalker = {};
+
+const $$Highlight = {};
+
+const CssHighlights = {};
+
+const $$Selection = {};
+
+const $$Element = {};
+
+const $$Document = {
+  show_text: 4
+};
+
 const $$Window = {};
 
 export {
@@ -52,6 +74,16 @@ export {
   Fetch,
   $$Geolocation,
   $$ResizeObserver,
+  DomRect,
+  DomRectList,
+  $$Range,
+  $$Node,
+  $$TreeWalker,
+  $$Highlight,
+  CssHighlights,
+  $$Selection,
+  $$Element,
+  $$Document,
   $$Window,
 }
 /* No side effect */

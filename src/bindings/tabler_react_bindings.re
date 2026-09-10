@@ -100,6 +100,30 @@ module IconBook2 = {
   ) => React.element = "IconBook2";
 };
 
+module IconBookmark = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBookmark";
+};
+
+module IconBookmarkFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconBookmarkFilled";
+};
+
 module IconBorderAll = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -412,6 +436,30 @@ module IconDownload = {
   ) => React.element = "IconDownload";
 };
 
+module IconEye = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconEye";
+};
+
+module IconEyeClosed = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconEyeClosed";
+};
+
 module IconExternalLink = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -482,6 +530,18 @@ module IconLink = {
     ~title: string=?,
     unit
   ) => React.element = "IconLink";
+};
+
+module IconLinkFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconLinkFilled";
 };
 
 module IconList = {
@@ -652,6 +712,30 @@ module IconSearch = {
   ) => React.element = "IconSearch";
 };
 
+module IconSettings = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconSettings";
+};
+
+module IconSettingsFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconSettingsFilled";
+};
+
 module IconSnowflake = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -746,6 +830,66 @@ module IconTrashXFilled = {
     ~title: string=?,
     unit
   ) => React.element = "IconTrashXFilled";
+};
+
+module IconUserCheck = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconUserCheck";
+};
+
+module IconUserFilled = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconUserFilled";
+};
+
+module IconUserOff = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconUserOff";
+};
+
+module IconUserPlus = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconUserPlus";
+};
+
+module IconUserX = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconUserX";
 };
 
 module IconWind = {

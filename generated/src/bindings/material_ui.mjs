@@ -154,6 +154,8 @@ const Menu = {};
 
 const MenuItem = {};
 
+const MenuList = {};
+
 const OutlinedInput = {};
 
 const Paper = {};
@@ -367,6 +369,7 @@ export {
   ListSubheader,
   Menu,
   MenuItem,
+  MenuList,
   OutlinedInput,
   Paper,
   Popover,

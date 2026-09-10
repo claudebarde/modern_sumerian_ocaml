@@ -6,6 +6,12 @@ import * as App__Body from "./body.mjs";
 import * as App__Footer from "./footer.mjs";
 import * as App__Header from "./header.mjs";
 import * as Bindings__Config from "./bindings/config.mjs";
+import * as Bindings__Supabase from "./bindings/supabase.mjs";
+import * as Bindings__Zustand from "./bindings/zustand.mjs";
+import * as Caml_option from "melange.js/caml_option.mjs";
+import * as Components__Store from "./components/store.mjs";
+import * as Curry from "melange.js/curry.mjs";
+import * as React from "react";
 import * as Client from "react-dom/client";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -22,7 +28,7 @@ const theme = Styles.createTheme({
       contrastText: Bindings__Config.colors.whiteSmoke
     },
     secondary: {
-      main: Bindings__Config.colors.botanicalNight,
+      main: Bindings__Config.colors.darkRift,
       contrastText: Bindings__Config.colors.whiteSmoke
     },
     background: {
@@ -37,6 +43,28 @@ const theme = Styles.createTheme({
 });
 
 function App$App(Props) {
+  const setAuthentication = Bindings__Zustand.use_store((function (store) {
+    return store.set_authentication;
+  }), Components__Store.app_store);
+  const setAuthLoading = Bindings__Zustand.use_store((function (store) {
+    return store.set_auth_loading;
+  }), Components__Store.app_store);
+  React.useEffect((function () {
+    Curry._1(setAuthLoading, true);
+    Bindings__Supabase.auth.getSession().then(function (response) {
+      const error = response.error;
+      if (error == null) {
+        Curry._1(setAuthentication, Caml_option.nullable_to_opt(response.data.session));
+      } else {
+        console.log("Unable to restore the Supabase session:", error.message);
+        Curry._1(setAuthentication, undefined);
+      }
+      return Promise.resolve();
+    }).catch(function (_error) {
+      Curry._1(setAuthentication, undefined);
+      return Promise.resolve();
+    });
+  }), []);
   return JsxRuntime.jsxs(Styles.ThemeProvider, {
     theme,
     children: [

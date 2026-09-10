@@ -6,6 +6,7 @@ import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Js__Js_json from "melange.js/js_json.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
+import * as Stdlib__List from "melange/list.mjs";
 
 const Auth = {};
 
@@ -197,13 +198,132 @@ function decode(json) {
   };
 }
 
+function decode_words_list_row(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return;
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  return {
+    user_id: decode_string_field(obj$1, "user_id"),
+    dictionary_entry_id: decode_string_field(obj$1, "dictionary_entry_id"),
+    english: decode_string_field(obj$1, "english"),
+    sumerian_cuneiform: decode_string_field(obj$1, "sumerian_cuneiform"),
+    sumerian_transliteration: decode_string_field(obj$1, "sumerian_transliteration"),
+    created_at: decode_string_field(obj$1, "created_at")
+  };
+}
+
+function decode_words_list(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return {
+      success: false,
+      data: [],
+      error: "Supabase returned an invalid words list response"
+    };
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  const error = decode_error(obj$1);
+  const value = Js__Js_dict.get(obj$1, "data");
+  let data;
+  if (value !== undefined) {
+    const rows = Js__Js_json.decodeArray(Caml_option.valFromOption(value));
+    data = rows !== undefined ? Stdlib__Array.of_list(Stdlib__List.rev(Stdlib__Array.fold_left((function (decoded_rows, row) {
+        const row$1 = decode_words_list_row(row);
+        if (row$1 !== undefined) {
+          return {
+            hd: row$1,
+            tl: decoded_rows
+          };
+        } else {
+          return decoded_rows;
+        }
+      }), /* [] */ 0, rows))) : [];
+  } else {
+    data = [];
+  }
+  return {
+    success: error === undefined,
+    data,
+    error
+  };
+}
+
+function decode_bookmark_row(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return;
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  const value = Js__Js_dict.get(obj$1, "bookmark_type");
+  let tmp;
+  if (value !== undefined) {
+    const number = Js__Js_json.decodeNumber(Caml_option.valFromOption(value));
+    tmp = number !== undefined ? number | 0 : 0;
+  } else {
+    tmp = 0;
+  }
+  return {
+    id: decode_string_field(obj$1, "id"),
+    user_id: decode_string_field(obj$1, "user_id"),
+    grammar_note_slug: decode_string_field(obj$1, "grammar_note_slug"),
+    grammar_note_title: decode_string_field(obj$1, "grammar_note_title"),
+    selected_text: decode_string_field(obj$1, "selected_text"),
+    prefix_context: decode_string_field(obj$1, "prefix_context"),
+    suffix_context: decode_string_field(obj$1, "suffix_context"),
+    bookmark_type: tmp,
+    created_at: decode_string_field(obj$1, "created_at")
+  };
+}
+
+function decode_bookmarks(json) {
+  const obj = Js__Js_json.decodeObject(json);
+  if (obj === undefined) {
+    return {
+      success: false,
+      data: [],
+      error: "Supabase returned an invalid bookmarks response"
+    };
+  }
+  const obj$1 = Caml_option.valFromOption(obj);
+  const error = decode_error(obj$1);
+  const value = Js__Js_dict.get(obj$1, "data");
+  let data;
+  if (value !== undefined) {
+    const rows = Js__Js_json.decodeArray(Caml_option.valFromOption(value));
+    data = rows !== undefined ? Stdlib__Array.of_list(Stdlib__List.rev(Stdlib__Array.fold_left((function (decoded_rows, row) {
+        const decoded_row = decode_bookmark_row(row);
+        if (decoded_row !== undefined) {
+          return {
+            hd: decoded_row,
+            tl: decoded_rows
+          };
+        } else {
+          return decoded_rows;
+        }
+      }), /* [] */ 0, rows))) : [];
+  } else {
+    data = [];
+  }
+  return {
+    success: error === undefined,
+    data,
+    error
+  };
+}
+
 const $$Response = {
   decode_string_field,
   decode_marker,
   decode_string_array,
   decode_row,
   decode_error,
-  decode
+  decode,
+  decode_words_list_row,
+  decode_words_list,
+  decode_bookmark_row,
+  decode_bookmarks
 };
 
 const client = SupabaseJs.createClient(Bindings__Config.supabaseUrl, Bindings__Config.supabasePublishableKey);

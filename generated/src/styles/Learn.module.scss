@@ -3,6 +3,30 @@
 
 $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
 
+.grammarNoteContent::highlight(grammar-bookmark-pink),
+.grammarNoteContent *::highlight(grammar-bookmark-pink) {
+  background-color: #f05a7e;
+  color: inherit;
+}
+
+.grammarNoteContent::highlight(grammar-bookmark-salmon),
+.grammarNoteContent *::highlight(grammar-bookmark-salmon) {
+  background-color: #ffbe98;
+  color: inherit;
+}
+
+.grammarNoteContent::highlight(grammar-bookmark-teal),
+.grammarNoteContent *::highlight(grammar-bookmark-teal) {
+  background-color: #0b8494;
+  color: white;
+}
+
+.grammarNoteContent::highlight(grammar-bookmark-blue),
+.grammarNoteContent *::highlight(grammar-bookmark-blue) {
+  background-color: #125b9a;
+  color: white;
+}
+
 .learnContainer {
   position: relative;
   display: flex;
@@ -94,11 +118,17 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
 }
 
 .grammarNoteContent {
+  position: relative;
   flex: 0 0 auto;
   width: 100%;
   max-width: 800px;
   overflow: visible;
   padding: 20px 0px;
+
+  @media (max-width: $breakpoint) {
+    box-sizing: border-box;
+    padding-left: 44px;
+  }
 
   table {
     display: block;
@@ -122,6 +152,19 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
 
   tbody tr:nth-child(even) {
     background-color: $transparent-white-smoke;
+  }
+}
+
+.bookmarkMarker {
+  position: absolute !important;
+  left: 5px;
+  z-index: 1;
+  background-color: $white-smoke !important;
+  transform: translate(-100%, -50%);
+
+  @media (max-width: $breakpoint) {
+    left: 4px;
+    transform: translateY(-50%);
   }
 }
 
@@ -176,5 +219,17 @@ $transparent-white-smoke: color.change($white-smoke, $alpha: 0.5);
 
   tbody tr:nth-child(even) {
     background-color: $transparent-white-smoke;
+  }
+}
+
+.onlyMobile {
+  @media (min-width: $breakpoint) {
+    display: none;
+  }
+}
+
+.onlyDesktop {
+  @media (max-width: $breakpoint) {
+    display: none;
   }
 }

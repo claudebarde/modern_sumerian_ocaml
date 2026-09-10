@@ -27,3 +27,24 @@ let colors = {
   "seaBlue": "#afc9dc",
   "aspenGold": "#ffd662"
 };
+
+let bookmarkColors = {
+  "salmon": "#FFBE98",
+  "pink": "#F05A7E",
+  "teal": "#0B8494",
+  "blue": "#125B9A"
+};
+
+type bookmarkValue = 
+  | Pink
+  | Salmon
+  | Teal
+  | Blue;
+
+let get_bookmark_number = (value: bookmarkValue): int =>
+  switch value {
+  | Pink => 0
+  | Salmon => 1
+  | Teal => 2
+  | Blue => 3
+  };

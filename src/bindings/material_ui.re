@@ -577,7 +577,9 @@ module Container = {
     ~disableGutters: bool=?,
     ~fixed: bool=?,
     ~maxWidth: MaxWidth.t=?,
+    ~onMouseUp: (React.Event.UI.t => unit)=?,
     ~onScroll: (React.Event.UI.t => unit)=?,
+    ~ref: ReactDOM.Ref.t=?,
     ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";
@@ -592,10 +594,12 @@ module Dialog = {
     ~children: React.element=?,
     ~classes: Js.t({..})=?,
     ~className: string=?,
+    ~disableRestoreFocus: bool=?,
     ~fullScreen: bool=?,
     ~fullWidth: bool=?,
     ~maxWidth: MaxWidth.t=?,
     ~onClose: (React.Event.Synthetic.t, string) => unit=?,
+    ~onTransitionExited: (unit => unit)=?,
     ~_open: bool=?,
     ~_PaperComponent: RootComponent.t=?,
     ~role: [`dialog | `alertdialog]=?,
@@ -1220,6 +1224,23 @@ module MenuItem = {
     ~selected: bool=?,
     ~sx: Js.t({..})=?,
     ~value: 'value=?,
+    unit
+  ) => React.element = "default";
+};
+
+module MenuList = {
+  [@mel.module "@mui/material/MenuList"] [@react.component]
+  external make: (
+    // TODO: implement List props
+    ~autoFocus: bool=?,
+    ~autoFocusItem: bool=?,
+    ~children: React.element=?,
+    ~classes: Js.t({..})=?,
+    ~className: string=?,
+    ~dense: bool=?,
+    ~disableItemFocusable: bool=?,
+    ~disableListWrap: bool=?,
+    ~sx: Js.t({..})=?,
     unit
   ) => React.element = "default";
 };

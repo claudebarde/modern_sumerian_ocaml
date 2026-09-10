@@ -37,6 +37,29 @@ type dictionary_row = {
   icount: int,
 };
 
+/** A row returned from the user-owned words_list table. */
+type words_list_row = {
+  user_id: string,
+  dictionary_entry_id: string,
+  english: string,
+  sumerian_cuneiform: string,
+  sumerian_transliteration: string,
+  created_at: string,
+};
+
+/** A row returned from the user-owned bookmarks table. */
+type bookmark_row = {
+  id: string,
+  user_id: string,
+  grammar_note_slug: string,
+  grammar_note_title: string,
+  selected_text: string,
+  prefix_context: string,
+  suffix_context: string,
+  bookmark_type: int,
+  created_at: string,
+};
+
 /** Binding for the named createClient export from @supabase/supabase-js. */
 [@mel.module "@supabase/supabase-js"]
 external createClient: (~supabase_url: string, ~supabase_key: string) => client = "createClient";
@@ -224,6 +247,16 @@ module Query = {
     /** An opaque PostgREST query builder returned by client.from(table). */
     type query_builder;
 
+    /** A row inserted into the user-owned words_list table. */
+    type words_list_insert;
+
+    /** A row inserted into the user-owned bookmarks table. */
+    type bookmark_insert;
+
+    /** The response returned by a PostgREST mutation. */
+    type mutation_response;
+    type postgrest_error;
+
     /** Arguments shared by the English and Sumerian dictionary search RPCs. */
     type dictionary_search_params;
 
@@ -243,6 +276,28 @@ module Query = {
       unit,
     ) => etsy_listing_params = "";
 
+    [@mel.obj]
+    external make_words_list_insert: (
+      ~user_id: string,
+      ~dictionary_entry_id: string,
+      ~english: string,
+      ~sumerian_cuneiform: string,
+      ~sumerian_transliteration: string,
+      unit,
+    ) => words_list_insert = "";
+
+    [@mel.obj]
+    external make_bookmark_insert: (
+      ~user_id: string,
+      ~grammar_note_slug: string,
+      ~grammar_note_title: string,
+      ~selected_text: string,
+      ~prefix_context: string,
+      ~suffix_context: string,
+      ~bookmark_type: int,
+      unit,
+    ) => bookmark_insert = "";
+
     /** Start a query against a table or view. */
     [@mel.send]
     external from: (string, [@mel.this] client) => query_builder = "from";
@@ -250,6 +305,54 @@ module Query = {
     /** Execute a query and return the results. */
     [@mel.send]
     external select: (string, [@mel.this] query_builder) => Js.Promise.t(Js.Json.t) = "select";
+
+    /** Insert one or more rows into words_list. */
+    [@mel.send]
+    external insert_words_list: (
+      array(words_list_insert),
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "insert";
+
+    /** Insert one or more rows into bookmarks. */
+    [@mel.send]
+    external insert_bookmarks: (
+      array(bookmark_insert),
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "insert";
+
+    /** Start a deletion from bookmarks. Filters must be applied before awaiting it. */
+    [@mel.send]
+    external delete_bookmarks: (
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "delete";
+
+    /** Apply an equality filter to a bookmarks mutation. */
+    [@mel.send]
+    external eq_bookmarks_mutation: (
+      ~column: string,
+      ~value: string,
+      [@mel.this] Js.Promise.t(mutation_response),
+    ) => Js.Promise.t(mutation_response) = "eq";
+
+    /** Start a deletion from words_list. Filters must be applied before awaiting it. */
+    [@mel.send]
+    external delete_words_list: (
+      [@mel.this] query_builder,
+    ) => Js.Promise.t(mutation_response) = "delete";
+
+    /** Apply an equality filter to a words_list mutation. */
+    [@mel.send]
+    external eq_words_list_mutation: (
+      ~column: string,
+      ~value: string,
+      [@mel.this] Js.Promise.t(mutation_response),
+    ) => Js.Promise.t(mutation_response) = "eq";
+
+    [@mel.get] [@mel.return nullable]
+    external mutation_error: mutation_response => option(postgrest_error) = "error";
+
+    [@mel.get]
+    external postgrest_error_message: postgrest_error => string = "message";
 
     /** Call a Supabase Postgres function. */
     [@mel.send]
@@ -351,6 +454,18 @@ module Response = {
       data: array(dictionary_row),
       error: option(string)
     }
+
+    type words_list_response = {
+      success: bool,
+      data: array(words_list_row),
+      error: option(string),
+    };
+
+    type bookmarks_response = {
+      success: bool,
+      data: array(bookmark_row),
+      error: option(string),
+    };
 
     let decode_string_field = (obj, key) =>
       switch (Js.Dict.get(obj, key)) {
@@ -477,6 +592,109 @@ module Response = {
           success: false,
           data: [||],
           error: Some("Supabase returned an invalid response"),
+        }
+      };
+
+    let decode_words_list_row = json =>
+      switch (Js.Json.decodeObject(json)) {
+      | Some(obj) =>
+        Some({
+          user_id: decode_string_field(obj, "user_id"),
+          dictionary_entry_id: decode_string_field(obj, "dictionary_entry_id"),
+          english: decode_string_field(obj, "english"),
+          sumerian_cuneiform: decode_string_field(obj, "sumerian_cuneiform"),
+          sumerian_transliteration: decode_string_field(obj, "sumerian_transliteration"),
+          created_at: decode_string_field(obj, "created_at"),
+        })
+      | None => None
+      };
+
+    let decode_words_list = (json: Js.Json.t): words_list_response =>
+      switch (Js.Json.decodeObject(json)) {
+      | Some(obj) => {
+          let error = decode_error(obj);
+          let data =
+            switch (Js.Dict.get(obj, "data")) {
+            | Some(value) =>
+              switch (Js.Json.decodeArray(value)) {
+              | Some(rows) =>
+                rows
+                |> Array.fold_left((decoded_rows, row) =>
+                  switch (decode_words_list_row(row)) {
+                  | Some(row) => [row, ...decoded_rows]
+                  | None => decoded_rows
+                  }, [])
+                |> List.rev
+                |> Array.of_list
+              | None => [||]
+              }
+            | None => [||]
+            };
+          {
+            success: error === None,
+            data,
+            error,
+          };
+        }
+      | None => {
+          success: false,
+          data: [||],
+          error: Some("Supabase returned an invalid words list response"),
+        }
+      };
+
+    let decode_bookmark_row = json =>
+      switch (Js.Json.decodeObject(json)) {
+      | Some(obj) =>
+        Some({
+          id: decode_string_field(obj, "id"),
+          user_id: decode_string_field(obj, "user_id"),
+          grammar_note_slug: decode_string_field(obj, "grammar_note_slug"),
+          grammar_note_title: decode_string_field(obj, "grammar_note_title"),
+          selected_text: decode_string_field(obj, "selected_text"),
+          prefix_context: decode_string_field(obj, "prefix_context"),
+          suffix_context: decode_string_field(obj, "suffix_context"),
+          bookmark_type:
+            switch (Js.Dict.get(obj, "bookmark_type")) {
+            | Some(value) =>
+              switch (Js.Json.decodeNumber(value)) {
+              | Some(number) => int_of_float(number)
+              | None => 0
+              }
+            | None => 0
+            },
+          created_at: decode_string_field(obj, "created_at"),
+        })
+      | None => None
+      };
+
+    let decode_bookmarks = (json: Js.Json.t): bookmarks_response =>
+      switch (Js.Json.decodeObject(json)) {
+      | Some(obj) => {
+          let error = decode_error(obj);
+          let data =
+            switch (Js.Dict.get(obj, "data")) {
+            | Some(value) =>
+              switch (Js.Json.decodeArray(value)) {
+              | Some(rows) =>
+                rows
+                |> Array.fold_left((decoded_rows, row) =>
+                  switch (decode_bookmark_row(row)) {
+                  | Some(decoded_row) => [decoded_row, ...decoded_rows]
+                  | None => decoded_rows
+                  }, [])
+                |> List.rev
+                |> Array.of_list
+              | None => [||]
+              }
+            | None => [||]
+            };
+          {success: error === None, data, error};
+        }
+      | None => {
+          success: false,
+          data: [||],
+          error: Some("Supabase returned an invalid bookmarks response"),
         }
       };
 }

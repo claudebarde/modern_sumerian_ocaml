@@ -22,13 +22,15 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import UseMediaQuery from "@mui/material/useMediaQuery";
 import * as IconsReact from "@tabler/icons-react";
-import * as Bindings__Local_storage from "../bindings/local_storage.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Bindings__Supabase from "../bindings/supabase.mjs";
+import * as Bindings__Zustand from "../bindings/zustand.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
+import * as Components__Store from "./store.mjs";
 import * as Components__Web_utils from "./web_utils.mjs";
 import * as Curry from "melange.js/curry.mjs";
-import * as Js__Js_dict from "melange.js/js_dict.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
+import * as Stdlib__Option from "melange/option.mjs";
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
@@ -37,8 +39,14 @@ const css = WordsListModuleScss;
 const dictionary = DictionaryModuleScss;
 
 function Words_list(Props) {
+  const current_user = Bindings__Zustand.use_store((function (state) {
+    return state.current_user;
+  }), Components__Store.app_store);
+  const is_auth_loading = Bindings__Zustand.use_store((function (state) {
+    return state.is_auth_loading;
+  }), Components__Store.app_store);
   const match = React.useState(function () {
-    return Bindings__Local_storage.get_words_list();
+    
   });
   const set_words_list = match[1];
   const words_list = match[0];
@@ -59,6 +67,52 @@ function Words_list(Props) {
   });
   const set_removed_word = match$4[1];
   const removed_word = match$4[0];
+  const match$5 = React.useState(function () {
+    
+  });
+  const set_deleting_word_id = match$5[1];
+  const deleting_word_id = match$5[0];
+  React.useEffect((function () {
+    if (is_auth_loading) {
+      Curry._1(set_words_list, (function (param) {
+        
+      }));
+    } else if (current_user !== undefined) {
+      Curry._1(set_words_list, (function (param) {
+        
+      }));
+      Bindings__Supabase.client.from("words_list").select("user_id,dictionary_entry_id,english,sumerian_cuneiform,sumerian_transliteration,created_at").eq("user_id", Caml_option.valFromOption(current_user).id).then(function (response) {
+        const decoded = Bindings__Supabase.$$Response.decode_words_list(response);
+        if (decoded.success) {
+          Curry._1(set_words_list, (function (param) {
+            return decoded.data;
+          }));
+        } else {
+          const error = decoded.error;
+          if (error !== undefined) {
+            console.log("Unable to fetch the words list:", error);
+          }
+          Curry._1(set_words_list, (function (param) {
+            return [];
+          }));
+        }
+        return Promise.resolve();
+      }).catch(function (error) {
+        console.log("Unable to fetch the words list:", error);
+        Curry._1(set_words_list, (function (param) {
+          return [];
+        }));
+        return Promise.resolve();
+      });
+    } else {
+      Curry._1(set_words_list, (function (param) {
+        return [];
+      }));
+    }
+  }), [
+    current_user,
+    is_auth_loading
+  ]);
   const is_mobile = UseMediaQuery("(max-width:599px)");
   const handleChangePage = function (_event, newPage) {
     Curry._1(setPage, (function (param) {
@@ -73,222 +127,48 @@ function Words_list(Props) {
       return 0;
     }));
   };
-  let tmp;
-  if (words_list !== undefined) {
-    const words = Caml_option.valFromOption(words_list);
-    tmp = Object.keys(words).length === 0 ? JsxRuntime.jsx(Typography, {
-        children: "No words in the list.",
-        variant: Bindings__Material_ui.Typography.Variant.h6
-      }) : JsxRuntime.jsxs(JsxRuntime.Fragment, {
-        children: [
-          JsxRuntime.jsxs(TableContainer, {
-            children: [
-              JsxRuntime.jsx("div", {
-                children: JsxRuntime.jsxs(Table, {
-                  children: [
-                    JsxRuntime.jsx(TableHead, {
-                      children: JsxRuntime.jsxs(TableRow, {
-                        children: [
-                          JsxRuntime.jsx(TableCell, {
-                            children: "Cuneiforms",
-                            sx: {
-                              textAlign: "center"
-                            }
-                          }),
-                          JsxRuntime.jsx(TableCell, {
-                            children: "Word",
-                            sx: {
-                              textAlign: "center"
-                            }
-                          }),
-                          JsxRuntime.jsx(TableCell, {
-                            children: "Translation",
-                            sx: {
-                              textAlign: "center"
-                            }
-                          }),
-                          JsxRuntime.jsx(TableCell, {
-                            children: "EPSD2 Link",
-                            sx: {
-                              textAlign: "center"
-                            }
-                          }),
-                          JsxRuntime.jsx(TableCell, {
-                            children: "Actions",
-                            sx: {
-                              textAlign: "center"
-                            }
-                          })
-                        ]
-                      })
-                    }),
-                    JsxRuntime.jsx(TableBody, {
-                      children: Stdlib__Array.map((function (param) {
-                        const match = param[1];
-                        const sumerian = match[1];
-                        const english = param[0];
-                        return JsxRuntime.jsxs(TableRow, {
-                          children: [
-                            JsxRuntime.jsx(TableCell, {
-                              children: JsxRuntime.jsx("span", {
-                                children: match[0],
-                                className: "cuneiforms small"
-                              }),
-                              sx: {
-                                textAlign: "center"
-                              }
-                            }),
-                            JsxRuntime.jsx(TableCell, {
-                              children: sumerian,
-                              sx: {
-                                textAlign: "center"
-                              }
-                            }),
-                            JsxRuntime.jsx(TableCell, {
-                              children: english,
-                              sx: {
-                                textAlign: "center"
-                              }
-                            }),
-                            JsxRuntime.jsx(TableCell, {
-                              children: JsxRuntime.jsx(IconButton, {
-                                children: JsxRuntime.jsx(IconsReact.IconLink, {}),
-                                color: Bindings__Material_ui.Color.primary,
-                                href: "https://oracc.museum.upenn.edu/epsd2/sux/" + match[2],
-                                rel: "noopener noreferrer",
-                                target: "_blank"
-                              }),
-                              sx: {
-                                textAlign: "center"
-                              }
-                            }),
-                            JsxRuntime.jsx(TableCell, {
-                              children: JsxRuntime.jsx(IconButton, {
-                                children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
-                                color: Bindings__Material_ui.Color.primary,
-                                onClick: (function (param) {
-                                  Curry._1(set_words_list, (function (param) {
-                                    return Bindings__Local_storage.remove_word(english);
-                                  }));
-                                  Curry._1(set_removed_word, (function (param) {
-                                    return [
-                                      english,
-                                      sumerian
-                                    ];
-                                  }));
-                                  Curry._1(set_open_snackbar, (function (param) {
-                                    return true;
-                                  }));
-                                })
-                              }),
-                              sx: {
-                                textAlign: "center"
-                              }
-                            })
-                          ]
-                        }, english);
-                      }), Js__Js_dict.entries(words))
-                    })
-                  ],
-                  className: dictionary.resultsList,
-                  size: "small",
-                  stickyHeader: true
-                }),
-                className: dictionary.tableScroll
-              }),
-              JsxRuntime.jsx(TablePagination, {
-                className: dictionary.pagination,
-                component: "div",
-                count: Js__Js_dict.entries(words).length,
-                onPageChange: handleChangePage,
-                onRowsPerPageChange: handleChangeRowsPerPage,
-                page: match$2[0],
-                rowsPerPage: match$1[0],
-                rowsPerPageOptions: [
-                  8,
-                  12,
-                  20
-                ]
-              })
-            ],
-            className: css.tableContainer,
-            component: Paper,
-            sx: {
-              width: "60%"
-            }
-          }),
-          is_mobile ? JsxRuntime.jsx(List, {
-              children: Stdlib__Array.map((function (param) {
-                const match = param[1];
-                const sumerian = match[1];
-                const english = param[0];
-                return JsxRuntime.jsxs(JsxRuntime.Fragment, {
-                  children: [
-                    JsxRuntime.jsxs(ListItem, {
-                      children: [
-                        JsxRuntime.jsx(ListItemAvatar, {
-                          children: JsxRuntime.jsx("span", {
-                            children: match[0],
-                            className: "cuneiforms small",
-                            style: {
-                              margin: "0"
-                            }
-                          })
-                        }),
-                        JsxRuntime.jsx(ListItemText, {
-                          primary: sumerian,
-                          secondary: english,
-                          sx: {
-                            marginLeft: "16px"
-                          }
-                        }),
-                        JsxRuntime.jsxs(ListItemSecondaryAction, {
-                          children: [
-                            JsxRuntime.jsx(IconButton, {
-                              children: JsxRuntime.jsx(IconsReact.IconLink, {}),
-                              color: Bindings__Material_ui.Color.primary,
-                              href: "https://oracc.museum.upenn.edu/epsd2/sux/" + match[2],
-                              rel: "noopener noreferrer",
-                              target: "_blank"
-                            }),
-                            JsxRuntime.jsx(IconButton, {
-                              children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
-                              color: Bindings__Material_ui.Color.primary,
-                              onClick: (function (param) {
-                                Curry._1(set_words_list, (function (param) {
-                                  return Bindings__Local_storage.remove_word(english);
-                                }));
-                                Curry._1(set_removed_word, (function (param) {
-                                  return [
-                                    english,
-                                    sumerian
-                                  ];
-                                }));
-                                Curry._1(set_open_snackbar, (function (param) {
-                                  return true;
-                                }));
-                              })
-                            })
-                          ]
-                        })
-                      ]
-                    }, english),
-                    JsxRuntime.jsx(Divider, {})
-                  ]
-                });
-              }), Js__Js_dict.entries(words)),
-              sx: {
-                width: "100%"
-              }
-            }) : null
-        ]
+  const delete_word = function (word) {
+    if (current_user !== undefined) {
+      Curry._1(set_deleting_word_id, (function (param) {
+        return word.dictionary_entry_id;
+      }));
+      Bindings__Supabase.client.from("words_list").delete().eq("user_id", Caml_option.valFromOption(current_user).id).eq("dictionary_entry_id", word.dictionary_entry_id).then(function (response) {
+        Curry._1(set_deleting_word_id, (function (param) {
+          
+        }));
+        const error = response.error;
+        if (error == null) {
+          Curry._1(set_words_list, (function (current_words) {
+            return Stdlib__Option.map((function (words) {
+              return words.filter(function (saved_word) {
+                return saved_word.dictionary_entry_id !== word.dictionary_entry_id;
+              });
+            }), current_words);
+          }));
+          Curry._1(set_removed_word, (function (param) {
+            return [
+              word.english,
+              word.sumerian_transliteration
+            ];
+          }));
+          Curry._1(set_open_snackbar, (function (param) {
+            return true;
+          }));
+        } else {
+          console.log("Unable to remove the word:", error.message);
+        }
+        return Promise.resolve();
+      }).catch(function (error) {
+        Curry._1(set_deleting_word_id, (function (param) {
+          
+        }));
+        console.log("Unable to remove the word:", error);
+        return Promise.resolve();
       });
-  } else {
-    tmp = JsxRuntime.jsx(Typography, {
-      children: "No words in the list.",
-      variant: Bindings__Material_ui.Typography.Variant.h6
-    });
-  }
+    } else {
+      console.log("The user must be signed in to remove a saved word.");
+    }
+  };
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
       JsxRuntime.jsxs("div", {
@@ -296,7 +176,194 @@ function Words_list(Props) {
           JsxRuntime.jsx("h1", {
             children: "My Words List"
           }),
-          tmp
+          words_list !== undefined ? (
+              words_list.length === 0 ? JsxRuntime.jsx(Typography, {
+                  children: "No words in the list.",
+                  variant: Bindings__Material_ui.Typography.Variant.h6
+                }) : JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                  children: [
+                    JsxRuntime.jsxs(TableContainer, {
+                      children: [
+                        JsxRuntime.jsx("div", {
+                          children: JsxRuntime.jsxs(Table, {
+                            children: [
+                              JsxRuntime.jsx(TableHead, {
+                                children: JsxRuntime.jsxs(TableRow, {
+                                  children: [
+                                    JsxRuntime.jsx(TableCell, {
+                                      children: "Cuneiforms",
+                                      sx: {
+                                        textAlign: "center"
+                                      }
+                                    }),
+                                    JsxRuntime.jsx(TableCell, {
+                                      children: "Word",
+                                      sx: {
+                                        textAlign: "center"
+                                      }
+                                    }),
+                                    JsxRuntime.jsx(TableCell, {
+                                      children: "Translation",
+                                      sx: {
+                                        textAlign: "center"
+                                      }
+                                    }),
+                                    JsxRuntime.jsx(TableCell, {
+                                      children: "EPSD2 Link",
+                                      sx: {
+                                        textAlign: "center"
+                                      }
+                                    }),
+                                    JsxRuntime.jsx(TableCell, {
+                                      children: "Actions",
+                                      sx: {
+                                        textAlign: "center"
+                                      }
+                                    })
+                                  ]
+                                })
+                              }),
+                              JsxRuntime.jsx(TableBody, {
+                                children: Stdlib__Array.map((function (word) {
+                                  const Key = word.dictionary_entry_id;
+                                  return JsxRuntime.jsxs(TableRow, {
+                                    children: [
+                                      JsxRuntime.jsx(TableCell, {
+                                        children: JsxRuntime.jsx("span", {
+                                          children: word.sumerian_cuneiform,
+                                          className: "cuneiforms small"
+                                        }),
+                                        sx: {
+                                          textAlign: "center"
+                                        }
+                                      }),
+                                      JsxRuntime.jsx(TableCell, {
+                                        children: word.sumerian_transliteration,
+                                        sx: {
+                                          textAlign: "center"
+                                        }
+                                      }),
+                                      JsxRuntime.jsx(TableCell, {
+                                        children: word.english,
+                                        sx: {
+                                          textAlign: "center"
+                                        }
+                                      }),
+                                      JsxRuntime.jsx(TableCell, {
+                                        children: JsxRuntime.jsx(IconButton, {
+                                          children: JsxRuntime.jsx(IconsReact.IconLink, {}),
+                                          color: Bindings__Material_ui.Color.primary,
+                                          href: "https://oracc.museum.upenn.edu/epsd2/sux/" + word.dictionary_entry_id,
+                                          rel: "noopener noreferrer",
+                                          target: "_blank"
+                                        }),
+                                        sx: {
+                                          textAlign: "center"
+                                        }
+                                      }),
+                                      JsxRuntime.jsx(TableCell, {
+                                        children: JsxRuntime.jsx(IconButton, {
+                                          children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
+                                          color: Bindings__Material_ui.Color.primary,
+                                          disabled: deleting_word_id === word.dictionary_entry_id,
+                                          onClick: (function (param) {
+                                            delete_word(word);
+                                          })
+                                        }),
+                                        sx: {
+                                          textAlign: "center"
+                                        }
+                                      })
+                                    ]
+                                  }, Key);
+                                }), words_list)
+                              })
+                            ],
+                            className: dictionary.resultsList,
+                            size: "small",
+                            stickyHeader: true
+                          }),
+                          className: dictionary.tableScroll
+                        }),
+                        JsxRuntime.jsx(TablePagination, {
+                          className: dictionary.pagination,
+                          component: "div",
+                          count: words_list.length,
+                          onPageChange: handleChangePage,
+                          onRowsPerPageChange: handleChangeRowsPerPage,
+                          page: match$2[0],
+                          rowsPerPage: match$1[0],
+                          rowsPerPageOptions: [
+                            8,
+                            12,
+                            20
+                          ]
+                        })
+                      ],
+                      className: css.tableContainer,
+                      component: Paper,
+                      sx: {
+                        width: "60%"
+                      }
+                    }),
+                    is_mobile ? JsxRuntime.jsx(List, {
+                        children: Stdlib__Array.map((function (word) {
+                          const Key = word.dictionary_entry_id;
+                          return JsxRuntime.jsxs(React.Fragment, {
+                            children: [
+                              JsxRuntime.jsxs(ListItem, {
+                                children: [
+                                  JsxRuntime.jsx(ListItemAvatar, {
+                                    children: JsxRuntime.jsx("span", {
+                                      children: word.sumerian_cuneiform,
+                                      className: "cuneiforms small",
+                                      style: {
+                                        margin: "0"
+                                      }
+                                    })
+                                  }),
+                                  JsxRuntime.jsx(ListItemText, {
+                                    primary: word.sumerian_transliteration,
+                                    secondary: word.english,
+                                    sx: {
+                                      marginLeft: "16px"
+                                    }
+                                  }),
+                                  JsxRuntime.jsxs(ListItemSecondaryAction, {
+                                    children: [
+                                      JsxRuntime.jsx(IconButton, {
+                                        children: JsxRuntime.jsx(IconsReact.IconLink, {}),
+                                        color: Bindings__Material_ui.Color.primary,
+                                        href: "https://oracc.museum.upenn.edu/epsd2/sux/" + word.dictionary_entry_id,
+                                        rel: "noopener noreferrer",
+                                        target: "_blank"
+                                      }),
+                                      JsxRuntime.jsx(IconButton, {
+                                        children: JsxRuntime.jsx(IconsReact.IconTrashFilled, {}),
+                                        color: Bindings__Material_ui.Color.primary,
+                                        disabled: deleting_word_id === word.dictionary_entry_id,
+                                        onClick: (function (param) {
+                                          delete_word(word);
+                                        })
+                                      })
+                                    ]
+                                  })
+                                ]
+                              }),
+                              JsxRuntime.jsx(Divider, {})
+                            ]
+                          }, Key);
+                        }), words_list),
+                        sx: {
+                          width: "100%"
+                        }
+                      }) : null
+                  ]
+                })
+            ) : JsxRuntime.jsx(Typography, {
+              children: "No words in the list.",
+              variant: Bindings__Material_ui.Typography.Variant.h6
+            })
         ],
         className: css.wordsList
       }),

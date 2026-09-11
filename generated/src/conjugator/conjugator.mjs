@@ -3,6 +3,7 @@
 import * as Caml_js_exceptions from "melange.js/caml_js_exceptions.mjs";
 import * as Caml_obj from "melange.js/caml_obj.mjs";
 import * as Conjugator__Infixes from "./infixes.mjs";
+import * as Conjugator__Utils from "./utils.mjs";
 import * as Conjugator__Verb_output from "./verb_output.mjs";
 import * as Stdlib from "melange/stdlib.mjs";
 
@@ -426,7 +427,44 @@ function reset_locative(verb) {
   return newrecord;
 }
 
+function reconcile_oblique_object(verb) {
+  const fpp = verb.oblique_object;
+  if (/* tag */ typeof fpp !== "object" && typeof fpp !== "function") {
+    return verb;
+  }
+  if (fpp.TAG === /* Final_person_prefix */ 0) {
+    if (verb.final_person_prefix === undefined) {
+      return verb;
+    }
+    const newrecord = Caml_obj.caml_obj_dup(verb);
+    newrecord.oblique_object = {
+      TAG: /* Initial_person_prefix */ 1,
+      _0: Conjugator__Infixes.InitialPersonPrefix.from_person(Conjugator__Infixes.FinalPersonPrefix.to_person(fpp._0))
+    };
+    return newrecord;
+  }
+  if (!(verb.initial_person_prefix === undefined && verb.final_person_prefix === undefined)) {
+    return verb;
+  }
+  try {
+    const newrecord$1 = Caml_obj.caml_obj_dup(verb);
+    newrecord$1.oblique_object = {
+      TAG: /* Final_person_prefix */ 0,
+      _0: Conjugator__Infixes.FinalPersonPrefix.from_person(Conjugator__Infixes.InitialPersonPrefix.to_person(fpp._0))
+    };
+    return newrecord$1;
+  }
+  catch (raw_exn){
+    const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+    if (exn.MEL_EXN_ID === Conjugator__Utils.Todo) {
+      return verb;
+    }
+    throw exn;
+  }
+}
+
 function set_subject(verb, person) {
+  let result;
   if (!verb.is_transitive || verb.is_transitive && !verb.is_perfective) {
     let suffix;
     switch (person) {
@@ -456,38 +494,49 @@ function set_subject(verb, person) {
         break;
     }
     const newrecord = Caml_obj.caml_obj_dup(verb);
-    return {
+    result = {
       TAG: /* Ok */ 0,
       _0: (newrecord.subject = {
         TAG: /* Subject_suffix */ 1,
         _0: Conjugator__Infixes.FinalPersonSuffix.to_person(suffix)
       }, newrecord.final_person_suffix = suffix, newrecord)
     };
-  }
-  try {
-    const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(person);
-    const newrecord$1 = Caml_obj.caml_obj_dup(verb);
-    return {
-      TAG: /* Ok */ 0,
-      _0: (newrecord$1.subject = {
-        TAG: /* Subject_prefix */ 0,
-        _0: Conjugator__Infixes.FinalPersonPrefix.to_person(prefix)
-      }, newrecord$1.final_person_prefix = prefix, newrecord$1)
-    };
-  }
-  catch (raw_exn){
-    const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-    if (exn.MEL_EXN_ID === Stdlib.Failure) {
-      return {
-        TAG: /* Error */ 1,
-        _0: exn._1
+  } else {
+    try {
+      const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(person);
+      const newrecord$1 = Caml_obj.caml_obj_dup(verb);
+      result = {
+        TAG: /* Ok */ 0,
+        _0: (newrecord$1.subject = {
+          TAG: /* Subject_prefix */ 0,
+          _0: Conjugator__Infixes.FinalPersonPrefix.to_person(prefix)
+        }, newrecord$1.final_person_prefix = prefix, newrecord$1)
       };
     }
-    throw exn;
+    catch (raw_exn){
+      const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+      if (exn.MEL_EXN_ID === Stdlib.Failure) {
+        result = {
+          TAG: /* Error */ 1,
+          _0: exn._1
+        };
+      } else {
+        throw exn;
+      }
+    }
+  }
+  if (result.TAG === /* Ok */ 0) {
+    return {
+      TAG: /* Ok */ 0,
+      _0: reconcile_oblique_object(result._0)
+    };
+  } else {
+    return result;
   }
 }
 
 function set_object(verb, person) {
+  let result;
   if (verb.is_transitive && verb.is_perfective) {
     let suffix;
     switch (person) {
@@ -517,40 +566,49 @@ function set_object(verb, person) {
         break;
     }
     const newrecord = Caml_obj.caml_obj_dup(verb);
-    return {
+    result = {
       TAG: /* Ok */ 0,
       _0: (newrecord.object_ = {
         TAG: /* Object_suffix */ 1,
         _0: Conjugator__Infixes.FinalPersonSuffix.to_person(suffix)
       }, newrecord.final_person_suffix = suffix, newrecord)
     };
-  }
-  if (!(verb.is_transitive && !verb.is_perfective)) {
-    return {
+  } else if (verb.is_transitive && !verb.is_perfective) {
+    try {
+      const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(person);
+      const newrecord$1 = Caml_obj.caml_obj_dup(verb);
+      result = {
+        TAG: /* Ok */ 0,
+        _0: (newrecord$1.object_ = {
+          TAG: /* Object_prefix */ 0,
+          _0: Conjugator__Infixes.FinalPersonPrefix.to_person(prefix)
+        }, newrecord$1.final_person_prefix = prefix, newrecord$1)
+      };
+    }
+    catch (raw_exn){
+      const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+      if (exn.MEL_EXN_ID === Stdlib.Failure) {
+        result = {
+          TAG: /* Error */ 1,
+          _0: exn._1
+        };
+      } else {
+        throw exn;
+      }
+    }
+  } else {
+    result = {
       TAG: /* Error */ 1,
       _0: "Cannot set an object on an intransitive verb"
     };
   }
-  try {
-    const prefix = Conjugator__Infixes.FinalPersonPrefix.from_person(person);
-    const newrecord$1 = Caml_obj.caml_obj_dup(verb);
+  if (result.TAG === /* Ok */ 0) {
     return {
       TAG: /* Ok */ 0,
-      _0: (newrecord$1.object_ = {
-        TAG: /* Object_prefix */ 0,
-        _0: Conjugator__Infixes.FinalPersonPrefix.to_person(prefix)
-      }, newrecord$1.final_person_prefix = prefix, newrecord$1)
+      _0: reconcile_oblique_object(result._0)
     };
-  }
-  catch (raw_exn){
-    const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-    if (exn.MEL_EXN_ID === Stdlib.Failure) {
-      return {
-        TAG: /* Error */ 1,
-        _0: exn._1
-      };
-    }
-    throw exn;
+  } else {
+    return result;
   }
 }
 
@@ -560,16 +618,18 @@ function reset_subject(verb) {
   newrecord.final_person_suffix = undefined;
   newrecord.final_person_prefix = undefined;
   const match = verb.object_;
+  let tmp;
+  let exit = 0;
   if (/* tag */ typeof match !== "object" && typeof match !== "function") {
-    return newrecord;
-  }
-  match.TAG === /* Object_prefix */ 0;
-  const updated_verb = set_object(newrecord, match._0);
-  if (updated_verb.TAG === /* Ok */ 0) {
-    return updated_verb._0;
+    tmp = newrecord;
   } else {
-    return newrecord;
+    exit = 1;
   }
+  if (exit === 1) {
+    const updated_verb = set_object(newrecord, match._0);
+    tmp = updated_verb.TAG === /* Ok */ 0 ? updated_verb._0 : newrecord;
+  }
+  return reconcile_oblique_object(tmp);
 }
 
 function reset_object(verb) {
@@ -578,16 +638,18 @@ function reset_object(verb) {
   newrecord.final_person_suffix = undefined;
   newrecord.final_person_prefix = undefined;
   const match = verb.subject;
+  let tmp;
+  let exit = 0;
   if (/* tag */ typeof match !== "object" && typeof match !== "function") {
-    return newrecord;
-  }
-  match.TAG === /* Subject_prefix */ 0;
-  const updated_verb = set_subject(newrecord, match._0);
-  if (updated_verb.TAG === /* Ok */ 0) {
-    return updated_verb._0;
+    tmp = newrecord;
   } else {
-    return newrecord;
+    exit = 1;
   }
+  if (exit === 1) {
+    const updated_verb = set_subject(newrecord, match._0);
+    tmp = updated_verb.TAG === /* Ok */ 0 ? updated_verb._0 : newrecord;
+  }
+  return reconcile_oblique_object(tmp);
 }
 
 function reset_subject_object(verb) {
@@ -615,6 +677,12 @@ function set_oblique_object(verb, person) {
   return newrecord$1;
 }
 
+function reset_oblique_object(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.oblique_object = /* None */ 0;
+  return newrecord;
+}
+
 function set_ed_marker(verb) {
   const newrecord = Caml_obj.caml_obj_dup(verb);
   newrecord.ed_marker = true;
@@ -624,6 +692,18 @@ function set_ed_marker(verb) {
 function reset_ed_marker(verb) {
   const newrecord = Caml_obj.caml_obj_dup(verb);
   newrecord.ed_marker = false;
+  return newrecord;
+}
+
+function set_subordinator(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.subordinator = true;
+  return newrecord;
+}
+
+function reset_subordinator(verb) {
+  const newrecord = Caml_obj.caml_obj_dup(verb);
+  newrecord.subordinator = false;
   return newrecord;
 }
 
@@ -711,14 +791,18 @@ export {
   set_locative_in,
   set_locative_on,
   reset_locative,
+  reconcile_oblique_object,
   set_subject,
   set_object,
   reset_subject,
   reset_object,
   reset_subject_object,
   set_oblique_object,
+  reset_oblique_object,
   set_ed_marker,
   reset_ed_marker,
+  set_subordinator,
+  reset_subordinator,
   print,
 }
 /* No side effect */

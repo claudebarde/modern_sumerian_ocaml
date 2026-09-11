@@ -210,64 +210,99 @@ let set_locative_on verb person: t =
 
 let reset_locative verb: t = { verb with locative = None}
 
+(* Keeps [oblique_object] pointed at a free slot whenever something else claims
+or frees the final-person-prefix / initial-person-prefix slot it depends on.
+18.2.1: an oblique object is expressed with a final person-prefix, falling
+back to an initial person-prefix only if the final person-prefix slot is
+already taken by the transitive subject or the direct object. This re-derives
+that choice whenever the subject/object assignment changes, instead of
+leaving whatever choice was made when the oblique object was first set. *)
+let reconcile_oblique_object (verb: t): t =
+    match verb.oblique_object with
+    | Final_person_prefix fpp when verb.final_person_prefix <> None ->
+        { verb with
+            oblique_object =
+                Initial_person_prefix (fpp |> FinalPersonPrefix.to_person |> InitialPersonPrefix.from_person)
+        }
+    | Initial_person_prefix ipp when verb.initial_person_prefix = None && verb.final_person_prefix = None ->
+        (* the slot freed up again; move back to the simpler final-person-prefix
+        placement, unless the person has no final-person-prefix form (plural) *)
+        (try
+            { verb with
+                oblique_object =
+                    Final_person_prefix (ipp |> InitialPersonPrefix.to_person |> FinalPersonPrefix.from_person)
+            }
+        with Utils.Todo _ -> verb)
+    | _ -> verb
+
 let set_subject (verb: t) (person: PersonParam.t): (t, string) result =
     let open FinalPersonSuffix in
-    if not verb.is_transitive || (verb.is_transitive && not verb.is_perfective)
-    then let suffix: FinalPersonSuffix.t = match person with
-            | First_sing -> First_sing
-            | Second_sing -> Second_sing
-            | Third_sing_human -> Third_sing_human 
-            | Third_sing_non_human -> Third_sing_non_human
-            | First_plur -> First_plur
-            | Second_plur -> Second_plur
-            | Third_plur_human -> Third_plur_human
-            | Third_plur_non_human -> Third_plur_non_human
-        in Ok {
-                verb with 
-                    final_person_suffix = Some suffix; 
-                    subject = Subject_suffix (suffix |> FinalPersonSuffix.to_person) 
-            }
-    else
-        try
-            let prefix = FinalPersonPrefix.from_person person
-            in Ok { 
-                    verb with 
-                        final_person_prefix = Some prefix; 
-                        subject = Subject_prefix (prefix |> FinalPersonPrefix.to_person) 
+    let result =
+        if not verb.is_transitive || (verb.is_transitive && not verb.is_perfective)
+        then let suffix: FinalPersonSuffix.t = match person with
+                | First_sing -> First_sing
+                | Second_sing -> Second_sing
+                | Third_sing_human -> Third_sing_human
+                | Third_sing_non_human -> Third_sing_non_human
+                | First_plur -> First_plur
+                | Second_plur -> Second_plur
+                | Third_plur_human -> Third_plur_human
+                | Third_plur_non_human -> Third_plur_non_human
+            in Ok {
+                    verb with
+                        final_person_suffix = Some suffix;
+                        subject = Subject_suffix (suffix |> FinalPersonSuffix.to_person)
                 }
-        with
-        | Failure exn -> Error exn
+        else
+            try
+                let prefix = FinalPersonPrefix.from_person person
+                in Ok {
+                        verb with
+                            final_person_prefix = Some prefix;
+                            subject = Subject_prefix (prefix |> FinalPersonPrefix.to_person)
+                    }
+            with
+            | Failure exn -> Error exn
+    in
+    match result with
+    | Ok updated_verb -> Ok (reconcile_oblique_object updated_verb)
+    | Error _ as e -> e
 
 let set_object (verb: t) (person: PersonParam.t): (t, string) result =
     let open FinalPersonSuffix in
-    if verb.is_transitive && verb.is_perfective
-    then let suffix: FinalPersonSuffix.t = match person with
-            | First_sing -> First_sing
-            | Second_sing -> Second_sing
-            | Third_sing_human -> Third_sing_human
-            | Third_sing_non_human -> Third_sing_non_human
-            | First_plur -> First_plur
-            | Second_plur -> Second_plur
-            | Third_plur_human -> Third_plur_human
-            | Third_plur_non_human -> Third_plur_non_human
-        in Ok {
-                verb with 
-                    final_person_suffix = Some suffix; 
-                    object_ = Object_suffix (suffix |> FinalPersonSuffix.to_person) 
-            }
-    else if verb.is_transitive && not verb.is_perfective
-    then
-        try
-            let prefix = FinalPersonPrefix.from_person person
+    let result =
+        if verb.is_transitive && verb.is_perfective
+        then let suffix: FinalPersonSuffix.t = match person with
+                | First_sing -> First_sing
+                | Second_sing -> Second_sing
+                | Third_sing_human -> Third_sing_human
+                | Third_sing_non_human -> Third_sing_non_human
+                | First_plur -> First_plur
+                | Second_plur -> Second_plur
+                | Third_plur_human -> Third_plur_human
+                | Third_plur_non_human -> Third_plur_non_human
             in Ok {
                     verb with
-                        final_person_prefix = Some prefix;
-                        object_ = Object_prefix (prefix |> FinalPersonPrefix.to_person)
+                        final_person_suffix = Some suffix;
+                        object_ = Object_suffix (suffix |> FinalPersonSuffix.to_person)
                 }
-        with
-        | Failure exn -> Error exn
-    else
-        Error "Cannot set an object on an intransitive verb"
+        else if verb.is_transitive && not verb.is_perfective
+        then
+            try
+                let prefix = FinalPersonPrefix.from_person person
+                in Ok {
+                        verb with
+                            final_person_prefix = Some prefix;
+                            object_ = Object_prefix (prefix |> FinalPersonPrefix.to_person)
+                    }
+            with
+            | Failure exn -> Error exn
+        else
+            Error "Cannot set an object on an intransitive verb"
+    in
+    match result with
+    | Ok updated_verb -> Ok (reconcile_oblique_object updated_verb)
+    | Error _ as e -> e
 
 let reset_subject (verb: t): t =
     let reset_verb = {
@@ -276,12 +311,15 @@ let reset_subject (verb: t): t =
         final_person_prefix = None;
         final_person_suffix = None;
     } in
-    match verb.object_ with
-    | Object_prefix person | Object_suffix person ->
-        (match set_object reset_verb person with
-        | Ok updated_verb -> updated_verb
-        | Error _ -> reset_verb)
-    | None -> reset_verb
+    let result =
+        match verb.object_ with
+        | Object_prefix person | Object_suffix person ->
+            (match set_object reset_verb person with
+            | Ok updated_verb -> updated_verb
+            | Error _ -> reset_verb)
+        | None -> reset_verb
+    in
+    reconcile_oblique_object result
 
 let reset_object (verb: t): t =
     let reset_verb = {
@@ -290,12 +328,15 @@ let reset_object (verb: t): t =
         final_person_prefix = None;
         final_person_suffix = None;
     } in
-    match verb.subject with
-    | Subject_prefix person | Subject_suffix person ->
-        (match set_subject reset_verb person with
-        | Ok updated_verb -> updated_verb
-        | Error _ -> reset_verb)
-    | None -> reset_verb
+    let result =
+        match verb.subject with
+        | Subject_prefix person | Subject_suffix person ->
+            (match set_subject reset_verb person with
+            | Ok updated_verb -> updated_verb
+            | Error _ -> reset_verb)
+        | None -> reset_verb
+    in
+    reconcile_oblique_object result
 
 (* reset_ting the subject and the object is useful
 when switching between transitive/intransitive and perfective/imperfective
@@ -314,9 +355,17 @@ let set_oblique_object (verb: t) person =
     | None -> 
         { verb with oblique_object =  Final_person_prefix (person|>FinalPersonPrefix.from_person) }
 
+let reset_oblique_object verb: t = { verb with oblique_object = None }
+
 let set_ed_marker verb: t = { verb with ed_marker = true}
 
 let reset_ed_marker verb: t = { verb with ed_marker = false}
+
+(* the nominalizing suffix {÷a} (Jagersma ch. 31), slot 15 of the verbal
+template - also called the "subordination suffix" (Thomsen 1984 §483) *)
+let set_subordinator verb: t = { verb with subordinator = true}
+
+let reset_subordinator verb: t = { verb with subordinator = false}
 
 type complement_placement = Translation.complement_placement =
     | After_verb

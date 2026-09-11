@@ -208,13 +208,13 @@
     "notes": []
   },
   {
-    "label": "shag dab",
+    "label": "shag bala",
     "meaning": "think",
     "english": { "lemma": "think" },
-    "stem": "dab",
-    "stem_cuneiforms": ["𒁳"],
+    "stem": "bala",
+    "stem_cuneiforms": ["𒁄"],
     "kind": { "type": "compound", "value": "shag", "cuneiforms": ["𒊮"] },
-    "imperfective": { "type": "reduplicate" },
+    "imperfective": { "type": "ed_marker" },
     "transitive": true,
     "notes": []
   },

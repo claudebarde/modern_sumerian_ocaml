@@ -3,6 +3,7 @@
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Conjugator__Infixes from "./infixes.mjs";
 import * as Stdlib__Array from "melange/array.mjs";
+import * as Stdlib__List from "melange/list.mjs";
 import * as Stdlib__String from "melange/string.mjs";
 
 const irregular_verbs = {
@@ -1292,12 +1293,21 @@ function conjugate(verb_form, english_verb) {
       }
     }
   };
+  const match$2 = verb_form.subject;
+  const match$3 = verb_form.object_;
+  let has_person_marking;
+  has_person_marking = /* tag */ typeof match$2 !== "object" && typeof match$2 !== "function" && /* tag */ typeof match$3 !== "object" && typeof match$3 !== "function" ? false : true;
   let conjugated_verb;
-  if (verb_form.is_perfective) {
-    const match$2 = verb_form.first_prefix;
+  if (verb_form.is_perfective && verb_form.subordinator && verb_form.first_prefix === undefined && !has_person_marking) {
+    const match$4 = search_verb(english_verb.lemma, irregular_verbs);
+    conjugated_verb = match$4 !== undefined ? match$4[2] : (
+        Stdlib__String.ends_with("e", english_verb.lemma) ? Stdlib__String.sub(english_verb.lemma, 0, english_verb.lemma.length - 1 | 0) + "ed" : english_verb.lemma + "ed"
+      );
+  } else if (verb_form.is_perfective) {
+    const match$5 = verb_form.first_prefix;
     let exit = 0;
-    if (match$2 !== undefined) {
-      switch (match$2) {
+    if (match$5 !== undefined) {
+      switch (match$5) {
         case /* Modal */ 0 :
           conjugated_verb = "should " + english_verb.lemma;
           break;
@@ -1315,22 +1325,22 @@ function conjugate(verb_form, english_verb) {
       exit = 1;
     }
     if (exit === 1) {
-      const match$3 = search_verb(english_verb.lemma, irregular_verbs);
-      conjugated_verb = match$3 !== undefined ? match$3[1] : (
+      const match$6 = search_verb(english_verb.lemma, irregular_verbs);
+      conjugated_verb = match$6 !== undefined ? match$6[1] : (
           Stdlib__String.ends_with("e", english_verb.lemma) ? Stdlib__String.sub(english_verb.lemma, 0, english_verb.lemma.length - 1 | 0) + "ed" : english_verb.lemma + "ed"
         );
     }
     
   } else {
-    const match$4 = verb_form.subject;
+    const match$7 = verb_form.subject;
     let tmp;
-    tmp = /* tag */ typeof match$4 !== "object" && typeof match$4 !== "function" ? /* Third_sing_human */ 2 : match$4._0;
+    tmp = /* tag */ typeof match$7 !== "object" && typeof match$7 !== "function" ? /* Third_sing_human */ 2 : match$7._0;
     conjugated_verb = continuous(english_verb.lemma, tmp, /* Present */ 0, verb_form.first_prefix);
   }
   const complement = english_verb.complement;
   if (complement !== undefined) {
-    const match$5 = english_verb.complement_placement;
-    if (match$5 === /* After_verb */ 0) {
+    const match$8 = english_verb.complement_placement;
+    if (match$8 === /* After_verb */ 0) {
       Caml_array.set(res, 1, conjugated_verb + (" " + complement));
     } else {
       Caml_array.set(res, 1, conjugated_verb);
@@ -1403,7 +1413,30 @@ function translate(verb, english) {
   const conjugated_verb = conjugate(verb, english);
   const post_verb_complements = add_post_verb_complements(verb);
   const pre_verb_complements = add_pre_verb_complements(verb);
-  return Stdlib__String.trim(pre_verb_complements + (" " + (conjugated_verb + (" " + post_verb_complements))));
+  let tmp = false;
+  if (verb.subordinator) {
+    const match = verb.subject;
+    const match$1 = verb.object_;
+    let tmp$1;
+    tmp$1 = /* tag */ typeof match !== "object" && typeof match !== "function" && /* tag */ typeof match$1 !== "object" && typeof match$1 !== "function" ? false : true;
+    tmp = tmp$1;
+  }
+  const subordinate_marker = tmp ? "(that)" : "";
+  return Stdlib__String.concat(" ", Stdlib__List.filter((function (part) {
+    return part !== "";
+  }), Stdlib__List.map(Stdlib__String.trim, {
+    hd: subordinate_marker,
+    tl: {
+      hd: pre_verb_complements,
+      tl: {
+        hd: conjugated_verb,
+        tl: {
+          hd: post_verb_complements,
+          tl: /* [] */ 0
+        }
+      }
+    }
+  })));
 }
 
 export {

@@ -1,3 +1,19 @@
+(*
+    For compatibility reasons with javaScript, string literals containing
+    non-ASCII characters (á, è, ḫ, š, ʔ, ...) must be written with the
+    {js|...|js} quoted-string syntax rather than plain double quotes. Melange
+    compiles a plain "..." literal as a sequence of raw UTF-8 *bytes*, one per
+    JS character (e.g. "š" becomes two separate, meaningless JS characters),
+    whereas {js|...|js} compiles it to a proper single-character JS/Unicode
+    string. Since melange strings are plain JS strings at runtime, every
+    `String.get`/`String.sub`/`String.length` call below already operates
+    per-character (not per-byte) as long as the string it's given was built
+    from correctly-quoted literals - the character sets below are the only
+    thing that needs the {js|...|js} treatment. {js|...|js} literals can't be
+    used as match patterns, so the character sets are plain lists compared
+    with `List.mem` instead of a `match`.
+*)
+
 exception Todo of string
 let todo msg = raise (Todo msg)
 
@@ -17,7 +33,7 @@ let ed_marker_pos = 12
 let final_person_suffix_pos = 13
 let subordinator_pos = 14
 
-type markerName = 
+type markerName =
   | FirstPrefix
   | Preformative
   | Coordinator
@@ -54,7 +70,7 @@ let marker_by_pos (pos: int): markerName option =
         | _ -> None
 
 let marker_to_pos (marker: markerName): int =
-    match marker with 
+    match marker with
     | FirstPrefix -> first_prefix_pos
     | Preformative -> preformative_pos
     | Coordinator -> coordinator_pos
@@ -72,11 +88,11 @@ let marker_to_pos (marker: markerName): int =
     | Subordinator -> subordinator_pos
 
 
-let rec find_previous_morpheme (pos: int) (arr: string array): (string * markerName) option = 
+let rec find_previous_morpheme (pos: int) (arr: string array): (string * markerName) option =
     if (pos < 1)
     then None
     else
-      try 
+      try
         let morph = arr.(pos - 1) in
         if String.length morph > 0
         then
@@ -89,11 +105,11 @@ let rec find_previous_morpheme (pos: int) (arr: string array): (string * markerN
         | Invalid_argument _ -> None
 
 
-let rec find_next_morpheme (pos: int) (arr: string array): (string * markerName) option = 
+let rec find_next_morpheme (pos: int) (arr: string array): (string * markerName) option =
     if (pos > 14)
     then None
     else
-      try 
+      try
         let morph = arr.(pos + 1) in
         if String.length morph > 0
         then
@@ -105,32 +121,34 @@ let rec find_next_morpheme (pos: int) (arr: string array): (string * markerName)
       with
         | Invalid_argument _ -> find_next_morpheme (pos + 1) arr
 
+let vowel_chars =
+    ["a"; {js|á|js}; "e"; {js|è|js}; "i"; "o"; "u";
+     {js|ā|js}; {js|ē|js}; {js|ī|js}; {js|ū|js}]
+
 let starts_with_vowel (str: string): bool =
     let firstChar = String.get str 0 |> String.make 1 in
-    match firstChar with
-        | "a" | "á" | "e" | "è" | "i" | "o" | "u" -> true
-        | _ -> false
+    List.mem firstChar vowel_chars
 
-let ends_with_vowel (str: string): bool = 
-    let vowels = ["a"; "á"; "e"; "è"; "i"; "o"; "u"] in
+let ends_with_vowel (str: string): bool =
     try
       match String.length str with
         | 0 -> false
-        | 1 -> List.mem str vowels
+        | 1 -> List.mem str vowel_chars
         | _ ->
           let last_char = String.get str (String.length str - 1) |> String.make 1
-          in List.mem last_char vowels
+          in List.mem last_char vowel_chars
     with
       | Invalid_argument _ -> false
 
+let consonant_chars =
+    ["b"; "d"; "h"; {js|ḫ|js}; "g"; "k"; "l"; "m"; "n"; "p"; "r"; "s"; {js|š|js};
+     "t"; "w"; "z"]
+
 let starts_with_consonant (str: string): bool =
     let firstChar = String.get str 0 |> String.make 1 in
-    match firstChar with
-        | "b" | "d" | "h" | "ḫ" | "g" | "k" | "l" | "m" | "n" | "p" | "r" | "s" | "š" 
-        | "t" | "w" | "z" -> true
-        | _ -> false
+    List.mem firstChar consonant_chars
 
-let remove_first_char (str: string): string = 
+let remove_first_char (str: string): string =
     if String.length str > 0
     then String.sub str 1 (String.length str - 1)
     else
@@ -141,9 +159,7 @@ let consonant_vowel_sequence (str: string): string =
   |> String.to_seq
   |> List.of_seq
   |> List.map (fun ch ->
-      match String.make 1 ch with
-      | "a" | "á" | "e" | "è" | "i" | "o" | "u" -> "V"
-      | _ -> "C"
+      if List.mem (String.make 1 ch) vowel_chars then "V" else "C"
   )
   |> String.concat ""
 

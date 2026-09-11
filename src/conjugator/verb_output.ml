@@ -188,9 +188,9 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
             | Some(_) -> Error("Oblique object would overwrite final person prefix")
             | None ->
                 let _ = 
-                    arr.(final_person_prefix_pos) <- 
+                    arr.(final_person_prefix_pos) <-
                         (match fpp with
-                        | First_sing -> "ʔ"
+                        | First_sing -> {js|ʔ|js}
                         | Second_sing -> "e"
                         | Third_sing_human -> "n"
                         | Third_sing_non_human -> "b")
@@ -200,18 +200,29 @@ let add_oblique_object (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
             | Some(_) -> Error("Oblique object would overwrite initial person prefix")
             | None ->
                 let _ = 
-                    arr.(initial_person_prefix_pos) <- 
+                    arr.(initial_person_prefix_pos) <-
                         (match ipp with
                         | First_sing -> "mu"
                         | Second_sing -> "ri"
                         | Third_sing_human -> "nni"
                         | Third_sing_non_human -> "bi"
-                        | First_plur -> "mē"
-                        | Second_plur -> "enē"
-                        | Third_plur_human -> "nnē"
+                        | First_plur -> {js|mē|js}
+                        | Second_plur -> {js|enē|js}
+                        | Third_plur_human -> {js|nnē|js}
                         | Third_plur_non_human -> "bi")
                 in Ok(arr))
         | None -> Ok(arr)
+
+let add_subordinator (verb: Constructs.conjugated_verb) (arr: morphemes_res) =
+    (* Jagersma ch. 31: the nominalizing suffix {÷a}, slot 15 of the verbal
+    template. Its underlying form is always written "a" here; the
+    NOMINALIZING SUFFIX ASSIMILATION step (run with the other phonological
+    changes, once the rest of the form has settled) adjusts it based on
+    whatever immediately precedes it. *)
+    match arr with
+    | Error(err) -> Error(err)
+    | Ok(arr) ->
+        if verb.subordinator then let _ = arr.(subordinator_pos) <- "a" in Ok(arr) else Ok(arr)
 
 let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb option): (t, string) result  =
     let warnings: Warning.t list ref = ref [] in
@@ -234,6 +245,7 @@ let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb 
         |> add_ed_marker verb
         |> add_final_person_suffix verb
         |> add_oblique_object verb
+        |> add_subordinator verb
     in
 
     match outputRes with
@@ -330,7 +342,7 @@ let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb 
                             )
                         (* 16.2.5 In the texts of our corpus, the ventive prefix {mu} (chapter 17)
                         is always used before the initial person-prefix /ʔ/ and always has the form /mu/ *)
-                        else if ipp == "ʔ"
+                        else if ipp == {js|ʔ|js}
                         then
                             let _ = outputArr.(ventive_pos) <- "mu" in outputArr
                         else
@@ -700,11 +712,33 @@ let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb 
                             | _ -> Ok(outputArr))
             in
 
-            let finalChanges (outputArr: string array): string array = 
+            (* NOMINALIZING SUFFIX / ED MARKER INTERACTION
+            31.2: when the nominalizing suffix follows {ed}, the marker's own
+            final /d/ and the suffix's assimilated /d/ are written as a single
+            "d" (e.g. bala-e-da-bé), so the marker is forced back to its bare
+            vowel "e" here, regardless of whether it would otherwise have
+            contracted to "d" (ED MARKER CONTRACTION, above). The suffix's own
+            surface form is computed later, in finalChanges - see there. *)
+            let outputRes =
+                match outputRes with
+                | Error(err) -> Error(err)
+                | Ok(outputArr) ->
+                    if verb.subordinator
+                    then
+                        match find_previous_morpheme subordinator_pos outputArr with
+                        | Some(_, EdMarker) ->
+                            let _ = outputArr.(ed_marker_pos) <- "e" in
+                            Ok(outputArr)
+                        | _ -> Ok(outputArr)
+                    else Ok(outputArr)
+            in
+
+            let finalChanges (outputArr: string array): string array =
+                let outputArr =
                 (* PREFORMATIVE CHANGES *)
                 match get_morpheme_at_pos preformative_pos outputArr with
                 | Some(preformative) ->
-                    if preformative == "i" 
+                    if preformative == "i"
                     then 
                         (* {i} is never found before a prefix with the shape /CV/. *)
                         (match find_next_morpheme preformative_pos outputArr with
@@ -848,8 +882,40 @@ let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb 
                         (* no change *)
                         outputArr
                 | None -> outputArr
+                in
+
+                (* NOMINALIZING SUFFIX ASSIMILATION - final string only; the
+                analysis table always shows the suffix's underlying "a"
+                instead (see Verb_analysis / add_subordinator above).
+                31.2: the suffix's initial glottal stop stays as "a" after a
+                vowel or after the glottal consonant /ʔ/. After {ed} (already
+                normalized to bare "e" above), it is consistently written
+                with the CV-sign "da". After any other consonant, the glottal
+                stop assimilates to it, giving a CV-sign that repeats that
+                consonant (e.g. "dab5-ba", "gen-na"). *)
+                if verb.subordinator
+                then
+                    match find_previous_morpheme subordinator_pos outputArr with
+                    | Some(_, EdMarker) ->
+                        let _ = outputArr.(subordinator_pos) <- "da" in
+                        outputArr
+                    | Some(morpheme, _) ->
+                        if ends_with_vowel morpheme || morpheme == {js|ʔ|js}
+                        then
+                            (* no change: stays "a" *)
+                            outputArr
+                        else
+                            let last_consonant =
+                                String.sub morpheme (String.length morpheme - 1) 1
+                            in
+                            let _ = outputArr.(subordinator_pos) <- last_consonant ^ "a" in
+                            outputArr
+                    | None ->
+                        (* there is no marker before the nominalizing suffix *)
+                        outputArr
+                else outputArr
             in
-            
+
             (* returns the final string *)
             match outputRes with
             | Error(err) -> Error(err)
@@ -861,7 +927,7 @@ let print (verb: Constructs.conjugated_verb) (english: Translation.english_verb 
                     |> Array.to_list 
                     |> String.concat ""
                 in 
-                Ok { 
+                Ok {
                     verb = final_verb;
                     analysis = Verb_analysis.analyse outputArr verb (Verb_analysis.create ()) 0;
                     translation = Translation.translate verb english;

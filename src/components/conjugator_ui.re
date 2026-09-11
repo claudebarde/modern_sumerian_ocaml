@@ -12,7 +12,8 @@ type prefix =
   | Terminative
   | MiddlePrefix
   | LocativeIn
-  | LocativeOn;
+  | LocativeOn
+  | Subordinator;
   
 type modal_prefix = HA | NAN | NU;
 
@@ -100,10 +101,12 @@ let make = () => {
     let (locative, set_locative) = React.useState(_ => None);
     let (middle_prefix, set_middle_prefix) = React.useState(_ => false);
     let (coordinator, set_coordinator) = React.useState(_ => false);
+    let (subordinator, set_subordinator) = React.useState(_ => false);
     let (initial_person_prefix, set_initial_person_prefix) = React.useState(_ => Js.Nullable.null);
     let (subject, set_subject) = React.useState(_ => None);
     let (object_, set_object) = React.useState(_ => None);
     let (indirect_object, set_indirect_object) = React.useState(_ => None);
+    let (oblique_object, set_oblique_object) = React.useState(_ => None);
     let (is_modal_open, set_is_modal_open) = React.useState(_ => false);
     let (prefix_warning, set_prefix_warning) = React.useState(_ => None);
     let (general_warning, set_general_warning) = React.useState(_ => None);
@@ -278,6 +281,15 @@ let make = () => {
                             }
                         })
                     }
+                    | "oblique-object" => {
+                        set_oblique_object(_ => None)
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => Some(Conjugator.reset_oblique_object(verb))
+                                | None => None
+                            }
+                        })
+                    }
                     | _ => ()
                     }
                 }
@@ -342,6 +354,18 @@ let make = () => {
                                     set_error(_ => None)
                                     set_indirect_object(_ => Some(person_param))
                                     Some(Conjugator.set_indirect_object(verb, person_param))
+                                }
+                                | None => None
+                            }
+                        })
+                    }
+                    | ("oblique-object", Some(person_param)) => {
+                        set_verb_form(prev_verb_form => {
+                            switch prev_verb_form {
+                                | Some(verb) => {
+                                    set_error(_ => None)
+                                    set_oblique_object(_ => Some(person_param))
+                                    Some(Conjugator.set_oblique_object(verb, person_param))
                                 }
                                 | None => None
                             }
@@ -485,6 +509,22 @@ let make = () => {
                         }
                     })
                 }
+                | Subordinator => {
+                    set_subordinator(_ => checked)
+                    set_verb_form(prev_verb_form => {
+                        switch prev_verb_form {
+                            | Some(verb) => {
+                                set_error(_ => None)
+                                if (checked) {
+                                    Some(Conjugator.set_subordinator(verb))
+                                } else {
+                                    Some(Conjugator.reset_subordinator(verb))
+                                }
+                            }
+                            | None => None
+                        }
+                    })
+                }
                 | Comitative => {
                     set_comitative(_ => checked)
                     set_verb_form(prev_verb_form => {
@@ -599,6 +639,7 @@ let make = () => {
         set_modal_prefix(_ => None)
         set_ventive(_ => false)
         set_coordinator(_ => false)
+        set_subordinator(_ => false)
         set_comitative(_ => false)
         set_ablative(_ => false)
         set_terminative(_ => false)
@@ -1180,7 +1221,7 @@ let make = () => {
                     direction=`row
                     sx={{"width": "100%", "justifyContent": "space-between", "alignItems": "center", "marginTop": marginTop}}
                 >
-                    <Grid size=`Number(4)>
+                    <Grid size=`Number(6)>
                         <FormControl 
                             fullWidth=true 
                             size=`small 
@@ -1236,7 +1277,7 @@ let make = () => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid size=`Number(4)>
+                    <Grid size=`Number(6)>
                         <FormControl 
                             fullWidth=true 
                             size=`small
@@ -1296,7 +1337,7 @@ let make = () => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid size=`Number(4)>
+                    <Grid size=`Number(6)>
                         <FormControl 
                             fullWidth=true 
                             size=`small
@@ -1331,6 +1372,63 @@ let make = () => {
                                         change_pronoun(Some(option), "indirect-object")
                                     | None =>
                                         change_pronoun(None, "indirect-object")
+                                    };
+                                }}
+                                sx={{"backgroundColor": "white"}}
+                            >
+                                <MenuItem 
+                                    value="" 
+                                    key="none"
+                                >
+                                    <i>{"None" |> React.string}</i>
+                                </MenuItem>
+                                {
+                                    pronoun_options
+                                    |> Array.map((option: Utils.select_option) => {
+                                        <MenuItem value=option.value key=option.value>
+                                            {option.label |> React.string}
+                                        </MenuItem>
+                                    })
+                                    |> React.array
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid size=`Number(6)>
+                        <FormControl 
+                            fullWidth=true 
+                            size=`small
+                            disabled={verb_stem |> Option.is_none}
+                        >
+                            <InputLabel id="oblique-object-label">
+                                {"Oblique Object" |> React.string}
+                            </InputLabel>
+                            <Select
+                                label={"Oblique Object" |> React.string}
+                                labelId="oblique-object-label"                                
+                                value={
+                                    switch oblique_object {
+                                    | Some(pp) =>
+                                        pp
+                                        |> Utils.person_param_to_option
+                                        |> option =>
+                                            Select.Value.fromString(option.value)
+                                    | None => Select.Value.fromString("")
+                                    }
+                                }
+                                onChange={(event, _) => {
+                                    let selected_value = event##target##value;
+                                    switch (
+                                        pronoun_options
+                                        |> Array.find_opt(
+                                            (option: Utils.select_option) =>
+                                                option.value === selected_value
+                                        )
+                                    ) {
+                                    | Some(option) =>
+                                        change_pronoun(Some(option), "oblique-object")
+                                    | None =>
+                                        change_pronoun(None, "oblique-object")
                                     };
                                 }}
                                 sx={{"backgroundColor": "white"}}
@@ -1743,6 +1841,35 @@ let make = () => {
                             }
                         }
                     </Box>
+                </Grid>
+                <Grid
+                    container=true
+                    spacing=`Number(2)
+                    direction=`row
+                    sx={{"width": "100%", "alignItems": "center", "marginTop": marginTop}}
+                >
+                    <Grid size=`Number(12)>
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={subordinator}
+                                        disabled={
+                                            is_transitive |> Option.is_none
+                                            || is_perfective |> Option.is_none
+                                            || Option.is_none(verb_stem)
+                                        }
+                                        onChange={event => {
+                                            let checked =
+                                                React.Event.Form.target(event)##checked;
+                                            change_prefix(Subordinator, checked);
+                                        }}
+                                    />
+                                }
+                                label={"Nominalizing Suffix {-a}" |> React.string}
+                            />
+                        </FormGroup>
+                    </Grid>
                 </Grid>
             </Grid>
             <Container sx={{"display": "flex", "flexDirection": "column", "alignItems": "center", "marginTop": marginTop}}>

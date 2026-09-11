@@ -213,15 +213,35 @@ let conjugate (verb_form: Constructs.conjugated_verb) (english_verb: english_ver
             | _ -> verb
     in
 
+    let has_person_marking =
+        match (verb_form.subject, verb_form.object_) with
+        | (None, None) -> false
+        | _ -> true
+    in
+
     let conjugated_verb =
-      (* PERFECTIVE *)
+      (* NOMINALIZING SUFFIX, no person marking: this is Jagersma's "past
+      participle" (§28.3, §31.3.4), which corresponds to the English past
+      participle ("taken"), not the simple past ("took"). *)
       if verb_form.is_perfective
-      then 
+        && verb_form.subordinator
+        && verb_form.first_prefix = None
+        && not has_person_marking
+      then
+          match search_verb english_verb.lemma irregular_verbs with
+          | Some (_, _, past_participle) -> past_participle
+          | None ->
+              if String.ends_with ~suffix:"e" english_verb.lemma
+              then String.sub english_verb.lemma 0 (String.length english_verb.lemma - 1) ^ "ed"
+              else english_verb.lemma ^ "ed"
+      (* PERFECTIVE *)
+      else if verb_form.is_perfective
+      then
           match verb_form.first_prefix with
           | Some FirstPrefix.Negative -> "didn't " ^ english_verb.lemma
           | Some FirstPrefix.Modal -> "should " ^ english_verb.lemma
           | Some FirstPrefix.Negative_nan -> "shouldn't " ^ english_verb.lemma
-          | _ -> 
+          | _ ->
             match search_verb english_verb.lemma irregular_verbs with
             | Some (_, past, _) -> past
             | None ->
@@ -328,5 +348,17 @@ let translate (verb: Constructs.conjugated_verb) (english: english_verb option):
       let conjugated_verb = conjugate verb english_verb in
       let post_verb_complements = add_post_verb_complements verb in
       let pre_verb_complements = add_pre_verb_complements verb in
-      (pre_verb_complements ^ " " ^ conjugated_verb ^ " " ^ post_verb_complements) |> String.trim
+      (* NOMINALIZING SUFFIX with person marking: a finite nominalized clause
+      (§31.3.5), glossed as an English subordinate clause rather than as a
+      participle. *)
+      let subordinate_marker =
+          if verb.subordinator
+            && (match (verb.subject, verb.object_) with (None, None) -> false | _ -> true)
+          then "(that)"
+          else ""
+      in
+      [subordinate_marker; pre_verb_complements; conjugated_verb; post_verb_complements]
+      |> List.map String.trim
+      |> List.filter (fun part -> part <> "")
+      |> String.concat " "
   | None -> verb.stem

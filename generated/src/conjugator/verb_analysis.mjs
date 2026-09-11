@@ -303,9 +303,10 @@ function analyse(verbArr, verbRec, _verb, _start) {
         break;
       case 6 :
         if (match !== undefined) {
-          const ipp = verbRec.initial_person_prefix;
-          if (ipp !== undefined) {
-            if (match.length !== 0) {
+          if (match.length !== 0) {
+            const match$1 = verbRec.initial_person_prefix;
+            const match$2 = verbRec.oblique_object;
+            if (match$1 !== undefined) {
               const verb_slot1$6 = verb.slot1;
               const verb_slot2$6 = verb.slot2;
               const verb_slot3$6 = verb.slot3;
@@ -313,7 +314,7 @@ function analyse(verbArr, verbRec, _verb, _start) {
               const verb_slot5$6 = verb.slot5;
               const verb_slot6$6 = verb.slot6;
               const verb_slot7$6 = [
-                ipp,
+                /* Regular */ 0,
                 match
               ];
               const verb_slot8$6 = verb.slot8;
@@ -345,63 +346,63 @@ function analyse(verbArr, verbRec, _verb, _start) {
               _verb = verb$7;
               continue;
             }
+            let exit = 0;
+            if (/* tag */ typeof match$2 !== "object" && typeof match$2 !== "function" || match$2.TAG === /* Final_person_prefix */ 0) {
+              exit = 2;
+            } else {
+              const verb_slot1$7 = verb.slot1;
+              const verb_slot2$7 = verb.slot2;
+              const verb_slot3$7 = verb.slot3;
+              const verb_slot4$7 = verb.slot4;
+              const verb_slot5$7 = verb.slot5;
+              const verb_slot6$7 = verb.slot6;
+              const verb_slot7$7 = [
+                /* FromObliqueObject */ 1,
+                match
+              ];
+              const verb_slot8$7 = verb.slot8;
+              const verb_slot9$7 = verb.slot9;
+              const verb_slot10$7 = verb.slot10;
+              const verb_slot11$7 = verb.slot11;
+              const verb_slot12$7 = verb.slot12;
+              const verb_slot13$7 = verb.slot13;
+              const verb_slot14$7 = verb.slot14;
+              const verb_slot15$7 = verb.slot15;
+              const verb$8 = {
+                slot1: verb_slot1$7,
+                slot2: verb_slot2$7,
+                slot3: verb_slot3$7,
+                slot4: verb_slot4$7,
+                slot5: verb_slot5$7,
+                slot6: verb_slot6$7,
+                slot7: verb_slot7$7,
+                slot8: verb_slot8$7,
+                slot9: verb_slot9$7,
+                slot10: verb_slot10$7,
+                slot11: verb_slot11$7,
+                slot12: verb_slot12$7,
+                slot13: verb_slot13$7,
+                slot14: verb_slot14$7,
+                slot15: verb_slot15$7
+              };
+              _start = start + 1 | 0;
+              _verb = verb$8;
+              continue;
+            }
+            if (exit === 2) {
+              _start = start + 1 | 0;
+              continue;
+            }
+            
+          } else {
             _start = start + 1 | 0;
             continue;
           }
-          _start = start + 1 | 0;
-          continue;
         }
         break;
       case 7 :
         if (match !== undefined) {
           if (match.length !== 0) {
-            const verb_slot1$7 = verb.slot1;
-            const verb_slot2$7 = verb.slot2;
-            const verb_slot3$7 = verb.slot3;
-            const verb_slot4$7 = verb.slot4;
-            const verb_slot5$7 = verb.slot5;
-            const verb_slot6$7 = verb.slot6;
-            const verb_slot7$7 = verb.slot7;
-            const verb_slot8$7 = match;
-            const verb_slot9$7 = verb.slot9;
-            const verb_slot10$7 = verb.slot10;
-            const verb_slot11$7 = verb.slot11;
-            const verb_slot12$7 = verb.slot12;
-            const verb_slot13$7 = verb.slot13;
-            const verb_slot14$7 = verb.slot14;
-            const verb_slot15$7 = verb.slot15;
-            const verb$8 = {
-              slot1: verb_slot1$7,
-              slot2: verb_slot2$7,
-              slot3: verb_slot3$7,
-              slot4: verb_slot4$7,
-              slot5: verb_slot5$7,
-              slot6: verb_slot6$7,
-              slot7: verb_slot7$7,
-              slot8: verb_slot8$7,
-              slot9: verb_slot9$7,
-              slot10: verb_slot10$7,
-              slot11: verb_slot11$7,
-              slot12: verb_slot12$7,
-              slot13: verb_slot13$7,
-              slot14: verb_slot14$7,
-              slot15: verb_slot15$7
-            };
-            _start = start + 1 | 0;
-            _verb = verb$8;
-            continue;
-          }
-          _start = start + 1 | 0;
-          continue;
-        }
-        break;
-      case 8 :
-        if (match !== undefined) {
-          if (match.length !== 0) {
-            const adverbial = verbRec.adverbial;
-            if (adverbial === undefined) {
-              return Stdlib.failwith("Adverbial is expected to be set in verb");
-            }
             const verb_slot1$8 = verb.slot1;
             const verb_slot2$8 = verb.slot2;
             const verb_slot3$8 = verb.slot3;
@@ -409,11 +410,8 @@ function analyse(verbArr, verbRec, _verb, _start) {
             const verb_slot5$8 = verb.slot5;
             const verb_slot6$8 = verb.slot6;
             const verb_slot7$8 = verb.slot7;
-            const verb_slot8$8 = verb.slot8;
-            const verb_slot9$8 = [
-              adverbial,
-              match
-            ];
+            const verb_slot8$8 = match;
+            const verb_slot9$8 = verb.slot9;
             const verb_slot10$8 = verb.slot10;
             const verb_slot11$8 = verb.slot11;
             const verb_slot12$8 = verb.slot12;
@@ -445,9 +443,13 @@ function analyse(verbArr, verbRec, _verb, _start) {
           continue;
         }
         break;
-      case 9 :
+      case 8 :
         if (match !== undefined) {
           if (match.length !== 0) {
+            const adverbial = verbRec.adverbial;
+            if (adverbial === undefined) {
+              return Stdlib.failwith("Adverbial is expected to be set in verb");
+            }
             const verb_slot1$9 = verb.slot1;
             const verb_slot2$9 = verb.slot2;
             const verb_slot3$9 = verb.slot3;
@@ -456,8 +458,11 @@ function analyse(verbArr, verbRec, _verb, _start) {
             const verb_slot6$9 = verb.slot6;
             const verb_slot7$9 = verb.slot7;
             const verb_slot8$9 = verb.slot8;
-            const verb_slot9$9 = verb.slot9;
-            const verb_slot10$9 = match;
+            const verb_slot9$9 = [
+              adverbial,
+              match
+            ];
+            const verb_slot10$9 = verb.slot10;
             const verb_slot11$9 = verb.slot11;
             const verb_slot12$9 = verb.slot12;
             const verb_slot13$9 = verb.slot13;
@@ -488,94 +493,188 @@ function analyse(verbArr, verbRec, _verb, _start) {
           continue;
         }
         break;
-      case 10 :
+      case 9 :
         if (match !== undefined) {
-          const fpp = verbRec.final_person_prefix;
-          if (fpp !== undefined) {
-            if (match.length !== 0) {
-              const verb_slot1$10 = verb.slot1;
-              const verb_slot2$10 = verb.slot2;
-              const verb_slot3$10 = verb.slot3;
-              const verb_slot4$10 = verb.slot4;
-              const verb_slot5$10 = verb.slot5;
-              const verb_slot6$10 = verb.slot6;
-              const verb_slot7$10 = verb.slot7;
-              const verb_slot8$10 = verb.slot8;
-              const verb_slot9$10 = verb.slot9;
-              const verb_slot10$10 = verb.slot10;
-              const verb_slot11$10 = [
-                fpp,
-                match
-              ];
-              const verb_slot12$10 = verb.slot12;
-              const verb_slot13$10 = verb.slot13;
-              const verb_slot14$10 = verb.slot14;
-              const verb_slot15$10 = verb.slot15;
-              const verb$11 = {
-                slot1: verb_slot1$10,
-                slot2: verb_slot2$10,
-                slot3: verb_slot3$10,
-                slot4: verb_slot4$10,
-                slot5: verb_slot5$10,
-                slot6: verb_slot6$10,
-                slot7: verb_slot7$10,
-                slot8: verb_slot8$10,
-                slot9: verb_slot9$10,
-                slot10: verb_slot10$10,
-                slot11: verb_slot11$10,
-                slot12: verb_slot12$10,
-                slot13: verb_slot13$10,
-                slot14: verb_slot14$10,
-                slot15: verb_slot15$10
-              };
-              _start = start + 1 | 0;
-              _verb = verb$11;
-              continue;
-            }
+          if (match.length !== 0) {
+            const verb_slot1$10 = verb.slot1;
+            const verb_slot2$10 = verb.slot2;
+            const verb_slot3$10 = verb.slot3;
+            const verb_slot4$10 = verb.slot4;
+            const verb_slot5$10 = verb.slot5;
+            const verb_slot6$10 = verb.slot6;
+            const verb_slot7$10 = verb.slot7;
+            const verb_slot8$10 = verb.slot8;
+            const verb_slot9$10 = verb.slot9;
+            const verb_slot10$10 = match;
+            const verb_slot11$10 = verb.slot11;
+            const verb_slot12$10 = verb.slot12;
+            const verb_slot13$10 = verb.slot13;
+            const verb_slot14$10 = verb.slot14;
+            const verb_slot15$10 = verb.slot15;
+            const verb$11 = {
+              slot1: verb_slot1$10,
+              slot2: verb_slot2$10,
+              slot3: verb_slot3$10,
+              slot4: verb_slot4$10,
+              slot5: verb_slot5$10,
+              slot6: verb_slot6$10,
+              slot7: verb_slot7$10,
+              slot8: verb_slot8$10,
+              slot9: verb_slot9$10,
+              slot10: verb_slot10$10,
+              slot11: verb_slot11$10,
+              slot12: verb_slot12$10,
+              slot13: verb_slot13$10,
+              slot14: verb_slot14$10,
+              slot15: verb_slot15$10
+            };
             _start = start + 1 | 0;
+            _verb = verb$11;
             continue;
           }
           _start = start + 1 | 0;
           continue;
         }
         break;
+      case 10 :
+        if (match !== undefined) {
+          if (match.length !== 0) {
+            const match$3 = verbRec.final_person_prefix;
+            const match$4 = verbRec.oblique_object;
+            if (match$3 !== undefined) {
+              const verb_slot1$11 = verb.slot1;
+              const verb_slot2$11 = verb.slot2;
+              const verb_slot3$11 = verb.slot3;
+              const verb_slot4$11 = verb.slot4;
+              const verb_slot5$11 = verb.slot5;
+              const verb_slot6$11 = verb.slot6;
+              const verb_slot7$11 = verb.slot7;
+              const verb_slot8$11 = verb.slot8;
+              const verb_slot9$11 = verb.slot9;
+              const verb_slot10$11 = verb.slot10;
+              const verb_slot11$11 = [
+                /* Regular */ 0,
+                match
+              ];
+              const verb_slot12$11 = verb.slot12;
+              const verb_slot13$11 = verb.slot13;
+              const verb_slot14$11 = verb.slot14;
+              const verb_slot15$11 = verb.slot15;
+              const verb$12 = {
+                slot1: verb_slot1$11,
+                slot2: verb_slot2$11,
+                slot3: verb_slot3$11,
+                slot4: verb_slot4$11,
+                slot5: verb_slot5$11,
+                slot6: verb_slot6$11,
+                slot7: verb_slot7$11,
+                slot8: verb_slot8$11,
+                slot9: verb_slot9$11,
+                slot10: verb_slot10$11,
+                slot11: verb_slot11$11,
+                slot12: verb_slot12$11,
+                slot13: verb_slot13$11,
+                slot14: verb_slot14$11,
+                slot15: verb_slot15$11
+              };
+              _start = start + 1 | 0;
+              _verb = verb$12;
+              continue;
+            }
+            let exit$1 = 0;
+            if (/* tag */ typeof match$4 !== "object" && typeof match$4 !== "function") {
+              exit$1 = 2;
+            } else {
+              if (match$4.TAG === /* Final_person_prefix */ 0) {
+                const verb_slot1$12 = verb.slot1;
+                const verb_slot2$12 = verb.slot2;
+                const verb_slot3$12 = verb.slot3;
+                const verb_slot4$12 = verb.slot4;
+                const verb_slot5$12 = verb.slot5;
+                const verb_slot6$12 = verb.slot6;
+                const verb_slot7$12 = verb.slot7;
+                const verb_slot8$12 = verb.slot8;
+                const verb_slot9$12 = verb.slot9;
+                const verb_slot10$12 = verb.slot10;
+                const verb_slot11$12 = [
+                  /* FromObliqueObject */ 1,
+                  match
+                ];
+                const verb_slot12$12 = verb.slot12;
+                const verb_slot13$12 = verb.slot13;
+                const verb_slot14$12 = verb.slot14;
+                const verb_slot15$12 = verb.slot15;
+                const verb$13 = {
+                  slot1: verb_slot1$12,
+                  slot2: verb_slot2$12,
+                  slot3: verb_slot3$12,
+                  slot4: verb_slot4$12,
+                  slot5: verb_slot5$12,
+                  slot6: verb_slot6$12,
+                  slot7: verb_slot7$12,
+                  slot8: verb_slot8$12,
+                  slot9: verb_slot9$12,
+                  slot10: verb_slot10$12,
+                  slot11: verb_slot11$12,
+                  slot12: verb_slot12$12,
+                  slot13: verb_slot13$12,
+                  slot14: verb_slot14$12,
+                  slot15: verb_slot15$12
+                };
+                _start = start + 1 | 0;
+                _verb = verb$13;
+                continue;
+              }
+              exit$1 = 2;
+            }
+            if (exit$1 === 2) {
+              _start = start + 1 | 0;
+              continue;
+            }
+            
+          } else {
+            _start = start + 1 | 0;
+            continue;
+          }
+        }
+        break;
       case 11 :
         if (match !== undefined) {
           if (match.length !== 0) {
-            const verb_slot1$11 = verb.slot1;
-            const verb_slot2$11 = verb.slot2;
-            const verb_slot3$11 = verb.slot3;
-            const verb_slot4$11 = verb.slot4;
-            const verb_slot5$11 = verb.slot5;
-            const verb_slot6$11 = verb.slot6;
-            const verb_slot7$11 = verb.slot7;
-            const verb_slot8$11 = verb.slot8;
-            const verb_slot9$11 = verb.slot9;
-            const verb_slot10$11 = verb.slot10;
-            const verb_slot11$11 = verb.slot11;
-            const verb_slot12$11 = match;
-            const verb_slot13$11 = verb.slot13;
-            const verb_slot14$11 = verb.slot14;
-            const verb_slot15$11 = verb.slot15;
-            const verb$12 = {
-              slot1: verb_slot1$11,
-              slot2: verb_slot2$11,
-              slot3: verb_slot3$11,
-              slot4: verb_slot4$11,
-              slot5: verb_slot5$11,
-              slot6: verb_slot6$11,
-              slot7: verb_slot7$11,
-              slot8: verb_slot8$11,
-              slot9: verb_slot9$11,
-              slot10: verb_slot10$11,
-              slot11: verb_slot11$11,
-              slot12: verb_slot12$11,
-              slot13: verb_slot13$11,
-              slot14: verb_slot14$11,
-              slot15: verb_slot15$11
+            const verb_slot1$13 = verb.slot1;
+            const verb_slot2$13 = verb.slot2;
+            const verb_slot3$13 = verb.slot3;
+            const verb_slot4$13 = verb.slot4;
+            const verb_slot5$13 = verb.slot5;
+            const verb_slot6$13 = verb.slot6;
+            const verb_slot7$13 = verb.slot7;
+            const verb_slot8$13 = verb.slot8;
+            const verb_slot9$13 = verb.slot9;
+            const verb_slot10$13 = verb.slot10;
+            const verb_slot11$13 = verb.slot11;
+            const verb_slot12$13 = match;
+            const verb_slot13$13 = verb.slot13;
+            const verb_slot14$13 = verb.slot14;
+            const verb_slot15$13 = verb.slot15;
+            const verb$14 = {
+              slot1: verb_slot1$13,
+              slot2: verb_slot2$13,
+              slot3: verb_slot3$13,
+              slot4: verb_slot4$13,
+              slot5: verb_slot5$13,
+              slot6: verb_slot6$13,
+              slot7: verb_slot7$13,
+              slot8: verb_slot8$13,
+              slot9: verb_slot9$13,
+              slot10: verb_slot10$13,
+              slot11: verb_slot11$13,
+              slot12: verb_slot12$13,
+              slot13: verb_slot13$13,
+              slot14: verb_slot14$13,
+              slot15: verb_slot15$13
             };
             _start = start + 1 | 0;
-            _verb = verb$12;
+            _verb = verb$14;
             continue;
           }
           _start = start + 1 | 0;
@@ -585,40 +684,40 @@ function analyse(verbArr, verbRec, _verb, _start) {
       case 12 :
         if (match !== undefined) {
           if (match.length !== 0) {
-            const verb_slot1$12 = verb.slot1;
-            const verb_slot2$12 = verb.slot2;
-            const verb_slot3$12 = verb.slot3;
-            const verb_slot4$12 = verb.slot4;
-            const verb_slot5$12 = verb.slot5;
-            const verb_slot6$12 = verb.slot6;
-            const verb_slot7$12 = verb.slot7;
-            const verb_slot8$12 = verb.slot8;
-            const verb_slot9$12 = verb.slot9;
-            const verb_slot10$12 = verb.slot10;
-            const verb_slot11$12 = verb.slot11;
-            const verb_slot12$12 = verb.slot12;
-            const verb_slot13$12 = match;
-            const verb_slot14$12 = verb.slot14;
-            const verb_slot15$12 = verb.slot15;
-            const verb$13 = {
-              slot1: verb_slot1$12,
-              slot2: verb_slot2$12,
-              slot3: verb_slot3$12,
-              slot4: verb_slot4$12,
-              slot5: verb_slot5$12,
-              slot6: verb_slot6$12,
-              slot7: verb_slot7$12,
-              slot8: verb_slot8$12,
-              slot9: verb_slot9$12,
-              slot10: verb_slot10$12,
-              slot11: verb_slot11$12,
-              slot12: verb_slot12$12,
-              slot13: verb_slot13$12,
-              slot14: verb_slot14$12,
-              slot15: verb_slot15$12
+            const verb_slot1$14 = verb.slot1;
+            const verb_slot2$14 = verb.slot2;
+            const verb_slot3$14 = verb.slot3;
+            const verb_slot4$14 = verb.slot4;
+            const verb_slot5$14 = verb.slot5;
+            const verb_slot6$14 = verb.slot6;
+            const verb_slot7$14 = verb.slot7;
+            const verb_slot8$14 = verb.slot8;
+            const verb_slot9$14 = verb.slot9;
+            const verb_slot10$14 = verb.slot10;
+            const verb_slot11$14 = verb.slot11;
+            const verb_slot12$14 = verb.slot12;
+            const verb_slot13$14 = match;
+            const verb_slot14$14 = verb.slot14;
+            const verb_slot15$14 = verb.slot15;
+            const verb$15 = {
+              slot1: verb_slot1$14,
+              slot2: verb_slot2$14,
+              slot3: verb_slot3$14,
+              slot4: verb_slot4$14,
+              slot5: verb_slot5$14,
+              slot6: verb_slot6$14,
+              slot7: verb_slot7$14,
+              slot8: verb_slot8$14,
+              slot9: verb_slot9$14,
+              slot10: verb_slot10$14,
+              slot11: verb_slot11$14,
+              slot12: verb_slot12$14,
+              slot13: verb_slot13$14,
+              slot14: verb_slot14$14,
+              slot15: verb_slot15$14
             };
             _start = start + 1 | 0;
-            _verb = verb$13;
+            _verb = verb$15;
             continue;
           }
           _start = start + 1 | 0;
@@ -627,46 +726,46 @@ function analyse(verbArr, verbRec, _verb, _start) {
         break;
       case 13 :
         if (match !== undefined) {
-          const fpp$1 = verbRec.final_person_suffix;
-          if (fpp$1 !== undefined) {
+          const fpp = verbRec.final_person_suffix;
+          if (fpp !== undefined) {
             if (match.length !== 0) {
-              const verb_slot1$13 = verb.slot1;
-              const verb_slot2$13 = verb.slot2;
-              const verb_slot3$13 = verb.slot3;
-              const verb_slot4$13 = verb.slot4;
-              const verb_slot5$13 = verb.slot5;
-              const verb_slot6$13 = verb.slot6;
-              const verb_slot7$13 = verb.slot7;
-              const verb_slot8$13 = verb.slot8;
-              const verb_slot9$13 = verb.slot9;
-              const verb_slot10$13 = verb.slot10;
-              const verb_slot11$13 = verb.slot11;
-              const verb_slot12$13 = verb.slot12;
-              const verb_slot13$13 = verb.slot13;
-              const verb_slot14$13 = [
-                fpp$1,
+              const verb_slot1$15 = verb.slot1;
+              const verb_slot2$15 = verb.slot2;
+              const verb_slot3$15 = verb.slot3;
+              const verb_slot4$15 = verb.slot4;
+              const verb_slot5$15 = verb.slot5;
+              const verb_slot6$15 = verb.slot6;
+              const verb_slot7$15 = verb.slot7;
+              const verb_slot8$15 = verb.slot8;
+              const verb_slot9$15 = verb.slot9;
+              const verb_slot10$15 = verb.slot10;
+              const verb_slot11$15 = verb.slot11;
+              const verb_slot12$15 = verb.slot12;
+              const verb_slot13$15 = verb.slot13;
+              const verb_slot14$15 = [
+                fpp,
                 match
               ];
-              const verb_slot15$13 = verb.slot15;
-              const verb$14 = {
-                slot1: verb_slot1$13,
-                slot2: verb_slot2$13,
-                slot3: verb_slot3$13,
-                slot4: verb_slot4$13,
-                slot5: verb_slot5$13,
-                slot6: verb_slot6$13,
-                slot7: verb_slot7$13,
-                slot8: verb_slot8$13,
-                slot9: verb_slot9$13,
-                slot10: verb_slot10$13,
-                slot11: verb_slot11$13,
-                slot12: verb_slot12$13,
-                slot13: verb_slot13$13,
-                slot14: verb_slot14$13,
-                slot15: verb_slot15$13
+              const verb_slot15$15 = verb.slot15;
+              const verb$16 = {
+                slot1: verb_slot1$15,
+                slot2: verb_slot2$15,
+                slot3: verb_slot3$15,
+                slot4: verb_slot4$15,
+                slot5: verb_slot5$15,
+                slot6: verb_slot6$15,
+                slot7: verb_slot7$15,
+                slot8: verb_slot8$15,
+                slot9: verb_slot9$15,
+                slot10: verb_slot10$15,
+                slot11: verb_slot11$15,
+                slot12: verb_slot12$15,
+                slot13: verb_slot13$15,
+                slot14: verb_slot14$15,
+                slot15: verb_slot15$15
               };
               _start = start + 1 | 0;
-              _verb = verb$14;
+              _verb = verb$16;
               continue;
             }
             _start = start + 1 | 0;
@@ -788,10 +887,15 @@ function output(verb) {
       ""
     ];
   const match$1 = verb.slot7;
-  const slot7 = match$1 !== undefined ? [
-      "initialPersonPrefix",
-      match$1[1]
-    ] : [
+  const slot7 = match$1 !== undefined ? (
+      match$1[0] === /* Regular */ 0 ? [
+          "initialPersonPrefix",
+          match$1[1]
+        ] : [
+          "obliqueObject",
+          match$1[1]
+        ]
+    ) : [
       "",
       ""
     ];
@@ -829,10 +933,15 @@ function output(verb) {
       ""
     ];
   const match$3 = verb.slot11;
-  const slot11 = match$3 !== undefined ? [
-      "finalPersonPrefix",
-      match$3[1]
-    ] : [
+  const slot11 = match$3 !== undefined ? (
+      match$3[0] === /* Regular */ 0 ? [
+          "finalPersonPrefix",
+          match$3[1]
+        ] : [
+          "obliqueObject",
+          match$3[1]
+        ]
+    ) : [
       "",
       ""
     ];

@@ -343,6 +343,7 @@ module BuildResults = {
                                                         | "middlePrefix" => "Middle Prefix"
                                                         | "initialPersonPrefix" => "Initial Person Prefix"
                                                         | "finalPersonPrefix" => "Final Person Prefix"
+                                                        | "obliqueObject" => "Oblique Object"
                                                         | "edMarker" => "ED Marker"
                                                         | "finalPersonSuffix" => "Final Person Suffix"
                                                         | "negativeNan" => "Nan Modal"

@@ -1,6 +1,14 @@
 open Infixes
 open Utils
 
+(* Slots 7 and 11 (initial/final person-prefix) can be filled either by their
+"regular" grammatical function or, per 18.2.1, by an oblique object that had
+to fall back onto that slot because its preferred slot was already taken.
+This tags which one it was, so the UI can label the slot accordingly. *)
+type prefix_source =
+    | Regular
+    | FromObliqueObject
+
 type t = {
     (* Slot 1 Modal prefix (ḫa), negative particle, prefix of anteriority, stem (in imperative forms) *)
     slot1: (FirstPrefix.t * string) option;
@@ -17,7 +25,7 @@ type t = {
     slot6: string option;
     (* Slot 7 Initial Pronominal Prefix (= IPP) (specifying the person, gender and number *)
     (* of the first in the sequence of adverbial prefixes) *)
-    slot7: (InitialPersonPrefix.t * string) option;
+    slot7: (prefix_source * string) option;
     (* Slot 8 Adverbial II: comitative prefix *)
     slot8: string option;
     (* Slot 9 Adverbial III: ablative or terminative prefix *)
@@ -26,7 +34,7 @@ type t = {
     slot10: string option;
     (* Slot 11 Final Pronominal Prefix (= FPP) (referring to A or P, depending on the tense, *)
     (* or locative3) *)
-    slot11: (FinalPersonPrefix.t * string) option;
+    slot11: (prefix_source * string) option;
     (* Slot 12 stem *)
     slot12: string option;
     (* Slot 13 present-future marker (in intransitive verbs) *)
@@ -108,15 +116,19 @@ let rec analyse (verbArr: string array) (verbRec: Constructs.conjugated_verb) (v
              else
                 analyse verbArr verbRec verb (start + 1)
         | (6, Some prefix) ->
-            (match verbRec.initial_person_prefix with
-            | Some ipp ->
-                if String.length prefix > 0
-                then
-                    let verb = { verb with slot7 = Some (ipp, prefix) } in
+            if String.length prefix > 0
+            then
+                (match verbRec.initial_person_prefix, verbRec.oblique_object with
+                | Some _, _ ->
+                    let verb = { verb with slot7 = Some (Regular, prefix) } in
                     analyse verbArr verbRec verb (start + 1)
-                else
+                | None, Initial_person_prefix _ ->
+                    (* the oblique object fell back onto this slot (18.2.1) *)
+                    let verb = { verb with slot7 = Some (FromObliqueObject, prefix) } in
                     analyse verbArr verbRec verb (start + 1)
-            | _ -> analyse verbArr verbRec verb (start + 1))
+                | None, _ -> analyse verbArr verbRec verb (start + 1))
+            else
+                analyse verbArr verbRec verb (start + 1)
         | (7, Some prefix) ->
             if String.length prefix > 0  
             then
@@ -142,16 +154,20 @@ let rec analyse (verbArr: string array) (verbRec: Constructs.conjugated_verb) (v
                 analyse verbArr verbRec verb (start + 1)
              else 
                 analyse verbArr verbRec verb (start + 1)            
-        | (10, Some prefix) -> 
-            (match verbRec.final_person_prefix with
-            | Some fpp -> 
-                if String.length prefix > 0 
-                then
-                    let verb = { verb with slot11 = Some (fpp, prefix) } in
+        | (10, Some prefix) ->
+            if String.length prefix > 0
+            then
+                (match verbRec.final_person_prefix, verbRec.oblique_object with
+                | Some _, _ ->
+                    let verb = { verb with slot11 = Some (Regular, prefix) } in
                     analyse verbArr verbRec verb (start + 1)
-                 else 
-                    analyse verbArr verbRec verb (start + 1)  
-            | _ -> analyse verbArr verbRec verb (start + 1))
+                | None, Final_person_prefix _ ->
+                    (* the oblique object claimed this slot (18.2.1) *)
+                    let verb = { verb with slot11 = Some (FromObliqueObject, prefix) } in
+                    analyse verbArr verbRec verb (start + 1)
+                | None, _ -> analyse verbArr verbRec verb (start + 1))
+             else
+                analyse verbArr verbRec verb (start + 1)
         | (11, Some prefix) -> 
             if String.length prefix > 0  
             then
@@ -215,9 +231,10 @@ let output (verb: t): (string * string) array =
         | None -> ("", "")
         | Some prefix -> ("dative", prefix)
     in
-    let slot7 = match verb.slot7 with 
+    let slot7 = match verb.slot7 with
         | None -> ("", "")
-        | Some((_, prefix)) -> ("initialPersonPrefix", prefix)
+        | Some((Regular, prefix)) -> ("initialPersonPrefix", prefix)
+        | Some((FromObliqueObject, prefix)) -> ("obliqueObject", prefix)
     in
     let slot8 = match verb.slot8 with 
         | None -> ("", "")
@@ -234,9 +251,10 @@ let output (verb: t): (string * string) array =
         | None -> ("", "")
         | Some prefix -> ("locative", prefix)
     in
-    let slot11 = match verb.slot11 with 
+    let slot11 = match verb.slot11 with
         | None -> ("", "")
-        | Some((_, prefix)) -> ("finalPersonPrefix", prefix)
+        | Some((Regular, prefix)) -> ("finalPersonPrefix", prefix)
+        | Some((FromObliqueObject, prefix)) -> ("obliqueObject", prefix)
     in
     let slot12 = match verb.slot12 with 
         | None -> ("", "")

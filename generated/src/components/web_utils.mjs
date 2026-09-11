@@ -370,6 +370,9 @@ function Web_utils$BuildResults(Props) {
                       case "negativeNan" :
                         tmp = "Nan Modal";
                         break;
+                      case "obliqueObject" :
+                        tmp = "Oblique Object";
+                        break;
                       default:
                         const first_char = output_type.charAt(0).toUpperCase();
                         const rest = output_type.slice(1).toLowerCase();

@@ -413,7 +413,7 @@ function add_oblique_object(verb, arr) {
     let tmp;
     switch (fpp._0) {
       case /* First_sing */ 0 :
-        tmp = "\xca\x94";
+        tmp = "ʔ";
         break;
       case /* Second_sing */ 1 :
         tmp = "e";
@@ -450,13 +450,13 @@ function add_oblique_object(verb, arr) {
       tmp$1 = "nni";
       break;
     case /* First_plur */ 4 :
-      tmp$1 = "m\xc4\x93";
+      tmp$1 = "mē";
       break;
     case /* Second_plur */ 5 :
-      tmp$1 = "en\xc4\x93";
+      tmp$1 = "enē";
       break;
     case /* Third_plur_human */ 6 :
-      tmp$1 = "nn\xc4\x93";
+      tmp$1 = "nnē";
       break;
     case /* Third_sing_non_human */ 3 :
     case /* Third_plur_non_human */ 7 :
@@ -470,12 +470,34 @@ function add_oblique_object(verb, arr) {
   };
 }
 
+function add_subordinator(verb, arr) {
+  if (arr.TAG !== /* Ok */ 0) {
+    return {
+      TAG: /* Error */ 1,
+      _0: arr._0
+    };
+  }
+  const arr$1 = arr._0;
+  if (verb.subordinator) {
+    Caml_array.set(arr$1, Conjugator__Utils.subordinator_pos, "a");
+    return {
+      TAG: /* Ok */ 0,
+      _0: arr$1
+    };
+  } else {
+    return {
+      TAG: /* Ok */ 0,
+      _0: arr$1
+    };
+  }
+}
+
 function print(verb, english) {
   const warnings = {
     contents: /* [] */ 0
   };
   const morphemes_start = Caml_array.make(15, "");
-  const outputRes = add_oblique_object(verb, add_final_person_suffix(verb, add_ed_marker(verb, add_final_person_prefix(verb, add_locative(verb, add_comitative(verb, add_indirect_object_prefix(verb, add_initial_person_prefix(verb, add_middle_prefix(verb, add_adverbial(verb, add_ventive(verb, add_coordinator(verb, add_preformative(verb, add_first_prefix(verb, add_stem(morphemes_start, verb.stem)))))))))))))));
+  const outputRes = add_subordinator(verb, add_oblique_object(verb, add_final_person_suffix(verb, add_ed_marker(verb, add_final_person_prefix(verb, add_locative(verb, add_comitative(verb, add_indirect_object_prefix(verb, add_initial_person_prefix(verb, add_middle_prefix(verb, add_adverbial(verb, add_ventive(verb, add_coordinator(verb, add_preformative(verb, add_first_prefix(verb, add_stem(morphemes_start, verb.stem))))))))))))))));
   if (outputRes.TAG !== /* Ok */ 0) {
     return {
       TAG: /* Error */ 1,
@@ -549,7 +571,7 @@ function print(verb, english) {
       } else {
         outputArr$2 = outputArr$1;
       }
-    } else if (match$4 === "\xca\x94") {
+    } else if (match$4 === "ʔ") {
       Caml_array.set(outputArr$1, Conjugator__Utils.ventive_pos, "mu");
       outputArr$2 = outputArr$1;
     } else {
@@ -976,177 +998,222 @@ function print(verb, english) {
       _0: outputArrRes._0
     };
   }
-  const finalChanges = function (outputArr) {
-    const preformative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.preformative_pos, outputArr);
-    if (preformative === undefined) {
-      return outputArr;
-    }
-    if (preformative === "i") {
-      const match = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
-      if (match === undefined) {
-        return outputArr;
-      }
-      const marker = match[1];
-      const morpheme = match[0];
-      const cvc = Conjugator__Utils.consonant_vowel_sequence(morpheme);
-      if (marker !== /* Stem */ 11 && cvc.length > 1 && Caml_string.get(cvc, 0) === /* 'C' */67 && Caml_string.get(cvc, 1) === /* 'V' */86) {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {i} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
-          },
-          tl: warnings.contents
+  let outputRes$2;
+  if (outputRes$1.TAG === /* Ok */ 0) {
+    const outputArr$9 = outputRes$1._0;
+    if (verb.subordinator) {
+      const match$15 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.subordinator_pos, outputArr$9);
+      if (match$15 !== undefined && match$15[1] === /* EdMarker */ 12) {
+        Caml_array.set(outputArr$9, Conjugator__Utils.ed_marker_pos, "e");
+        outputRes$2 = {
+          TAG: /* Ok */ 0,
+          _0: outputArr$9
         };
-        return outputArr;
-      }
-      if (marker === /* Ventive */ 3 && morpheme === "m") {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {i} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.1)"
-          },
-          tl: warnings.contents
-        };
-        return outputArr;
-      }
-      if (marker === /* Locative */ 9 && morpheme === "n") {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {i} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.1)"
-          },
-          tl: warnings.contents
-        };
-        return outputArr;
-      }
-      if (!(marker === /* InitialPersonPrefix */ 5 && morpheme === "b")) {
-        return outputArr;
-      }
-      const locative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.locative_pos, outputArr);
-      if (locative === "e") {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {i} is long before the /b/ of the local prefix {e} (Jagersma 24.3.1)"
-          },
-          tl: warnings.contents
-        };
-        return outputArr;
       } else {
-        return outputArr;
-      }
-    }
-    if (preformative === "a") {
-      const match$1 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
-      if (match$1 === undefined) {
-        return outputArr;
-      }
-      const marker$1 = match$1[1];
-      const morpheme$1 = match$1[0];
-      const cvc$1 = Conjugator__Utils.consonant_vowel_sequence(morpheme$1);
-      if (marker$1 !== /* Stem */ 11 && cvc$1.length > 1 && Caml_string.get(cvc$1, 0) === /* 'C' */67 && Caml_string.get(cvc$1, 1) === /* 'V' */86) {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {a} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
-          },
-          tl: warnings.contents
+        outputRes$2 = {
+          TAG: /* Ok */ 0,
+          _0: outputArr$9
         };
-        return outputArr;
       }
-      if (marker$1 === /* Ventive */ 3 && morpheme$1 === "m") {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {a} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.3)"
-          },
-          tl: warnings.contents
-        };
-        return outputArr;
-      }
-      if (marker$1 === /* Locative */ 9 && morpheme$1 === "n") {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {a} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.3)"
-          },
-          tl: warnings.contents
-        };
-        return outputArr;
-      }
-      if (!(marker$1 === /* InitialPersonPrefix */ 5 && morpheme$1 === "b")) {
-        return outputArr;
-      }
-      const locative$1 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.locative_pos, outputArr);
-      if (locative$1 === "e") {
-        Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
-        warnings.contents = {
-          hd: {
-            TAG: /* Info */ 0,
-            _0: "The preformative {a} is long before the /b/ of the local prefix {e} (Jagersma 24.3.3)"
-          },
-          tl: warnings.contents
-        };
-        return outputArr;
-      } else {
-        return outputArr;
-      }
+    } else {
+      outputRes$2 = {
+        TAG: /* Ok */ 0,
+        _0: outputArr$9
+      };
     }
-    if (preformative !== "u") {
-      return outputArr;
-    }
-    const match$2 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.preformative_pos, outputArr);
-    const match$3 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
-    if (match$2 !== undefined) {
-      return outputArr;
-    }
-    if (match$3 === undefined) {
-      return outputArr;
-    }
-    const morpheme$2 = match$3[0];
-    if (!(Conjugator__Utils.consonant_vowel_sequence(morpheme$2) === "CV" || Conjugator__Utils.consonant_vowel_sequence(morpheme$2) === "CVC")) {
-      return outputArr;
-    }
-    const match$4 = Conjugator__Utils.consonant_vowel_sequence(morpheme$2);
-    let vowel_of_next_syllable;
-    switch (match$4) {
-      case "CV" :
-      case "CVC" :
-        vowel_of_next_syllable = Stdlib__String.sub(morpheme$2, 1, 1);
-        break;
-      default:
-        vowel_of_next_syllable = "u";
-    }
-    Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, vowel_of_next_syllable);
-    warnings.contents = {
-      hd: {
-        TAG: /* Info */ 0,
-        _0: "In an open syllable, preformative {u} assimilates to the following syllable (Jagersma 24.2.1)"
-      },
-      tl: warnings.contents
-    };
-    return outputArr;
-  };
-  if (outputRes$1.TAG !== /* Ok */ 0) {
-    return {
+  } else {
+    outputRes$2 = {
       TAG: /* Error */ 1,
       _0: outputRes$1._0
     };
   }
-  const outputArr$9 = outputRes$1._0;
-  const final_verb = Stdlib__String.concat("", Stdlib__Array.to_list(finalChanges(Stdlib__Array.copy(outputArr$9))));
+  const finalChanges = function (outputArr) {
+    const preformative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.preformative_pos, outputArr);
+    let outputArr$1;
+    if (preformative !== undefined) {
+      if (preformative === "i") {
+        const match = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+        if (match !== undefined) {
+          const marker = match[1];
+          const morpheme = match[0];
+          const cvc = Conjugator__Utils.consonant_vowel_sequence(morpheme);
+          if (marker !== /* Stem */ 11 && cvc.length > 1 && Caml_string.get(cvc, 0) === /* 'C' */67 && Caml_string.get(cvc, 1) === /* 'V' */86) {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "The preformative {i} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else if (marker === /* Ventive */ 3 && morpheme === "m") {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "The preformative {i} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.1)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else if (marker === /* Locative */ 9 && morpheme === "n") {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "The preformative {i} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.1)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else if (marker === /* InitialPersonPrefix */ 5 && morpheme === "b") {
+            const locative = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.locative_pos, outputArr);
+            if (locative === "e") {
+              Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ī");
+              warnings.contents = {
+                hd: {
+                  TAG: /* Info */ 0,
+                  _0: "The preformative {i} is long before the /b/ of the local prefix {e} (Jagersma 24.3.1)"
+                },
+                tl: warnings.contents
+              };
+              outputArr$1 = outputArr;
+            } else {
+              outputArr$1 = outputArr;
+            }
+          } else {
+            outputArr$1 = outputArr;
+          }
+        } else {
+          outputArr$1 = outputArr;
+        }
+      } else if (preformative === "a") {
+        const match$1 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+        if (match$1 !== undefined) {
+          const marker$1 = match$1[1];
+          const morpheme$1 = match$1[0];
+          const cvc$1 = Conjugator__Utils.consonant_vowel_sequence(morpheme$1);
+          if (marker$1 !== /* Stem */ 11 && cvc$1.length > 1 && Caml_string.get(cvc$1, 0) === /* 'C' */67 && Caml_string.get(cvc$1, 1) === /* 'V' */86) {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "");
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "The preformative {a} is never found before a prefix with the shape /CV/ (Jagersma 24.3.1)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else if (marker$1 === /* Ventive */ 3 && morpheme$1 === "m") {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "The preformative {a} is long before the shortened forms /m/ of the ventive prefix {mu} (Jagersma 24.3.3)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else if (marker$1 === /* Locative */ 9 && morpheme$1 === "n") {
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "The preformative {a} is long before the shortened forms /n/ of the local prefix {ni} (Jagersma 24.3.3)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else if (marker$1 === /* InitialPersonPrefix */ 5 && morpheme$1 === "b") {
+            const locative$1 = Conjugator__Utils.get_morpheme_at_pos(Conjugator__Utils.locative_pos, outputArr);
+            if (locative$1 === "e") {
+              Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, "ā");
+              warnings.contents = {
+                hd: {
+                  TAG: /* Info */ 0,
+                  _0: "The preformative {a} is long before the /b/ of the local prefix {e} (Jagersma 24.3.3)"
+                },
+                tl: warnings.contents
+              };
+              outputArr$1 = outputArr;
+            } else {
+              outputArr$1 = outputArr;
+            }
+          } else {
+            outputArr$1 = outputArr;
+          }
+        } else {
+          outputArr$1 = outputArr;
+        }
+      } else if (preformative === "u") {
+        const match$2 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+        const match$3 = Conjugator__Utils.find_next_morpheme(Conjugator__Utils.preformative_pos, outputArr);
+        if (match$2 !== undefined || match$3 === undefined) {
+          outputArr$1 = outputArr;
+        } else {
+          const morpheme$2 = match$3[0];
+          if (Conjugator__Utils.consonant_vowel_sequence(morpheme$2) === "CV" || Conjugator__Utils.consonant_vowel_sequence(morpheme$2) === "CVC") {
+            const match$4 = Conjugator__Utils.consonant_vowel_sequence(morpheme$2);
+            let vowel_of_next_syllable;
+            switch (match$4) {
+              case "CV" :
+              case "CVC" :
+                vowel_of_next_syllable = Stdlib__String.sub(morpheme$2, 1, 1);
+                break;
+              default:
+                vowel_of_next_syllable = "u";
+            }
+            Caml_array.set(outputArr, Conjugator__Utils.preformative_pos, vowel_of_next_syllable);
+            warnings.contents = {
+              hd: {
+                TAG: /* Info */ 0,
+                _0: "In an open syllable, preformative {u} assimilates to the following syllable (Jagersma 24.2.1)"
+              },
+              tl: warnings.contents
+            };
+            outputArr$1 = outputArr;
+          } else {
+            outputArr$1 = outputArr;
+          }
+        }
+      } else {
+        outputArr$1 = outputArr;
+      }
+    } else {
+      outputArr$1 = outputArr;
+    }
+    if (!verb.subordinator) {
+      return outputArr$1;
+    }
+    const match$5 = Conjugator__Utils.find_previous_morpheme(Conjugator__Utils.subordinator_pos, outputArr$1);
+    if (match$5 === undefined) {
+      return outputArr$1;
+    }
+    const morpheme$3 = match$5[0];
+    if (match$5[1] === /* EdMarker */ 12) {
+      Caml_array.set(outputArr$1, Conjugator__Utils.subordinator_pos, "da");
+      return outputArr$1;
+    }
+    if (Conjugator__Utils.ends_with_vowel(morpheme$3) || morpheme$3 === "ʔ") {
+      return outputArr$1;
+    }
+    const last_consonant = Stdlib__String.sub(morpheme$3, morpheme$3.length - 1 | 0, 1);
+    Caml_array.set(outputArr$1, Conjugator__Utils.subordinator_pos, last_consonant + "a");
+    return outputArr$1;
+  };
+  if (outputRes$2.TAG !== /* Ok */ 0) {
+    return {
+      TAG: /* Error */ 1,
+      _0: outputRes$2._0
+    };
+  }
+  const outputArr$10 = outputRes$2._0;
+  const final_verb = Stdlib__String.concat("", Stdlib__Array.to_list(finalChanges(Stdlib__Array.copy(outputArr$10))));
   return {
     TAG: /* Ok */ 0,
     _0: {
       verb: final_verb,
-      analysis: Conjugator__Verb_analysis.analyse(outputArr$9, verb, Conjugator__Verb_analysis.create(), 0),
+      analysis: Conjugator__Verb_analysis.analyse(outputArr$10, verb, Conjugator__Verb_analysis.create(), 0),
       translation: Conjugator__Translation.translate(verb, english),
       warnings: Stdlib__Array.of_list(Stdlib__List.rev(warnings.contents))
     }
@@ -1170,6 +1237,7 @@ export {
   add_ed_marker,
   add_final_person_suffix,
   add_oblique_object,
+  add_subordinator,
   print,
 }
 /* No side effect */

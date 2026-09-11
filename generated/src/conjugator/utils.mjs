@@ -149,55 +149,57 @@ function find_next_morpheme(_pos, arr) {
   };
 }
 
-function starts_with_vowel(str) {
-  const firstChar = Stdlib__String.make(1, Caml_string.get(str, 0));
-  switch (firstChar) {
-    case "a" :
-    case "e" :
-    case "i" :
-    case "o" :
-    case "u" :
-    case "\xc3\xa1" :
-    case "\xc3\xa8" :
-      return true;
-    default:
-      return false;
-  }
-}
-
-function ends_with_vowel(str) {
-  const vowels = {
-    hd: "a",
+const vowel_chars = {
+  hd: "a",
+  tl: {
+    hd: "á",
     tl: {
-      hd: "\xc3\xa1",
+      hd: "e",
       tl: {
-        hd: "e",
+        hd: "è",
         tl: {
-          hd: "\xc3\xa8",
+          hd: "i",
           tl: {
-            hd: "i",
+            hd: "o",
             tl: {
-              hd: "o",
+              hd: "u",
               tl: {
-                hd: "u",
-                tl: /* [] */ 0
+                hd: "ā",
+                tl: {
+                  hd: "ē",
+                  tl: {
+                    hd: "ī",
+                    tl: {
+                      hd: "ū",
+                      tl: /* [] */ 0
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
     }
-  };
+  }
+};
+
+function starts_with_vowel(str) {
+  const firstChar = Stdlib__String.make(1, Caml_string.get(str, 0));
+  return Stdlib__List.mem(firstChar, vowel_chars);
+}
+
+function ends_with_vowel(str) {
   try {
     const match = str.length;
     if (match === 0) {
       return false;
     }
     if (match === 1) {
-      return Stdlib__List.mem(str, vowels);
+      return Stdlib__List.mem(str, vowel_chars);
     }
     const last_char = Stdlib__String.make(1, Caml_string.get(str, str.length - 1 | 0));
-    return Stdlib__List.mem(last_char, vowels);
+    return Stdlib__List.mem(last_char, vowel_chars);
   }
   catch (raw_exn){
     const exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
@@ -208,29 +210,59 @@ function ends_with_vowel(str) {
   }
 }
 
+const consonant_chars = {
+  hd: "b",
+  tl: {
+    hd: "d",
+    tl: {
+      hd: "h",
+      tl: {
+        hd: "ḫ",
+        tl: {
+          hd: "g",
+          tl: {
+            hd: "k",
+            tl: {
+              hd: "l",
+              tl: {
+                hd: "m",
+                tl: {
+                  hd: "n",
+                  tl: {
+                    hd: "p",
+                    tl: {
+                      hd: "r",
+                      tl: {
+                        hd: "s",
+                        tl: {
+                          hd: "š",
+                          tl: {
+                            hd: "t",
+                            tl: {
+                              hd: "w",
+                              tl: {
+                                hd: "z",
+                                tl: /* [] */ 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 function starts_with_consonant(str) {
   const firstChar = Stdlib__String.make(1, Caml_string.get(str, 0));
-  switch (firstChar) {
-    case "b" :
-    case "d" :
-    case "g" :
-    case "h" :
-    case "k" :
-    case "l" :
-    case "m" :
-    case "n" :
-    case "p" :
-    case "r" :
-    case "s" :
-    case "t" :
-    case "w" :
-    case "z" :
-    case "\xc5\xa1" :
-    case "\xe1\xb8\xab" :
-      return true;
-    default:
-      return false;
-  }
+  return Stdlib__List.mem(firstChar, consonant_chars);
 }
 
 function remove_first_char(str) {
@@ -243,18 +275,10 @@ function remove_first_char(str) {
 
 function consonant_vowel_sequence(str) {
   return Stdlib__String.concat("", Stdlib__List.map((function (ch) {
-    const match = Stdlib__String.make(1, ch);
-    switch (match) {
-      case "a" :
-      case "e" :
-      case "i" :
-      case "o" :
-      case "u" :
-      case "\xc3\xa1" :
-      case "\xc3\xa8" :
-        return "V";
-      default:
-        return "C";
+    if (Stdlib__List.mem(Stdlib__String.make(1, ch), vowel_chars)) {
+      return "V";
+    } else {
+      return "C";
     }
   }), Stdlib__List.of_seq(Stdlib__String.to_seq(str))));
 }
@@ -329,8 +353,10 @@ export {
   marker_to_pos,
   find_previous_morpheme,
   find_next_morpheme,
+  vowel_chars,
   starts_with_vowel,
   ends_with_vowel,
+  consonant_chars,
   starts_with_consonant,
   remove_first_char,
   consonant_vowel_sequence,

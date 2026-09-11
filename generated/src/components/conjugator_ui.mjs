@@ -215,47 +215,56 @@ function Conjugator_ui(Props) {
   const set_coordinator = match$15[1];
   const coordinator = match$15[0];
   const match$16 = React.useState(function () {
+    return false;
+  });
+  const set_subordinator = match$16[1];
+  const match$17 = React.useState(function () {
     return null;
   });
-  const set_initial_person_prefix = match$16[1];
-  const initial_person_prefix = match$16[0];
-  const match$17 = React.useState(function () {
-    
-  });
-  const set_subject = match$17[1];
-  const subject = match$17[0];
+  const set_initial_person_prefix = match$17[1];
+  const initial_person_prefix = match$17[0];
   const match$18 = React.useState(function () {
     
   });
-  const set_object = match$18[1];
-  const object_ = match$18[0];
+  const set_subject = match$18[1];
+  const subject = match$18[0];
   const match$19 = React.useState(function () {
     
   });
-  const set_indirect_object = match$19[1];
-  const indirect_object = match$19[0];
+  const set_object = match$19[1];
+  const object_ = match$19[0];
   const match$20 = React.useState(function () {
-    return false;
+    
   });
-  const set_is_modal_open = match$20[1];
+  const set_indirect_object = match$20[1];
+  const indirect_object = match$20[0];
   const match$21 = React.useState(function () {
     
   });
-  const set_prefix_warning = match$21[1];
-  const prefix_warning = match$21[0];
+  const set_oblique_object = match$21[1];
+  const oblique_object = match$21[0];
   const match$22 = React.useState(function () {
+    return false;
+  });
+  const set_is_modal_open = match$22[1];
+  const match$23 = React.useState(function () {
     
   });
-  const set_general_warning = match$22[1];
-  const general_warning = match$22[0];
-  const match$23 = React.useState(function () {
-    return false;
-  });
-  const set_cuneiform_copy_tooltip_open = match$23[1];
+  const set_prefix_warning = match$23[1];
+  const prefix_warning = match$23[0];
   const match$24 = React.useState(function () {
+    
+  });
+  const set_general_warning = match$24[1];
+  const general_warning = match$24[0];
+  const match$25 = React.useState(function () {
     return false;
   });
-  const set_share_link_tooltip_open = match$24[1];
+  const set_cuneiform_copy_tooltip_open = match$25[1];
+  const match$26 = React.useState(function () {
+    return false;
+  });
+  const set_share_link_tooltip_open = match$26[1];
   const cuneiform_copy_tooltip_timeout = React.useRef(undefined);
   const share_link_tooltip_timeout = React.useRef(undefined);
   React.useEffect((function () {
@@ -542,6 +551,23 @@ function Conjugator_ui(Props) {
           } else {
             return;
           }
+        case "oblique-object" :
+          if (match !== undefined) {
+            return Curry._1(set_verb_form, (function (prev_verb_form) {
+              if (prev_verb_form !== undefined) {
+                Curry._1(set_error, (function (param) {
+                  
+                }));
+                Curry._1(set_oblique_object, (function (param) {
+                  return match;
+                }));
+                return Conjugator.set_oblique_object(prev_verb_form, match);
+              }
+              
+            }));
+          } else {
+            return;
+          }
         case "subject" :
           if (match !== undefined) {
             return Curry._1(set_verb_form, (function (prev_verb_form) {
@@ -604,6 +630,16 @@ function Conjugator_ui(Props) {
           return Curry._1(set_verb_form, (function (prev_verb_form) {
             if (prev_verb_form !== undefined) {
               return Conjugator.reset_object(prev_verb_form);
+            }
+            
+          }));
+        case "oblique-object" :
+          Curry._1(set_oblique_object, (function (param) {
+            
+          }));
+          return Curry._1(set_verb_form, (function (prev_verb_form) {
+            if (prev_verb_form !== undefined) {
+              return Conjugator.reset_oblique_object(prev_verb_form);
             }
             
           }));
@@ -901,6 +937,23 @@ function Conjugator_ui(Props) {
           }
           
         }));
+      case /* Subordinator */ 10 :
+        Curry._1(set_subordinator, (function (param) {
+          return checked;
+        }));
+        return Curry._1(set_verb_form, (function (prev_verb_form) {
+          if (prev_verb_form !== undefined) {
+            Curry._1(set_error, (function (param) {
+              
+            }));
+            if (checked) {
+              return Conjugator.set_subordinator(prev_verb_form);
+            } else {
+              return Conjugator.reset_subordinator(prev_verb_form);
+            }
+          }
+          
+        }));
     }
   };
   const reset = function (param) {
@@ -926,6 +979,9 @@ function Conjugator_ui(Props) {
       return false;
     }));
     Curry._1(set_coordinator, (function (param) {
+      return false;
+    }));
+    Curry._1(set_subordinator, (function (param) {
       return false;
     }));
     Curry._1(set_comitative, (function (param) {
@@ -1559,7 +1615,7 @@ function Conjugator_ui(Props) {
                       fullWidth: true,
                       size: "small"
                     }),
-                    size: 4
+                    size: 6
                   }),
                   JsxRuntime.jsx(Grid, {
                     children: JsxRuntime.jsxs(FormControl, {
@@ -1607,7 +1663,7 @@ function Conjugator_ui(Props) {
                       fullWidth: true,
                       size: "small"
                     }),
-                    size: 4
+                    size: 6
                   }),
                   JsxRuntime.jsx(Grid, {
                     children: JsxRuntime.jsxs(FormControl, {
@@ -1655,7 +1711,55 @@ function Conjugator_ui(Props) {
                       fullWidth: true,
                       size: "small"
                     }),
-                    size: 4
+                    size: 6
+                  }),
+                  JsxRuntime.jsx(Grid, {
+                    children: JsxRuntime.jsxs(FormControl, {
+                      children: [
+                        JsxRuntime.jsx(InputLabel, {
+                          children: "Oblique Object",
+                          id: "oblique-object-label"
+                        }),
+                        JsxRuntime.jsxs(Select, {
+                          children: [
+                            JsxRuntime.jsx(MenuItem, {
+                              children: JsxRuntime.jsx("i", {
+                                children: "None"
+                              }),
+                              value: ""
+                            }, "none"),
+                            Stdlib__Array.map((function (option) {
+                              const Key = option.value;
+                              return JsxRuntime.jsx(MenuItem, {
+                                children: option.label,
+                                value: option.value
+                              }, Key);
+                            }), pronoun_options)
+                          ],
+                          label: "Oblique Object",
+                          labelId: "oblique-object-label",
+                          onChange: (function ($$event, param) {
+                            const selected_value = $$event.target.value;
+                            const option = Stdlib__Array.find_opt((function (option) {
+                              return option.value === selected_value;
+                            }), pronoun_options);
+                            if (option !== undefined) {
+                              return change_pronoun(option, "oblique-object");
+                            } else {
+                              return change_pronoun(undefined, "oblique-object");
+                            }
+                          }),
+                          value: oblique_object !== undefined ? person_param_to_option(oblique_object).value : "",
+                          sx: {
+                            backgroundColor: "white"
+                          }
+                        })
+                      ],
+                      disabled: Stdlib__Option.is_none(verb_stem),
+                      fullWidth: true,
+                      size: "small"
+                    }),
+                    size: 6
                   })
                 ],
                 container: true,
@@ -2021,6 +2125,32 @@ function Conjugator_ui(Props) {
                 ],
                 container: true,
                 spacing: 0
+              }),
+              JsxRuntime.jsx(Grid, {
+                children: JsxRuntime.jsx(Grid, {
+                  children: JsxRuntime.jsx(FormGroup, {
+                    children: JsxRuntime.jsx(FormControlLabel, {
+                      control: JsxRuntime.jsx(Switch, {
+                        checked: match$16[0],
+                        disabled: Stdlib__Option.is_none(is_transitive) || Stdlib__Option.is_none(is_perfective) || Stdlib__Option.is_none(verb_stem),
+                        onChange: (function ($$event) {
+                          const checked = $$event.target.checked;
+                          change_prefix(/* Subordinator */ 10, checked);
+                        })
+                      }),
+                      label: "Nominalizing Suffix {-a}"
+                    })
+                  }),
+                  size: 12
+                }),
+                container: true,
+                direction: "row",
+                spacing: 2,
+                sx: {
+                  width: "100%",
+                  alignItems: "center",
+                  marginTop
+                }
               })
             ],
             size: {
@@ -2094,7 +2224,7 @@ function Conjugator_ui(Props) {
                         return false;
                       }));
                     }),
-                    open: match$23[0],
+                    open: match$25[0],
                     title: "Cuneiform copied!"
                   }),
                   JsxRuntime.jsx(Tooltip, {
@@ -2197,7 +2327,7 @@ function Conjugator_ui(Props) {
                         return false;
                       }));
                     }),
-                    open: match$24[0],
+                    open: match$26[0],
                     title: "Link copied!"
                   }),
                   JsxRuntime.jsx(Button, {
@@ -2236,7 +2366,7 @@ function Conjugator_ui(Props) {
         children: JsxRuntime.jsx(Components__Verb_error_form.make, {
           verb: verb_form
         }),
-        is_open: match$20[0],
+        is_open: match$22[0],
         close: (function (param) {
           Curry._1(set_is_modal_open, (function (param) {
             return false;

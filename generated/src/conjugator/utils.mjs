@@ -164,14 +164,17 @@ const vowel_chars = {
             tl: {
               hd: "u",
               tl: {
-                hd: "ā",
+                hd: "ú",
                 tl: {
-                  hd: "ē",
+                  hd: "ā",
                   tl: {
-                    hd: "ī",
+                    hd: "ē",
                     tl: {
-                      hd: "ū",
-                      tl: /* [] */ 0
+                      hd: "ī",
+                      tl: {
+                        hd: "ū",
+                        tl: /* [] */ 0
+                      }
                     }
                   }
                 }

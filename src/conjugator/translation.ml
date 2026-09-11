@@ -26,6 +26,7 @@ let irregular_verbs : entry list = [
   { word = "begin"; values = ("begin", "began", "begun") };
   { word = "bend"; values = ("bend", "bent", "bent") };
   { word = "bet"; values = ("bet", "bet", "bet") };
+  { word = "bind"; values = ("bind", "bound", "bound") };
   { word = "bite"; values = ("bite", "bit", "bitten") };
   { word = "bleed"; values = ("bleed", "bled", "bled") };
   { word = "blow"; values = ("blow", "blew", "blown") };

@@ -22,6 +22,28 @@
     "notes": []
   },
   {
+    "label": "de",
+    "meaning": "bring",
+    "english": { "lemma": "bring" },
+    "stem": "de",
+    "stem_cuneiforms": ["𒁺"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "túm" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "du",
+    "meaning": "build",
+    "english": { "lemma": "build" },
+    "stem": "du",
+    "stem_cuneiforms": ["𒆕"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "dug",
     "meaning": "speak",
     "english": { "lemma": "speak" },
@@ -41,6 +63,17 @@
     "kind": { "type": "simple" },
     "imperfective": { "type": "other", "value": "ed" },
     "transitive": false,
+    "notes": []
+  },
+  {
+    "label": "eshbar kiĝ",
+    "meaning": "decide",
+    "english": { "lemma": "decide" },
+    "stem": "kiĝ",
+    "stem_cuneiforms": ["𒆥"],
+    "kind": { "type": "compound", "value": "eshbar", "cuneiforms": ["𒌍", "𒁇"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
     "notes": []
   },
   {
@@ -66,6 +99,17 @@
     "notes": []
   },
   {
+    "label": "gid",
+    "meaning": "pull",
+    "english": { "lemma": "pull" },
+    "stem": "gid",
+    "stem_cuneiforms": ["𒁍"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "gu",
     "meaning": "eat",
     "english": { "lemma": "eat" },
@@ -88,6 +132,17 @@
     "notes": []
   },
   {
+    "label": "gur",
+    "meaning": "reap",
+    "english": { "lemma": "reap" },
+    "stem": "gur",
+    "stem_cuneiforms": ["𒆥"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "ĝal",
     "meaning": "exist",
     "english": { "lemma": "exist" },
@@ -106,6 +161,43 @@
     "stem_cuneiforms": ["𒃻"],
     "kind": { "type": "simple" },
     "imperfective": { "type": "reduplicate", "value": "ĝa-ĝa" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "ĝesh tag",
+    "meaning": "make offerings",
+    "english": {
+      "lemma": "make",
+      "complement": "offerings",
+      "complement_placement": "after_verb"
+    },
+    "stem": "tag",
+    "stem_cuneiforms": ["𒋳"],
+    "kind": { "type": "compound", "value": "ĝesh", "cuneiforms": ["𒄑"] },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "ĝeshkim til",
+    "meaning": "trust",
+    "english": { "lemma": "trust" },
+    "stem": "til",
+    "stem_cuneiforms": ["𒋾"],
+    "kind": { "type": "compound", "value": "ĝeshkim", "cuneiforms": ["𒅆", "𒁾"] },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "hul",
+    "meaning": "destroy",
+    "english": { "lemma": "destroy" },
+    "stem": "hul",
+    "stem_cuneiforms": ["𒅆𒌨"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate", "value": "hulhu" },
     "transitive": true,
     "notes": []
   },
@@ -164,12 +256,49 @@
     "notes": []
   },
   {
+    "label": "kalag",
+    "meaning": "be strong",
+    "english": {
+      "lemma": "be",
+      "complement": "strong",
+      "complement_placement": "after_verb"
+    },
+    "stem": "kalag",
+    "stem_cuneiforms": ["𒆗"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": []
+  },
+  {
+    "label": "kesh",
+    "meaning": "bind",
+    "english": { "lemma": "bind" },
+    "stem": "kesh",
+    "stem_cuneiforms": ["𒆟"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "ki aĝ",
     "meaning": "love",
     "english": { "lemma": "love" },
     "stem": "aĝ",
     "stem_cuneiforms": ["𒉘"],
     "kind": { "type": "compound", "value": "ki", "cuneiforms": ["𒆠"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "kiĝ",
+    "meaning": "seek",
+    "english": { "lemma": "seek" },
+    "stem": "kiĝ",
+    "stem_cuneiforms": ["𒆥"],
+    "kind": { "type": "simple" },
     "imperfective": { "type": "reduplicate" },
     "transitive": true,
     "notes": []
@@ -186,6 +315,17 @@
     "notes": []
   },
   {
+    "label": "la",
+    "meaning": "weigh",
+    "english": { "lemma": "weigh" },
+    "stem": "la",
+    "stem_cuneiforms": ["𒇲"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "other", "value": "la" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "naĝ",
     "meaning": "drink",
     "english": { "lemma": "drink" },
@@ -194,6 +334,60 @@
     "kind": { "type": "simple" },
     "imperfective": { "type": "reduplicate", "value": "na-na" },
     "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "nú",
+    "meaning": "lie down",
+    "english": {
+      "lemma": "lie",
+      "complement": "down",
+      "complement_placement": "after_verb"
+    },
+    "stem": "nú",
+    "stem_cuneiforms": ["𒈿"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": [
+      "Written with an accent to distinguish it from \"nu\", the negative prefix."
+    ]
+  },
+  {
+    "label": "pad",
+    "meaning": "find",
+    "english": { "lemma": "find" },
+    "stem": "pad",
+    "stem_cuneiforms": ["𒅆𒊒"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "ra",
+    "meaning": "hit",
+    "english": { "lemma": "hit" },
+    "stem": "ra",
+    "stem_cuneiforms": ["𒊏"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "sag",
+    "meaning": "be beautiful",
+    "english": {
+      "lemma": "be",
+      "complement": "beautiful",
+      "complement_placement": "after_verb"
+    },
+    "stem": "sag",
+    "stem_cuneiforms": ["𒊷"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
     "notes": []
   },
   {
@@ -214,6 +408,28 @@
     "stem": "bala",
     "stem_cuneiforms": ["𒁄"],
     "kind": { "type": "compound", "value": "shag", "cuneiforms": ["𒊮"] },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "shu gid",
+    "meaning": "accept",
+    "english": { "lemma": "accept" },
+    "stem": "gid",
+    "stem_cuneiforms": ["𒁍"],
+    "kind": { "type": "compound", "value": "shu", "cuneiforms": ["𒋗"] },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "shu tag",
+    "meaning": "decorate",
+    "english": { "lemma": "decorate" },
+    "stem": "tag",
+    "stem_cuneiforms": ["𒋳"],
+    "kind": { "type": "compound", "value": "shu", "cuneiforms": ["𒋗"] },
     "imperfective": { "type": "ed_marker" },
     "transitive": true,
     "notes": []
@@ -252,11 +468,72 @@
     "notes": []
   },
   {
+    "label": "silim",
+    "meaning": "be healthy",
+    "english": {
+      "lemma": "be",
+      "complement": "healthy",
+      "complement_placement": "after_verb"
+    },
+    "stem": "silim",
+    "stem_cuneiforms": ["𒁲"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": []
+  },
+  {
+    "label": "tag",
+    "meaning": "touch",
+    "english": { "lemma": "touch" },
+    "stem": "tag",
+    "stem_cuneiforms": ["𒋳"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "teĝ",
     "meaning": "approach",
     "english": { "lemma": "approach" },
     "stem": "teĝ",
     "stem_cuneiforms": ["𒋾"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": []
+  },
+  {
+    "label": "til",
+    "meaning": "finish",
+    "english": { "lemma": "finish" },
+    "stem": "til",
+    "stem_cuneiforms": ["𒌀"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": []
+  },
+  {
+    "label": "tìl",
+    "meaning": "live",
+    "english": { "lemma": "live" },
+    "stem": "tìl",
+    "stem_cuneiforms": ["𒁁"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": [
+      "Written with a grave accent to distinguish it from \"til\" (\"finish\")."
+    ]
+  },
+  {
+    "label": "tu",
+    "meaning": "bathe",
+    "english": { "lemma": "bathe" },
+    "stem": "tu",
+    "stem_cuneiforms": ["𒋗𒉀"],
     "kind": { "type": "simple" },
     "imperfective": { "type": "reduplicate" },
     "transitive": true,
@@ -285,6 +562,21 @@
     "notes": []
   },
   {
+    "label": "zag tag",
+    "meaning": "push away",
+    "english": {
+      "lemma": "push",
+      "complement": "away",
+      "complement_placement": "after_verb"
+    },
+    "stem": "tag",
+    "stem_cuneiforms": ["𒋳"],
+    "kind": { "type": "compound", "value": "zag", "cuneiforms": ["𒍠"] },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "zah",
     "meaning": "disappear",
     "english": { "lemma": "disappear" },
@@ -294,6 +586,19 @@
     "imperfective": { "type": "ed_marker" },
     "transitive": false,
     "notes": []
+  },
+  {
+    "label": "zal",
+    "meaning": "pass",
+    "english": { "lemma": "pass" },
+    "stem": "zal",
+    "stem_cuneiforms": ["𒉌"],
+    "kind": { "type": "simple" },
+    "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": [
+      "Used of time passing."
+    ]
   },
   {
     "label": "zig",

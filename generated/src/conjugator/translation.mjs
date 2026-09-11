@@ -62,1031 +62,1041 @@ const irregular_verbs = {
             },
             tl: {
               hd: {
-                word: "bite",
+                word: "bind",
                 values: [
-                  "bite",
-                  "bit",
-                  "bitten"
+                  "bind",
+                  "bound",
+                  "bound"
                 ]
               },
               tl: {
                 hd: {
-                  word: "bleed",
+                  word: "bite",
                   values: [
-                    "bleed",
-                    "bled",
-                    "bled"
+                    "bite",
+                    "bit",
+                    "bitten"
                   ]
                 },
                 tl: {
                   hd: {
-                    word: "blow",
+                    word: "bleed",
                     values: [
-                      "blow",
-                      "blew",
-                      "blown"
+                      "bleed",
+                      "bled",
+                      "bled"
                     ]
                   },
                   tl: {
                     hd: {
-                      word: "break",
+                      word: "blow",
                       values: [
-                        "break",
-                        "broke",
-                        "broken"
+                        "blow",
+                        "blew",
+                        "blown"
                       ]
                     },
                     tl: {
                       hd: {
-                        word: "breed",
+                        word: "break",
                         values: [
-                          "breed",
-                          "bred",
-                          "bred"
+                          "break",
+                          "broke",
+                          "broken"
                         ]
                       },
                       tl: {
                         hd: {
-                          word: "bring",
+                          word: "breed",
                           values: [
-                            "bring",
-                            "brought",
-                            "brought"
+                            "breed",
+                            "bred",
+                            "bred"
                           ]
                         },
                         tl: {
                           hd: {
-                            word: "build",
+                            word: "bring",
                             values: [
-                              "build",
-                              "built",
-                              "built"
+                              "bring",
+                              "brought",
+                              "brought"
                             ]
                           },
                           tl: {
                             hd: {
-                              word: "burn",
+                              word: "build",
                               values: [
-                                "burn",
-                                "burned/ burnt",
-                                "burned/ burnt"
+                                "build",
+                                "built",
+                                "built"
                               ]
                             },
                             tl: {
                               hd: {
-                                word: "burst",
+                                word: "burn",
                                 values: [
-                                  "burst",
-                                  "burst",
-                                  "burst"
+                                  "burn",
+                                  "burned/ burnt",
+                                  "burned/ burnt"
                                 ]
                               },
                               tl: {
                                 hd: {
-                                  word: "buy",
+                                  word: "burst",
                                   values: [
-                                    "buy",
-                                    "bought",
-                                    "bought"
+                                    "burst",
+                                    "burst",
+                                    "burst"
                                   ]
                                 },
                                 tl: {
                                   hd: {
-                                    word: "catch",
+                                    word: "buy",
                                     values: [
-                                      "catch",
-                                      "caught",
-                                      "caught"
+                                      "buy",
+                                      "bought",
+                                      "bought"
                                     ]
                                   },
                                   tl: {
                                     hd: {
-                                      word: "choose",
+                                      word: "catch",
                                       values: [
-                                        "choose",
-                                        "chose",
-                                        "chosen"
+                                        "catch",
+                                        "caught",
+                                        "caught"
                                       ]
                                     },
                                     tl: {
                                       hd: {
-                                        word: "come",
+                                        word: "choose",
                                         values: [
-                                          "come",
-                                          "came",
-                                          "come"
+                                          "choose",
+                                          "chose",
+                                          "chosen"
                                         ]
                                       },
                                       tl: {
                                         hd: {
-                                          word: "cost",
+                                          word: "come",
                                           values: [
-                                            "cost",
-                                            "cost",
-                                            "cost"
+                                            "come",
+                                            "came",
+                                            "come"
                                           ]
                                         },
                                         tl: {
                                           hd: {
-                                            word: "cut",
+                                            word: "cost",
                                             values: [
-                                              "cut",
-                                              "cut",
-                                              "cut"
+                                              "cost",
+                                              "cost",
+                                              "cost"
                                             ]
                                           },
                                           tl: {
                                             hd: {
-                                              word: "do",
+                                              word: "cut",
                                               values: [
-                                                "do",
-                                                "did",
-                                                "done"
+                                                "cut",
+                                                "cut",
+                                                "cut"
                                               ]
                                             },
                                             tl: {
                                               hd: {
-                                                word: "draw",
+                                                word: "do",
                                                 values: [
-                                                  "draw",
-                                                  "drew",
-                                                  "drawn"
+                                                  "do",
+                                                  "did",
+                                                  "done"
                                                 ]
                                               },
                                               tl: {
                                                 hd: {
-                                                  word: "dream",
+                                                  word: "draw",
                                                   values: [
-                                                    "dream",
-                                                    "dreamed/ dreamt",
-                                                    "dreamed/ dreamt"
+                                                    "draw",
+                                                    "drew",
+                                                    "drawn"
                                                   ]
                                                 },
                                                 tl: {
                                                   hd: {
-                                                    word: "drink",
+                                                    word: "dream",
                                                     values: [
-                                                      "drink",
-                                                      "drank",
-                                                      "drunk"
+                                                      "dream",
+                                                      "dreamed/ dreamt",
+                                                      "dreamed/ dreamt"
                                                     ]
                                                   },
                                                   tl: {
                                                     hd: {
-                                                      word: "drive",
+                                                      word: "drink",
                                                       values: [
-                                                        "drive",
-                                                        "drove",
-                                                        "driven"
+                                                        "drink",
+                                                        "drank",
+                                                        "drunk"
                                                       ]
                                                     },
                                                     tl: {
                                                       hd: {
-                                                        word: "eat",
+                                                        word: "drive",
                                                         values: [
-                                                          "eat",
-                                                          "ate",
-                                                          "eaten"
+                                                          "drive",
+                                                          "drove",
+                                                          "driven"
                                                         ]
                                                       },
                                                       tl: {
                                                         hd: {
-                                                          word: "fall",
+                                                          word: "eat",
                                                           values: [
-                                                            "fall",
-                                                            "fell",
-                                                            "fallen"
+                                                            "eat",
+                                                            "ate",
+                                                            "eaten"
                                                           ]
                                                         },
                                                         tl: {
                                                           hd: {
-                                                            word: "feed",
+                                                            word: "fall",
                                                             values: [
-                                                              "feed",
-                                                              "fed",
-                                                              "fed"
+                                                              "fall",
+                                                              "fell",
+                                                              "fallen"
                                                             ]
                                                           },
                                                           tl: {
                                                             hd: {
-                                                              word: "feel",
+                                                              word: "feed",
                                                               values: [
-                                                                "feel",
-                                                                "felt",
-                                                                "felt"
+                                                                "feed",
+                                                                "fed",
+                                                                "fed"
                                                               ]
                                                             },
                                                             tl: {
                                                               hd: {
-                                                                word: "fight",
+                                                                word: "feel",
                                                                 values: [
-                                                                  "fight",
-                                                                  "fought",
-                                                                  "fought"
+                                                                  "feel",
+                                                                  "felt",
+                                                                  "felt"
                                                                 ]
                                                               },
                                                               tl: {
                                                                 hd: {
-                                                                  word: "find",
+                                                                  word: "fight",
                                                                   values: [
-                                                                    "find",
-                                                                    "found",
-                                                                    "found"
+                                                                    "fight",
+                                                                    "fought",
+                                                                    "fought"
                                                                   ]
                                                                 },
                                                                 tl: {
                                                                   hd: {
-                                                                    word: "fly",
+                                                                    word: "find",
                                                                     values: [
-                                                                      "fly",
-                                                                      "flew",
-                                                                      "flown"
+                                                                      "find",
+                                                                      "found",
+                                                                      "found"
                                                                     ]
                                                                   },
                                                                   tl: {
                                                                     hd: {
-                                                                      word: "forget",
+                                                                      word: "fly",
                                                                       values: [
-                                                                        "forget",
-                                                                        "forgot",
-                                                                        "forgotten"
+                                                                        "fly",
+                                                                        "flew",
+                                                                        "flown"
                                                                       ]
                                                                     },
                                                                     tl: {
                                                                       hd: {
-                                                                        word: "forgive",
+                                                                        word: "forget",
                                                                         values: [
-                                                                          "forgive",
-                                                                          "forgave",
-                                                                          "forgiven"
+                                                                          "forget",
+                                                                          "forgot",
+                                                                          "forgotten"
                                                                         ]
                                                                       },
                                                                       tl: {
                                                                         hd: {
-                                                                          word: "freeze",
+                                                                          word: "forgive",
                                                                           values: [
-                                                                            "freeze",
-                                                                            "froze",
-                                                                            "frozen"
+                                                                            "forgive",
+                                                                            "forgave",
+                                                                            "forgiven"
                                                                           ]
                                                                         },
                                                                         tl: {
                                                                           hd: {
-                                                                            word: "get",
+                                                                            word: "freeze",
                                                                             values: [
-                                                                              "get",
-                                                                              "got",
-                                                                              "gotten/ got"
+                                                                              "freeze",
+                                                                              "froze",
+                                                                              "frozen"
                                                                             ]
                                                                           },
                                                                           tl: {
                                                                             hd: {
-                                                                              word: "give",
+                                                                              word: "get",
                                                                               values: [
-                                                                                "give",
-                                                                                "gave",
-                                                                                "given"
+                                                                                "get",
+                                                                                "got",
+                                                                                "gotten/ got"
                                                                               ]
                                                                             },
                                                                             tl: {
                                                                               hd: {
-                                                                                word: "go",
+                                                                                word: "give",
                                                                                 values: [
-                                                                                  "go",
-                                                                                  "went",
-                                                                                  "gone"
+                                                                                  "give",
+                                                                                  "gave",
+                                                                                  "given"
                                                                                 ]
                                                                               },
                                                                               tl: {
                                                                                 hd: {
-                                                                                  word: "grow",
+                                                                                  word: "go",
                                                                                   values: [
-                                                                                    "grow",
-                                                                                    "grew",
-                                                                                    "grown"
+                                                                                    "go",
+                                                                                    "went",
+                                                                                    "gone"
                                                                                   ]
                                                                                 },
                                                                                 tl: {
                                                                                   hd: {
-                                                                                    word: "hang",
+                                                                                    word: "grow",
                                                                                     values: [
-                                                                                      "hang",
-                                                                                      "hung",
-                                                                                      "hung"
+                                                                                      "grow",
+                                                                                      "grew",
+                                                                                      "grown"
                                                                                     ]
                                                                                   },
                                                                                   tl: {
                                                                                     hd: {
-                                                                                      word: "have",
+                                                                                      word: "hang",
                                                                                       values: [
-                                                                                        "have",
-                                                                                        "had",
-                                                                                        "had"
+                                                                                        "hang",
+                                                                                        "hung",
+                                                                                        "hung"
                                                                                       ]
                                                                                     },
                                                                                     tl: {
                                                                                       hd: {
-                                                                                        word: "hear",
+                                                                                        word: "have",
                                                                                         values: [
-                                                                                          "hear",
-                                                                                          "heard",
-                                                                                          "heard"
+                                                                                          "have",
+                                                                                          "had",
+                                                                                          "had"
                                                                                         ]
                                                                                       },
                                                                                       tl: {
                                                                                         hd: {
-                                                                                          word: "hide",
+                                                                                          word: "hear",
                                                                                           values: [
-                                                                                            "hide",
-                                                                                            "hid",
-                                                                                            "hidden"
+                                                                                            "hear",
+                                                                                            "heard",
+                                                                                            "heard"
                                                                                           ]
                                                                                         },
                                                                                         tl: {
                                                                                           hd: {
-                                                                                            word: "hit",
+                                                                                            word: "hide",
                                                                                             values: [
-                                                                                              "hit",
-                                                                                              "hit",
-                                                                                              "hit"
+                                                                                              "hide",
+                                                                                              "hid",
+                                                                                              "hidden"
                                                                                             ]
                                                                                           },
                                                                                           tl: {
                                                                                             hd: {
-                                                                                              word: "hold",
+                                                                                              word: "hit",
                                                                                               values: [
-                                                                                                "hold",
-                                                                                                "held",
-                                                                                                "held"
+                                                                                                "hit",
+                                                                                                "hit",
+                                                                                                "hit"
                                                                                               ]
                                                                                             },
                                                                                             tl: {
                                                                                               hd: {
-                                                                                                word: "hurt",
+                                                                                                word: "hold",
                                                                                                 values: [
-                                                                                                  "hurt",
-                                                                                                  "hurt",
-                                                                                                  "hurt"
+                                                                                                  "hold",
+                                                                                                  "held",
+                                                                                                  "held"
                                                                                                 ]
                                                                                               },
                                                                                               tl: {
                                                                                                 hd: {
-                                                                                                  word: "keep",
+                                                                                                  word: "hurt",
                                                                                                   values: [
-                                                                                                    "keep",
-                                                                                                    "kept",
-                                                                                                    "kept"
+                                                                                                    "hurt",
+                                                                                                    "hurt",
+                                                                                                    "hurt"
                                                                                                   ]
                                                                                                 },
                                                                                                 tl: {
                                                                                                   hd: {
-                                                                                                    word: "kneel",
+                                                                                                    word: "keep",
                                                                                                     values: [
-                                                                                                      "kneel",
-                                                                                                      "knelt",
-                                                                                                      "knelt"
+                                                                                                      "keep",
+                                                                                                      "kept",
+                                                                                                      "kept"
                                                                                                     ]
                                                                                                   },
                                                                                                   tl: {
                                                                                                     hd: {
-                                                                                                      word: "know",
+                                                                                                      word: "kneel",
                                                                                                       values: [
-                                                                                                        "know",
-                                                                                                        "knew",
-                                                                                                        "known"
+                                                                                                        "kneel",
+                                                                                                        "knelt",
+                                                                                                        "knelt"
                                                                                                       ]
                                                                                                     },
                                                                                                     tl: {
                                                                                                       hd: {
-                                                                                                        word: "lay",
+                                                                                                        word: "know",
                                                                                                         values: [
-                                                                                                          "lay",
-                                                                                                          "laid",
-                                                                                                          "laid"
+                                                                                                          "know",
+                                                                                                          "knew",
+                                                                                                          "known"
                                                                                                         ]
                                                                                                       },
                                                                                                       tl: {
                                                                                                         hd: {
-                                                                                                          word: "lead",
+                                                                                                          word: "lay",
                                                                                                           values: [
-                                                                                                            "lead",
-                                                                                                            "led",
-                                                                                                            "led"
+                                                                                                            "lay",
+                                                                                                            "laid",
+                                                                                                            "laid"
                                                                                                           ]
                                                                                                         },
                                                                                                         tl: {
                                                                                                           hd: {
-                                                                                                            word: "lean",
+                                                                                                            word: "lead",
                                                                                                             values: [
-                                                                                                              "lean",
-                                                                                                              "leaned/ leant",
-                                                                                                              "leaned/ leant"
+                                                                                                              "lead",
+                                                                                                              "led",
+                                                                                                              "led"
                                                                                                             ]
                                                                                                           },
                                                                                                           tl: {
                                                                                                             hd: {
-                                                                                                              word: "leave",
+                                                                                                              word: "lean",
                                                                                                               values: [
-                                                                                                                "leave",
-                                                                                                                "left",
-                                                                                                                "left"
+                                                                                                                "lean",
+                                                                                                                "leaned/ leant",
+                                                                                                                "leaned/ leant"
                                                                                                               ]
                                                                                                             },
                                                                                                             tl: {
                                                                                                               hd: {
-                                                                                                                word: "lend",
+                                                                                                                word: "leave",
                                                                                                                 values: [
-                                                                                                                  "lend",
-                                                                                                                  "lent",
-                                                                                                                  "lent"
+                                                                                                                  "leave",
+                                                                                                                  "left",
+                                                                                                                  "left"
                                                                                                                 ]
                                                                                                               },
                                                                                                               tl: {
                                                                                                                 hd: {
-                                                                                                                  word: "let",
+                                                                                                                  word: "lend",
                                                                                                                   values: [
-                                                                                                                    "let",
-                                                                                                                    "let",
-                                                                                                                    "let"
+                                                                                                                    "lend",
+                                                                                                                    "lent",
+                                                                                                                    "lent"
                                                                                                                   ]
                                                                                                                 },
                                                                                                                 tl: {
                                                                                                                   hd: {
-                                                                                                                    word: "lie",
+                                                                                                                    word: "let",
                                                                                                                     values: [
-                                                                                                                      "lie",
-                                                                                                                      "lay",
-                                                                                                                      "lain"
+                                                                                                                      "let",
+                                                                                                                      "let",
+                                                                                                                      "let"
                                                                                                                     ]
                                                                                                                   },
                                                                                                                   tl: {
                                                                                                                     hd: {
-                                                                                                                      word: "light",
+                                                                                                                      word: "lie",
                                                                                                                       values: [
-                                                                                                                        "light",
-                                                                                                                        "lit",
-                                                                                                                        "lit"
+                                                                                                                        "lie",
+                                                                                                                        "lay",
+                                                                                                                        "lain"
                                                                                                                       ]
                                                                                                                     },
                                                                                                                     tl: {
                                                                                                                       hd: {
-                                                                                                                        word: "lose",
+                                                                                                                        word: "light",
                                                                                                                         values: [
-                                                                                                                          "lose",
-                                                                                                                          "lost",
-                                                                                                                          "lost"
+                                                                                                                          "light",
+                                                                                                                          "lit",
+                                                                                                                          "lit"
                                                                                                                         ]
                                                                                                                       },
                                                                                                                       tl: {
                                                                                                                         hd: {
-                                                                                                                          word: "make",
+                                                                                                                          word: "lose",
                                                                                                                           values: [
-                                                                                                                            "make",
-                                                                                                                            "made",
-                                                                                                                            "made"
+                                                                                                                            "lose",
+                                                                                                                            "lost",
+                                                                                                                            "lost"
                                                                                                                           ]
                                                                                                                         },
                                                                                                                         tl: {
                                                                                                                           hd: {
-                                                                                                                            word: "mean",
+                                                                                                                            word: "make",
                                                                                                                             values: [
-                                                                                                                              "mean",
-                                                                                                                              "meant",
-                                                                                                                              "meant"
+                                                                                                                              "make",
+                                                                                                                              "made",
+                                                                                                                              "made"
                                                                                                                             ]
                                                                                                                           },
                                                                                                                           tl: {
                                                                                                                             hd: {
-                                                                                                                              word: "meet",
+                                                                                                                              word: "mean",
                                                                                                                               values: [
-                                                                                                                                "meet",
-                                                                                                                                "met",
-                                                                                                                                "met"
+                                                                                                                                "mean",
+                                                                                                                                "meant",
+                                                                                                                                "meant"
                                                                                                                               ]
                                                                                                                             },
                                                                                                                             tl: {
                                                                                                                               hd: {
-                                                                                                                                word: "pay",
+                                                                                                                                word: "meet",
                                                                                                                                 values: [
-                                                                                                                                  "pay",
-                                                                                                                                  "paid",
-                                                                                                                                  "paid"
+                                                                                                                                  "meet",
+                                                                                                                                  "met",
+                                                                                                                                  "met"
                                                                                                                                 ]
                                                                                                                               },
                                                                                                                               tl: {
                                                                                                                                 hd: {
-                                                                                                                                  word: "put",
+                                                                                                                                  word: "pay",
                                                                                                                                   values: [
-                                                                                                                                    "put",
-                                                                                                                                    "put",
-                                                                                                                                    "put"
+                                                                                                                                    "pay",
+                                                                                                                                    "paid",
+                                                                                                                                    "paid"
                                                                                                                                   ]
                                                                                                                                 },
                                                                                                                                 tl: {
                                                                                                                                   hd: {
-                                                                                                                                    word: "read",
+                                                                                                                                    word: "put",
                                                                                                                                     values: [
-                                                                                                                                      "read",
-                                                                                                                                      "read",
-                                                                                                                                      "read"
+                                                                                                                                      "put",
+                                                                                                                                      "put",
+                                                                                                                                      "put"
                                                                                                                                     ]
                                                                                                                                   },
                                                                                                                                   tl: {
                                                                                                                                     hd: {
-                                                                                                                                      word: "ride",
+                                                                                                                                      word: "read",
                                                                                                                                       values: [
-                                                                                                                                        "ride",
-                                                                                                                                        "rode",
-                                                                                                                                        "ridden"
+                                                                                                                                        "read",
+                                                                                                                                        "read",
+                                                                                                                                        "read"
                                                                                                                                       ]
                                                                                                                                     },
                                                                                                                                     tl: {
                                                                                                                                       hd: {
-                                                                                                                                        word: "ring",
+                                                                                                                                        word: "ride",
                                                                                                                                         values: [
-                                                                                                                                          "ring",
-                                                                                                                                          "rang",
-                                                                                                                                          "rung"
+                                                                                                                                          "ride",
+                                                                                                                                          "rode",
+                                                                                                                                          "ridden"
                                                                                                                                         ]
                                                                                                                                       },
                                                                                                                                       tl: {
                                                                                                                                         hd: {
-                                                                                                                                          word: "rise",
+                                                                                                                                          word: "ring",
                                                                                                                                           values: [
-                                                                                                                                            "rise",
-                                                                                                                                            "rose",
-                                                                                                                                            "risen"
+                                                                                                                                            "ring",
+                                                                                                                                            "rang",
+                                                                                                                                            "rung"
                                                                                                                                           ]
                                                                                                                                         },
                                                                                                                                         tl: {
                                                                                                                                           hd: {
-                                                                                                                                            word: "run",
+                                                                                                                                            word: "rise",
                                                                                                                                             values: [
-                                                                                                                                              "run",
-                                                                                                                                              "ran",
-                                                                                                                                              "run"
+                                                                                                                                              "rise",
+                                                                                                                                              "rose",
+                                                                                                                                              "risen"
                                                                                                                                             ]
                                                                                                                                           },
                                                                                                                                           tl: {
                                                                                                                                             hd: {
-                                                                                                                                              word: "say",
+                                                                                                                                              word: "run",
                                                                                                                                               values: [
-                                                                                                                                                "say",
-                                                                                                                                                "said",
-                                                                                                                                                "said"
+                                                                                                                                                "run",
+                                                                                                                                                "ran",
+                                                                                                                                                "run"
                                                                                                                                               ]
                                                                                                                                             },
                                                                                                                                             tl: {
                                                                                                                                               hd: {
-                                                                                                                                                word: "see",
+                                                                                                                                                word: "say",
                                                                                                                                                 values: [
-                                                                                                                                                  "see",
-                                                                                                                                                  "saw",
-                                                                                                                                                  "seen"
+                                                                                                                                                  "say",
+                                                                                                                                                  "said",
+                                                                                                                                                  "said"
                                                                                                                                                 ]
                                                                                                                                               },
                                                                                                                                               tl: {
                                                                                                                                                 hd: {
-                                                                                                                                                  word: "seek",
+                                                                                                                                                  word: "see",
                                                                                                                                                   values: [
-                                                                                                                                                    "seek",
-                                                                                                                                                    "sought",
-                                                                                                                                                    "sought"
+                                                                                                                                                    "see",
+                                                                                                                                                    "saw",
+                                                                                                                                                    "seen"
                                                                                                                                                   ]
                                                                                                                                                 },
                                                                                                                                                 tl: {
                                                                                                                                                   hd: {
-                                                                                                                                                    word: "sell",
+                                                                                                                                                    word: "seek",
                                                                                                                                                     values: [
-                                                                                                                                                      "sell",
-                                                                                                                                                      "sold",
-                                                                                                                                                      "sold"
+                                                                                                                                                      "seek",
+                                                                                                                                                      "sought",
+                                                                                                                                                      "sought"
                                                                                                                                                     ]
                                                                                                                                                   },
                                                                                                                                                   tl: {
                                                                                                                                                     hd: {
-                                                                                                                                                      word: "send",
+                                                                                                                                                      word: "sell",
                                                                                                                                                       values: [
-                                                                                                                                                        "send",
-                                                                                                                                                        "sent",
-                                                                                                                                                        "sent"
+                                                                                                                                                        "sell",
+                                                                                                                                                        "sold",
+                                                                                                                                                        "sold"
                                                                                                                                                       ]
                                                                                                                                                     },
                                                                                                                                                     tl: {
                                                                                                                                                       hd: {
-                                                                                                                                                        word: "set",
+                                                                                                                                                        word: "send",
                                                                                                                                                         values: [
-                                                                                                                                                          "set",
-                                                                                                                                                          "set",
-                                                                                                                                                          "set"
+                                                                                                                                                          "send",
+                                                                                                                                                          "sent",
+                                                                                                                                                          "sent"
                                                                                                                                                         ]
                                                                                                                                                       },
                                                                                                                                                       tl: {
                                                                                                                                                         hd: {
-                                                                                                                                                          word: "shake",
+                                                                                                                                                          word: "set",
                                                                                                                                                           values: [
-                                                                                                                                                            "shake",
-                                                                                                                                                            "shook",
-                                                                                                                                                            "shaken"
+                                                                                                                                                            "set",
+                                                                                                                                                            "set",
+                                                                                                                                                            "set"
                                                                                                                                                           ]
                                                                                                                                                         },
                                                                                                                                                         tl: {
                                                                                                                                                           hd: {
-                                                                                                                                                            word: "shine",
+                                                                                                                                                            word: "shake",
                                                                                                                                                             values: [
-                                                                                                                                                              "shine",
-                                                                                                                                                              "shone",
-                                                                                                                                                              "shone"
+                                                                                                                                                              "shake",
+                                                                                                                                                              "shook",
+                                                                                                                                                              "shaken"
                                                                                                                                                             ]
                                                                                                                                                           },
                                                                                                                                                           tl: {
                                                                                                                                                             hd: {
-                                                                                                                                                              word: "shoot",
+                                                                                                                                                              word: "shine",
                                                                                                                                                               values: [
-                                                                                                                                                                "shoot",
-                                                                                                                                                                "shot",
-                                                                                                                                                                "shot"
+                                                                                                                                                                "shine",
+                                                                                                                                                                "shone",
+                                                                                                                                                                "shone"
                                                                                                                                                               ]
                                                                                                                                                             },
                                                                                                                                                             tl: {
                                                                                                                                                               hd: {
-                                                                                                                                                                word: "show",
+                                                                                                                                                                word: "shoot",
                                                                                                                                                                 values: [
-                                                                                                                                                                  "show",
-                                                                                                                                                                  "showed",
-                                                                                                                                                                  "shown"
+                                                                                                                                                                  "shoot",
+                                                                                                                                                                  "shot",
+                                                                                                                                                                  "shot"
                                                                                                                                                                 ]
                                                                                                                                                               },
                                                                                                                                                               tl: {
                                                                                                                                                                 hd: {
-                                                                                                                                                                  word: "shut",
+                                                                                                                                                                  word: "show",
                                                                                                                                                                   values: [
-                                                                                                                                                                    "shut",
-                                                                                                                                                                    "shut",
-                                                                                                                                                                    "shut"
+                                                                                                                                                                    "show",
+                                                                                                                                                                    "showed",
+                                                                                                                                                                    "shown"
                                                                                                                                                                   ]
                                                                                                                                                                 },
                                                                                                                                                                 tl: {
                                                                                                                                                                   hd: {
-                                                                                                                                                                    word: "sing",
+                                                                                                                                                                    word: "shut",
                                                                                                                                                                     values: [
-                                                                                                                                                                      "sing",
-                                                                                                                                                                      "sang",
-                                                                                                                                                                      "sung"
+                                                                                                                                                                      "shut",
+                                                                                                                                                                      "shut",
+                                                                                                                                                                      "shut"
                                                                                                                                                                     ]
                                                                                                                                                                   },
                                                                                                                                                                   tl: {
                                                                                                                                                                     hd: {
-                                                                                                                                                                      word: "sink",
+                                                                                                                                                                      word: "sing",
                                                                                                                                                                       values: [
-                                                                                                                                                                        "sink",
-                                                                                                                                                                        "sank",
-                                                                                                                                                                        "sunk"
+                                                                                                                                                                        "sing",
+                                                                                                                                                                        "sang",
+                                                                                                                                                                        "sung"
                                                                                                                                                                       ]
                                                                                                                                                                     },
                                                                                                                                                                     tl: {
                                                                                                                                                                       hd: {
-                                                                                                                                                                        word: "sit",
+                                                                                                                                                                        word: "sink",
                                                                                                                                                                         values: [
-                                                                                                                                                                          "sit",
-                                                                                                                                                                          "sat",
-                                                                                                                                                                          "sat"
+                                                                                                                                                                          "sink",
+                                                                                                                                                                          "sank",
+                                                                                                                                                                          "sunk"
                                                                                                                                                                         ]
                                                                                                                                                                       },
                                                                                                                                                                       tl: {
                                                                                                                                                                         hd: {
-                                                                                                                                                                          word: "sleep",
+                                                                                                                                                                          word: "sit",
                                                                                                                                                                           values: [
-                                                                                                                                                                            "sleep",
-                                                                                                                                                                            "slept",
-                                                                                                                                                                            "slept"
+                                                                                                                                                                            "sit",
+                                                                                                                                                                            "sat",
+                                                                                                                                                                            "sat"
                                                                                                                                                                           ]
                                                                                                                                                                         },
                                                                                                                                                                         tl: {
                                                                                                                                                                           hd: {
-                                                                                                                                                                            word: "speak",
+                                                                                                                                                                            word: "sleep",
                                                                                                                                                                             values: [
-                                                                                                                                                                              "speak",
-                                                                                                                                                                              "spoke",
-                                                                                                                                                                              "spoken"
+                                                                                                                                                                              "sleep",
+                                                                                                                                                                              "slept",
+                                                                                                                                                                              "slept"
                                                                                                                                                                             ]
                                                                                                                                                                           },
                                                                                                                                                                           tl: {
                                                                                                                                                                             hd: {
-                                                                                                                                                                              word: "speed",
+                                                                                                                                                                              word: "speak",
                                                                                                                                                                               values: [
-                                                                                                                                                                                "speed",
-                                                                                                                                                                                "sped",
-                                                                                                                                                                                "sped"
+                                                                                                                                                                                "speak",
+                                                                                                                                                                                "spoke",
+                                                                                                                                                                                "spoken"
                                                                                                                                                                               ]
                                                                                                                                                                             },
                                                                                                                                                                             tl: {
                                                                                                                                                                               hd: {
-                                                                                                                                                                                word: "spell",
+                                                                                                                                                                                word: "speed",
                                                                                                                                                                                 values: [
-                                                                                                                                                                                  "spell",
-                                                                                                                                                                                  "spelt/ spelled",
-                                                                                                                                                                                  "spelt/ spelled"
+                                                                                                                                                                                  "speed",
+                                                                                                                                                                                  "sped",
+                                                                                                                                                                                  "sped"
                                                                                                                                                                                 ]
                                                                                                                                                                               },
                                                                                                                                                                               tl: {
                                                                                                                                                                                 hd: {
-                                                                                                                                                                                  word: "spend",
+                                                                                                                                                                                  word: "spell",
                                                                                                                                                                                   values: [
-                                                                                                                                                                                    "spend",
-                                                                                                                                                                                    "spent",
-                                                                                                                                                                                    "spent"
+                                                                                                                                                                                    "spell",
+                                                                                                                                                                                    "spelt/ spelled",
+                                                                                                                                                                                    "spelt/ spelled"
                                                                                                                                                                                   ]
                                                                                                                                                                                 },
                                                                                                                                                                                 tl: {
                                                                                                                                                                                   hd: {
-                                                                                                                                                                                    word: "spill",
+                                                                                                                                                                                    word: "spend",
                                                                                                                                                                                     values: [
-                                                                                                                                                                                      "spill",
-                                                                                                                                                                                      "spilt/ spilled",
-                                                                                                                                                                                      "spilt/ spilled"
+                                                                                                                                                                                      "spend",
+                                                                                                                                                                                      "spent",
+                                                                                                                                                                                      "spent"
                                                                                                                                                                                     ]
                                                                                                                                                                                   },
                                                                                                                                                                                   tl: {
                                                                                                                                                                                     hd: {
-                                                                                                                                                                                      word: "spin",
+                                                                                                                                                                                      word: "spill",
                                                                                                                                                                                       values: [
-                                                                                                                                                                                        "spin",
-                                                                                                                                                                                        "spun",
-                                                                                                                                                                                        "spun"
+                                                                                                                                                                                        "spill",
+                                                                                                                                                                                        "spilt/ spilled",
+                                                                                                                                                                                        "spilt/ spilled"
                                                                                                                                                                                       ]
                                                                                                                                                                                     },
                                                                                                                                                                                     tl: {
                                                                                                                                                                                       hd: {
-                                                                                                                                                                                        word: "spit",
+                                                                                                                                                                                        word: "spin",
                                                                                                                                                                                         values: [
-                                                                                                                                                                                          "spit",
-                                                                                                                                                                                          "spat",
-                                                                                                                                                                                          "spat"
+                                                                                                                                                                                          "spin",
+                                                                                                                                                                                          "spun",
+                                                                                                                                                                                          "spun"
                                                                                                                                                                                         ]
                                                                                                                                                                                       },
                                                                                                                                                                                       tl: {
                                                                                                                                                                                         hd: {
-                                                                                                                                                                                          word: "split",
+                                                                                                                                                                                          word: "spit",
                                                                                                                                                                                           values: [
-                                                                                                                                                                                            "split",
-                                                                                                                                                                                            "split",
-                                                                                                                                                                                            "split"
+                                                                                                                                                                                            "spit",
+                                                                                                                                                                                            "spat",
+                                                                                                                                                                                            "spat"
                                                                                                                                                                                           ]
                                                                                                                                                                                         },
                                                                                                                                                                                         tl: {
                                                                                                                                                                                           hd: {
-                                                                                                                                                                                            word: "spoil",
+                                                                                                                                                                                            word: "split",
                                                                                                                                                                                             values: [
-                                                                                                                                                                                              "spoil",
-                                                                                                                                                                                              "spoilt/ spoiled",
-                                                                                                                                                                                              "spoilt/ spoiled"
+                                                                                                                                                                                              "split",
+                                                                                                                                                                                              "split",
+                                                                                                                                                                                              "split"
                                                                                                                                                                                             ]
                                                                                                                                                                                           },
                                                                                                                                                                                           tl: {
                                                                                                                                                                                             hd: {
-                                                                                                                                                                                              word: "spread",
+                                                                                                                                                                                              word: "spoil",
                                                                                                                                                                                               values: [
-                                                                                                                                                                                                "spread",
-                                                                                                                                                                                                "spread",
-                                                                                                                                                                                                "spread"
+                                                                                                                                                                                                "spoil",
+                                                                                                                                                                                                "spoilt/ spoiled",
+                                                                                                                                                                                                "spoilt/ spoiled"
                                                                                                                                                                                               ]
                                                                                                                                                                                             },
                                                                                                                                                                                             tl: {
                                                                                                                                                                                               hd: {
-                                                                                                                                                                                                word: "stand",
+                                                                                                                                                                                                word: "spread",
                                                                                                                                                                                                 values: [
-                                                                                                                                                                                                  "stand",
-                                                                                                                                                                                                  "stood",
-                                                                                                                                                                                                  "stood"
+                                                                                                                                                                                                  "spread",
+                                                                                                                                                                                                  "spread",
+                                                                                                                                                                                                  "spread"
                                                                                                                                                                                                 ]
                                                                                                                                                                                               },
                                                                                                                                                                                               tl: {
                                                                                                                                                                                                 hd: {
-                                                                                                                                                                                                  word: "steal",
+                                                                                                                                                                                                  word: "stand",
                                                                                                                                                                                                   values: [
-                                                                                                                                                                                                    "steal",
-                                                                                                                                                                                                    "stole",
-                                                                                                                                                                                                    "stolen"
+                                                                                                                                                                                                    "stand",
+                                                                                                                                                                                                    "stood",
+                                                                                                                                                                                                    "stood"
                                                                                                                                                                                                   ]
                                                                                                                                                                                                 },
                                                                                                                                                                                                 tl: {
                                                                                                                                                                                                   hd: {
-                                                                                                                                                                                                    word: "stick",
+                                                                                                                                                                                                    word: "steal",
                                                                                                                                                                                                     values: [
-                                                                                                                                                                                                      "stick",
-                                                                                                                                                                                                      "stuck",
-                                                                                                                                                                                                      "stuck"
+                                                                                                                                                                                                      "steal",
+                                                                                                                                                                                                      "stole",
+                                                                                                                                                                                                      "stolen"
                                                                                                                                                                                                     ]
                                                                                                                                                                                                   },
                                                                                                                                                                                                   tl: {
                                                                                                                                                                                                     hd: {
-                                                                                                                                                                                                      word: "sting",
+                                                                                                                                                                                                      word: "stick",
                                                                                                                                                                                                       values: [
-                                                                                                                                                                                                        "sting",
-                                                                                                                                                                                                        "stung",
-                                                                                                                                                                                                        "stung"
+                                                                                                                                                                                                        "stick",
+                                                                                                                                                                                                        "stuck",
+                                                                                                                                                                                                        "stuck"
                                                                                                                                                                                                       ]
                                                                                                                                                                                                     },
                                                                                                                                                                                                     tl: {
                                                                                                                                                                                                       hd: {
-                                                                                                                                                                                                        word: "stink",
+                                                                                                                                                                                                        word: "sting",
                                                                                                                                                                                                         values: [
-                                                                                                                                                                                                          "stink",
-                                                                                                                                                                                                          "stank",
-                                                                                                                                                                                                          "stunk"
+                                                                                                                                                                                                          "sting",
+                                                                                                                                                                                                          "stung",
+                                                                                                                                                                                                          "stung"
                                                                                                                                                                                                         ]
                                                                                                                                                                                                       },
                                                                                                                                                                                                       tl: {
                                                                                                                                                                                                         hd: {
-                                                                                                                                                                                                          word: "strike",
+                                                                                                                                                                                                          word: "stink",
                                                                                                                                                                                                           values: [
-                                                                                                                                                                                                            "strike",
-                                                                                                                                                                                                            "struck",
-                                                                                                                                                                                                            "struck"
+                                                                                                                                                                                                            "stink",
+                                                                                                                                                                                                            "stank",
+                                                                                                                                                                                                            "stunk"
                                                                                                                                                                                                           ]
                                                                                                                                                                                                         },
                                                                                                                                                                                                         tl: {
                                                                                                                                                                                                           hd: {
-                                                                                                                                                                                                            word: "swear",
+                                                                                                                                                                                                            word: "strike",
                                                                                                                                                                                                             values: [
-                                                                                                                                                                                                              "swear",
-                                                                                                                                                                                                              "swore",
-                                                                                                                                                                                                              "sworn"
+                                                                                                                                                                                                              "strike",
+                                                                                                                                                                                                              "struck",
+                                                                                                                                                                                                              "struck"
                                                                                                                                                                                                             ]
                                                                                                                                                                                                           },
                                                                                                                                                                                                           tl: {
                                                                                                                                                                                                             hd: {
-                                                                                                                                                                                                              word: "sweep",
+                                                                                                                                                                                                              word: "swear",
                                                                                                                                                                                                               values: [
-                                                                                                                                                                                                                "sweep",
-                                                                                                                                                                                                                "swept",
-                                                                                                                                                                                                                "swept"
+                                                                                                                                                                                                                "swear",
+                                                                                                                                                                                                                "swore",
+                                                                                                                                                                                                                "sworn"
                                                                                                                                                                                                               ]
                                                                                                                                                                                                             },
                                                                                                                                                                                                             tl: {
                                                                                                                                                                                                               hd: {
-                                                                                                                                                                                                                word: "swim",
+                                                                                                                                                                                                                word: "sweep",
                                                                                                                                                                                                                 values: [
-                                                                                                                                                                                                                  "swim",
-                                                                                                                                                                                                                  "swam",
-                                                                                                                                                                                                                  "swum"
+                                                                                                                                                                                                                  "sweep",
+                                                                                                                                                                                                                  "swept",
+                                                                                                                                                                                                                  "swept"
                                                                                                                                                                                                                 ]
                                                                                                                                                                                                               },
                                                                                                                                                                                                               tl: {
                                                                                                                                                                                                                 hd: {
-                                                                                                                                                                                                                  word: "swing",
+                                                                                                                                                                                                                  word: "swim",
                                                                                                                                                                                                                   values: [
-                                                                                                                                                                                                                    "swing",
-                                                                                                                                                                                                                    "swung",
-                                                                                                                                                                                                                    "swung"
+                                                                                                                                                                                                                    "swim",
+                                                                                                                                                                                                                    "swam",
+                                                                                                                                                                                                                    "swum"
                                                                                                                                                                                                                   ]
                                                                                                                                                                                                                 },
                                                                                                                                                                                                                 tl: {
                                                                                                                                                                                                                   hd: {
-                                                                                                                                                                                                                    word: "take",
+                                                                                                                                                                                                                    word: "swing",
                                                                                                                                                                                                                     values: [
-                                                                                                                                                                                                                      "take",
-                                                                                                                                                                                                                      "took",
-                                                                                                                                                                                                                      "taken"
+                                                                                                                                                                                                                      "swing",
+                                                                                                                                                                                                                      "swung",
+                                                                                                                                                                                                                      "swung"
                                                                                                                                                                                                                     ]
                                                                                                                                                                                                                   },
                                                                                                                                                                                                                   tl: {
                                                                                                                                                                                                                     hd: {
-                                                                                                                                                                                                                      word: "teach",
+                                                                                                                                                                                                                      word: "take",
                                                                                                                                                                                                                       values: [
-                                                                                                                                                                                                                        "teach",
-                                                                                                                                                                                                                        "taught",
-                                                                                                                                                                                                                        "taught"
+                                                                                                                                                                                                                        "take",
+                                                                                                                                                                                                                        "took",
+                                                                                                                                                                                                                        "taken"
                                                                                                                                                                                                                       ]
                                                                                                                                                                                                                     },
                                                                                                                                                                                                                     tl: {
                                                                                                                                                                                                                       hd: {
-                                                                                                                                                                                                                        word: "tear",
+                                                                                                                                                                                                                        word: "teach",
                                                                                                                                                                                                                         values: [
-                                                                                                                                                                                                                          "tear",
-                                                                                                                                                                                                                          "tore",
-                                                                                                                                                                                                                          "torn"
+                                                                                                                                                                                                                          "teach",
+                                                                                                                                                                                                                          "taught",
+                                                                                                                                                                                                                          "taught"
                                                                                                                                                                                                                         ]
                                                                                                                                                                                                                       },
                                                                                                                                                                                                                       tl: {
                                                                                                                                                                                                                         hd: {
-                                                                                                                                                                                                                          word: "tell",
+                                                                                                                                                                                                                          word: "tear",
                                                                                                                                                                                                                           values: [
-                                                                                                                                                                                                                            "tell",
-                                                                                                                                                                                                                            "told",
-                                                                                                                                                                                                                            "told"
+                                                                                                                                                                                                                            "tear",
+                                                                                                                                                                                                                            "tore",
+                                                                                                                                                                                                                            "torn"
                                                                                                                                                                                                                           ]
                                                                                                                                                                                                                         },
                                                                                                                                                                                                                         tl: {
                                                                                                                                                                                                                           hd: {
-                                                                                                                                                                                                                            word: "think",
+                                                                                                                                                                                                                            word: "tell",
                                                                                                                                                                                                                             values: [
-                                                                                                                                                                                                                              "think",
-                                                                                                                                                                                                                              "thought",
-                                                                                                                                                                                                                              "thought"
+                                                                                                                                                                                                                              "tell",
+                                                                                                                                                                                                                              "told",
+                                                                                                                                                                                                                              "told"
                                                                                                                                                                                                                             ]
                                                                                                                                                                                                                           },
                                                                                                                                                                                                                           tl: {
                                                                                                                                                                                                                             hd: {
-                                                                                                                                                                                                                              word: "throw",
+                                                                                                                                                                                                                              word: "think",
                                                                                                                                                                                                                               values: [
-                                                                                                                                                                                                                                "throw",
-                                                                                                                                                                                                                                "threw",
-                                                                                                                                                                                                                                "thrown"
+                                                                                                                                                                                                                                "think",
+                                                                                                                                                                                                                                "thought",
+                                                                                                                                                                                                                                "thought"
                                                                                                                                                                                                                               ]
                                                                                                                                                                                                                             },
                                                                                                                                                                                                                             tl: {
                                                                                                                                                                                                                               hd: {
-                                                                                                                                                                                                                                word: "thrust",
+                                                                                                                                                                                                                                word: "throw",
                                                                                                                                                                                                                                 values: [
-                                                                                                                                                                                                                                  "thrust",
-                                                                                                                                                                                                                                  "thrust",
-                                                                                                                                                                                                                                  "thrust"
+                                                                                                                                                                                                                                  "throw",
+                                                                                                                                                                                                                                  "threw",
+                                                                                                                                                                                                                                  "thrown"
                                                                                                                                                                                                                                 ]
                                                                                                                                                                                                                               },
                                                                                                                                                                                                                               tl: {
                                                                                                                                                                                                                                 hd: {
-                                                                                                                                                                                                                                  word: "tread",
+                                                                                                                                                                                                                                  word: "thrust",
                                                                                                                                                                                                                                   values: [
-                                                                                                                                                                                                                                    "tread",
-                                                                                                                                                                                                                                    "trod",
-                                                                                                                                                                                                                                    "trodden"
+                                                                                                                                                                                                                                    "thrust",
+                                                                                                                                                                                                                                    "thrust",
+                                                                                                                                                                                                                                    "thrust"
                                                                                                                                                                                                                                   ]
                                                                                                                                                                                                                                 },
                                                                                                                                                                                                                                 tl: {
                                                                                                                                                                                                                                   hd: {
-                                                                                                                                                                                                                                    word: "understand",
+                                                                                                                                                                                                                                    word: "tread",
                                                                                                                                                                                                                                     values: [
-                                                                                                                                                                                                                                      "understand",
-                                                                                                                                                                                                                                      "understood",
-                                                                                                                                                                                                                                      "understood"
+                                                                                                                                                                                                                                      "tread",
+                                                                                                                                                                                                                                      "trod",
+                                                                                                                                                                                                                                      "trodden"
                                                                                                                                                                                                                                     ]
                                                                                                                                                                                                                                   },
                                                                                                                                                                                                                                   tl: {
                                                                                                                                                                                                                                     hd: {
-                                                                                                                                                                                                                                      word: "wake",
+                                                                                                                                                                                                                                      word: "understand",
                                                                                                                                                                                                                                       values: [
-                                                                                                                                                                                                                                        "wake",
-                                                                                                                                                                                                                                        "woke",
-                                                                                                                                                                                                                                        "woken"
+                                                                                                                                                                                                                                        "understand",
+                                                                                                                                                                                                                                        "understood",
+                                                                                                                                                                                                                                        "understood"
                                                                                                                                                                                                                                       ]
                                                                                                                                                                                                                                     },
                                                                                                                                                                                                                                     tl: {
                                                                                                                                                                                                                                       hd: {
-                                                                                                                                                                                                                                        word: "wear",
+                                                                                                                                                                                                                                        word: "wake",
                                                                                                                                                                                                                                         values: [
-                                                                                                                                                                                                                                          "wear",
-                                                                                                                                                                                                                                          "wore",
-                                                                                                                                                                                                                                          "worn"
+                                                                                                                                                                                                                                          "wake",
+                                                                                                                                                                                                                                          "woke",
+                                                                                                                                                                                                                                          "woken"
                                                                                                                                                                                                                                         ]
                                                                                                                                                                                                                                       },
                                                                                                                                                                                                                                       tl: {
                                                                                                                                                                                                                                         hd: {
-                                                                                                                                                                                                                                          word: "weave",
+                                                                                                                                                                                                                                          word: "wear",
                                                                                                                                                                                                                                           values: [
-                                                                                                                                                                                                                                            "weave",
-                                                                                                                                                                                                                                            "wove",
-                                                                                                                                                                                                                                            "woven"
+                                                                                                                                                                                                                                            "wear",
+                                                                                                                                                                                                                                            "wore",
+                                                                                                                                                                                                                                            "worn"
                                                                                                                                                                                                                                           ]
                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                         tl: {
                                                                                                                                                                                                                                           hd: {
-                                                                                                                                                                                                                                            word: "weep",
+                                                                                                                                                                                                                                            word: "weave",
                                                                                                                                                                                                                                             values: [
-                                                                                                                                                                                                                                              "weep",
-                                                                                                                                                                                                                                              "wept",
-                                                                                                                                                                                                                                              "wept"
+                                                                                                                                                                                                                                              "weave",
+                                                                                                                                                                                                                                              "wove",
+                                                                                                                                                                                                                                              "woven"
                                                                                                                                                                                                                                             ]
                                                                                                                                                                                                                                           },
                                                                                                                                                                                                                                           tl: {
                                                                                                                                                                                                                                             hd: {
-                                                                                                                                                                                                                                              word: "win",
+                                                                                                                                                                                                                                              word: "weep",
                                                                                                                                                                                                                                               values: [
-                                                                                                                                                                                                                                                "win",
-                                                                                                                                                                                                                                                "won",
-                                                                                                                                                                                                                                                "won"
+                                                                                                                                                                                                                                                "weep",
+                                                                                                                                                                                                                                                "wept",
+                                                                                                                                                                                                                                                "wept"
                                                                                                                                                                                                                                               ]
                                                                                                                                                                                                                                             },
                                                                                                                                                                                                                                             tl: {
                                                                                                                                                                                                                                               hd: {
-                                                                                                                                                                                                                                                word: "wind",
+                                                                                                                                                                                                                                                word: "win",
                                                                                                                                                                                                                                                 values: [
-                                                                                                                                                                                                                                                  "wind",
-                                                                                                                                                                                                                                                  "wound",
-                                                                                                                                                                                                                                                  "wound"
+                                                                                                                                                                                                                                                  "win",
+                                                                                                                                                                                                                                                  "won",
+                                                                                                                                                                                                                                                  "won"
                                                                                                                                                                                                                                                 ]
                                                                                                                                                                                                                                               },
                                                                                                                                                                                                                                               tl: {
                                                                                                                                                                                                                                                 hd: {
-                                                                                                                                                                                                                                                  word: "write",
+                                                                                                                                                                                                                                                  word: "wind",
                                                                                                                                                                                                                                                   values: [
-                                                                                                                                                                                                                                                    "write",
-                                                                                                                                                                                                                                                    "wrote",
-                                                                                                                                                                                                                                                    "written"
+                                                                                                                                                                                                                                                    "wind",
+                                                                                                                                                                                                                                                    "wound",
+                                                                                                                                                                                                                                                    "wound"
                                                                                                                                                                                                                                                   ]
                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                tl: /* [] */ 0
+                                                                                                                                                                                                                                                tl: {
+                                                                                                                                                                                                                                                  hd: {
+                                                                                                                                                                                                                                                    word: "write",
+                                                                                                                                                                                                                                                    values: [
+                                                                                                                                                                                                                                                      "write",
+                                                                                                                                                                                                                                                      "wrote",
+                                                                                                                                                                                                                                                      "written"
+                                                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                                                  },
+                                                                                                                                                                                                                                                  tl: /* [] */ 0
+                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                           }

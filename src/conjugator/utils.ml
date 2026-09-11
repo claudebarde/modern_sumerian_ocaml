@@ -122,7 +122,7 @@ let rec find_next_morpheme (pos: int) (arr: string array): (string * markerName)
         | Invalid_argument _ -> find_next_morpheme (pos + 1) arr
 
 let vowel_chars =
-    ["a"; {js|á|js}; "e"; {js|è|js}; "i"; "o"; "u";
+    ["a"; {js|á|js}; "e"; {js|è|js}; "i"; "o"; "u"; {js|ú|js};
      {js|ā|js}; {js|ē|js}; {js|ī|js}; {js|ū|js}]
 
 let starts_with_vowel (str: string): bool =

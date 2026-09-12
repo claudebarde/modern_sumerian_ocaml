@@ -20,6 +20,7 @@ import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
 import * as Caml_obj from "melange.js/caml_obj.mjs";
+import * as Components__Learn_comics from "./learn_comics.mjs";
 import * as Components__Learn_daily_vocabulary from "./learn_daily_vocabulary.mjs";
 import * as Components__Learn_flashcards from "./learn_flashcards.mjs";
 import * as Components__Learn_grammar_notes from "./learn_grammar_notes.mjs";
@@ -83,6 +84,10 @@ function Learn(Props) {
     const match$10 = match$9.tl;
     if (match$10) {
       switch (match$10.hd) {
+        case "comics" :
+          const match$11 = match$10.tl;
+          current_view = match$11 && match$11.tl ? undefined : /* Comics */ 4;
+          break;
         case "daily_vocabulary" :
           current_view = match$10.tl ? undefined : /* DailyVocabulary */ 0;
           break;
@@ -90,14 +95,14 @@ function Learn(Props) {
           current_view = match$10.tl ? undefined : /* Flashcards */ 1;
           break;
         case "grammar_notes" :
-          const match$11 = match$10.tl;
-          current_view = match$11 && match$11.tl ? undefined : /* GrammarNotes */ 3;
+          const match$12 = match$10.tl;
+          current_view = match$12 && match$12.tl ? undefined : /* GrammarNotes */ 3;
           break;
         case "lessons" :
           current_view = match$10.tl ? undefined : /* Lessons */ 2;
           break;
         case "neologisms" :
-          current_view = match$10.tl ? undefined : /* Neologisms */ 4;
+          current_view = match$10.tl ? undefined : /* Neologisms */ 5;
           break;
         default:
           current_view = undefined;
@@ -150,6 +155,11 @@ function Learn(Props) {
       return false;
     }));
     switch (key) {
+      case "comics" :
+        Curry._1(set_grammar_notes_nav_open, (function (param) {
+          return true;
+        }));
+        return ReasonReactRouter.push("/learn/comics/strip-1");
       case "daily_vocabulary" :
         return ReasonReactRouter.push("/learn/daily_vocabulary");
       case "flashcards" :
@@ -197,7 +207,10 @@ function Learn(Props) {
         case /* GrammarNotes */ 3 :
           tmp$1 = key === "grammar_notes";
           break;
-        case /* Neologisms */ 4 :
+        case /* Comics */ 4 :
+          tmp$1 = key === "comics";
+          break;
+        case /* Neologisms */ 5 :
           tmp$1 = key === "neologisms";
           break;
       }
@@ -280,7 +293,10 @@ function Learn(Props) {
       case /* GrammarNotes */ 3 :
         tmp = JsxRuntime.jsx(Components__Learn_grammar_notes.make, {});
         break;
-      case /* Neologisms */ 4 :
+      case /* Comics */ 4 :
+        tmp = JsxRuntime.jsx(Components__Learn_comics.make, {});
+        break;
+      case /* Neologisms */ 5 :
         tmp = JsxRuntime.jsx(Components__Learn_neologisms.make, {});
         break;
     }
@@ -322,6 +338,9 @@ function Learn(Props) {
                   color: Bindings__Config.colors.darkRift
                 })),
                 navigation_item("lessons", "Lessons", JsxRuntime.jsx(IconsReact.IconBook2, {
+                  color: Bindings__Config.colors.darkRift
+                })),
+                navigation_item("comics", "Comics", JsxRuntime.jsx(IconsReact.IconMickey, {
                   color: Bindings__Config.colors.darkRift
                 })),
                 navigation_item("flashcards", "Flashcards", JsxRuntime.jsx(IconsReact.IconPhoto, {

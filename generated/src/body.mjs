@@ -84,23 +84,28 @@ function Body(Props) {
         if (match$4) {
           let exit$1 = 0;
           switch (match$4.hd) {
+            case "comics" :
             case "grammar_notes" :
-              const match$5 = match$4.tl;
-              exit = match$5 && match$5.tl ? 1 : 2;
+              exit$1 = 3;
               break;
             case "daily_vocabulary" :
             case "flashcards" :
             case "lessons" :
             case "neologisms" :
-              exit$1 = 3;
+              exit$1 = 4;
               break;
             default:
               exit = 1;
           }
-          if (exit$1 === 3) {
-            exit = match$4.tl ? 1 : 2;
+          switch (exit$1) {
+            case 3 :
+              const match$5 = match$4.tl;
+              exit = match$5 && match$5.tl ? 1 : 2;
+              break;
+            case 4 :
+              exit = match$4.tl ? 1 : 2;
+              break;
           }
-          
         } else {
           exit = 2;
         }

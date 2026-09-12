@@ -60,8 +60,8 @@ let make = (~set_current_view) => {
                     secondaryAction={
                         <IconButton
                             edge=`end_
-                            ariaLabel="Open Flashcards"
-                            onClick={_ => set_current_view("flashcards")}
+                            ariaLabel="Open Comics"
+                            onClick={_ => set_current_view("comics")}
                         >
                             <TablerReact.IconArrowBigUpFilled />
                         </IconButton>
@@ -69,12 +69,12 @@ let make = (~set_current_view) => {
                 >
                     <ListItemAvatar>
                         <Avatar>
-                            <TablerReact.IconPhoto />
+                            <TablerReact.IconMickey />
                         </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                        primary={React.string("Use Flashcards to practise and review Sumerian vocabulary.")}
-                        secondary={React.string("Flashcards help reinforce your learning")}
+                        primary={React.string("Read Comics to enjoy Modern Sumerian stories.")}
+                        secondary={React.string("Comics provide engaging narratives to enhance your learning")}
                     />
                 </ListItem>
                 <ListItem 
@@ -96,6 +96,27 @@ let make = (~set_current_view) => {
                     <ListItemText
                         primary={React.string("Read Grammar Notes to understand Sumerian grammar.")}
                         secondary={React.string("Grammar Notes provide detailed explanations and examples")}
+                    />
+                </ListItem>
+                <ListItem 
+                    secondaryAction={
+                        <IconButton
+                            edge=`end_
+                            ariaLabel="Open Flashcards"
+                            onClick={_ => set_current_view("flashcards")}
+                        >
+                            <TablerReact.IconArrowBigUpFilled />
+                        </IconButton>
+                    }
+                >
+                    <ListItemAvatar>
+                        <Avatar>
+                            <TablerReact.IconPhoto />
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={React.string("Use Flashcards to practise and review Sumerian vocabulary.")}
+                        secondary={React.string("Flashcards help reinforce your learning")}
                     />
                 </ListItem>
             </List>

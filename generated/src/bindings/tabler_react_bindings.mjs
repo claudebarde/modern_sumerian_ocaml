@@ -99,6 +99,8 @@ const IconMail = {};
 
 const IconMenu2 = {};
 
+const IconMickey = {};
+
 const IconMoodHappy = {};
 
 const IconMoodSadDizzy = {};
@@ -122,6 +124,8 @@ const IconSearch = {};
 const IconSettings = {};
 
 const IconSettingsFilled = {};
+
+const IconShare3 = {};
 
 const IconSnowflake = {};
 
@@ -205,6 +209,7 @@ export {
   IconListCheck,
   IconMail,
   IconMenu2,
+  IconMickey,
   IconMoodHappy,
   IconMoodSadDizzy,
   IconNews,
@@ -217,6 +222,7 @@ export {
   IconSearch,
   IconSettings,
   IconSettingsFilled,
+  IconShare3,
   IconSnowflake,
   IconSquareCheckFilled,
   IconSun,

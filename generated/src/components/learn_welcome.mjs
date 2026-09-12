@@ -69,20 +69,20 @@ function Learn_welcome(Props) {
               children: [
                 JsxRuntime.jsx(ListItemAvatar, {
                   children: JsxRuntime.jsx(Avatar, {
-                    children: JsxRuntime.jsx(IconsReact.IconPhoto, {})
+                    children: JsxRuntime.jsx(IconsReact.IconMickey, {})
                   })
                 }),
                 JsxRuntime.jsx(ListItemText, {
-                  primary: "Use Flashcards to practise and review Sumerian vocabulary.",
-                  secondary: "Flashcards help reinforce your learning"
+                  primary: "Read Comics to enjoy Modern Sumerian stories.",
+                  secondary: "Comics provide engaging narratives to enhance your learning"
                 })
               ],
               secondaryAction: JsxRuntime.jsx(IconButton, {
-                "aria-label": "Open Flashcards",
+                "aria-label": "Open Comics",
                 children: JsxRuntime.jsx(IconsReact.IconArrowBigUpFilled, {}),
                 edge: "end_",
                 onClick: (function (param) {
-                  Curry._1(set_current_view, "flashcards");
+                  Curry._1(set_current_view, "comics");
                 })
               })
             }),
@@ -104,6 +104,27 @@ function Learn_welcome(Props) {
                 edge: "end_",
                 onClick: (function (param) {
                   Curry._1(set_current_view, "grammar_notes");
+                })
+              })
+            }),
+            JsxRuntime.jsxs(ListItem, {
+              children: [
+                JsxRuntime.jsx(ListItemAvatar, {
+                  children: JsxRuntime.jsx(Avatar, {
+                    children: JsxRuntime.jsx(IconsReact.IconPhoto, {})
+                  })
+                }),
+                JsxRuntime.jsx(ListItemText, {
+                  primary: "Use Flashcards to practise and review Sumerian vocabulary.",
+                  secondary: "Flashcards help reinforce your learning"
+                })
+              ],
+              secondaryAction: JsxRuntime.jsx(IconButton, {
+                "aria-label": "Open Flashcards",
+                children: JsxRuntime.jsx(IconsReact.IconArrowBigUpFilled, {}),
+                edge: "end_",
+                onClick: (function (param) {
+                  Curry._1(set_current_view, "flashcards");
                 })
               })
             })

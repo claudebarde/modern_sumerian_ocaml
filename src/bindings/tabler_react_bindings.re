@@ -592,6 +592,18 @@ module IconMenu2 = {
   ) => React.element = "IconMenu2";
 };
 
+module IconMickey = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconMickey";
+};
+
 module IconMoodHappy = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (
@@ -734,6 +746,18 @@ module IconSettingsFilled = {
     ~title: string=?,
     unit
   ) => React.element = "IconSettingsFilled";
+};
+
+module IconShare3 = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconShare3";
 };
 
 module IconSnowflake = {

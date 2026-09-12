@@ -26,8 +26,8 @@ let make = () => {
     | "strip-1" => selected_comic
     | _ => ""
     };
-    let (path_to_cuneiform_img, set_path_to_cuneiform_img) = React.useState(() => "/public/comics/strip-1/sux-cuneiform.png");
-    let (path_to_transliteration_img, set_path_to_transliteration_img) = React.useState(() => "/public/comics/sux-transliteration.png");
+    let (path_to_cuneiform_img, set_path_to_cuneiform_img) = React.useState(() => "/comics/strip-1/sux-cuneiform.png");
+    let (path_to_transliteration_img, set_path_to_transliteration_img) = React.useState(() => "/comics/strip-1/sux-transliteration.png");
     let (grammar_notes, set_grammar_notes) = React.useState(() => None);
     let (grammar_notes_error, set_grammar_notes_error) = React.useState(() => None);
     let (expanded_comic, set_expanded_comic) = React.useState(() => Cuneiform);
@@ -47,8 +47,8 @@ let make = () => {
 
     React.useEffect1(() => {
         // rebuilds the path to images based on the selected comic
-        set_path_to_cuneiform_img(_ => "/public/comics/" ++ selected_comic ++ "/sux-cuneiform.png");
-        set_path_to_transliteration_img(_ => "/public/comics/" ++ selected_comic ++ "/sux-transliteration.png");
+        set_path_to_cuneiform_img(_ => "/comics/" ++ selected_comic ++ "/sux-cuneiform.png");
+        set_path_to_transliteration_img(_ => "/comics/" ++ selected_comic ++ "/sux-transliteration.png");
         None
     }, [|selected_comic|]);
 

@@ -48,11 +48,11 @@ function Learn_comics(Props) {
   const selected_comic = requested_comic !== undefined ? requested_comic : "strip-1";
   const selected_comic_menu_value = selected_comic === "strip-1" ? selected_comic : "";
   const match$3 = React.useState(function () {
-    return "/public/comics/strip-1/sux-cuneiform.png";
+    return "/comics/strip-1/sux-cuneiform.png";
   });
   const set_path_to_cuneiform_img = match$3[1];
   const match$4 = React.useState(function () {
-    return "/public/comics/sux-transliteration.png";
+    return "/comics/strip-1/sux-transliteration.png";
   });
   const set_path_to_transliteration_img = match$4[1];
   const match$5 = React.useState(function () {
@@ -87,10 +87,10 @@ function Learn_comics(Props) {
   }), []);
   React.useEffect((function () {
     Curry._1(set_path_to_cuneiform_img, (function (param) {
-      return "/public/comics/" + (selected_comic + "/sux-cuneiform.png");
+      return "/comics/" + (selected_comic + "/sux-cuneiform.png");
     }));
     Curry._1(set_path_to_transliteration_img, (function (param) {
-      return "/public/comics/" + (selected_comic + "/sux-transliteration.png");
+      return "/comics/" + (selected_comic + "/sux-transliteration.png");
     }));
   }), [selected_comic]);
   React.useEffect((function () {

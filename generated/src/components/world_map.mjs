@@ -138,7 +138,16 @@ function World_map(Props) {
               "𒅆𒅔𒆠"
             ]
           ],
-          tl: /* [] */ 0
+          tl: {
+            hd: [
+              "MX",
+              [
+                "Mehiku",
+                "𒈨𒄭𒆪𒆠"
+              ]
+            ],
+            tl: /* [] */ 0
+          }
         }
       }
     }
@@ -163,7 +172,13 @@ function World_map(Props) {
             "CN",
             /* Asia */ 1
           ],
-          tl: /* [] */ 0
+          tl: {
+            hd: [
+              "MX",
+              /* NorthAmerica */ 3
+            ],
+            tl: /* [] */ 0
+          }
         }
       }
     }

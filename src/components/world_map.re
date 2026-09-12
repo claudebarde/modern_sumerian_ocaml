@@ -35,7 +35,8 @@ let make = () => {
         ("FR", ("Paransa", {js|𒉺𒁺𒀭𒊓𒆠|js})), // France
         ("CA", ("Kanada", {js|𒅗𒈾𒁕𒆠|js})), // Canada
         ("FI", ("Suumi", {js|𒋢𒌑𒈪𒆠|js})), // Finland
-        ("CN", ("Shin", {js|𒅆𒅔𒆠|js})) // China
+        ("CN", ("Shin", {js|𒅆𒅔𒆠|js})), // China
+        ("MX", ("Mehiku", {js|𒈨𒄭𒆪𒆠|js})), // Mexico
     ]);
 
     let continent_by_code: Js.Dict.t(continent) =
@@ -44,6 +45,7 @@ let make = () => {
             ("FR", Europe),
             ("FI", Europe),
             ("CN", Asia),
+            ("MX", NorthAmerica)
         ]);
 
     let mapData = Js.Dict.entries(countryData)

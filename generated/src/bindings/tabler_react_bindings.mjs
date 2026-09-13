@@ -95,6 +95,8 @@ const IconList = {};
 
 const IconListCheck = {};
 
+const IconListLetters = {};
+
 const IconMail = {};
 
 const IconMenu2 = {};
@@ -207,6 +209,7 @@ export {
   IconLinkFilled,
   IconList,
   IconListCheck,
+  IconListLetters,
   IconMail,
   IconMenu2,
   IconMickey,

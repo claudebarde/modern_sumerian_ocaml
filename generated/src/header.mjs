@@ -81,6 +81,12 @@ function Header(Props) {
       
     }), 0);
   };
+  const match$6 = React.useState(function () {
+    return null;
+  });
+  const setLearnAnchor = match$6[1];
+  const learnAnchor = match$6[0];
+  const openLearnMenu = !(learnAnchor == null);
   const displayLanguage = Bindings__Zustand.use_store((function (store) {
     return store.display_language;
   }), Components__Store.app_store);
@@ -274,18 +280,148 @@ function Header(Props) {
                   }
                 }),
                 JsxRuntime.jsx(Button, {
+                  children: Components__Ui_translation.display_to("learn", displayLanguage, /* Small */ 0),
+                  color: Bindings__Material_ui.Color.secondary,
+                  endIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
+                  onClick: (function ($$event) {
+                    Curry._1(setLearnAnchor, (function (param) {
+                      return $$event.currentTarget;
+                    }));
+                  }),
+                  variant: "text"
+                }),
+                JsxRuntime.jsxs(Menu, {
+                  anchorOrigin: {
+                    vertical: "bottom",
+                    horizontal: "right"
+                  },
+                  children: [
+                    JsxRuntime.jsxs(MenuItem, {
+                      children: [
+                        JsxRuntime.jsx(ListItemIcon, {
+                          children: JsxRuntime.jsx(IconsReact.IconListCheck, {
+                            color: Bindings__Config.colors.botanicalNight
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          children: "Daily Vocabulary"
+                        })
+                      ],
+                      onClick: (function (param) {
+                        Curry._1(setLearnAnchor, (function (param) {
+                          return null;
+                        }));
+                        ReasonReactRouter.push("/learn/daily_vocabulary");
+                      })
+                    }),
+                    JsxRuntime.jsxs(MenuItem, {
+                      children: [
+                        JsxRuntime.jsx(ListItemIcon, {
+                          children: JsxRuntime.jsx(IconsReact.IconBook2, {
+                            color: Bindings__Config.colors.botanicalNight
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          children: "Lessons"
+                        })
+                      ],
+                      onClick: (function (param) {
+                        Curry._1(setLearnAnchor, (function (param) {
+                          return null;
+                        }));
+                        ReasonReactRouter.push("/learn/lessons");
+                      })
+                    }),
+                    JsxRuntime.jsxs(MenuItem, {
+                      children: [
+                        JsxRuntime.jsx(ListItemIcon, {
+                          children: JsxRuntime.jsx(IconsReact.IconMickey, {
+                            color: Bindings__Config.colors.botanicalNight
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          children: "Comics"
+                        })
+                      ],
+                      onClick: (function (param) {
+                        Curry._1(setLearnAnchor, (function (param) {
+                          return null;
+                        }));
+                        ReasonReactRouter.push("/learn/comics");
+                      })
+                    }),
+                    JsxRuntime.jsxs(MenuItem, {
+                      children: [
+                        JsxRuntime.jsx(ListItemIcon, {
+                          children: JsxRuntime.jsx(IconsReact.IconPhoto, {
+                            color: Bindings__Config.colors.botanicalNight
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          children: "Flashcards"
+                        })
+                      ],
+                      onClick: (function (param) {
+                        Curry._1(setLearnAnchor, (function (param) {
+                          return null;
+                        }));
+                        ReasonReactRouter.push("/learn/flashcards");
+                      })
+                    }),
+                    JsxRuntime.jsxs(MenuItem, {
+                      children: [
+                        JsxRuntime.jsx(ListItemIcon, {
+                          children: JsxRuntime.jsx(IconsReact.IconPencil, {
+                            color: Bindings__Config.colors.botanicalNight
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          children: "Grammar Notes"
+                        })
+                      ],
+                      onClick: (function (param) {
+                        Curry._1(setLearnAnchor, (function (param) {
+                          return null;
+                        }));
+                        ReasonReactRouter.push("/learn/grammar_notes");
+                      })
+                    }),
+                    JsxRuntime.jsxs(MenuItem, {
+                      children: [
+                        JsxRuntime.jsx(ListItemIcon, {
+                          children: JsxRuntime.jsx(IconsReact.IconNews, {
+                            color: Bindings__Config.colors.botanicalNight
+                          })
+                        }),
+                        JsxRuntime.jsx(ListItemText, {
+                          children: "Neologisms"
+                        })
+                      ],
+                      onClick: (function (param) {
+                        Curry._1(setLearnAnchor, (function (param) {
+                          return null;
+                        }));
+                        ReasonReactRouter.push("/learn/neologisms");
+                      })
+                    })
+                  ],
+                  anchorEl: learnAnchor,
+                  onClose: (function (param) {
+                    Curry._1(setLearnAnchor, (function (param) {
+                      return null;
+                    }));
+                  }),
+                  open: openLearnMenu,
+                  transformOrigin: {
+                    vertical: "top",
+                    horizontal: "right"
+                  }
+                }),
+                JsxRuntime.jsx(Button, {
                   children: Components__Ui_translation.display_to("games", displayLanguage, /* Small */ 0),
                   color: Bindings__Material_ui.Color.secondary,
                   onClick: (function (param) {
                     ReasonReactRouter.push("/games");
-                  }),
-                  variant: "text"
-                }),
-                JsxRuntime.jsx(Button, {
-                  children: Components__Ui_translation.display_to("learn", displayLanguage, /* Small */ 0),
-                  color: Bindings__Material_ui.Color.secondary,
-                  onClick: (function (param) {
-                    ReasonReactRouter.push("/learn");
                   }),
                   variant: "text"
                 }),

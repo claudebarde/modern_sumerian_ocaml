@@ -2,24 +2,8 @@
 
 import LearnModuleScss from "../styles/Learn.module.scss";
 import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
 import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
-import Tooltip from "@mui/material/Tooltip";
-import UseMediaQuery from "@mui/material/useMediaQuery";
-import * as IconsReact from "@tabler/icons-react";
-import * as Bindings__Config from "../bindings/config.mjs";
 import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
-import * as Caml_array from "melange.js/caml_array.mjs";
-import * as Caml_obj from "melange.js/caml_obj.mjs";
 import * as Components__Learn_comics from "./learn_comics.mjs";
 import * as Components__Learn_daily_vocabulary from "./learn_daily_vocabulary.mjs";
 import * as Components__Learn_flashcards from "./learn_flashcards.mjs";
@@ -27,10 +11,7 @@ import * as Components__Learn_grammar_notes from "./learn_grammar_notes.mjs";
 import * as Components__Learn_lessons from "./learn_lessons.mjs";
 import * as Components__Learn_neologisms from "./learn_neologisms.mjs";
 import * as Components__Learn_welcome from "./learn_welcome.mjs";
-import * as Curry from "melange.js/curry.mjs";
 import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
-import * as Stdlib__Array from "melange/array.mjs";
-import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 const css = LearnModuleScss;
@@ -38,71 +19,30 @@ const css = LearnModuleScss;
 function Learn(Props) {
   const url = ReasonReactRouter.useUrl(undefined, undefined);
   const match = url.path;
-  let is_grammar_notes_route;
+  let current_view;
   if (match && match.hd === "learn") {
     const match$1 = match.tl;
-    if (match$1 && match$1.hd === "grammar_notes") {
-      const match$2 = match$1.tl;
-      is_grammar_notes_route = match$2 && match$2.tl ? false : true;
-    } else {
-      is_grammar_notes_route = false;
-    }
-  } else {
-    is_grammar_notes_route = false;
-  }
-  const match$3 = React.useState(function () {
-    return is_grammar_notes_route;
-  });
-  const set_drawer_open = match$3[1];
-  const is_drawer_open = match$3[0];
-  const match$4 = React.useState(function () {
-    return is_grammar_notes_route;
-  });
-  const set_grammar_notes_nav_open = match$4[1];
-  const grammar_notes_nav_open = match$4[0];
-  const match$5 = React.useState(function () {
-    return [];
-  });
-  const set_grammar_notes = match$5[1];
-  const grammar_notes = match$5[0];
-  const match$6 = url.path;
-  let selected_grammar_note_slug;
-  if (match$6 && match$6.hd === "learn") {
-    const match$7 = match$6.tl;
-    if (match$7 && match$7.hd === "grammar_notes") {
-      const match$8 = match$7.tl;
-      selected_grammar_note_slug = match$8 && !match$8.tl ? match$8.hd : undefined;
-    } else {
-      selected_grammar_note_slug = undefined;
-    }
-  } else {
-    selected_grammar_note_slug = undefined;
-  }
-  const match$9 = url.path;
-  let current_view;
-  if (match$9 && match$9.hd === "learn") {
-    const match$10 = match$9.tl;
-    if (match$10) {
-      switch (match$10.hd) {
+    if (match$1) {
+      switch (match$1.hd) {
         case "comics" :
-          const match$11 = match$10.tl;
-          current_view = match$11 && match$11.tl ? undefined : /* Comics */ 4;
+          const match$2 = match$1.tl;
+          current_view = match$2 && match$2.tl ? undefined : /* Comics */ 4;
           break;
         case "daily_vocabulary" :
-          current_view = match$10.tl ? undefined : /* DailyVocabulary */ 0;
+          current_view = match$1.tl ? undefined : /* DailyVocabulary */ 0;
           break;
         case "flashcards" :
-          current_view = match$10.tl ? undefined : /* Flashcards */ 1;
+          current_view = match$1.tl ? undefined : /* Flashcards */ 1;
           break;
         case "grammar_notes" :
-          const match$12 = match$10.tl;
-          current_view = match$12 && match$12.tl ? undefined : /* GrammarNotes */ 3;
+          const match$3 = match$1.tl;
+          current_view = match$3 && match$3.tl ? undefined : /* GrammarNotes */ 3;
           break;
         case "lessons" :
-          current_view = match$10.tl ? undefined : /* Lessons */ 2;
+          current_view = match$1.tl ? undefined : /* Lessons */ 2;
           break;
         case "neologisms" :
-          current_view = match$10.tl ? undefined : /* Neologisms */ 5;
+          current_view = match$1.tl ? undefined : /* Neologisms */ 5;
           break;
         default:
           current_view = undefined;
@@ -113,170 +53,23 @@ function Learn(Props) {
   } else {
     current_view = undefined;
   }
-  React.useEffect((function () {
-    if (is_grammar_notes_route) {
-      Curry._1(set_drawer_open, (function (param) {
-        return true;
-      }));
-      Curry._1(set_grammar_notes_nav_open, (function (param) {
-        return true;
-      }));
-    }
-    
-  }), [is_grammar_notes_route]);
-  React.useEffect((function () {
-    window.fetch("/grammar_notes/index.json").then(function (response) {
-      if (response.ok) {
-        return response.json().then(function (json) {
-          const notes = Components__Learn_grammar_notes.parse_grammar_notes_index(json);
-          if (notes.TAG === /* Ok */ 0) {
-            const notes$1 = notes._0;
-            Curry._1(set_grammar_notes, (function (param) {
-              return notes$1;
-            }));
-          } else {
-            console.log("Unable to parse the grammar notes index:", notes._0);
-          }
-          return Promise.resolve();
-        });
-      } else {
-        console.log("Unable to load the grammar notes index");
-        return Promise.resolve();
-      }
-    }).catch(function (error) {
-      console.log("Unable to load the grammar notes index:", error);
-      return Promise.resolve();
-    });
-  }), []);
-  const drawer_width = is_drawer_open ? "280px" : "64px";
-  const drawer_transition = "width 225ms cubic-bezier(0.4, 0, 0.6, 1)";
   const select_view = function (key) {
-    Curry._1(set_grammar_notes_nav_open, (function (param) {
-      return false;
-    }));
     switch (key) {
       case "comics" :
-        Curry._1(set_grammar_notes_nav_open, (function (param) {
-          return true;
-        }));
         return ReasonReactRouter.push("/learn/comics/strip-1");
       case "daily_vocabulary" :
         return ReasonReactRouter.push("/learn/daily_vocabulary");
       case "flashcards" :
         return ReasonReactRouter.push("/learn/flashcards");
       case "grammar_notes" :
-        Curry._1(set_grammar_notes_nav_open, (function (param) {
-          return true;
-        }));
         return ReasonReactRouter.push("/learn/grammar_notes");
       case "lessons" :
         return ReasonReactRouter.push("/learn/lessons");
       case "neologisms" :
-        Curry._1(set_grammar_notes_nav_open, (function (param) {
-          return true;
-        }));
         return ReasonReactRouter.push("/learn/neologisms");
       default:
         return ReasonReactRouter.push("/learn");
     }
-  };
-  const is_mobile = UseMediaQuery("(max-width:599px)");
-  const navigation_item = function (key, label, icon) {
-    let tmp = key === "grammar_notes" && is_drawer_open === true ? JsxRuntime.jsx(IconButton, {
-        "aria-label": grammar_notes_nav_open ? "Collapse grammar notes section" : "Expand grammar notes section",
-        children: grammar_notes_nav_open ? JsxRuntime.jsx(IconsReact.IconChevronUp, {}) : JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
-        onClick: (function (ev) {
-          ev.stopPropagation();
-          Curry._1(set_grammar_notes_nav_open, (function (prev) {
-            return !prev;
-          }));
-        })
-      }) : null;
-    let tmp$1;
-    if (current_view !== undefined) {
-      switch (current_view) {
-        case /* DailyVocabulary */ 0 :
-          tmp$1 = key === "daily_vocabulary";
-          break;
-        case /* Flashcards */ 1 :
-          tmp$1 = key === "flashcards";
-          break;
-        case /* Lessons */ 2 :
-          tmp$1 = key === "lessons";
-          break;
-        case /* GrammarNotes */ 3 :
-          tmp$1 = key === "grammar_notes";
-          break;
-        case /* Comics */ 4 :
-          tmp$1 = key === "comics";
-          break;
-        case /* Neologisms */ 5 :
-          tmp$1 = key === "neologisms";
-          break;
-      }
-    } else {
-      tmp$1 = false;
-    }
-    return JsxRuntime.jsx(ListItem, {
-      children: JsxRuntime.jsx(Tooltip, {
-        arrow: true,
-        children: JsxRuntime.jsxs(ListItemButton, {
-          children: [
-            JsxRuntime.jsx(ListItemIcon, {
-              children: icon,
-              sx: {
-                minWidth: is_drawer_open ? "40px" : "0",
-                marginRight: is_drawer_open ? "8px" : "0",
-                justifyContent: "center"
-              }
-            }),
-            JsxRuntime.jsx(ListItemText, {
-              primary: label,
-              sx: {
-                display: is_drawer_open ? "block" : "none",
-                whiteSpace: "nowrap"
-              }
-            }),
-            tmp
-          ],
-          onClick: (function (param) {
-            select_view(key);
-          }),
-          selected: tmp$1,
-          sx: {
-            minHeight: "48px",
-            justifyContent: is_drawer_open ? "initial" : "center",
-            padding: is_drawer_open ? "8px 16px" : "8px 0"
-          }
-        }),
-        placement: Bindings__Material_ui.Tooltip.Placement.right,
-        title: is_drawer_open ? null : label
-      }),
-      disablePadding: true,
-      sx: {
-        display: "block"
-      }
-    }, key);
-  };
-  const grammar_notes_list_item = function (note) {
-    const Key = note.slug;
-    return JsxRuntime.jsx(ListItem, {
-      children: JsxRuntime.jsxs(ListItemButton, {
-        children: [
-          JsxRuntime.jsx(ListItemIcon, {
-            children: JsxRuntime.jsx(IconsReact.IconNote, {})
-          }),
-          JsxRuntime.jsx(ListItemText, {
-            primary: note.title
-          })
-        ],
-        onClick: (function (param) {
-          ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
-        }),
-        selected: Caml_obj.caml_equal(selected_grammar_note_slug, note.slug)
-      }),
-      disablePadding: true
-    }, Key);
   };
   let tmp;
   if (current_view !== undefined) {
@@ -305,140 +98,13 @@ function Learn(Props) {
       set_current_view: select_view
     });
   }
-  return JsxRuntime.jsxs(Container, {
-    children: [
-      is_mobile ? null : JsxRuntime.jsxs(Drawer, {
-          children: [
-            JsxRuntime.jsx(Box, {
-              children: JsxRuntime.jsx(IconButton, {
-                "aria-label": is_drawer_open ? "Collapse navigation" : "Expand navigation",
-                children: is_drawer_open ? JsxRuntime.jsx(IconsReact.IconChevronLeft, {
-                    color: Bindings__Config.colors.darkRift
-                  }) : JsxRuntime.jsx(IconsReact.IconChevronRight, {
-                    color: Bindings__Config.colors.darkRift
-                  }),
-                onClick: (function (param) {
-                  Curry._1(set_drawer_open, (function (open_) {
-                    return !open_;
-                  }));
-                })
-              }),
-              sx: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: is_drawer_open ? "flex-end" : "center",
-                minHeight: "56px",
-                padding: is_drawer_open ? "0 8px" : "0"
-              }
-            }),
-            JsxRuntime.jsx(Divider, {}),
-            JsxRuntime.jsxs(List, {
-              children: [
-                navigation_item("daily_vocabulary", "Daily Vocabulary", JsxRuntime.jsx(IconsReact.IconListCheck, {
-                  color: Bindings__Config.colors.darkRift
-                })),
-                navigation_item("lessons", "Lessons", JsxRuntime.jsx(IconsReact.IconBook2, {
-                  color: Bindings__Config.colors.darkRift
-                })),
-                navigation_item("comics", "Comics", JsxRuntime.jsx(IconsReact.IconMickey, {
-                  color: Bindings__Config.colors.darkRift
-                })),
-                navigation_item("flashcards", "Flashcards", JsxRuntime.jsx(IconsReact.IconPhoto, {
-                  color: Bindings__Config.colors.darkRift
-                })),
-                navigation_item("neologisms", "Neologisms", JsxRuntime.jsx(IconsReact.IconNews, {
-                  color: Bindings__Config.colors.darkRift
-                })),
-                navigation_item("grammar_notes", "Grammar Notes", JsxRuntime.jsx(IconsReact.IconPencil, {
-                  color: Bindings__Config.colors.darkRift
-                })),
-                JsxRuntime.jsx(Collapse, {
-                  children: JsxRuntime.jsxs(List, {
-                    children: [
-                      JsxRuntime.jsx(ListSubheader, {
-                        children: "Nouns",
-                        disableSticky: true,
-                        sx: {
-                          backgroundColor: Bindings__Config.colors.cerealFlake
-                        }
-                      }),
-                      Stdlib__Array.map(grammar_notes_list_item, Stdlib__Array.fold_left((function (acc, note) {
-                        if (note.category === "nouns" && note.visible) {
-                          return Caml_array.concat({
-                            hd: acc,
-                            tl: {
-                              hd: [note],
-                              tl: /* [] */ 0
-                            }
-                          });
-                        } else {
-                          return acc;
-                        }
-                      }), [], grammar_notes)),
-                      JsxRuntime.jsx(ListSubheader, {
-                        children: "Verbs",
-                        disableSticky: true,
-                        sx: {
-                          backgroundColor: Bindings__Config.colors.cerealFlake
-                        }
-                      }),
-                      Stdlib__Array.map(grammar_notes_list_item, Stdlib__Array.fold_left((function (acc, note) {
-                        if (note.category === "verbs" && note.visible) {
-                          return Caml_array.concat({
-                            hd: acc,
-                            tl: {
-                              hd: [note],
-                              tl: /* [] */ 0
-                            }
-                          });
-                        } else {
-                          return acc;
-                        }
-                      }), [], grammar_notes))
-                    ],
-                    sx: {
-                      margin: "0px",
-                      padding: "0px"
-                    }
-                  }),
-                  in: grammar_notes_nav_open && is_drawer_open,
-                  sx: {
-                    marginLeft: "16px"
-                  }
-                })
-              ],
-              disablePadding: true
-            })
-          ],
-          open: is_drawer_open,
-          sx: {
-            width: drawer_width,
-            height: "100%",
-            flexShrink: 0,
-            whiteSpace: "nowrap",
-            transition: drawer_transition,
-            "& .MuiDrawer-paper": {
-              position: "absolute",
-              top: "0",
-              bottom: "0",
-              height: "100%",
-              width: drawer_width,
-              maxWidth: "100%",
-              boxSizing: "border-box",
-              overflowX: "hidden",
-              transition: drawer_transition,
-              backgroundColor: Bindings__Config.colors.cerealFlake
-            }
-          },
-          variant: "permanent"
-        }),
-      JsxRuntime.jsx(Box, {
-        children: tmp,
-        sx: {
-          width: "100%"
-        }
-      })
-    ],
+  return JsxRuntime.jsx(Container, {
+    children: JsxRuntime.jsx(Box, {
+      children: tmp,
+      sx: {
+        width: "100%"
+      }
+    }),
     className: css.learnContainer,
     disableGutters: true,
     maxWidth: Bindings__Material_ui.MaxWidth.disabled

@@ -12,6 +12,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
@@ -1203,91 +1204,160 @@ function Learn_grammar_notes(Props) {
                 }) : JsxRuntime.jsxs(Container, {
                   children: [
                     JsxRuntime.jsx(Typography, {
-                      children: "Available grammar notes",
+                      children: "Grammar Notes",
                       variant: Bindings__Material_ui.Typography.Variant.h4
                     }),
-                    JsxRuntime.jsx(List, {
-                      children: Stdlib__Array.map((function (note) {
-                        const Key = note.slug;
-                        return JsxRuntime.jsx(ListItem, {
-                          children: JsxRuntime.jsxs(ListItemButton, {
-                            children: [
-                              JsxRuntime.jsx(ListItemIcon, {
-                                children: JsxRuntime.jsx(IconsReact.IconNote, {})
-                              }),
-                              JsxRuntime.jsx(ListItemText, {
-                                primary: note.title
+                    JsxRuntime.jsxs(List, {
+                      children: [
+                        JsxRuntime.jsx(ListSubheader, {
+                          children: "Nouns",
+                          sx: {
+                            backgroundColor: Bindings__Config.colors.whiteSmoke
+                          }
+                        }),
+                        Stdlib__Array.map((function (note) {
+                          const Key = note.slug;
+                          return JsxRuntime.jsx(ListItem, {
+                            children: JsxRuntime.jsxs(ListItemButton, {
+                              children: [
+                                JsxRuntime.jsx(ListItemIcon, {
+                                  children: JsxRuntime.jsx(IconsReact.IconNote, {})
+                                }),
+                                JsxRuntime.jsx(ListItemText, {
+                                  primary: note.title
+                                })
+                              ],
+                              onClick: (function (param) {
+                                ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
                               })
-                            ],
-                            onClick: (function (param) {
-                              ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
-                            })
-                          }),
-                          disablePadding: true
-                        }, Key);
-                      }), grammar_notes),
-                      sx: {
-                        width: "100%",
-                        maxWidth: "600px"
-                      }
+                            }),
+                            disablePadding: true
+                          }, Key);
+                        }), Stdlib__Array.fold_left((function (acc, note) {
+                          if (note.category === "nouns" && note.visible) {
+                            return Caml_array.concat({
+                              hd: acc,
+                              tl: {
+                                hd: [note],
+                                tl: /* [] */ 0
+                              }
+                            });
+                          } else {
+                            return acc;
+                          }
+                        }), [], grammar_notes)),
+                        JsxRuntime.jsx(ListSubheader, {
+                          children: "Verbs",
+                          sx: {
+                            backgroundColor: Bindings__Config.colors.whiteSmoke
+                          }
+                        }),
+                        Stdlib__Array.map((function (note) {
+                          const Key = note.slug;
+                          return JsxRuntime.jsx(ListItem, {
+                            children: JsxRuntime.jsxs(ListItemButton, {
+                              children: [
+                                JsxRuntime.jsx(ListItemIcon, {
+                                  children: JsxRuntime.jsx(IconsReact.IconNote, {})
+                                }),
+                                JsxRuntime.jsx(ListItemText, {
+                                  primary: note.title
+                                })
+                              ],
+                              onClick: (function (param) {
+                                ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
+                              })
+                            }),
+                            disablePadding: true
+                          }, Key);
+                        }), Stdlib__Array.fold_left((function (acc, note) {
+                          if (note.category === "verbs" && note.visible) {
+                            return Caml_array.concat({
+                              hd: acc,
+                              tl: {
+                                hd: [note],
+                                tl: /* [] */ 0
+                              }
+                            });
+                          } else {
+                            return acc;
+                          }
+                        }), [], grammar_notes))
+                      ]
                     })
                   ],
                   sx: {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    justifyContent: "flex-start",
                     padding: "40px 20px"
                   }
                 })
             ),
-          JsxRuntime.jsxs(Stack, {
-            children: [
-              JsxRuntime.jsx(Tooltip, {
-                arrow: true,
-                children: JsxRuntime.jsx(IconButton, {
-                  "aria-label": "Share this grammar note",
-                  children: JsxRuntime.jsx(IconsReact.IconLink, {
-                    color: Bindings__Config.colors.protonRed
-                  }),
-                  onClick: (function (param) {
-                    Bindings__Browser.Clipboard.write_text(window.location.href).catch(function (error) {
-                      console.log("Could not copy the grammar note URL:", error);
-                      return Promise.resolve();
-                    });
-                  }),
-                  size: "small"
-                }),
-                placement: Bindings__Material_ui.Tooltip.Placement.left,
-                title: "Share this grammar note"
-              }),
-              JsxRuntime.jsx(Tooltip, {
-                arrow: true,
-                children: JsxRuntime.jsx(IconButton, {
-                  "aria-label": "Scroll to the top of the grammar note",
-                  children: JsxRuntime.jsx(IconsReact.IconArrowBigUpLinesFilled, {
-                    color: Bindings__Config.colors.protonRed
-                  }),
-                  onClick: (function (param) {
-                    const element = grammar_note_ref.current;
-                    if (!(element == null)) {
-                      element.scrollTo({
-                        top: 0.0,
-                        behavior: "smooth"
+          slug !== undefined ? JsxRuntime.jsxs(Stack, {
+              children: [
+                JsxRuntime.jsx(Tooltip, {
+                  arrow: true,
+                  children: JsxRuntime.jsx(IconButton, {
+                    "aria-label": "Share this grammar note",
+                    children: JsxRuntime.jsx(IconsReact.IconLink, {
+                      color: Bindings__Config.colors.protonRed
+                    }),
+                    onClick: (function (param) {
+                      Bindings__Browser.Clipboard.write_text(window.location.href).catch(function (error) {
+                        console.log("Could not copy the grammar note URL:", error);
+                        return Promise.resolve();
                       });
-                      return;
-                    }
-                    
+                    }),
+                    size: "small"
                   }),
-                  size: "small"
+                  placement: Bindings__Material_ui.Tooltip.Placement.left,
+                  title: "Share this grammar note"
                 }),
-                placement: Bindings__Material_ui.Tooltip.Placement.left,
-                title: "Scroll to the top"
-              })
-            ],
-            className: css.sideButtons,
-            spacing: 1,
-            useFlexGap: true
-          })
+                JsxRuntime.jsx(Tooltip, {
+                  arrow: true,
+                  children: JsxRuntime.jsx(IconButton, {
+                    "aria-label": "Back to the list",
+                    children: JsxRuntime.jsx(IconsReact.IconListLetters, {
+                      color: Bindings__Config.colors.protonRed
+                    }),
+                    onClick: (function (param) {
+                      ReasonReactRouter.push("/learn/grammar_notes");
+                    }),
+                    size: "small"
+                  }),
+                  placement: Bindings__Material_ui.Tooltip.Placement.left,
+                  title: "Back to the list"
+                }),
+                JsxRuntime.jsx(Tooltip, {
+                  arrow: true,
+                  children: JsxRuntime.jsx(IconButton, {
+                    "aria-label": "Scroll to the top of the grammar note",
+                    children: JsxRuntime.jsx(IconsReact.IconArrowBigUpLinesFilled, {
+                      color: Bindings__Config.colors.protonRed
+                    }),
+                    onClick: (function (param) {
+                      const element = grammar_note_ref.current;
+                      if (!(element == null)) {
+                        element.scrollTo({
+                          top: 0.0,
+                          behavior: "smooth"
+                        });
+                        return;
+                      }
+                      
+                    }),
+                    size: "small"
+                  }),
+                  placement: Bindings__Material_ui.Tooltip.Placement.left,
+                  title: "Scroll to the top"
+                })
+              ],
+              className: css.sideButtons,
+              spacing: 1,
+              useFlexGap: true
+            }) : null
         ],
         className: css.grammarNotesContainer
       }),

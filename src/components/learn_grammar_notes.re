@@ -1220,15 +1220,56 @@ let make = () => {
                                 "display": "flex",
                                 "flexDirection": "column",
                                 "alignItems": "center",
+                                "justifyContent": "flex-start",
                                 "padding": "40px 20px",
                             }}
                         >
                             <Typography variant=Typography.Variant.h4>
-                                {"Available grammar notes" |> React.string}
+                                {"Grammar Notes" |> React.string}
                             </Typography>
-                            <List sx={{"width": "100%", "maxWidth": "600px"}}>
+                            <List>
+                                <ListSubheader
+                                    sx={{"backgroundColor": Config.colors##whiteSmoke}}
+                                >
+                                    {"Nouns" |> React.string}
+                                </ListSubheader>
                                 {
                                     grammar_notes
+                                    |> Array.fold_left(
+                                            (acc: array(grammar_note), note: grammar_note) => 
+                                                if (note.category == "nouns" && note.visible) { Array.concat([acc, [|note|]]) } else { acc }, [||]
+                                        )
+                                    |> Array.map(note =>
+                                        <ListItem key=note.slug disablePadding=true>
+                                            <ListItemButton
+                                                onClick={_ =>
+                                                    ReasonReactRouter.push(
+                                                        "/learn/grammar_notes/" ++ note.slug,
+                                                    )
+                                                }
+                                            >
+                                                <ListItemIcon>
+                                                    <TablerReact.IconNote />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={note.title |> React.string}
+                                                />
+                                            </ListItemButton>
+                                        </ListItem>
+                                    )
+                                    |> React.array
+                                }
+                                <ListSubheader
+                                    sx={{"backgroundColor": Config.colors##whiteSmoke}}
+                                >
+                                    {"Verbs" |> React.string}
+                                </ListSubheader>
+                                {
+                                    grammar_notes
+                                    |> Array.fold_left(
+                                            (acc: array(grammar_note), note: grammar_note) => 
+                                                if (note.category == "verbs" && note.visible) { Array.concat([acc, [|note|]]) } else { acc }, [||]
+                                        )
                                     |> Array.map(note =>
                                         <ListItem key=note.slug disablePadding=true>
                                             <ListItemButton
@@ -1254,38 +1295,57 @@ let make = () => {
                     }
             }
         }
-        <Stack 
-            className=css##sideButtons
-            useFlexGap=true
-            spacing=`Number(1)
-        >
-            <Tooltip 
-                title={"Share this grammar note" |> React.string}
-                placement=Tooltip.Placement.left
-                arrow=true
-            >
-                <IconButton
-                    size=`small
-                    ariaLabel="Share this grammar note"
-                    onClick={_ => share_grammar_note()}
+        {
+            if (Option.is_some(slug)) {
+                <Stack 
+                    className=css##sideButtons
+                    useFlexGap=true
+                    spacing=`Number(1)
                 >
-                    <TablerReact.IconLink color=Config.colors##protonRed />
-                </IconButton>
-            </Tooltip>
-            <Tooltip 
-                title={"Scroll to the top" |> React.string}
-                placement=Tooltip.Placement.left
-                arrow=true
-            >
-                <IconButton
-                    size=`small
-                    ariaLabel="Scroll to the top of the grammar note"
-                    onClick={_ => scroll_to_top()}
-                >
-                    <TablerReact.IconArrowBigUpLinesFilled color=Config.colors##protonRed />
-                </IconButton>
-            </Tooltip>
-        </Stack>
+                    <Tooltip 
+                        title={"Share this grammar note" |> React.string}
+                        placement=Tooltip.Placement.left
+                        arrow=true
+                    >
+                        <IconButton
+                            size=`small
+                            ariaLabel="Share this grammar note"
+                            onClick={_ => share_grammar_note()}
+                        >
+                            <TablerReact.IconLink color=Config.colors##protonRed />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip 
+                        title={"Back to the list" |> React.string}
+                        placement=Tooltip.Placement.left
+                        arrow=true
+                    >
+                        <IconButton
+                            size=`small
+                            ariaLabel="Back to the list"
+                            onClick={_ => ReasonReactRouter.push("/learn/grammar_notes")}
+                        >
+                            <TablerReact.IconListLetters color=Config.colors##protonRed />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip 
+                        title={"Scroll to the top" |> React.string}
+                        placement=Tooltip.Placement.left
+                        arrow=true
+                    >
+                        <IconButton
+                            size=`small
+                            ariaLabel="Scroll to the top of the grammar note"
+                            onClick={_ => scroll_to_top()}
+                        >
+                            <TablerReact.IconArrowBigUpLinesFilled color=Config.colors##protonRed />
+                        </IconButton>
+                    </Tooltip>
+                </Stack>
+            } else {
+                React.null
+            }
+        }
     </Grid>
     <Snackbar
         _open=bookmark_snackbar_open

@@ -568,6 +568,18 @@ module IconListCheck = {
   ) => React.element = "IconListCheck";
 };
 
+module IconListLetters = {
+  [@mel.module "@tabler/icons-react"] [@react.component]
+  external make: (
+    ~size: int=?,
+    ~stroke: float=?,
+    ~color: string=?,
+    ~className: string=?,
+    ~title: string=?,
+    unit
+  ) => React.element = "IconListLetters";
+};
+
 module IconMail = {
   [@mel.module "@tabler/icons-react"] [@react.component]
   external make: (

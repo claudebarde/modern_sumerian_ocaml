@@ -45,6 +45,16 @@ let make = () => {
         }, 0);
         ();
     };
+    let (learnAnchor, setLearnAnchor) =
+        React.useState(() =>
+            (Js.Nullable.null: Js.Nullable.t(Dom.element))
+        );
+    let openLearnMenu = !Js.Nullable.isNullable(learnAnchor);
+    let closeLearnMenu = () => setLearnAnchor(_ => Js.Nullable.null);
+    let navigateFromLearnMenu = path => {
+        closeLearnMenu();
+        ReasonReactRouter.push(path);
+    };
 
     let displayLanguage =
         app_store |> Zustand.use_store(store => store.display_language);
@@ -197,19 +207,94 @@ let make = () => {
                     <Button
                         variant=`text
                         color=Color.secondary
+                        endIcon={<TablerReact.IconChevronDown />}
+                        onClick={event =>
+                            setLearnAnchor(_ =>
+                                React.Event.Mouse.currentTarget(event)
+                                |> dom_element_from_event_target
+                                |> Js.Nullable.return
+                            )
+                        }
+                    >
+                        {
+                            Ui_translation.display_to(~sentence="learn", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
+                        }
+                    </Button>
+                    <Menu
+                        _open=openLearnMenu
+                        anchorEl=learnAnchor
+                        anchorOrigin={vertical: `bottom, horizontal: `right}
+                        transformOrigin={vertical: `top, horizontal: `right}
+                        onClose={_ => closeLearnMenu()}
+                    >
+                        <MenuItem
+                            onClick={_ => navigateFromLearnMenu("/learn/daily_vocabulary")}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconListCheck color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Daily Vocabulary" |> React.string}
+                            </ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={_ => navigateFromLearnMenu("/learn/lessons")}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconBook2 color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Lessons" |> React.string}
+                            </ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={_ => navigateFromLearnMenu("/learn/comics")}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconMickey color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Comics" |> React.string}
+                            </ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={_ => navigateFromLearnMenu("/learn/flashcards")}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconPhoto color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Flashcards" |> React.string}
+                            </ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={_ => navigateFromLearnMenu("/learn/grammar_notes")}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconPencil color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Grammar Notes" |> React.string}
+                            </ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={_ => navigateFromLearnMenu("/learn/neologisms")}
+                        >
+                            <ListItemIcon>
+                                <TablerReact.IconNews color=Config.colors##botanicalNight />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {"Neologisms" |> React.string}
+                            </ListItemText>
+                        </MenuItem>
+                    </Menu>
+                    <Button
+                        variant=`text
+                        color=Color.secondary
                         onClick={_ => ReasonReactRouter.push("/games")}
                     >
                         {
                             Ui_translation.display_to(~sentence="games", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
-                        }
-                    </Button>
-                    <Button
-                        variant=`text
-                        color=Color.secondary
-                        onClick={_ => ReasonReactRouter.push("/learn")}
-                    >
-                        {
-                            Ui_translation.display_to(~sentence="learn", ~language=displayLanguage, ~size=Some(Ui_translation.Small))
                         }
                     </Button>
                     <Stack direction=`row spacing=`Number(0)>

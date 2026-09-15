@@ -56,7 +56,7 @@ function Learn(Props) {
   const select_view = function (key) {
     switch (key) {
       case "comics" :
-        return ReasonReactRouter.push("/learn/comics/strip-1");
+        return ReasonReactRouter.push("/learn/comics");
       case "daily_vocabulary" :
         return ReasonReactRouter.push("/learn/daily_vocabulary");
       case "flashcards" :

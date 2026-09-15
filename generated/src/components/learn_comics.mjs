@@ -47,6 +47,7 @@ function Learn_comics(Props) {
   }
   const selected_comic = requested_comic !== undefined ? requested_comic : "strip-1";
   const selected_comic_menu_value = selected_comic === "strip-1" ? selected_comic : "";
+  const comic_available = selected_comic_menu_value !== "";
   const match$3 = React.useState(function () {
     return "/comics/strip-1/sux-cuneiform.png";
   });
@@ -118,13 +119,9 @@ function Learn_comics(Props) {
         });
       } else {
         if (!cancelled.contents) {
-          if (requested_comic !== undefined) {
-            ReasonReactRouter.replace("/learn/comics");
-          } else {
-            Curry._1(set_grammar_notes_error, (function (param) {
-              return "Unable to load the comic grammar notes";
-            }));
-          }
+          Curry._1(set_grammar_notes_error, (function (param) {
+            return "Unable to load the comic grammar notes";
+          }));
         }
         return Promise.resolve();
       }
@@ -170,155 +167,166 @@ function Learn_comics(Props) {
                 children: "#1 Kakug and his dog",
                 value: "strip-1"
               }),
+              displayEmpty: true,
               labelId: "comic-select-label",
               onChange: (function ($$event, param) {
                 ReasonReactRouter.push("/learn/comics/" + $$event.target.value);
+              }),
+              renderValue: (function (param) {
+                if (selected_comic_menu_value === "") {
+                  return "Select a comic strip";
+                } else {
+                  return "#1 Kakug and his dog";
+                }
               }),
               value: selected_comic_menu_value
             }),
             size: "small"
           }),
-          JsxRuntime.jsx(Tooltip, {
-            children: JsxRuntime.jsx(IconButton, {
-              "aria-label": "Copy link to this comic",
-              children: JsxRuntime.jsx(IconsReact.IconShare3, {}),
-              onClick: (function (param) {
-                const comic_url = window.location.origin + ("/learn/comics/" + encodeURIComponent(selected_comic));
-                Bindings__Browser.Clipboard.write_text(comic_url).then(function (param) {
-                  show_link_copied_tooltip();
-                  return Promise.resolve();
-                }).catch(function (error) {
-                  console.log("Could not copy the comic URL:", error);
-                  return Promise.resolve();
-                });
-              })
-            }),
-            disableFocusListener: true,
-            disableHoverListener: true,
-            disableTouchListener: true,
-            onClose: (function (param) {
-              Curry._1(set_link_copied_tooltip_open, (function (param) {
-                return false;
-              }));
-            }),
-            open: match$8[0],
-            title: "Link copied!"
-          })
+          comic_available ? JsxRuntime.jsx(Tooltip, {
+              children: JsxRuntime.jsx(IconButton, {
+                "aria-label": "Copy link to this comic",
+                children: JsxRuntime.jsx(IconsReact.IconShare3, {}),
+                onClick: (function (param) {
+                  const comic_url = window.location.origin + ("/learn/comics/" + encodeURIComponent(selected_comic));
+                  Bindings__Browser.Clipboard.write_text(comic_url).then(function (param) {
+                    show_link_copied_tooltip();
+                    return Promise.resolve();
+                  }).catch(function (error) {
+                    console.log("Could not copy the comic URL:", error);
+                    return Promise.resolve();
+                  });
+                })
+              }),
+              disableFocusListener: true,
+              disableHoverListener: true,
+              disableTouchListener: true,
+              onClose: (function (param) {
+                Curry._1(set_link_copied_tooltip_open, (function (param) {
+                  return false;
+                }));
+              }),
+              open: match$8[0],
+              title: "Link copied!"
+            }) : null
         ],
         className: css.comicsHeader
       }),
-      JsxRuntime.jsxs(Grid, {
-        children: [
-          JsxRuntime.jsxs(Grid, {
-            children: [
-              JsxRuntime.jsxs(Accordion, {
-                children: [
-                  JsxRuntime.jsx(AccordionSummary, {
-                    children: "Cuneiform",
-                    expandIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
-                    sx: {
-                      backgroundColor: expanded_comic === /* Cuneiform */ 0 ? "white" : Bindings__Config.colors.silverSetting,
-                      minHeight: "32px",
-                      padding: "0 4px",
-                      "&.Mui-expanded": {
-                        minHeight: "32px"
-                      },
-                      "& .MuiAccordionSummary-content": {
-                        margin: "2px 10px"
-                      },
-                      "& .MuiAccordionSummary-content.Mui-expanded": {
-                        margin: "2px 10px"
+      comic_available ? JsxRuntime.jsxs(Grid, {
+          children: [
+            JsxRuntime.jsxs(Grid, {
+              children: [
+                JsxRuntime.jsxs(Accordion, {
+                  children: [
+                    JsxRuntime.jsx(AccordionSummary, {
+                      children: "Cuneiform",
+                      expandIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
+                      sx: {
+                        backgroundColor: expanded_comic === /* Cuneiform */ 0 ? "white" : Bindings__Config.colors.silverSetting,
+                        minHeight: "32px",
+                        padding: "0 4px",
+                        "&.Mui-expanded": {
+                          minHeight: "32px"
+                        },
+                        "& .MuiAccordionSummary-content": {
+                          margin: "2px 10px"
+                        },
+                        "& .MuiAccordionSummary-content.Mui-expanded": {
+                          margin: "2px 10px"
+                        }
                       }
-                    }
-                  }),
-                  JsxRuntime.jsx(AccordionDetails, {
-                    children: JsxRuntime.jsx("img", {
-                      className: css.comicImage,
-                      alt: "Comic 1",
-                      src: match$3[0]
+                    }),
+                    JsxRuntime.jsx(AccordionDetails, {
+                      children: JsxRuntime.jsx("img", {
+                        className: css.comicImage,
+                        alt: "Comic 1",
+                        src: match$3[0]
+                      })
                     })
-                  })
-                ],
-                disableGutters: true,
-                expanded: expanded_comic === /* Cuneiform */ 0,
-                onChange: (function (param, isExpanded) {
-                  Curry._1(set_expanded_comic, (function (param) {
-                    if (isExpanded) {
-                      return /* Cuneiform */ 0;
-                    } else {
-                      return /* Transliteration */ 1;
-                    }
-                  }));
-                })
-              }),
-              JsxRuntime.jsxs(Accordion, {
-                children: [
-                  JsxRuntime.jsx(AccordionSummary, {
-                    children: "Transliteration",
-                    expandIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
-                    sx: {
-                      backgroundColor: expanded_comic === /* Transliteration */ 1 ? "white" : Bindings__Config.colors.silverSetting,
-                      minHeight: "32px",
-                      padding: "0 4px",
-                      "&.Mui-expanded": {
-                        minHeight: "32px"
-                      },
-                      "& .MuiAccordionSummary-content": {
-                        margin: "2px 10px"
-                      },
-                      "& .MuiAccordionSummary-content.Mui-expanded": {
-                        margin: "2px 10px"
+                  ],
+                  disableGutters: true,
+                  expanded: expanded_comic === /* Cuneiform */ 0,
+                  onChange: (function (param, isExpanded) {
+                    Curry._1(set_expanded_comic, (function (param) {
+                      if (isExpanded) {
+                        return /* Cuneiform */ 0;
+                      } else {
+                        return /* Transliteration */ 1;
                       }
-                    }
-                  }),
-                  JsxRuntime.jsx(AccordionDetails, {
-                    children: JsxRuntime.jsx("img", {
-                      className: css.comicImage,
-                      alt: "Comic 1",
-                      src: match$4[0]
-                    })
+                    }));
                   })
-                ],
-                disableGutters: true,
-                expanded: expanded_comic === /* Transliteration */ 1,
-                onChange: (function (param, isExpanded) {
-                  Curry._1(set_expanded_comic, (function (param) {
-                    if (isExpanded) {
-                      return /* Transliteration */ 1;
-                    } else {
-                      return /* Cuneiform */ 0;
-                    }
-                  }));
+                }),
+                JsxRuntime.jsxs(Accordion, {
+                  children: [
+                    JsxRuntime.jsx(AccordionSummary, {
+                      children: "Transliteration",
+                      expandIcon: JsxRuntime.jsx(IconsReact.IconChevronDown, {}),
+                      sx: {
+                        backgroundColor: expanded_comic === /* Transliteration */ 1 ? "white" : Bindings__Config.colors.silverSetting,
+                        minHeight: "32px",
+                        padding: "0 4px",
+                        "&.Mui-expanded": {
+                          minHeight: "32px"
+                        },
+                        "& .MuiAccordionSummary-content": {
+                          margin: "2px 10px"
+                        },
+                        "& .MuiAccordionSummary-content.Mui-expanded": {
+                          margin: "2px 10px"
+                        }
+                      }
+                    }),
+                    JsxRuntime.jsx(AccordionDetails, {
+                      children: JsxRuntime.jsx("img", {
+                        className: css.comicImage,
+                        alt: "Comic 1",
+                        src: match$4[0]
+                      })
+                    })
+                  ],
+                  disableGutters: true,
+                  expanded: expanded_comic === /* Transliteration */ 1,
+                  onChange: (function (param, isExpanded) {
+                    Curry._1(set_expanded_comic, (function (param) {
+                      if (isExpanded) {
+                        return /* Transliteration */ 1;
+                      } else {
+                        return /* Cuneiform */ 0;
+                      }
+                    }));
+                  })
                 })
-              })
-            ],
-            className: css.comicViewer,
-            size: {
-              xs: 12,
-              sm: 6
-            }
-          }),
-          JsxRuntime.jsx(Grid, {
-            children: grammar_notes !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
-                children: grammar_notes,
-                rehypePlugins: [Bindings__React_markdown.rehypeCuneiform],
-                remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
-              }) : (
-                grammar_notes_error !== undefined ? JsxRuntime.jsx("p", {
-                    children: grammar_notes_error
-                  }) : null
-              ),
-            size: {
-              xs: 12,
-              sm: 6
-            }
-          })
-        ],
-        className: css.comicsContent,
-        container: true,
-        direction: "row",
-        spacing: 2
-      })
+              ],
+              className: css.comicViewer,
+              size: {
+                xs: 12,
+                sm: 6
+              }
+            }),
+            JsxRuntime.jsx(Grid, {
+              children: grammar_notes !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
+                  children: grammar_notes,
+                  rehypePlugins: [Bindings__React_markdown.rehypeCuneiform],
+                  remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
+                }) : (
+                  grammar_notes_error !== undefined ? JsxRuntime.jsx("p", {
+                      children: grammar_notes_error
+                    }) : null
+                ),
+              size: {
+                xs: 12,
+                sm: 6
+              }
+            })
+          ],
+          className: css.comicsContent,
+          container: true,
+          direction: "row",
+          spacing: 2
+        }) : JsxRuntime.jsx("div", {
+          children: "This comic strip is not yet available.",
+          className: css.comicsUnavailable
+        })
     ],
     className: css.comics
   });

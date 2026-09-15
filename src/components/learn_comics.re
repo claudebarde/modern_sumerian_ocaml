@@ -26,6 +26,7 @@ let make = () => {
     | "strip-1" => selected_comic
     | _ => ""
     };
+    let comic_available = selected_comic_menu_value != "";
     let (path_to_cuneiform_img, set_path_to_cuneiform_img) = React.useState(() => "/comics/strip-1/sux-cuneiform.png");
     let (path_to_transliteration_img, set_path_to_transliteration_img) = React.useState(() => "/comics/strip-1/sux-transliteration.png");
     let (grammar_notes, set_grammar_notes) = React.useState(() => None);
@@ -86,11 +87,7 @@ let make = () => {
                 });
             } else {
                 if (!cancelled^) {
-                    switch requested_comic {
-                    | Some(_) => ReasonReactRouter.replace("/learn/comics")
-                    | None =>
-                        set_grammar_notes_error(_ => Some("Unable to load the comic grammar notes"))
-                    };
+                    set_grammar_notes_error(_ => Some("Unable to load the comic grammar notes"));
                 };
                 Js.Promise.resolve();
             };
@@ -150,6 +147,13 @@ let make = () => {
                 <Select 
                     labelId="comic-select-label"
                     value={Select.Value.fromString(selected_comic_menu_value)}
+                    displayEmpty=true
+                    renderValue={_ =>
+                        (selected_comic_menu_value == ""
+                            ? "Select a comic strip"
+                            : "#1 Kakug and his dog")
+                        |> React.string
+                    }
                     onChange={(event, _) =>
                         ReasonReactRouter.push(
                             "/learn/comics/" ++ event##target##value,
@@ -159,22 +163,28 @@ let make = () => {
                     <MenuItem value="strip-1">{"#1 Kakug and his dog" |> React.string}</MenuItem>
                 </Select>
             </FormControl>
-            <Tooltip
-                title={"Link copied!" |> React.string}
-                disableFocusListener=true
-                disableHoverListener=true
-                disableTouchListener=true
-                _open=link_copied_tooltip_open
-                onClose={_ => set_link_copied_tooltip_open(_ => false)}
-            >
-                <IconButton
-                    ariaLabel="Copy link to this comic"
-                    onClick={_ => copy_comic_url()}
+            {
+                comic_available ?
+                <Tooltip
+                    title={"Link copied!" |> React.string}
+                    disableFocusListener=true
+                    disableHoverListener=true
+                    disableTouchListener=true
+                    _open=link_copied_tooltip_open
+                    onClose={_ => set_link_copied_tooltip_open(_ => false)}
                 >
-                    <TablerReact.IconShare3 />
-                </IconButton>
-            </Tooltip>
+                    <IconButton
+                        ariaLabel="Copy link to this comic"
+                        onClick={_ => copy_comic_url()}
+                    >
+                        <TablerReact.IconShare3 />
+                    </IconButton>
+                </Tooltip>
+                : React.null
+            }
         </Box>
+        {
+            comic_available ?
         <Grid 
             container=true 
             spacing=`Number(2) 
@@ -244,5 +254,10 @@ let make = () => {
                 }
             </Grid>
         </Grid>
+            :
+            <div className=css##comicsUnavailable>
+                {"This comic strip is not yet available." |> React.string}
+            </div>
+        }
     </Container>
 }

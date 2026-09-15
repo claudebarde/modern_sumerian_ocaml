@@ -121,6 +121,15 @@ let make = () => {
                     >
                         {"Facebook" |> React.string}
                     </Button>
+                    <Button
+                        href="https://discord.gg/8WSw6nA5h"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant=`contained
+                        startIcon={<TablerReact.IconBrandDiscord />}
+                    >
+                        {"Discord" |> React.string}
+                    </Button>
                     <Button 
                         variant=`contained
                         startIcon={<TablerReact.IconLink />}
@@ -148,6 +157,15 @@ let make = () => {
                         variant=`circular
                     >
                         <TablerReact.IconBrandFacebook />
+                    </Fab>
+                    <Fab
+                        color=Color.primary
+                        href="https://discord.gg/8WSw6nA5h"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant=`circular
+                    >
+                        <TablerReact.IconBrandDiscord />
                     </Fab>
                     <Fab
                         color=Color.primary

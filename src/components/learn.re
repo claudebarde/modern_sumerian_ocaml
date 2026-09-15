@@ -67,7 +67,7 @@ let make = () => {
                 ReasonReactRouter.push("/learn/neologisms")
             }
             | "comics" => {
-                ReasonReactRouter.push("/learn/comics/strip-1")
+                ReasonReactRouter.push("/learn/comics")
             }
             | _ => ReasonReactRouter.push("/learn")
         }

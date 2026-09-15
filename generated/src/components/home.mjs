@@ -201,6 +201,14 @@ function Home(Props) {
                   variant: "contained"
                 }),
                 JsxRuntime.jsx(Button, {
+                  children: "Discord",
+                  href: "https://discord.gg/8WSw6nA5h",
+                  rel: "noopener noreferrer",
+                  startIcon: JsxRuntime.jsx(IconsReact.IconBrandDiscord, {}),
+                  target: "_blank",
+                  variant: "contained"
+                }),
+                JsxRuntime.jsx(Button, {
                   children: "Links",
                   onClick: (function (param) {
                     ReasonReactRouter.push("/links");
@@ -225,6 +233,14 @@ function Home(Props) {
                   children: JsxRuntime.jsx(IconsReact.IconBrandFacebook, {}),
                   color: Bindings__Material_ui.Color.primary,
                   href: "https://www.facebook.com/ModernSumerian",
+                  rel: "noopener noreferrer",
+                  target: "_blank",
+                  variant: "circular"
+                }),
+                JsxRuntime.jsx(Fab, {
+                  children: JsxRuntime.jsx(IconsReact.IconBrandDiscord, {}),
+                  color: Bindings__Material_ui.Color.primary,
+                  href: "https://discord.gg/8WSw6nA5h",
                   rel: "noopener noreferrer",
                   target: "_blank",
                   variant: "circular"

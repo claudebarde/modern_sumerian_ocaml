@@ -46,7 +46,15 @@ function Learn_comics(Props) {
     requested_comic = undefined;
   }
   const selected_comic = requested_comic !== undefined ? requested_comic : "strip-1";
-  const selected_comic_menu_value = selected_comic === "strip-1" ? selected_comic : "";
+  let selected_comic_menu_value;
+  switch (selected_comic) {
+    case "strip-1" :
+    case "strip-2" :
+      selected_comic_menu_value = selected_comic;
+      break;
+    default:
+      selected_comic_menu_value = "";
+  }
   const comic_available = selected_comic_menu_value !== "";
   const match$3 = React.useState(function () {
     return "/comics/strip-1/sux-cuneiform.png";
@@ -162,21 +170,30 @@ function Learn_comics(Props) {
             variant: Bindings__Material_ui.Typography.Variant.h4
           }),
           JsxRuntime.jsx(FormControl, {
-            children: JsxRuntime.jsx(Select, {
-              children: JsxRuntime.jsx(MenuItem, {
-                children: "#1 Kakug and his dog",
-                value: "strip-1"
-              }),
+            children: JsxRuntime.jsxs(Select, {
+              children: [
+                JsxRuntime.jsx(MenuItem, {
+                  children: "#1 Kakug and his dog",
+                  value: "strip-1"
+                }),
+                JsxRuntime.jsx(MenuItem, {
+                  children: "#2 Kakug's beer",
+                  value: "strip-2"
+                })
+              ],
               displayEmpty: true,
               labelId: "comic-select-label",
               onChange: (function ($$event, param) {
                 ReasonReactRouter.push("/learn/comics/" + $$event.target.value);
               }),
               renderValue: (function (param) {
-                if (selected_comic_menu_value === "") {
-                  return "Select a comic strip";
-                } else {
-                  return "#1 Kakug and his dog";
+                switch (selected_comic_menu_value) {
+                  case "strip-1" :
+                    return "#1 Kakug and his dog";
+                  case "strip-2" :
+                    return "#2 Kakug's beer";
+                  default:
+                    return "Select a comic strip";
                 }
               }),
               value: selected_comic_menu_value

@@ -23,7 +23,8 @@ let make = () => {
     | None => "strip-1"
     };
     let selected_comic_menu_value = switch selected_comic {
-    | "strip-1" => selected_comic
+    | "strip-1"
+    | "strip-2" => selected_comic
     | _ => ""
     };
     let comic_available = selected_comic_menu_value != "";
@@ -149,9 +150,11 @@ let make = () => {
                     value={Select.Value.fromString(selected_comic_menu_value)}
                     displayEmpty=true
                     renderValue={_ =>
-                        (selected_comic_menu_value == ""
-                            ? "Select a comic strip"
-                            : "#1 Kakug and his dog")
+                        (switch selected_comic_menu_value {
+                        | "strip-1" => "#1 Kakug and his dog"
+                        | "strip-2" => "#2 Kakug's beer"
+                        | _ => "Select a comic strip"
+                        })
                         |> React.string
                     }
                     onChange={(event, _) =>
@@ -161,6 +164,7 @@ let make = () => {
                     }
                 >
                     <MenuItem value="strip-1">{"#1 Kakug and his dog" |> React.string}</MenuItem>
+                    <MenuItem value="strip-2">{"#2 Kakug's beer" |> React.string}</MenuItem>
                 </Select>
             </FormControl>
             {

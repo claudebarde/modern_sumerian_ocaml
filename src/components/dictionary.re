@@ -469,12 +469,12 @@ let make = () => {
                                                     </TableCell>
                                                     <TableCell>
                                                         {switch result.marker {
-                                                        | Supabase.A => "Ancien Sumerian" |> React.string
+                                                        | Supabase.A => "Ancient Sumerian" |> React.string
                                                         | Supabase.E => "Modern Extension" |> React.string
                                                         | Supabase.N => "Native Neologism" |> React.string
                                                         | Supabase.C => "Calque" |> React.string
                                                         | Supabase.L_Akk => "Akkadian Loanword" |> React.string
-                                                        | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                                        | Supabase.L_Anc => "Ancient Loanword" |> React.string
                                                         | Supabase.L_Mod => "Modern Loanword" |> React.string
                                                         | Supabase.X => "Uncertain" |> React.string
                                                         }}
@@ -576,12 +576,12 @@ let make = () => {
                                                 <CardContent sx={{"display": "flex", "justifyContent": "space-between"}}>
                                                     <div>
                                                         {switch result.marker {
-                                                        | Supabase.A => "Ancien Sumerian" |> React.string
+                                                        | Supabase.A => "Ancient Sumerian" |> React.string
                                                         | Supabase.E => "Modern Extension" |> React.string
                                                         | Supabase.N => "Native Neologism" |> React.string
                                                         | Supabase.C => "Calque" |> React.string
                                                         | Supabase.L_Akk => "Akkadian Loanword" |> React.string
-                                                        | Supabase.L_Anc => "Ancien Loanword" |> React.string
+                                                        | Supabase.L_Anc => "Ancient Loanword" |> React.string
                                                         | Supabase.L_Mod => "Modern Loanword" |> React.string
                                                         | Supabase.X => "Uncertain" |> React.string
                                                         }}

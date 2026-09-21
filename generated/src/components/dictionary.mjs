@@ -307,7 +307,7 @@ function Dictionary(Props) {
                         let tmp;
                         switch (match) {
                           case /* A */ 0 :
-                            tmp = "Ancien Sumerian";
+                            tmp = "Ancient Sumerian";
                             break;
                           case /* E */ 1 :
                             tmp = "Modern Extension";
@@ -322,7 +322,7 @@ function Dictionary(Props) {
                             tmp = "Akkadian Loanword";
                             break;
                           case /* L_Anc */ 5 :
-                            tmp = "Ancien Loanword";
+                            tmp = "Ancient Loanword";
                             break;
                           case /* L_Mod */ 6 :
                             tmp = "Modern Loanword";
@@ -426,7 +426,7 @@ function Dictionary(Props) {
                   let tmp;
                   switch (match) {
                     case /* A */ 0 :
-                      tmp = "Ancien Sumerian";
+                      tmp = "Ancient Sumerian";
                       break;
                     case /* E */ 1 :
                       tmp = "Modern Extension";
@@ -441,7 +441,7 @@ function Dictionary(Props) {
                       tmp = "Akkadian Loanword";
                       break;
                     case /* L_Anc */ 5 :
-                      tmp = "Ancien Loanword";
+                      tmp = "Ancient Loanword";
                       break;
                     case /* L_Mod */ 6 :
                       tmp = "Modern Loanword";

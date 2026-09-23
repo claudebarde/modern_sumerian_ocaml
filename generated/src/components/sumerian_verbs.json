@@ -185,7 +185,11 @@
     "english": { "lemma": "trust" },
     "stem": "til",
     "stem_cuneiforms": ["𒋾"],
-    "kind": { "type": "compound", "value": "ĝeshkim", "cuneiforms": ["𒅆", "𒁾"] },
+    "kind": {
+      "type": "compound",
+      "value": "ĝeshkim",
+      "cuneiforms": ["𒅆", "𒁾"]
+    },
     "imperfective": { "type": "ed_marker" },
     "transitive": true,
     "notes": []
@@ -290,7 +294,7 @@
     "kind": { "type": "compound", "value": "ki", "cuneiforms": ["𒆠"] },
     "imperfective": { "type": "reduplicate" },
     "transitive": true,
-    "notes": []
+    "notes": ["The person that is being loved is in the dative case."]
   },
   {
     "label": "kiĝ",
@@ -596,9 +600,7 @@
     "kind": { "type": "simple" },
     "imperfective": { "type": "ed_marker" },
     "transitive": false,
-    "notes": [
-      "Used of time passing."
-    ]
+    "notes": ["Used of time passing."]
   },
   {
     "label": "zig",

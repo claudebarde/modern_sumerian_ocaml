@@ -847,6 +847,7 @@ let make = () => {
                 | Some(Conjugator.Preformative.I) => Some(("pref", "i"))
                 | None => None
                 },
+                ventive ? Some(("ventive", "1")) : None,
                 subject
                 |> Option.map(person =>
                     ("subj", person_param_to_url_code(person))
@@ -1072,7 +1073,16 @@ let make = () => {
                         }
                         renderInput={params =>
                             React.cloneElement(
-                                <TextField label={"Verb Stem" |> React.string} />,
+                                <TextField
+                                    label={"Verb Stem" |> React.string}
+                                    helperText={
+                                        switch verb_stem {
+                                        | Some(verb) when Array.length(verb.notes) > 0 =>
+                                            Array.get(verb.notes, 0) |> React.string
+                                        | _ => React.null
+                                        }
+                                    }
+                                />,
                                 params,
                             )
                         }
@@ -1110,7 +1120,15 @@ let make = () => {
                                 props,
                             )
                         }
-                        sx={{"width": "100%", "backgroundColor": "white"}}
+                        sx={{
+                            "width": "100%",
+                            "& .MuiOutlinedInput-root": {
+                                "backgroundColor": "white",
+                            },
+                            "& .MuiFormHelperText-root": {
+                                "backgroundColor": "transparent",
+                            },
+                        }}
                         size=`small
                     />
                     <span className=css##noWrap>

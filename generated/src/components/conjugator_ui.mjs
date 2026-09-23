@@ -1413,6 +1413,7 @@ function Conjugator_ui(Props) {
                     options: available_verbs,
                     renderInput: (function (params) {
                       return React.cloneElement(JsxRuntime.jsx(TextField, {
+                        helperText: verb_stem !== undefined && verb_stem.notes.length !== 0 ? Caml_array.get(verb_stem.notes, 0) : null,
                         label: "Verb Stem"
                       }), params);
                     }),
@@ -1448,7 +1449,12 @@ function Conjugator_ui(Props) {
                     size: "small",
                     sx: {
                       width: "100%",
-                      backgroundColor: "white"
+                      "& .MuiOutlinedInput-root": {
+                        backgroundColor: "white"
+                      },
+                      "& .MuiFormHelperText-root": {
+                        backgroundColor: "transparent"
+                      }
                     },
                     value: verb_stem !== undefined ? verb_stem : null
                   }),
@@ -2275,27 +2281,33 @@ function Conjugator_ui(Props) {
                         const params_1 = {
                           hd: tmp,
                           tl: {
-                            hd: Stdlib__Option.map((function (person) {
-                              return [
-                                "subj",
-                                person_param_to_url_code(person)
-                              ];
-                            }), subject),
+                            hd: ventive ? [
+                                "ventive",
+                                "1"
+                              ] : undefined,
                             tl: {
                               hd: Stdlib__Option.map((function (person) {
                                 return [
-                                  "obj",
+                                  "subj",
                                   person_param_to_url_code(person)
                                 ];
-                              }), object_),
+                              }), subject),
                               tl: {
                                 hd: Stdlib__Option.map((function (person) {
                                   return [
-                                    "indobj",
+                                    "obj",
                                     person_param_to_url_code(person)
                                   ];
-                                }), indirect_object),
-                                tl: /* [] */ 0
+                                }), object_),
+                                tl: {
+                                  hd: Stdlib__Option.map((function (person) {
+                                    return [
+                                      "indobj",
+                                      person_param_to_url_code(person)
+                                    ];
+                                  }), indirect_object),
+                                  tl: /* [] */ 0
+                                }
                               }
                             }
                           }

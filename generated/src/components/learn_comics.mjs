@@ -50,6 +50,7 @@ function Learn_comics(Props) {
   switch (selected_comic) {
     case "strip-1" :
     case "strip-2" :
+    case "strip-3" :
       selected_comic_menu_value = selected_comic;
       break;
     default:
@@ -179,6 +180,10 @@ function Learn_comics(Props) {
                 JsxRuntime.jsx(MenuItem, {
                   children: "#2 Kakug's beer",
                   value: "strip-2"
+                }),
+                JsxRuntime.jsx(MenuItem, {
+                  children: "#3 Duga",
+                  value: "strip-3"
                 })
               ],
               displayEmpty: true,
@@ -192,6 +197,8 @@ function Learn_comics(Props) {
                     return "#1 Kakug and his dog";
                   case "strip-2" :
                     return "#2 Kakug's beer";
+                  case "strip-3" :
+                    return "#3 Duga";
                   default:
                     return "Select a comic strip";
                 }

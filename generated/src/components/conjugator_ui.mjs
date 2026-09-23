@@ -1312,36 +1312,39 @@ function Conjugator_ui(Props) {
         } else {
           selected_indirect_object = undefined;
         }
+        const match$5 = Js__Js_dict.get(url_params, "ventive");
+        const has_ventive = match$5 === "1" ? true : false;
         const initialized_verb = Conjugator.create(selected_verb.stem);
         const initialized_verb$1 = selected_verb.transitive ? Conjugator.is_transitive(initialized_verb) : Conjugator.is_intransitive(initialized_verb);
         const initialized_verb$2 = selected_aspect ? Conjugator.is_perfective(initialized_verb$1) : Conjugator.is_imperfective(initialized_verb$1, selected_verb.imperfective);
         const initialized_verb$3 = selected_preformative !== undefined ? Conjugator.set_preformative(initialized_verb$2, selected_preformative) : initialized_verb$2;
-        const verb = apply_subject_and_object(initialized_verb$3, selected_subject, selected_object, selected_indirect_object);
-        let match$5;
-        match$5 = verb.TAG === /* Ok */ 0 ? [
+        const initialized_verb$4 = has_ventive ? Conjugator.set_ventive(initialized_verb$3) : initialized_verb$3;
+        const verb = apply_subject_and_object(initialized_verb$4, selected_subject, selected_object, selected_indirect_object);
+        let match$6;
+        match$6 = verb.TAG === /* Ok */ 0 ? [
             verb._0,
             undefined,
             selected_subject,
             selected_object,
             selected_indirect_object
           ] : [
-            initialized_verb$3,
+            initialized_verb$4,
             verb._0,
             undefined,
             undefined,
             undefined
           ];
-        const initialized_indirect_object = match$5[4];
-        const initialized_object = match$5[3];
-        const initialized_subject = match$5[2];
-        const initialization_error = match$5[1];
-        const initialized_verb$4 = match$5[0];
+        const initialized_indirect_object = match$6[4];
+        const initialized_object = match$6[3];
+        const initialized_subject = match$6[2];
+        const initialization_error = match$6[1];
+        const initialized_verb$5 = match$6[0];
         reset();
         Curry._1(set_verb_stem, (function (param) {
           return selected_verb;
         }));
         Curry._1(set_verb_form, (function (param) {
-          return initialized_verb$4;
+          return initialized_verb$5;
         }));
         Curry._1(set_is_transitive, (function (param) {
           return selected_verb.transitive;

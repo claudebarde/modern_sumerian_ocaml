@@ -969,6 +969,10 @@ let make = () => {
                 | Some("8") => Some(Conjugator__Infixes.PersonParam.Third_plur_non_human)
                 | _ => None
                 };
+                let has_ventive = switch (Js.Dict.get(url_params, "ventive")) {
+                | Some("1") => true
+                | _ => false
+                };
 
                 let initialized_verb = Conjugator.create(selected_verb.stem);
                 let initialized_verb =
@@ -987,6 +991,9 @@ let make = () => {
                     | Some(pref) => Conjugator.set_preformative(initialized_verb, pref)
                     | None => initialized_verb
                     };
+                let initialized_verb = has_ventive
+                    ? Conjugator.set_ventive(initialized_verb)
+                    : initialized_verb;
 
                 let (
                     initialized_verb,

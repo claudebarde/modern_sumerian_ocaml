@@ -25,7 +25,8 @@ let make = () => {
     let selected_comic_menu_value = switch selected_comic {
     | "strip-1"
     | "strip-2"
-    | "strip-3" => selected_comic
+    | "strip-3"
+    | "strip-4" => selected_comic
     | _ => ""
     };
     let comic_available = selected_comic_menu_value != "";
@@ -155,6 +156,7 @@ let make = () => {
                         | "strip-1" => "#1 Kakug and his dog"
                         | "strip-2" => "#2 Kakug's beer"
                         | "strip-3" => "#3 Duga"
+                        | "strip-4" => "#4 Abam / Anam"
                         | _ => "Select a comic strip"
                         })
                         |> React.string
@@ -168,6 +170,7 @@ let make = () => {
                     <MenuItem value="strip-1">{"#1 Kakug and his dog" |> React.string}</MenuItem>
                     <MenuItem value="strip-2">{"#2 Kakug's beer" |> React.string}</MenuItem>
                     <MenuItem value="strip-3">{"#3 Duga" |> React.string}</MenuItem>
+                    <MenuItem value="strip-4">{"#4 Abam / Anam" |> React.string}</MenuItem>
                 </Select>
             </FormControl>
             {

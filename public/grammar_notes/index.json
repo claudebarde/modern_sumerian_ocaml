@@ -30,5 +30,13 @@
     "banner": "/grammar_notes/banners/plurality.jpg",
     "category": "nouns",
     "visible": true
+  },
+  {
+    "slug": "subordinate-clauses",
+    "title": "Subordinate Clauses",
+    "file": "/grammar_notes/subordinate-clauses.md",
+    "banner": "/grammar_notes/banners/subordinate-clauses.jpg",
+    "category": "verbs",
+    "visible": true
   }
 ]

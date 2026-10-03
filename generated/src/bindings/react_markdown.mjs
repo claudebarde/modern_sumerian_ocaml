@@ -49,9 +49,48 @@ const rehypeCuneiform = (function rehypeCuneiform() {
   }
 );
 
+const make_rehype_heading_ids = (function (tocEntries) {
+    const idsByHeadingText = new Map();
+    for (const entry of tocEntries) {
+      if (!idsByHeadingText.has(entry.heading)) {
+        idsByHeadingText.set(entry.heading, entry.id);
+      }
+    }
+
+    function textContent(node) {
+      if (node.type === "text") return node.value;
+      if (Array.isArray(node.children)) {
+        return node.children.map(textContent).join("");
+      }
+      return "";
+    }
+
+    return function rehypeHeadingIds() {
+      return function transform(tree) {
+        function visit(node) {
+          if (!node || !Array.isArray(node.children)) return;
+          for (const child of node.children) {
+            if (child.type === "element" && /^h[1-6]$/.test(child.tagName)) {
+              const text = textContent(child).trim();
+              const id = idsByHeadingText.get(text);
+              if (id) {
+                child.properties = child.properties || {};
+                child.properties.id = id;
+              }
+            }
+            visit(child);
+          }
+        }
+        visit(tree);
+      };
+    };
+  }
+);
+
 export {
   configureRemarkGfm,
   remarkGfmWithoutSingleTilde,
   rehypeCuneiform,
+  make_rehype_heading_ids,
 }
 /* remarkGfmWithoutSingleTilde Not a pure module */

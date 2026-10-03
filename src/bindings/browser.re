@@ -385,6 +385,16 @@ module Element = {
 
   [@mel.send]
   external blur: ([@mel.this] Dom.element) => unit = "blur";
+
+  type scroll_into_view_options;
+
+  [@mel.obj]
+  external make_scroll_into_view_options:
+    (~behavior: string, ~block: string, unit) => scroll_into_view_options = "";
+
+  [@mel.send]
+  external scroll_into_view:
+    (scroll_into_view_options, [@mel.this] Dom.element) => unit = "scrollIntoView";
 };
 
 module Document = {

@@ -29,6 +29,7 @@ import * as Bindings__React_markdown from "../bindings/react_markdown.mjs";
 import * as Bindings__Supabase from "../bindings/supabase.mjs";
 import * as Bindings__Zustand from "../bindings/zustand.mjs";
 import * as Caml_array from "melange.js/caml_array.mjs";
+import * as Caml_format from "melange.js/caml_format.mjs";
 import * as Caml_option from "melange.js/caml_option.mjs";
 import * as Caml_splice_call from "melange.js/caml_splice_call.mjs";
 import * as Components__Store from "./store.mjs";
@@ -123,6 +124,143 @@ function parse_grammar_notes_index(json) {
     _index = index + 1 | 0;
     continue;
   };
+}
+
+function split_frontmatter(source) {
+  const lines = source.split("\n");
+  if (!(lines.length !== 0 && Caml_array.get(lines, 0).trim() === "---")) {
+    return [
+      undefined,
+      source
+    ];
+  }
+  const find_closing = function (_index) {
+    while (true) {
+      const index = _index;
+      if (index >= lines.length) {
+        return;
+      }
+      if (Caml_array.get(lines, index).trim() === "---") {
+        return index;
+      }
+      _index = index + 1 | 0;
+      continue;
+    };
+  };
+  const closing_index = find_closing(1);
+  if (closing_index === undefined) {
+    return [
+      undefined,
+      source
+    ];
+  }
+  const frontmatter_lines = Stdlib__Array.sub(lines, 1, closing_index - 1 | 0);
+  const body_lines = Stdlib__Array.sub(lines, closing_index + 1 | 0, (lines.length - closing_index | 0) - 1 | 0);
+  return [
+    frontmatter_lines,
+    body_lines.join("\n")
+  ];
+}
+
+function parse_toc_entries(lines) {
+  const id_regex = new RegExp("^\\s*-\\s*id:\\s*(.+?)\\s*$");
+  const level_regex = new RegExp("^\\s*level:\\s*(\\d+)\\s*$");
+  const heading_regex = new RegExp("^\\s*heading:\\s*\"(.*)\"\\s*$");
+  const title_regex = new RegExp("^\\s*title:\\s*\"(.*)\"\\s*$");
+  const capture_group = function (regex, line) {
+    const result = regex.exec(line);
+    if (result !== null && result.length > 1) {
+      return Caml_option.nullable_to_opt(Caml_array.get(result, 1));
+    }
+    
+  };
+  const entries = {
+    contents: /* [] */ 0
+  };
+  const current_id = {
+    contents: undefined
+  };
+  const current_level = {
+    contents: 2
+  };
+  const current_heading = {
+    contents: ""
+  };
+  const current_title = {
+    contents: ""
+  };
+  const in_toc = {
+    contents: false
+  };
+  const push_current = function (param) {
+    const id = current_id.contents;
+    if (id !== undefined) {
+      entries.contents = {
+        hd: {
+          id,
+          level: current_level.contents,
+          heading: current_heading.contents,
+          title: current_title.contents
+        },
+        tl: entries.contents
+      };
+      return;
+    }
+    
+  };
+  Stdlib__Array.iter((function (line) {
+    if (!in_toc.contents) {
+      if (line.trim() === "toc:") {
+        in_toc.contents = true;
+        return;
+      } else {
+        return;
+      }
+    }
+    const id = capture_group(id_regex, line);
+    if (id !== undefined) {
+      push_current();
+      current_id.contents = id;
+      current_level.contents = 2;
+      current_heading.contents = "";
+      current_title.contents = "";
+      return;
+    }
+    const level = capture_group(level_regex, line);
+    if (level !== undefined) {
+      current_level.contents = Caml_format.caml_int_of_string(level);
+      return;
+    }
+    const heading = capture_group(heading_regex, line);
+    if (heading !== undefined) {
+      current_heading.contents = heading;
+      return;
+    }
+    const title = capture_group(title_regex, line);
+    if (title !== undefined) {
+      current_title.contents = title;
+      return;
+    }
+    
+  }), lines);
+  push_current();
+  return Stdlib__Array.of_list(Stdlib__List.rev(entries.contents));
+}
+
+function parse_grammar_note_toc(source) {
+  const match = split_frontmatter(source);
+  const frontmatter_lines = match[0];
+  if (frontmatter_lines !== undefined) {
+    return [
+      parse_toc_entries(frontmatter_lines),
+      match[1]
+    ];
+  } else {
+    return [
+      [],
+      match[1]
+    ];
+  }
 }
 
 function Learn_grammar_notes(Props) {
@@ -801,6 +939,19 @@ function Learn_grammar_notes(Props) {
       return Promise.resolve();
     });
   };
+  const match$22 = markdown !== undefined ? parse_grammar_note_toc(markdown) : [
+      [],
+      ""
+    ];
+  const toc_entries = match$22[0];
+  const toc_entries_js = Stdlib__Array.map((function (entry) {
+    return {
+      id: entry.id,
+      level: entry.level,
+      heading: entry.heading,
+      title: entry.title
+    };
+  }), toc_entries);
   let tmp;
   if (bookmark_notification !== undefined) {
     switch (bookmark_notification) {
@@ -1126,10 +1277,73 @@ function Learn_grammar_notes(Props) {
                           }
                         }),
                         JsxRuntime.jsx("div", {
-                          children: markdown !== undefined ? JsxRuntime.jsx(ReactMarkdown, {
-                              children: markdown,
-                              rehypePlugins: [Bindings__React_markdown.rehypeCuneiform],
-                              remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
+                          children: markdown !== undefined ? JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                              children: [
+                                toc_entries.length !== 0 ? JsxRuntime.jsxs("nav", {
+                                    children: [
+                                      JsxRuntime.jsx(Typography, {
+                                        children: "Table of contents",
+                                        className: css.grammarNoteTocTitle,
+                                        component: "div",
+                                        variant: Bindings__Material_ui.Typography.Variant.subtitle2
+                                      }),
+                                      JsxRuntime.jsx(List, {
+                                        children: Stdlib__Array.map((function (entry) {
+                                          const Key = entry.id;
+                                          const match = entry.level;
+                                          let tmp;
+                                          switch (match) {
+                                            case 1 :
+                                              tmp = css.tocLevel1;
+                                              break;
+                                            case 3 :
+                                              tmp = css.tocLevel3;
+                                              break;
+                                            default:
+                                              tmp = css.tocLevel2;
+                                          }
+                                          return JsxRuntime.jsx(ListItem, {
+                                            children: JsxRuntime.jsx(ListItemButton, {
+                                              children: JsxRuntime.jsx(ListItemText, {
+                                                primary: entry.title
+                                              }),
+                                              className: tmp,
+                                              onClick: (function (param) {
+                                                let id = entry.id;
+                                                const match = document.getElementById(id);
+                                                const match$1 = grammar_note_ref.current;
+                                                if (match == null) {
+                                                  return;
+                                                }
+                                                if (match$1 == null) {
+                                                  return;
+                                                }
+                                                const target_top = match$1.scrollTop + match.getBoundingClientRect().top - match$1.getBoundingClientRect().top - 140.0;
+                                                match$1.scrollTo({
+                                                  top: Math.max(0.0, target_top),
+                                                  behavior: "smooth"
+                                                });
+                                              })
+                                            }),
+                                            disablePadding: true
+                                          }, Key);
+                                        }), toc_entries),
+                                        dense: true,
+                                        disablePadding: true
+                                      })
+                                    ],
+                                    "aria-label": "Table of contents",
+                                    className: css.grammarNoteToc
+                                  }) : null,
+                                JsxRuntime.jsx(ReactMarkdown, {
+                                  children: match$22[1],
+                                  rehypePlugins: toc_entries.length !== 0 ? [
+                                      Bindings__React_markdown.rehypeCuneiform,
+                                      Bindings__React_markdown.make_rehype_heading_ids(toc_entries_js)
+                                    ] : [Bindings__React_markdown.rehypeCuneiform],
+                                  remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
+                                })
+                              ]
                             }) : (
                               markdown_error !== undefined ? JsxRuntime.jsx("p", {
                                   children: markdown_error
@@ -1389,6 +1603,9 @@ export {
   decode_boolean_field,
   decode_grammar_note,
   parse_grammar_notes_index,
+  split_frontmatter,
+  parse_toc_entries,
+  parse_grammar_note_toc,
   make,
 }
 /* css Not a pure module */

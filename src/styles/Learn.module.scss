@@ -164,6 +164,51 @@ $bookmark-marker-gutter: 24px;
     width: 100%;
     margin-left: 0;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    scroll-margin-top: 240px;
+  }
+}
+
+.grammarNoteToc {
+  width: calc(100% - $bookmark-marker-gutter);
+  margin: 0 0 24px $bookmark-marker-gutter;
+  padding: 16px 20px;
+  border: 1px solid $silver-setting;
+  border-radius: 8px;
+  background-color: $transparent-white-smoke;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint) {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.grammarNoteTocTitle {
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tocLevel1 {
+  font-weight: 700;
+}
+
+.tocLevel2 {
+  padding-left: 16px !important;
+}
+
+.tocLevel3 {
+  padding-left: 32px !important;
+  font-size: 0.875rem;
+  opacity: 0.85;
 }
 
 .bookmarkMarker {

@@ -64,6 +64,13 @@ type bookmark_marker = {
     top: float,
 };
 
+type toc_entry = {
+    id: string,
+    level: int,
+    heading: string,
+    title: string,
+};
+
 let decode_string_field = (object_, field) =>
     switch (Js.Dict.get(object_, field)) {
     | Some(value) => Js.Json.decodeString(value)
@@ -113,6 +120,127 @@ let parse_grammar_notes_index = json =>
 
         decode_rows(0, []);
     | None => Error("The grammar notes index JSON root must be an array")
+    };
+
+/* Grammar note Markdown files may start with a YAML frontmatter block
+   (delimited by "---" lines) holding a `toc` list used to build a table of
+   contents. Split it off from the Markdown body that gets rendered. */
+let split_frontmatter = (source: string): (option(array(string)), string) => {
+    let lines = source |> Js.String.split(~sep="\n");
+
+    if (Array.length(lines) > 0 && Js.String.trim(lines[0]) == "---") {
+        let rec find_closing = index =>
+            if (index >= Array.length(lines)) {
+                None;
+            } else if (Js.String.trim(lines[index]) == "---") {
+                Some(index);
+            } else {
+                find_closing(index + 1);
+            };
+
+        switch (find_closing(1)) {
+        | Some(closing_index) =>
+            let frontmatter_lines = Array.sub(lines, 1, closing_index - 1);
+            let body_lines =
+                Array.sub(
+                    lines,
+                    closing_index + 1,
+                    Array.length(lines) - closing_index - 1,
+                );
+            (Some(frontmatter_lines), body_lines |> Js.Array.join(~sep="\n"));
+        | None => (None, source)
+        };
+    } else {
+        (None, source);
+    };
+};
+
+/* Parse the `toc` list from a frontmatter block. Each entry looks like:
+     - id: some-id
+       level: 2
+       heading: "Exact heading text"
+       title: "Display title"
+   Comment lines (starting with #) and any fields outside of this shape are
+   ignored. */
+let parse_toc_entries = (lines: array(string)): array(toc_entry) => {
+    let id_regex = Js.Re.fromString("^\\s*-\\s*id:\\s*(.+?)\\s*$");
+    let level_regex = Js.Re.fromString("^\\s*level:\\s*(\\d+)\\s*$");
+    let heading_regex = Js.Re.fromString("^\\s*heading:\\s*\"(.*)\"\\s*$");
+    let title_regex = Js.Re.fromString("^\\s*title:\\s*\"(.*)\"\\s*$");
+
+    let capture_group = (regex, line) =>
+        switch (Js.Re.exec(~str=line, regex)) {
+        | Some(result) =>
+            let captures = Js.Re.captures(result);
+            Array.length(captures) > 1
+                ? Js.Nullable.toOption(captures[1]) : None;
+        | None => None
+        };
+
+    let entries = ref([]);
+    let current_id = ref(None);
+    let current_level = ref(2);
+    let current_heading = ref("");
+    let current_title = ref("");
+    let in_toc = ref(false);
+
+    let push_current = () =>
+        switch current_id^ {
+        | Some(id) =>
+            entries := [
+                {
+                    id,
+                    level: current_level^,
+                    heading: current_heading^,
+                    title: current_title^,
+                },
+                ...entries^,
+            ]
+        | None => ()
+        };
+
+    lines
+    |> Array.iter(line =>
+        if (!in_toc^) {
+            if (Js.String.trim(line) == "toc:") {
+                in_toc := true;
+            };
+        } else {
+            switch (capture_group(id_regex, line)) {
+            | Some(id) =>
+                push_current();
+                current_id := Some(id);
+                current_level := 2;
+                current_heading := "";
+                current_title := "";
+            | None =>
+                switch (capture_group(level_regex, line)) {
+                | Some(level) => current_level := int_of_string(level)
+                | None =>
+                    switch (capture_group(heading_regex, line)) {
+                    | Some(heading) => current_heading := heading
+                    | None =>
+                        switch (capture_group(title_regex, line)) {
+                        | Some(title) => current_title := title
+                        | None => ()
+                        }
+                    }
+                }
+            };
+        }
+    );
+    push_current();
+
+    entries^ |> Stdlib.List.rev |> Array.of_list;
+};
+
+let parse_grammar_note_toc = (source: string): (array(toc_entry), string) =>
+    switch (split_frontmatter(source)) {
+    | (Some(frontmatter_lines), body) => (
+        parse_toc_entries(frontmatter_lines),
+        body,
+    )
+    | (None, body) => ([||], body)
     };
 
 [@react.component]
@@ -342,6 +470,32 @@ let make = () => {
                 element,
             )
         | None => ()
+        };
+
+    /* Distance kept between the top of the scroll area and the anchored
+       heading, so the sticky title and its gradient fade don't cover it. */
+    let anchor_scroll_offset = 140.0;
+
+    let scroll_to_anchor = id =>
+        switch (
+            Browser.get_element_by_id(id),
+            Js.Nullable.toOption(grammar_note_ref.current),
+        ) {
+        | (Some(element), Some(container)) =>
+            let target_top =
+                ScrollableElement.scroll_top(container)
+                +. ElementViewport.top(ElementViewport.get_bounding_client_rect(element))
+                -. ElementViewport.top(ElementViewport.get_bounding_client_rect(container))
+                -. anchor_scroll_offset;
+            ScrollableElement.scroll_to(
+                ScrollableElement.make_scroll_to_options(
+                    ~top=Js.Math.max_float(0.0, target_top),
+                    ~behavior="smooth",
+                    (),
+                ),
+                container,
+            );
+        | _ => ()
         };
 
     let share_grammar_note = () => {
@@ -972,6 +1126,23 @@ let make = () => {
         | (_, None) => close_bookmark_menu()
         };
 
+    let (toc_entries, markdown_body) =
+        switch markdown {
+        | Some(content) => parse_grammar_note_toc(content)
+        | None => ([||], "")
+        };
+    let toc_entries_js =
+        toc_entries
+        |> Array.map(entry =>
+            ReactMarkdown.make_toc_entry_js(
+                ~id=entry.id,
+                ~level=entry.level,
+                ~heading=entry.heading,
+                ~title=entry.title,
+                (),
+            )
+        );
+
     <>
     <Grid className=css##grammarNotesContainer>
         {
@@ -1195,12 +1366,61 @@ let make = () => {
                                 <div className=css##grammarNoteMarkdown>
                                     {
                                     switch (markdown, markdown_error) {
-                                    | (Some(content), _) =>
+                                    | (Some(_), _) =>
+                                        <>
+                                        {
+                                            Array.length(toc_entries) > 0
+                                                ? <nav
+                                                    className=css##grammarNoteToc
+                                                    ariaLabel="Table of contents"
+                                                  >
+                                                    <Typography
+                                                        variant=Typography.Variant.subtitle2
+                                                        component=RootComponent.htmlElement("div")
+                                                        className=css##grammarNoteTocTitle
+                                                    >
+                                                        {"Table of contents" |> React.string}
+                                                    </Typography>
+                                                    <List dense=true disablePadding=true>
+                                                        {
+                                                            toc_entries
+                                                            |> Array.map(entry =>
+                                                                <ListItem key=entry.id disablePadding=true>
+                                                                    <ListItemButton
+                                                                        className={
+                                                                            switch entry.level {
+                                                                            | 1 => css##tocLevel1
+                                                                            | 3 => css##tocLevel3
+                                                                            | _ => css##tocLevel2
+                                                                            }
+                                                                        }
+                                                                        onClick={_ => scroll_to_anchor(entry.id)}
+                                                                    >
+                                                                        <ListItemText
+                                                                            primary={entry.title |> React.string}
+                                                                        />
+                                                                    </ListItemButton>
+                                                                </ListItem>
+                                                            )
+                                                            |> React.array
+                                                        }
+                                                    </List>
+                                                  </nav>
+                                                : React.null
+                                        }
                                         <ReactMarkdown
-                                            markdown=content
+                                            markdown=markdown_body
                                             remarkPlugins=[|ReactMarkdown.remarkGfmWithoutSingleTilde|]
-                                            rehypePlugins=[|ReactMarkdown.rehypeCuneiform|]
+                                            rehypePlugins={
+                                                Array.length(toc_entries) > 0
+                                                    ? [|
+                                                        ReactMarkdown.rehypeCuneiform,
+                                                        ReactMarkdown.make_rehype_heading_ids(toc_entries_js),
+                                                      |]
+                                                    : [|ReactMarkdown.rehypeCuneiform|]
+                                            }
                                         />
+                                        </>
                                         | (None, Some(message)) =>
                                             <p> {message |> React.string} </p>
                                         | (None, None) =>

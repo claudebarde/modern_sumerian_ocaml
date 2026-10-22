@@ -180,6 +180,21 @@
     "notes": []
   },
   {
+    "label": "ĝesh tuku",
+    "meaning": "listen",
+    "english": {
+      "lemma": "listen",
+      "complement": "to",
+      "complement_placement": "after_verb"
+    },
+    "stem": "tuku",
+    "stem_cuneiforms": ["𒌇"],
+    "kind": { "type": "compound", "value": "ĝesh", "cuneiforms": ["𒄑"] },
+    "imperfective": { "type": "reduplicate" },
+    "transitive": true,
+    "notes": []
+  },
+  {
     "label": "ĝeshkim til",
     "meaning": "trust",
     "english": { "lemma": "trust" },
@@ -588,6 +603,17 @@
     "stem_cuneiforms": ["𒀄"],
     "kind": { "type": "simple" },
     "imperfective": { "type": "ed_marker" },
+    "transitive": false,
+    "notes": []
+  },
+  {
+    "label": "u ku",
+    "meaning": "sleep",
+    "english": { "lemma": "sleep" },
+    "stem": "ku",
+    "stem_cuneiforms": ["𒆪"],
+    "kind": { "type": "compound", "value": "u", "cuneiforms": ["𒅇"] },
+    "imperfective": { "type": "reduplicate" },
     "transitive": false,
     "notes": []
   },

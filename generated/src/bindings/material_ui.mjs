@@ -195,6 +195,8 @@ const Select = {
   Value
 };
 
+const Slide = {};
+
 const TransitionDuration = {};
 
 const Snackbar = {
@@ -377,6 +379,7 @@ export {
   Radio,
   RadioGroup,
   Select,
+  Slide,
   Snackbar,
   Stack,
   Switch,

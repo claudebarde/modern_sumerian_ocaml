@@ -604,6 +604,7 @@ module Dialog = {
     ~_PaperComponent: RootComponent.t=?,
     ~role: [`dialog | `alertdialog]=?,
     ~scroll: [`body | `paper]=?,
+    ~slots: Js.t({..})=?,
     ~sx: Js.t({..})=?,
     ~transitionDuration: [@mel.unwrap] [
         | `auto
@@ -1469,6 +1470,37 @@ module Select = {
     ~value: Value.t,
     ~variant: [`standard | `outlined | `filled]=?,
     ~sx: Js.t({..})=?,
+    unit
+  ) => React.element = "default";
+};
+
+module Slide = {
+  type props;
+
+  type easingObject = {
+    enter: option(string),
+    exit: option(string),
+  };
+
+  type easing = [
+    | `String(string)
+    | `Object(easingObject)
+  ];
+
+  [@mel.module "@mui/material/Slide"]
+  external component: React.component(props) = "default";
+
+  [@mel.module "@mui/material/Slide"] [@react.component]
+  external make: (
+    ~addEndListener: (React.Event.Synthetic.t => unit)=?,
+    ~appear: bool=?,
+    ~children: React.element=?,
+    ~container: Dom.element=?,
+    ~direction: [`up | `down | `left | `right]=?,
+    ~disablePrefersReducedMotion: bool=?,
+    ~easing: easing=?,
+    ~_in: bool=?,
+    ~timeout: int=?,
     unit
   ) => React.element = "default";
 };

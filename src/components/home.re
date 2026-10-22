@@ -1,9 +1,46 @@
 [@mel.module "../styles/Home.module.scss"] external css: Js.t({..}) = "default"; 
+[@mel.module "../assets/gumroad-thumbnail.png"] external gumroad_thumbnail: string = "default";
+
+[@mel.obj]
+external make_transition_overrides: (
+    ~direction: string,
+    ~ref: Js.Nullable.t(React.ref(Dom.element)),
+    unit,
+) => Bindings.Mui.Slide.props = "";
+
+[@mel.obj]
+external make_empty_props: unit => Bindings.Mui.Slide.props = "";
+
+external merge_props: (
+    Bindings.Mui.Slide.props,
+    Bindings.Mui.Slide.props,
+    Bindings.Mui.Slide.props,
+) => Bindings.Mui.Slide.props = "Object.assign";
+
+[@mel.obj]
+external make_dialog_slots: (
+    ~transition: React.component(Bindings.Mui.Slide.props),
+    unit,
+) => Js.t({..}) = "";
+
+let slide_transition: React.component(Bindings.Mui.Slide.props) =
+    React.forwardRef((props, ref) =>
+        React.createElement(
+            Bindings.Mui.Slide.component,
+            merge_props(
+                make_empty_props(),
+                props,
+                make_transition_overrides(~direction="up", ~ref, ()),
+            ),
+        )
+    );
 
 [@react.component]
 let make = () => {
     open Bindings;
     open Mui;
+
+    let (openPromo, setOpenPromo) = React.useState(_ => true);
 
     <div className={css##home}>
         <Box className={css##section} component=RootComponent.htmlElement("section")>
@@ -186,5 +223,62 @@ let make = () => {
                 </Box>
             </div>
         </Box>
+        <Dialog
+            _open=openPromo
+            onClose={(_, _) => setOpenPromo(_ => false)}
+            slots={make_dialog_slots(~transition=slide_transition, ())}
+            fullWidth=true
+            maxWidth=MaxWidth.md
+        >
+            <DialogTitle className={css##promoTitle}>
+                {"Take a journey through ancient Sumer" |> React.string}
+            </DialogTitle>
+            <DialogContent>
+                <div className={css##promoColumns}>
+                    <div className={css##promoImageColumn}>
+                        <img
+                            className={css##promoImage}
+                            src=gumroad_thumbnail
+                            alt="Cover of Sumer: A Traveller's Phrasebook"
+                        />
+                    </div>
+                    <div className={css##promoDescription}>
+                        <Typography variant=Typography.Variant.h5 component=RootComponent.htmlElement("h2")>
+                            {"Sumer: A Traveller's Phrasebook" |> React.string}
+                        </Typography>
+                        <Typography variant=Typography.Variant.body1>
+                            {"Explore the Sumerian language as if you were preparing for a trip to ancient Mesopotamia. Learn how to buy and sell, share a meal, find your way through the city, and navigate everyday life in Sumer."
+                            |> React.string}
+                        </Typography>
+                        <Typography variant=Typography.Variant.body1>
+                            {"The illustrated ebook brings together 201 phrases across 19 themed chapters, with English translations, readable Sumerian spellings, and cuneiform. It also includes a detailed language and sources companion."
+                            |> React.string}
+                        </Typography>
+                        <Typography variant=Typography.Variant.body1>
+                            {"No previous knowledge of Sumerian is required. Both volumes are included in PDF and EPUB formats."
+                            |> React.string}
+                        </Typography>
+                    </div>
+                </div>
+            </DialogContent>
+            <DialogActions className={css##promoActions}>
+                <Button
+                    onClick={_ => setOpenPromo(_ => false)}
+                    variant=`outlined
+                    size=`large
+                >
+                    {"Dismiss" |> React.string}
+                </Button>
+                <Button
+                    href="https://modernsumerian.gumroad.com/l/sumer-travel-phrasebook"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant=`contained
+                    size=`large
+                >
+                    {"Get the phrasebook" |> React.string}
+                </Button>
+            </DialogActions>
+        </Dialog>
     </div>
 }

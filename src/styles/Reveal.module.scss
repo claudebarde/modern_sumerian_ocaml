@@ -1,0 +1,16 @@
+// Content stays fully visible for visitors who prefer reduced motion.
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.8s ease-out;
+    will-change: opacity, transform;
+
+    &.visible {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

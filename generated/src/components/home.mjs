@@ -4,20 +4,8 @@ import GumroadThumbnailPng from "../assets/gumroad-thumbnail.png";
 import HomeModuleScss from "../styles/Home.module.scss";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import Fab from "@mui/material/Fab";
-import Grid from "@mui/material/Grid";
-import Slide from "@mui/material/Slide";
-import Typography from "@mui/material/Typography";
 import * as IconsReact from "@tabler/icons-react";
-import * as Bindings__Material_ui from "../bindings/material_ui.mjs";
+import * as Components__Promo_card from "./promo_card.mjs";
 import * as Curry from "melange.js/curry.mjs";
 import * as ReasonReactRouter from "reason-react/ReasonReactRouter.mjs";
 import * as React from "react";
@@ -27,13 +15,6 @@ const css = HomeModuleScss;
 
 const gumroad_thumbnail = GumroadThumbnailPng;
 
-const slide_transition = React.forwardRef(function (props, ref) {
-  return React.createElement(Slide, Object.assign({}, props, {
-    direction: "up",
-    ref
-  }));
-});
-
 function Home(Props) {
   const match = React.useState(function () {
     return true;
@@ -41,6 +22,50 @@ function Home(Props) {
   const setOpenPromo = match[1];
   return JsxRuntime.jsxs("div", {
     children: [
+      JsxRuntime.jsxs("section", {
+        children: [
+          JsxRuntime.jsx("p", {
+            children: "The language of Sumer, alive again",
+            className: css.heroEyebrow
+          }),
+          JsxRuntime.jsxs("h1", {
+            children: [
+              "Speak the first ",
+              JsxRuntime.jsx("span", {
+                children: "written language.",
+                className: css.noBreak
+              })
+            ],
+            className: css.heroTitle
+          }),
+          JsxRuntime.jsx("p", {
+            children: "Modern Sumerian brings the language of ancient Sumer back into everyday life, with approachable lessons, comics and interactive tools for learning it today.",
+            className: css.heroText
+          }),
+          JsxRuntime.jsxs("div", {
+            children: [
+              JsxRuntime.jsx(Button, {
+                children: "Start learning",
+                className: css.pill + (" " + css.pillPrimary),
+                onClick: (function (param) {
+                  ReasonReactRouter.push("/learn");
+                }),
+                variant: "contained"
+              }),
+              JsxRuntime.jsx(Button, {
+                children: "Read the comics",
+                className: css.pill + (" " + css.pillSecondary),
+                onClick: (function (param) {
+                  ReasonReactRouter.push("/learn/comics");
+                }),
+                variant: "outlined"
+              })
+            ],
+            className: css.heroActions
+          })
+        ],
+        className: css.hero
+      }),
       JsxRuntime.jsx(Box, {
         children: JsxRuntime.jsxs("div", {
           children: [
@@ -65,136 +90,85 @@ function Home(Props) {
       JsxRuntime.jsx(Box, {
         children: JsxRuntime.jsxs("div", {
           children: [
+            JsxRuntime.jsx("p", {
+              children: "Tools",
+              className: css.label
+            }),
             JsxRuntime.jsx("h2", {
               children: "Use our interactive tools"
             }),
-            JsxRuntime.jsxs(Grid, {
+            JsxRuntime.jsxs("div", {
               children: [
-                JsxRuntime.jsx(Grid, {
-                  children: JsxRuntime.jsxs(Card, {
-                    children: [
-                      JsxRuntime.jsx(CardHeader, {
-                        title: "The Conjugator"
-                      }),
-                      JsxRuntime.jsx(CardContent, {
-                        children: JsxRuntime.jsx(Typography, {
-                          children: "Build Sumerian verb forms by choosing their grammatical features, then see how each element combines within the finished word. The conjugator makes complex verbal structures easier to examine and understand.",
-                          variant: Bindings__Material_ui.Typography.Variant.body1
-                        }),
-                        className: css.toolCardContent
-                      }),
-                      JsxRuntime.jsx(CardActions, {
-                        children: JsxRuntime.jsx(Button, {
-                          children: "Try it now",
-                          className: "button",
-                          href: "/conjugator",
-                          variant: "contained"
-                        })
-                      })
-                    ],
-                    className: css.toolCard
-                  }),
-                  size: {
-                    xs: 12,
-                    md: 6,
-                    xl: 3
-                  }
+                JsxRuntime.jsxs("article", {
+                  children: [
+                    JsxRuntime.jsx("h3", {
+                      children: "The Conjugator"
+                    }),
+                    JsxRuntime.jsx("p", {
+                      children: "Build Sumerian verb forms by choosing their grammatical features, then see how each element combines within the finished word. The conjugator makes complex verbal structures easier to examine and understand."
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: "Try it now",
+                      className: css.pill + (" " + (css.pillPrimary + (" " + css.cardAction))),
+                      href: "/conjugator",
+                      variant: "contained"
+                    })
+                  ],
+                  className: css.card
                 }),
-                JsxRuntime.jsx(Grid, {
-                  children: JsxRuntime.jsxs(Card, {
-                    children: [
-                      JsxRuntime.jsx(CardHeader, {
-                        title: "The Dictionary"
+                JsxRuntime.jsxs("article", {
+                  children: [
+                    JsxRuntime.jsx("h3", {
+                      children: "The Dictionary"
+                    }),
+                    JsxRuntime.jsx("p", {
+                      children: "Search in Sumerian or English to discover words, translations, and their cuneiform forms. The dictionary offers a quick way to expand your vocabulary and compare different entries."
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: "Try it now",
+                      className: css.pill + (" " + (css.pillPrimary + (" " + css.cardAction))),
+                      onClick: (function (param) {
+                        ReasonReactRouter.push("/dictionary");
                       }),
-                      JsxRuntime.jsx(CardContent, {
-                        children: JsxRuntime.jsx(Typography, {
-                          children: "Search in Sumerian or English to discover words, translations, and their cuneiform forms. The dictionary offers a quick way to expand your vocabulary and compare different entries.",
-                          variant: Bindings__Material_ui.Typography.Variant.body1
-                        }),
-                        className: css.toolCardContent
-                      }),
-                      JsxRuntime.jsx(CardActions, {
-                        children: JsxRuntime.jsx(Button, {
-                          children: "Try it now",
-                          className: "button",
-                          onClick: (function (param) {
-                            ReasonReactRouter.push("/dictionary");
-                          }),
-                          variant: "contained"
-                        })
-                      })
-                    ],
-                    className: css.toolCard
-                  }),
-                  size: {
-                    xs: 12,
-                    md: 6,
-                    xl: 3
-                  }
+                      variant: "contained"
+                    })
+                  ],
+                  className: css.card
                 }),
-                JsxRuntime.jsx(Grid, {
-                  children: JsxRuntime.jsxs(Card, {
-                    children: [
-                      JsxRuntime.jsx(CardHeader, {
-                        title: "The Keyboard"
-                      }),
-                      JsxRuntime.jsx(CardContent, {
-                        children: JsxRuntime.jsx(Typography, {
-                          children: "Turn transliterated words into cuneiform, browse the available signs, and assemble the text you want to write. Once it is ready, copy your inscription for use anywhere.",
-                          variant: Bindings__Material_ui.Typography.Variant.body1
-                        }),
-                        className: css.toolCardContent
-                      }),
-                      JsxRuntime.jsx(CardActions, {
-                        children: JsxRuntime.jsx(Button, {
-                          children: "Try it now",
-                          className: "button",
-                          href: "/keyboard",
-                          variant: "contained"
-                        })
-                      })
-                    ],
-                    className: css.toolCard
-                  }),
-                  size: {
-                    xs: 12,
-                    md: 6,
-                    xl: 3
-                  }
+                JsxRuntime.jsxs("article", {
+                  children: [
+                    JsxRuntime.jsx("h3", {
+                      children: "The Keyboard"
+                    }),
+                    JsxRuntime.jsx("p", {
+                      children: "Turn transliterated words into cuneiform, browse the available signs, and assemble the text you want to write. Once it is ready, copy your inscription for use anywhere."
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: "Try it now",
+                      className: css.pill + (" " + (css.pillPrimary + (" " + css.cardAction))),
+                      href: "/keyboard",
+                      variant: "contained"
+                    })
+                  ],
+                  className: css.card
                 }),
-                JsxRuntime.jsx(Grid, {
-                  children: JsxRuntime.jsxs(Card, {
-                    children: [
-                      JsxRuntime.jsx(CardHeader, {
-                        title: "The Lessons"
-                      }),
-                      JsxRuntime.jsx(CardContent, {
-                        children: JsxRuntime.jsx(Typography, {
-                          children: "Follow a guided path through Sumerian grammar, vocabulary, and writing. Each lesson will introduce new concepts gradually and provide opportunities to put them into practice.",
-                          variant: Bindings__Material_ui.Typography.Variant.body1
-                        }),
-                        className: css.toolCardContent
-                      }),
-                      JsxRuntime.jsx(CardActions, {
-                        children: JsxRuntime.jsx(Button, {
-                          children: "Coming soon",
-                          className: "button",
-                          href: "/lessons",
-                          variant: "contained"
-                        })
-                      })
-                    ],
-                    className: css.toolCard
-                  }),
-                  size: {
-                    xs: 12,
-                    md: 6,
-                    xl: 3
-                  }
+                JsxRuntime.jsxs("article", {
+                  children: [
+                    JsxRuntime.jsx("h3", {
+                      children: "The Lessons"
+                    }),
+                    JsxRuntime.jsx("p", {
+                      children: "Follow a guided path through Sumerian grammar, vocabulary, and writing. Each lesson will introduce new concepts gradually and provide opportunities to put them into practice."
+                    }),
+                    JsxRuntime.jsx("span", {
+                      children: "Coming soon",
+                      className: css.comingSoon
+                    })
+                  ],
+                  className: css.card
                 })
               ],
-              container: true,
-              spacing: 2
+              className: css.tools
             })
           ],
           className: css.contentPanel
@@ -205,85 +179,62 @@ function Home(Props) {
       JsxRuntime.jsx(Box, {
         children: JsxRuntime.jsxs("div", {
           children: [
+            JsxRuntime.jsx("p", {
+              children: "Community",
+              className: css.label
+            }),
             JsxRuntime.jsx("h2", {
               children: "Explore the project"
             }),
-            JsxRuntime.jsx("p", {
-              children: "Explore Modern Sumerian beyond this website: browse the project's source code on GitHub, follow the Facebook page for news and updates, or visit the Links page to discover more resources about the Sumerian language and ancient Mesopotamia."
-            }),
-            JsxRuntime.jsxs(Box, {
+            JsxRuntime.jsxs("div", {
               children: [
-                JsxRuntime.jsx(Button, {
-                  children: "Facebook",
-                  href: "https://www.facebook.com/ModernSumerian",
-                  rel: "noopener noreferrer",
-                  startIcon: JsxRuntime.jsx(IconsReact.IconBrandFacebook, {}),
-                  target: "_blank",
-                  variant: "contained"
+                JsxRuntime.jsx("p", {
+                  children: "Explore Modern Sumerian beyond this website: browse the project's source code on GitHub, follow the Facebook page for news and updates, or visit the Links page to discover more resources about the Sumerian language and ancient Mesopotamia.",
+                  className: css.projectText
                 }),
-                JsxRuntime.jsx(Button, {
-                  children: "Discord",
-                  href: "https://discord.gg/8WSw6nA5h",
-                  rel: "noopener noreferrer",
-                  startIcon: JsxRuntime.jsx(IconsReact.IconBrandDiscord, {}),
-                  target: "_blank",
-                  variant: "contained"
-                }),
-                JsxRuntime.jsx(Button, {
-                  children: "Links",
-                  onClick: (function (param) {
-                    ReasonReactRouter.push("/links");
-                  }),
-                  startIcon: JsxRuntime.jsx(IconsReact.IconLink, {}),
-                  variant: "contained"
-                }),
-                JsxRuntime.jsx(Button, {
-                  children: "GitHub",
-                  href: "https://github.com/claudebarde/modern_sumerian_ocaml",
-                  rel: "noopener noreferrer",
-                  startIcon: JsxRuntime.jsx(IconsReact.IconBrandGithub, {}),
-                  target: "_blank",
-                  variant: "contained"
+                JsxRuntime.jsxs("div", {
+                  children: [
+                    JsxRuntime.jsx(Button, {
+                      children: "Facebook",
+                      className: css.pill + (" " + css.pillSecondary),
+                      href: "https://www.facebook.com/ModernSumerian",
+                      rel: "noopener noreferrer",
+                      startIcon: JsxRuntime.jsx(IconsReact.IconBrandFacebook, {}),
+                      target: "_blank",
+                      variant: "outlined"
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: "Discord",
+                      className: css.pill + (" " + css.pillSecondary),
+                      href: "https://discord.gg/8WSw6nA5h",
+                      rel: "noopener noreferrer",
+                      startIcon: JsxRuntime.jsx(IconsReact.IconBrandDiscord, {}),
+                      target: "_blank",
+                      variant: "outlined"
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: "GitHub",
+                      className: css.pill + (" " + css.pillSecondary),
+                      href: "https://github.com/claudebarde/modern_sumerian_ocaml",
+                      rel: "noopener noreferrer",
+                      startIcon: JsxRuntime.jsx(IconsReact.IconBrandGithub, {}),
+                      target: "_blank",
+                      variant: "outlined"
+                    }),
+                    JsxRuntime.jsx(Button, {
+                      children: "Links",
+                      className: css.pill + (" " + css.pillSecondary),
+                      onClick: (function (param) {
+                        ReasonReactRouter.push("/links");
+                      }),
+                      startIcon: JsxRuntime.jsx(IconsReact.IconLink, {}),
+                      variant: "outlined"
+                    })
+                  ],
+                  className: css.pillGroup
                 })
               ],
-              className: css.buttonGroup
-            }),
-            JsxRuntime.jsxs(Box, {
-              children: [
-                JsxRuntime.jsx(Fab, {
-                  children: JsxRuntime.jsx(IconsReact.IconBrandFacebook, {}),
-                  color: Bindings__Material_ui.Color.primary,
-                  href: "https://www.facebook.com/ModernSumerian",
-                  rel: "noopener noreferrer",
-                  target: "_blank",
-                  variant: "circular"
-                }),
-                JsxRuntime.jsx(Fab, {
-                  children: JsxRuntime.jsx(IconsReact.IconBrandDiscord, {}),
-                  color: Bindings__Material_ui.Color.primary,
-                  href: "https://discord.gg/8WSw6nA5h",
-                  rel: "noopener noreferrer",
-                  target: "_blank",
-                  variant: "circular"
-                }),
-                JsxRuntime.jsx(Fab, {
-                  children: JsxRuntime.jsx(IconsReact.IconLink, {}),
-                  color: Bindings__Material_ui.Color.primary,
-                  onClick: (function (param) {
-                    ReasonReactRouter.push("/links");
-                  }),
-                  variant: "circular"
-                }),
-                JsxRuntime.jsx(Fab, {
-                  children: JsxRuntime.jsx(IconsReact.IconBrandGithub, {}),
-                  color: Bindings__Material_ui.Color.primary,
-                  href: "https://github.com/claudebarde/modern_sumerian_ocaml",
-                  rel: "noopener noreferrer",
-                  target: "_blank",
-                  variant: "circular"
-                })
-              ],
-              className: css.buttonGroupMobile
+              className: css.projectRow
             })
           ],
           className: css.contentPanel
@@ -291,84 +242,19 @@ function Home(Props) {
         className: css.section,
         component: "section"
       }),
-      JsxRuntime.jsxs(Dialog, {
-        children: [
-          JsxRuntime.jsx(DialogTitle, {
-            children: "Take a journey through ancient Sumer",
-            className: css.promoTitle
-          }),
-          JsxRuntime.jsx(DialogContent, {
-            children: JsxRuntime.jsxs("div", {
-              children: [
-                JsxRuntime.jsx("div", {
-                  children: JsxRuntime.jsx("img", {
-                    className: css.promoImage,
-                    alt: "Cover of Sumer: A Traveller's Phrasebook",
-                    src: gumroad_thumbnail
-                  }),
-                  className: css.promoImageColumn
-                }),
-                JsxRuntime.jsxs("div", {
-                  children: [
-                    JsxRuntime.jsx(Typography, {
-                      children: "Sumer: A Traveller's Phrasebook",
-                      component: "h2",
-                      variant: Bindings__Material_ui.Typography.Variant.h5
-                    }),
-                    JsxRuntime.jsx(Typography, {
-                      children: "Explore the Sumerian language as if you were preparing for a trip to ancient Mesopotamia. Learn how to buy and sell, share a meal, find your way through the city, and navigate everyday life in Sumer.",
-                      variant: Bindings__Material_ui.Typography.Variant.body1
-                    }),
-                    JsxRuntime.jsx(Typography, {
-                      children: "The illustrated ebook brings together 201 phrases across 19 themed chapters, with English translations, readable Sumerian spellings, and cuneiform. It also includes a detailed language and sources companion.",
-                      variant: Bindings__Material_ui.Typography.Variant.body1
-                    }),
-                    JsxRuntime.jsx(Typography, {
-                      children: "No previous knowledge of Sumerian is required. Both volumes are included in PDF and EPUB formats.",
-                      variant: Bindings__Material_ui.Typography.Variant.body1
-                    })
-                  ],
-                  className: css.promoDescription
-                })
-              ],
-              className: css.promoColumns
-            })
-          }),
-          JsxRuntime.jsxs(DialogActions, {
-            children: [
-              JsxRuntime.jsx(Button, {
-                children: "Dismiss",
-                onClick: (function (param) {
-                  Curry._1(setOpenPromo, (function (param) {
-                    return false;
-                  }));
-                }),
-                size: "large",
-                variant: "outlined"
-              }),
-              JsxRuntime.jsx(Button, {
-                children: "Get the phrasebook",
-                href: "https://modernsumerian.gumroad.com/l/sumer-travel-phrasebook",
-                rel: "noopener noreferrer",
-                size: "large",
-                target: "_blank",
-                variant: "contained"
-              })
-            ],
-            className: css.promoActions
-          })
-        ],
-        fullWidth: true,
-        maxWidth: Bindings__Material_ui.MaxWidth.md,
-        onClose: (function (param, param$1) {
+      JsxRuntime.jsx(Components__Promo_card.make, {
+        is_open: match[0],
+        on_dismiss: (function (param) {
           Curry._1(setOpenPromo, (function (param) {
             return false;
           }));
         }),
-        open: match[0],
-        slots: {
-          transition: slide_transition
-        }
+        title: "Sumer: A Traveller's Phrasebook",
+        description: "201 phrases across 19 chapters, with readable Sumerian spellings and cuneiform. No previous knowledge required.",
+        cta_label: "Get the phrasebook",
+        cta_href: "https://modernsumerian.gumroad.com/l/sumer-travel-phrasebook",
+        image: gumroad_thumbnail,
+        image_alt: "Cover of Sumer: A Traveller's Phrasebook"
       })
     ],
     className: css.home
@@ -380,7 +266,6 @@ const make = Home;
 export {
   css,
   gumroad_thumbnail,
-  slide_transition,
   make,
 }
 /* css Not a pure module */

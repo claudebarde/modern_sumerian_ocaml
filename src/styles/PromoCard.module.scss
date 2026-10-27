@@ -1,0 +1,54 @@
+@use "./styles.scss" as *;
+
+.promo {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  box-sizing: border-box;
+  width: min(380px, calc(100vw - 32px));
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+
+  @media (max-width: $breakpoint) {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.image {
+  flex-shrink: 0;
+  display: block;
+  width: 88px;
+  height: auto;
+  border-radius: 6px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

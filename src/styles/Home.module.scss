@@ -1,4 +1,5 @@
 @use "./styles.scss" as *;
+@use "sass:color";
 
 .home {
   height: 100%;
@@ -12,6 +13,111 @@
   color: white;
   text-align: center;
 
+  .hero {
+    box-sizing: border-box;
+    min-height: 100%;
+    padding: clamp(24px, 6vw, 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    text-align: left;
+    background: linear-gradient(
+      to bottom,
+      rgba($dark-rift, 0) 30%,
+      rgba($dark-rift, 0.75) 100%
+    );
+
+    > * {
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .heroEyebrow {
+      color: $aspen-gold;
+      font-size: 0.95rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .heroTitle {
+      margin-top: 0.6rem;
+      font-family: "Cinzel", serif;
+      font-weight: 500;
+      font-size: clamp(2.4rem, 7vw, 4.5rem);
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    .noBreak {
+      white-space: nowrap;
+
+      // On small screens "written language." can be wider than the viewport,
+      // so let the two words stack.
+      @media (max-width: $breakpoint) {
+        white-space: normal;
+      }
+    }
+
+    .heroText {
+      margin-top: 1.5rem;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    .heroActions {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  }
+
+  // Entrance animation played once when the page loads.
+  @media (prefers-reduced-motion: no-preference) {
+    .hero > * {
+      animation: rise 0.9s ease-out both;
+    }
+
+    @for $i from 1 through 4 {
+      .hero > :nth-child(#{$i}) {
+        animation-delay: #{0.2s + ($i - 1) * 0.18s};
+      }
+    }
+  }
+
+  // Pill buttons shared by the hero, the tool cards and the project panel.
+  .pill {
+    min-height: 44px;
+    padding: 0 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: none;
+    box-shadow: none;
+  }
+
+  .pillPrimary {
+    background-color: #e3b04b;
+    color: #2a1c08;
+
+    &:hover {
+      background-color: #f0c36a;
+      box-shadow: none;
+    }
+  }
+
+  .pillSecondary {
+    background-color: transparent;
+    border: 1px solid rgba(255, 248, 234, 0.55);
+    color: white;
+
+    &:hover {
+      background-color: rgba(255, 248, 234, 0.16);
+      border-color: #f0c36a;
+    }
+  }
+
   .section {
     box-sizing: border-box;
     width: 100%;
@@ -20,106 +126,234 @@
     place-items: center;
   }
 
+  // Warm frosted glass panels
   .intro,
   .contentPanel {
+    position: relative;
     box-sizing: border-box;
     width: min(800px, 100%);
-    background-color: rgba($color: #2d3748, $alpha: 0.4);
-    border-radius: 25px;
-    padding: clamp(20px, 4vw, 40px);
+    padding: clamp(24px, 4vw, 44px);
+    border-radius: 22px;
+    // Alphas are 0.08 above the .58/.50 design values so body text keeps 4.5:1
+    // even when a panel scrolls over the brightest clouds of the fixed background.
+    background: linear-gradient(
+      160deg,
+      rgba(62, 42, 22, 0.66),
+      rgba(30, 20, 10, 0.58)
+    );
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    backdrop-filter: blur(18px) saturate(1.25);
+    border: 1px solid rgba(255, 226, 170, 0.26);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 240, 200, 0.3),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 24px 60px rgba(10, 6, 2, 0.45);
+    color: rgba(255, 248, 234, 0.92);
     font-size: 1.2rem;
-    backdrop-filter: blur(3px);
-  }
+    line-height: 1.65;
+    text-align: left;
 
-  .contentPanel {
+    // thin gold line along the top edge
+    &::before {
+      content: "";
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: -1px;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, transparent, #e3b04b, transparent);
+      opacity: 0.9;
+    }
+
     h2 {
-      margin-top: 0;
+      margin: 0 0 1rem;
+      font-family: "Cinzel", serif;
+      font-weight: 600;
+      font-size: clamp(24px, 3vw, 32px);
+      line-height: 1.2;
     }
 
     p {
-      margin-bottom: 0;
+      margin: 0 0 1em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
 
-    .toolCard {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
+    animation: rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
-      .toolCardContent {
-        flex-grow: 1;
+    // Reveal on scroll without JavaScript where supported.
+    @supports (animation-timeline: view()) {
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+
+  .intro h2 {
+    font-size: clamp(34px, 4.6vw, 56px);
+    line-height: 1.08;
+  }
+
+  .label {
+    margin: 0 0 0.6rem;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: #f0c36a;
+  }
+
+  // Tools panel
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+
+    @media (max-width: 760px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: rgba(255, 244, 220, 0.07);
+    border: 1px solid rgba(255, 226, 170, 0.2);
+    transition:
+      transform 0.35s ease,
+      background 0.35s ease,
+      border-color 0.35s ease;
+
+    h3 {
+      margin: 0;
+      font-family: "Cinzel", serif;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 244, 220, 0.13);
+      border-color: rgba(240, 195, 106, 0.65);
+    }
+
+    // light sweep on hover
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -60%;
+      width: 40%;
+      background: linear-gradient(
+        100deg,
+        transparent,
+        rgba(255, 236, 190, 0.22),
+        transparent
+      );
+      transform: skewX(-18deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    &:hover::after {
+      animation: sweep 0.9s ease;
+    }
+  }
+
+  .glyph {
+    font-family: "Noto Sans Cuneiform", "CuneiformComposite", sans-serif;
+    font-size: 44px;
+    line-height: 1;
+    color: #f0c36a;
+    text-shadow: 0 0 22px rgba(240, 195, 106, 0.45);
+  }
+
+  .cardAction {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  .comingSoon {
+    margin-top: auto;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: #f0c36a;
+  }
+
+  // Project panel: text on top, pills in a row below (wrapping when narrow)
+  .projectRow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .projectText {
+    min-width: 0;
+  }
+
+  .pillGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero > *,
+    .intro,
+    .contentPanel,
+    .card::after {
+      animation: none;
+    }
+
+    .card {
+      transition: none;
+
+      &:hover {
+        transform: none;
       }
     }
   }
 }
 
-.buttonGroup {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
 
-  @media (max-width: $breakpoint) {
-    display: none;
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-.buttonGroupMobile {
-  display: none;
-
-  @media (max-width: $breakpoint) {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
+@keyframes sweep {
+  from {
+    left: -60%;
+    opacity: 1;
   }
-}
 
-.promoTitle {
-  text-align: center;
-  padding-bottom: 0;
-}
-
-.promoColumns {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 48px);
-  align-items: center;
-  padding-top: 12px;
-
-  @media (max-width: $breakpoint) {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  to {
+    left: 130%;
+    opacity: 1;
   }
-}
-
-.promoImageColumn {
-  display: flex;
-  justify-content: center;
-}
-
-.promoImage {
-  display: block;
-  width: 100%;
-  max-width: 420px;
-  height: auto;
-  border-radius: 8px;
-}
-
-.promoDescription {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  h2,
-  p {
-    margin: 0;
-  }
-}
-
-.promoActions {
-  justify-content: center;
-  padding: 8px 24px 24px;
 }

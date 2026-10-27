@@ -227,6 +227,26 @@ module ResizeObserver = {
   external height: contentRect => float = "height";
 };
 
+module IntersectionObserver = {
+  type t;
+  type entry;
+
+  [@mel.obj]
+  external make_options: (~threshold: float=?, ~rootMargin: string=?, unit) => Js.t({..}) = "";
+
+  [@mel.new]
+  external make: ((array(entry), t) => unit, Js.t({..})) => t = "IntersectionObserver";
+
+  [@mel.send]
+  external observe: (t, Dom.element) => unit = "observe";
+
+  [@mel.send]
+  external disconnect: t => unit = "disconnect";
+
+  [@mel.get]
+  external is_intersecting: entry => bool = "isIntersecting";
+};
+
 /** Coordinates returned by Range.getBoundingClientRect/getClientRects.
     They are relative to the browser viewport. */
 module DomRect = {

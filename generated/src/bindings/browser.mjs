@@ -45,6 +45,8 @@ const $$Geolocation = {};
 
 const $$ResizeObserver = {};
 
+const $$IntersectionObserver = {};
+
 const DomRect = {};
 
 const DomRectList = {};
@@ -74,6 +76,7 @@ export {
   Fetch,
   $$Geolocation,
   $$ResizeObserver,
+  $$IntersectionObserver,
   DomRect,
   DomRectList,
   $$Range,

@@ -1,0 +1,179 @@
+// Warm frosted-glass design shared by the landing page and the Learn pages.
+// Mixins only emit CSS where they are included, so each CSS module keeps its own
+// class names. The keyframes below are emitted once into every module that uses
+// this file.
+
+$gold: #e3b04b;
+$gold-light: #f0c36a;
+$gold-dark-text: #2a1c08;
+$glass-text: rgba(255, 248, 234, 0.92);
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sweep {
+  from {
+    left: -60%;
+    opacity: 1;
+  }
+
+  to {
+    left: 130%;
+    opacity: 1;
+  }
+}
+
+// Frosted glass surface with a thin gold line along its top edge.
+@mixin glass-panel($radius: 22px) {
+  position: relative;
+  border-radius: $radius;
+  // Alphas are 0.08 above the .58/.50 design values so body text keeps 4.5:1
+  // even when a panel scrolls over the brightest clouds of the fixed background.
+  background: linear-gradient(
+    160deg,
+    rgba(62, 42, 22, 0.66),
+    rgba(30, 20, 10, 0.58)
+  );
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  backdrop-filter: blur(18px) saturate(1.25);
+  border: 1px solid rgba(255, 226, 170, 0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 24px 60px rgba(10, 6, 2, 0.45);
+  color: $glass-text;
+  line-height: 1.65;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: -1px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, $gold, transparent);
+    opacity: 0.9;
+  }
+}
+
+// Fade-up entrance. Where supported, the animation is driven by scrolling the
+// element into view instead of by time, so it needs no JavaScript.
+@mixin scroll-rise {
+  animation: rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @supports (animation-timeline: view()) {
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+}
+
+// Lift and light sweep on hover. Needs `position: relative; overflow: hidden`.
+@mixin card-hover($hover-background: null) {
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease,
+    border-color 0.35s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(240, 195, 106, 0.65);
+
+    @if $hover-background {
+      background: $hover-background;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 236, 190, 0.22),
+      transparent
+    );
+    transform: skewX(-18deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    animation: sweep 0.9s ease;
+  }
+}
+
+@mixin reduced-motion-card {
+  &::after {
+    animation: none;
+  }
+
+  & {
+    transition: none;
+  }
+
+  &:hover {
+    transform: none;
+  }
+}
+
+@mixin pill {
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+}
+
+@mixin pill-primary {
+  background-color: $gold;
+  color: $gold-dark-text;
+
+  &:hover {
+    background-color: $gold-light;
+    box-shadow: none;
+  }
+}
+
+@mixin pill-secondary {
+  background-color: transparent;
+  border: 1px solid rgba(255, 248, 234, 0.55);
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 248, 234, 0.16);
+    border-color: $gold-light;
+  }
+}
+
+// Small uppercase gold label above a title.
+@mixin eyebrow {
+  margin: 0 0 0.6rem;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: $gold-light;
+}
+
+@mixin glyph {
+  font-family: "Noto Sans Cuneiform", "CuneiformComposite", sans-serif;
+  font-size: 44px;
+  line-height: 1;
+  color: $gold-light;
+  text-shadow: 0 0 22px rgba(240, 195, 106, 0.45);
+}

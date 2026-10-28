@@ -38,6 +38,7 @@ module ElementViewport = {
 type grammar_note = {
     slug: string,
     title: string,
+    summary: string,
     file: string,
     banner: string,
     category: string,
@@ -95,7 +96,19 @@ let decode_grammar_note = json =>
             decode_boolean_field(object_, "visible"),
         ) {
         | (Some(slug), Some(title), Some(file), Some(banner), Some(category), Some(visible)) =>
-            Some({slug, title, file, banner, category, visible})
+            Some({
+                slug,
+                title,
+                summary:
+                    switch (decode_string_field(object_, "summary")) {
+                    | Some(summary) => summary
+                    | None => ""
+                    },
+                file,
+                banner,
+                category,
+                visible,
+            })
         | _ => None
         }
     | None => None
@@ -1435,83 +1448,81 @@ let make = () => {
                     switch index_error {
                     | Some(message) => <p> {message |> React.string} </p>
                     | None =>
-                        <Container
-                            sx={{
-                                "display": "flex",
-                                "flexDirection": "column",
-                                "alignItems": "center",
-                                "justifyContent": "flex-start",
-                                "padding": "40px 20px",
-                            }}
-                        >
-                            <Typography variant=Typography.Variant.h4>
-                                {"Grammar Notes" |> React.string}
-                            </Typography>
-                            <List>
-                                <ListSubheader
-                                    sx={{"backgroundColor": Config.colors##whiteSmoke}}
-                                >
-                                    {"Nouns" |> React.string}
-                                </ListSubheader>
-                                {
-                                    grammar_notes
-                                    |> Array.fold_left(
-                                            (acc: array(grammar_note), note: grammar_note) => 
-                                                if (note.category == "nouns" && note.visible) { Array.concat([acc, [|note|]]) } else { acc }, [||]
-                                        )
-                                    |> Array.map(note =>
-                                        <ListItem key=note.slug disablePadding=true>
-                                            <ListItemButton
-                                                onClick={_ =>
-                                                    ReasonReactRouter.push(
-                                                        "/learn/grammar_notes/" ++ note.slug,
-                                                    )
-                                                }
+                        let render_category = (label, category, first_index) => {
+                            let notes =
+                                grammar_notes
+                                |> Js.Array.filter(~f=(note: grammar_note) =>
+                                    note.category == category && note.visible
+                                );
+
+                            Array.length(notes) == 0
+                                ? React.null
+                                : <>
+                                    <h2 className=css##hubSection>{label |> React.string}</h2>
+                                    <div className=css##topics>
+                                        {notes
+                                        |> Array.mapi((index, note: grammar_note) =>
+                                            <article
+                                                key={note.slug}
+                                                className=css##topic
+                                                style={ReactDOM.Style.make(
+                                                    ~animationDelay=
+                                                        string_of_int(250 + (first_index + index) * 120) ++ "ms",
+                                                    (),
+                                                )}
                                             >
-                                                <ListItemIcon>
-                                                    <TablerReact.IconNote />
-                                                </ListItemIcon>
-                                                <ListItemText
-                                                    primary={note.title |> React.string}
+                                                <img
+                                                    className=css##topicBanner
+                                                    src={note.banner}
+                                                    alt=""
                                                 />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    )
-                                    |> React.array
-                                }
-                                <ListSubheader
-                                    sx={{"backgroundColor": Config.colors##whiteSmoke}}
-                                >
-                                    {"Verbs" |> React.string}
-                                </ListSubheader>
-                                {
-                                    grammar_notes
-                                    |> Array.fold_left(
-                                            (acc: array(grammar_note), note: grammar_note) => 
-                                                if (note.category == "verbs" && note.visible) { Array.concat([acc, [|note|]]) } else { acc }, [||]
+                                                <h2>{note.title |> React.string}</h2>
+                                                <p>{note.summary |> React.string}</p>
+                                                <div className=css##topicFooter>
+                                                    <Button
+                                                        className={css##pill ++ " " ++ css##pillPrimary}
+                                                        variant=`contained
+                                                        ariaLabel={"Open " ++ note.title}
+                                                        onClick={_ =>
+                                                            ReasonReactRouter.push("/learn/grammar_notes/" ++ note.slug)
+                                                        }
+                                                    >
+                                                        {"Open" |> React.string}
+                                                    </Button>
+                                                </div>
+                                            </article>
                                         )
-                                    |> Array.map(note =>
-                                        <ListItem key=note.slug disablePadding=true>
-                                            <ListItemButton
-                                                onClick={_ =>
-                                                    ReasonReactRouter.push(
-                                                        "/learn/grammar_notes/" ++ note.slug,
-                                                    )
-                                                }
-                                            >
-                                                <ListItemIcon>
-                                                    <TablerReact.IconNote />
-                                                </ListItemIcon>
-                                                <ListItemText
-                                                    primary={note.title |> React.string}
-                                                />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    )
-                                    |> React.array
-                                }
-                            </List>
-                        </Container>
+                                        |> React.array}
+                                    </div>
+                                </>;
+                        };
+                        let nouns_count =
+                            grammar_notes
+                            |> Js.Array.filter(~f=(note: grammar_note) =>
+                                note.category == "nouns" && note.visible
+                            )
+                            |> Array.length;
+
+                        <div className=css##hub>
+                            <header className=css##hubHero>
+                                <Button
+                                    className={css##pill ++ " " ++ css##pillSecondary ++ " " ++ css##hubBack}
+                                    variant=`outlined
+                                    startIcon={<TablerReact.IconChevronLeft />}
+                                    onClick={_ => ReasonReactRouter.push("/learn")}
+                                >
+                                    {"Learn" |> React.string}
+                                </Button>
+                                <p className=css##hubLabel>{"Grammar Notes" |> React.string}</p>
+                                <h1>{"Understand how Sumerian works" |> React.string}</h1>
+                                <p className=css##hubIntro>
+                                    {"Detailed explanations and examples, one topic at a time. Pick a note to start reading."
+                                    |> React.string}
+                                </p>
+                            </header>
+                            {render_category("Nouns", "nouns", 0)}
+                            {render_category("Verbs", "verbs", nouns_count)}
+                        </div>
                     }
             }
         }

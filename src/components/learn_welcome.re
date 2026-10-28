@@ -1,125 +1,97 @@
-[@mel.module "../styles/Learn.module.scss"] external css: Js.t({..}) = "default"; 
+[@mel.module "../styles/Learn.module.scss"] external css: Js.t({..}) = "default";
+
+type topic = {
+    key: string,
+    title: string,
+    description: string,
+    // Topics that are not ready yet show "Coming soon" instead of a button
+    available: bool,
+    featured: bool,
+};
+
+let topics = [|
+    {
+        key: "grammar_notes",
+        title: "Grammar Notes",
+        description: "Read Grammar Notes to understand Sumerian grammar, with detailed explanations and examples.",
+        available: true,
+        featured: true,
+    },
+    {
+        key: "daily_vocabulary",
+        title: "Daily Vocabulary",
+        description: "Build your Modern Sumerian skills with a 10-day challenge to learn 100 words.",
+        available: true,
+        featured: false,
+    },
+    {
+        key: "comics",
+        title: "Comics",
+        description: "Read Comics to enjoy Modern Sumerian stories. They provide engaging narratives to enhance your learning.",
+        available: true,
+        featured: false,
+    },
+    {
+        key: "lessons",
+        title: "Lessons",
+        description: "Follow guided Lessons to learn the language step by step.",
+        available: false,
+        featured: false,
+    },
+    {
+        key: "flashcards",
+        title: "Flashcards",
+        description: "Use Flashcards to practise and review Sumerian vocabulary and reinforce your learning.",
+        available: false,
+        featured: false,
+    },
+|];
 
 [@react.component]
 let make = (~set_current_view) => {
     open Bindings;
     open Mui;
 
-    <div className=css##welcome>
-        <div style={ReactDOM.Style.make(~textAlign="center", ())}>
-            <h1>
-                {
-                    "Welcome to the Learning page! "
-                    |> React.string
-                }
-            </h1>
-            <List>
-                <ListItem 
-                    secondaryAction={
-                        <IconButton
-                            edge=`end_
-                            ariaLabel="Open Daily Vocabulary"
-                            onClick={_ => set_current_view("daily_vocabulary")}
-                        >
-                            <TablerReact.IconArrowBigUpFilled />
-                        </IconButton>
-                    }
+    <div className=css##hub>
+        <header className=css##hubHero>
+            <p className=css##hubLabel>{"Learn" |> React.string}</p>
+            <h1>{"Learn Sumerian, one step at a time" |> React.string}</h1>
+            <p className=css##hubIntro>
+                {"Welcome to the Learning page! Pick a path below and start building your Modern Sumerian."
+                |> React.string}
+            </p>
+        </header>
+        <div className=css##topics>
+            {topics
+            |> Array.mapi((index, topic) =>
+                <article
+                    key={topic.key}
+                    className={css##topic ++ (topic.featured ? " " ++ css##topicFeatured : "")}
+                    style={ReactDOM.Style.make(
+                        ~animationDelay=string_of_int(250 + index * 120) ++ "ms",
+                        (),
+                    )}
                 >
-                    <ListItemAvatar>
-                        <Avatar>
-                            <TablerReact.IconListCheck />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={React.string("Build your Modern Sumerian skills with Daily Vocabulary")}
-                        secondary={React.string("A 10-day challenge to learn 100 words")}
-                    />
-                </ListItem>
-                <ListItem 
-                    secondaryAction={
-                        <IconButton
-                            edge=`end_
-                            ariaLabel="Open Lessons"
-                            onClick={_ => set_current_view("lessons")}
-                        >
-                            <TablerReact.IconArrowBigUpFilled />
-                        </IconButton>
-                    }
-                >
-                    <ListItemAvatar>
-                        <Avatar>
-                            <TablerReact.IconBook2 />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={React.string("Follow guided Lessons to learn the language step by step.")}
-                        secondary={React.string("Lessons are structured to guide you step by step")}
-                    />
-                </ListItem>
-                <ListItem 
-                    secondaryAction={
-                        <IconButton
-                            edge=`end_
-                            ariaLabel="Open Comics"
-                            onClick={_ => set_current_view("comics")}
-                        >
-                            <TablerReact.IconArrowBigUpFilled />
-                        </IconButton>
-                    }
-                >
-                    <ListItemAvatar>
-                        <Avatar>
-                            <TablerReact.IconMickey />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={React.string("Read Comics to enjoy Modern Sumerian stories.")}
-                        secondary={React.string("Comics provide engaging narratives to enhance your learning")}
-                    />
-                </ListItem>
-                <ListItem 
-                    secondaryAction={
-                        <IconButton
-                            edge=`end_
-                            ariaLabel="Open Grammar Notes"
-                            onClick={_ => set_current_view("grammar_notes")}
-                        >
-                            <TablerReact.IconArrowBigUpFilled />
-                        </IconButton>
-                    }
-                >
-                    <ListItemAvatar>
-                        <Avatar>
-                            <TablerReact.IconPencil />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={React.string("Read Grammar Notes to understand Sumerian grammar.")}
-                        secondary={React.string("Grammar Notes provide detailed explanations and examples")}
-                    />
-                </ListItem>
-                <ListItem 
-                    secondaryAction={
-                        <IconButton
-                            edge=`end_
-                            ariaLabel="Open Flashcards"
-                            onClick={_ => set_current_view("flashcards")}
-                        >
-                            <TablerReact.IconArrowBigUpFilled />
-                        </IconButton>
-                    }
-                >
-                    <ListItemAvatar>
-                        <Avatar>
-                            <TablerReact.IconPhoto />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={React.string("Use Flashcards to practise and review Sumerian vocabulary.")}
-                        secondary={React.string("Flashcards help reinforce your learning")}
-                    />
-                </ListItem>
-            </List>
+                    <h2>{topic.title |> React.string}</h2>
+                    <p>{topic.description |> React.string}</p>
+                    {topic.available
+                        ? <div className=css##topicFooter>
+                            <Button
+                                className={css##pill ++ " " ++ css##pillPrimary}
+                                variant=`contained
+                                ariaLabel={"Open " ++ topic.title}
+                                onClick={_ => set_current_view(topic.key)}
+                            >
+                                {"Open" |> React.string}
+                            </Button>
+                            {topic.featured
+                                ? <span className=css##badge>{"Start here" |> React.string}</span>
+                                : React.null}
+                        </div>
+                        : <span className=css##comingSoon>{"Coming soon" |> React.string}</span>}
+                </article>
+            )
+            |> React.array}
         </div>
     </div>
 }

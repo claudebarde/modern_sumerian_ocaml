@@ -1,4 +1,5 @@
 @use "./styles.scss" as *;
+@use "./glass.scss" as *;
 @use "sass:color";
 
 .home {
@@ -89,33 +90,15 @@
 
   // Pill buttons shared by the hero, the tool cards and the project panel.
   .pill {
-    min-height: 44px;
-    padding: 0 22px;
-    border-radius: 999px;
-    font-weight: 600;
-    text-transform: none;
-    box-shadow: none;
+    @include pill;
   }
 
   .pillPrimary {
-    background-color: #e3b04b;
-    color: #2a1c08;
-
-    &:hover {
-      background-color: #f0c36a;
-      box-shadow: none;
-    }
+    @include pill-primary;
   }
 
   .pillSecondary {
-    background-color: transparent;
-    border: 1px solid rgba(255, 248, 234, 0.55);
-    color: white;
-
-    &:hover {
-      background-color: rgba(255, 248, 234, 0.16);
-      border-color: #f0c36a;
-    }
+    @include pill-secondary;
   }
 
   .section {
@@ -129,42 +112,13 @@
   // Warm frosted glass panels
   .intro,
   .contentPanel {
-    position: relative;
+    @include glass-panel;
+    @include scroll-rise;
     box-sizing: border-box;
     width: min(800px, 100%);
     padding: clamp(24px, 4vw, 44px);
-    border-radius: 22px;
-    // Alphas are 0.08 above the .58/.50 design values so body text keeps 4.5:1
-    // even when a panel scrolls over the brightest clouds of the fixed background.
-    background: linear-gradient(
-      160deg,
-      rgba(62, 42, 22, 0.66),
-      rgba(30, 20, 10, 0.58)
-    );
-    -webkit-backdrop-filter: blur(18px) saturate(1.25);
-    backdrop-filter: blur(18px) saturate(1.25);
-    border: 1px solid rgba(255, 226, 170, 0.26);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 240, 200, 0.3),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.03),
-      0 24px 60px rgba(10, 6, 2, 0.45);
-    color: rgba(255, 248, 234, 0.92);
     font-size: 1.2rem;
-    line-height: 1.65;
     text-align: left;
-
-    // thin gold line along the top edge
-    &::before {
-      content: "";
-      position: absolute;
-      left: 8%;
-      right: 8%;
-      top: -1px;
-      height: 2px;
-      border-radius: 2px;
-      background: linear-gradient(90deg, transparent, #e3b04b, transparent);
-      opacity: 0.9;
-    }
 
     h2 {
       margin: 0 0 1rem;
@@ -181,14 +135,6 @@
         margin-bottom: 0;
       }
     }
-
-    animation: rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-
-    // Reveal on scroll without JavaScript where supported.
-    @supports (animation-timeline: view()) {
-      animation-timeline: view();
-      animation-range: entry 0% entry 45%;
-    }
   }
 
   .intro h2 {
@@ -197,12 +143,7 @@
   }
 
   .label {
-    margin: 0 0 0.6rem;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    color: #f0c36a;
+    @include eyebrow;
   }
 
   // Tools panel
@@ -217,6 +158,7 @@
   }
 
   .card {
+    @include card-hover(rgba(255, 244, 220, 0.13));
     position: relative;
     overflow: hidden;
     border-radius: 16px;
@@ -226,10 +168,6 @@
     gap: 14px;
     background: rgba(255, 244, 220, 0.07);
     border: 1px solid rgba(255, 226, 170, 0.2);
-    transition:
-      transform 0.35s ease,
-      background 0.35s ease,
-      border-color 0.35s ease;
 
     h3 {
       margin: 0;
@@ -242,43 +180,10 @@
       margin: 0;
       font-size: 1rem;
     }
-
-    &:hover {
-      transform: translateY(-4px);
-      background: rgba(255, 244, 220, 0.13);
-      border-color: rgba(240, 195, 106, 0.65);
-    }
-
-    // light sweep on hover
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: -60%;
-      width: 40%;
-      background: linear-gradient(
-        100deg,
-        transparent,
-        rgba(255, 236, 190, 0.22),
-        transparent
-      );
-      transform: skewX(-18deg);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    &:hover::after {
-      animation: sweep 0.9s ease;
-    }
   }
 
   .glyph {
-    font-family: "Noto Sans Cuneiform", "CuneiformComposite", sans-serif;
-    font-size: 44px;
-    line-height: 1;
-    color: #f0c36a;
-    text-shadow: 0 0 22px rgba(240, 195, 106, 0.45);
+    @include glyph;
   }
 
   .cardAction {
@@ -287,15 +192,12 @@
   }
 
   .comingSoon {
-    margin-top: auto;
+    @include eyebrow;
+    margin: auto 0 0;
     min-height: 44px;
     display: flex;
     align-items: center;
-    font-size: 12px;
-    font-weight: 600;
     letter-spacing: 0.26em;
-    text-transform: uppercase;
-    color: #f0c36a;
   }
 
   // Project panel: text on top, pills in a row below (wrapping when narrow)
@@ -319,41 +221,12 @@
   @media (prefers-reduced-motion: reduce) {
     .hero > *,
     .intro,
-    .contentPanel,
-    .card::after {
+    .contentPanel {
       animation: none;
     }
 
     .card {
-      transition: none;
-
-      &:hover {
-        transform: none;
-      }
+      @include reduced-motion-card;
     }
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes sweep {
-  from {
-    left: -60%;
-    opacity: 1;
-  }
-
-  to {
-    left: 130%;
-    opacity: 1;
   }
 }

@@ -3,6 +3,7 @@
 import LearnModuleScss from "../styles/Learn.module.scss";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -12,7 +13,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
@@ -78,17 +78,34 @@ function decode_grammar_note(json) {
   const match$3 = decode_string_field(object_$1, "banner");
   const match$4 = decode_string_field(object_$1, "category");
   const match$5 = decode_boolean_field(object_$1, "visible");
-  if (match !== undefined && match$1 !== undefined && match$2 !== undefined && match$3 !== undefined && match$4 !== undefined && match$5 !== undefined) {
-    return {
-      slug: match,
-      title: match$1,
-      file: match$2,
-      banner: match$3,
-      category: match$4,
-      visible: match$5
-    };
+  if (match === undefined) {
+    return;
   }
-  
+  if (match$1 === undefined) {
+    return;
+  }
+  if (match$2 === undefined) {
+    return;
+  }
+  if (match$3 === undefined) {
+    return;
+  }
+  if (match$4 === undefined) {
+    return;
+  }
+  if (match$5 === undefined) {
+    return;
+  }
+  const summary = decode_string_field(object_$1, "summary");
+  return {
+    slug: match,
+    title: match$1,
+    summary: summary !== undefined ? summary : "",
+    file: match$2,
+    banner: match$3,
+    category: match$4,
+    visible: match$5
+  };
 }
 
 function parse_grammar_notes_index(json) {
@@ -953,10 +970,505 @@ function Learn_grammar_notes(Props) {
     };
   }), toc_entries);
   let tmp;
+  if (selected_note !== undefined) {
+    tmp = JsxRuntime.jsxs(JsxRuntime.Fragment, {
+      children: [
+        JsxRuntime.jsxs(Box, {
+          children: [
+            JsxRuntime.jsx(CircularProgress, {
+              enableTrackSlot: true,
+              value: scroll_percentage,
+              variant: "determinate"
+            }),
+            JsxRuntime.jsx(Box, {
+              children: JsxRuntime.jsx(Typography, {
+                children: Stdlib__Int.to_string(scroll_percentage) + "%",
+                component: "div",
+                variant: Bindings__Material_ui.Typography.Variant.caption,
+                sx: {
+                  color: "text.secondary"
+                }
+              }),
+              sx: {
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                position: "absolute",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }
+            })
+          ],
+          className: css.readProgress
+        }),
+        JsxRuntime.jsxs("div", {
+          ref: grammar_note_ref,
+          children: [
+            JsxRuntime.jsx(Box, {
+              children: JsxRuntime.jsx(Typography, {
+                align: "center",
+                children: selected_note.title,
+                className: css.grammarNoteTitle,
+                variant: Bindings__Material_ui.Typography.Variant.h3,
+                sx: {
+                  padding: "20px",
+                  backgroundColor: Bindings__Config.colors.whiteSmoke,
+                  opacity: is_banner_visible ? 0.0 : 1.0,
+                  transform: is_banner_visible ? "translateY(-100%)" : "translateY(0)",
+                  transition: "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 900ms ease"
+                }
+              }),
+              sx: {
+                position: "sticky",
+                top: "0",
+                zIndex: 2,
+                height: "0",
+                overflow: "visible",
+                pointerEvents: "none"
+              }
+            }),
+            JsxRuntime.jsx("img", {
+              ref: banner_ref,
+              style: {
+                marginBottom: "20px",
+                width: "100%"
+              },
+              alt: selected_note.title,
+              src: selected_note.banner
+            }),
+            JsxRuntime.jsxs(Container, {
+              children: [
+                is_mobile ? null : Stdlib__Array.map((function (marker) {
+                    const Key = marker.id;
+                    return JsxRuntime.jsx(IconButton, {
+                      "aria-label": "Saved bookmark",
+                      children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                        color: bookmark_marker_color(marker.bookmark_type)
+                      }),
+                      className: css.bookmarkMarker,
+                      onClick: (function ($$event) {
+                        Curry._1(set_bookmark_menu_anchor, (function (param) {
+                          return $$event.currentTarget;
+                        }));
+                        Curry._1(set_selected_bookmark_id, (function (param) {
+                          return marker.id;
+                        }));
+                      }),
+                      size: "small",
+                      sx: {
+                        top: marker.top
+                      }
+                    }, Key);
+                  }), match$19[0]),
+                JsxRuntime.jsx(Menu, {
+                  anchorOrigin: {
+                    vertical: "center",
+                    horizontal: "right"
+                  },
+                  children: JsxRuntime.jsxs(MenuItem, {
+                    children: [
+                      JsxRuntime.jsx(ListItemIcon, {
+                        children: JsxRuntime.jsx(IconsReact.IconTrash, {})
+                      }),
+                      JsxRuntime.jsx(ListItemText, {
+                        children: "Remove"
+                      })
+                    ],
+                    dense: true,
+                    onClick: (function (_event) {
+                      if (current_user !== undefined) {
+                        if (selected_bookmark_id !== undefined) {
+                          Bindings__Supabase.client.from("bookmarks").delete().eq("user_id", Caml_option.valFromOption(current_user).id).eq("id", selected_bookmark_id).then(function (response) {
+                            const error = response.error;
+                            if (error == null) {
+                              show_bookmark_notification(/* BookmarkRemoved */ 3);
+                              Curry._1(set_bookmark_highlight_revision, (function (revision) {
+                                return revision + 1 | 0;
+                              }));
+                            } else {
+                              console.log("Unable to remove the bookmark:", error.message);
+                              show_bookmark_notification(/* BookmarkRemoveFailed */ 4);
+                            }
+                            close_bookmark_menu();
+                            return Promise.resolve();
+                          }).catch(function (error) {
+                            console.log("Unable to remove the bookmark:", error);
+                            show_bookmark_notification(/* BookmarkRemoveFailed */ 4);
+                            close_bookmark_menu();
+                            return Promise.resolve();
+                          });
+                          return;
+                        } else {
+                          return close_bookmark_menu();
+                        }
+                      } else {
+                        show_bookmark_notification(/* BookmarkAuthenticationRequired */ 5);
+                        return close_bookmark_menu();
+                      }
+                    })
+                  }),
+                  anchorEl: bookmark_menu_anchor,
+                  onClose: (function (_event) {
+                    close_bookmark_menu();
+                  }),
+                  open: bookmark_menu_open
+                }),
+                JsxRuntime.jsx(Popover, {
+                  anchorPosition: match$10[0],
+                  anchorReference: "anchorPosition",
+                  children: current_user !== undefined ? (
+                      saving_bookmark !== undefined ? JsxRuntime.jsxs(Stack, {
+                          children: [
+                            saving_bookmark !== 0 ? JsxRuntime.jsx(IconButton, {
+                                children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                  color: Bindings__Config.bookmarkColors.pink
+                                }),
+                                disabled: true,
+                                size: "small"
+                              }) : JsxRuntime.jsx(CircularProgress, {
+                                size: 24
+                              }),
+                            saving_bookmark !== 1 ? JsxRuntime.jsx(IconButton, {
+                                children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                  color: Bindings__Config.bookmarkColors.salmon
+                                }),
+                                disabled: true,
+                                size: "small"
+                              }) : JsxRuntime.jsx(CircularProgress, {
+                                size: 24
+                              }),
+                            saving_bookmark !== 2 ? JsxRuntime.jsx(IconButton, {
+                                children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                  color: Bindings__Config.bookmarkColors.teal
+                                }),
+                                disabled: true,
+                                size: "small"
+                              }) : JsxRuntime.jsx(CircularProgress, {
+                                size: 24
+                              }),
+                            saving_bookmark !== 3 ? JsxRuntime.jsx(IconButton, {
+                                children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                  color: Bindings__Config.bookmarkColors.blue
+                                }),
+                                disabled: true,
+                                size: "small"
+                              }) : JsxRuntime.jsx(CircularProgress, {
+                                size: 24
+                              })
+                          ],
+                          direction: "row",
+                          sx: {
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }
+                        }) : JsxRuntime.jsxs(Stack, {
+                          children: [
+                            JsxRuntime.jsx(IconButton, {
+                              children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                color: Bindings__Config.bookmarkColors.pink
+                              }),
+                              onClick: (function (param) {
+                                save_bookmark(Bindings__Config.get_bookmark_number(/* Pink */ 0));
+                              }),
+                              size: "small"
+                            }),
+                            JsxRuntime.jsx(IconButton, {
+                              children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                color: Bindings__Config.bookmarkColors.salmon
+                              }),
+                              onClick: (function (param) {
+                                save_bookmark(Bindings__Config.get_bookmark_number(/* Salmon */ 1));
+                              }),
+                              size: "small"
+                            }),
+                            JsxRuntime.jsx(IconButton, {
+                              children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                color: Bindings__Config.bookmarkColors.teal
+                              }),
+                              onClick: (function (param) {
+                                save_bookmark(Bindings__Config.get_bookmark_number(/* Teal */ 2));
+                              }),
+                              size: "small"
+                            }),
+                            JsxRuntime.jsx(IconButton, {
+                              children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
+                                color: Bindings__Config.bookmarkColors.blue
+                              }),
+                              onClick: (function (param) {
+                                save_bookmark(Bindings__Config.get_bookmark_number(/* Blue */ 3));
+                              }),
+                              size: "small"
+                            })
+                          ],
+                          direction: "row",
+                          sx: {
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }
+                        })
+                    ) : JsxRuntime.jsx("div", {
+                      children: "You must be logged in to bookmark notes."
+                    }),
+                  disableAutoFocus: true,
+                  onClose: (function (_event) {
+                    close_bookmark_popover();
+                  }),
+                  open: match$9[0],
+                  sx: {
+                    padding: "16px 8px"
+                  },
+                  transformOrigin: {
+                    vertical: "bottom",
+                    horizontal: "center"
+                  }
+                }),
+                JsxRuntime.jsx("div", {
+                  children: markdown !== undefined ? JsxRuntime.jsxs(JsxRuntime.Fragment, {
+                      children: [
+                        toc_entries.length !== 0 ? JsxRuntime.jsxs("nav", {
+                            children: [
+                              JsxRuntime.jsx(Typography, {
+                                children: "Table of contents",
+                                className: css.grammarNoteTocTitle,
+                                component: "div",
+                                variant: Bindings__Material_ui.Typography.Variant.subtitle2
+                              }),
+                              JsxRuntime.jsx(List, {
+                                children: Stdlib__Array.map((function (entry) {
+                                  const Key = entry.id;
+                                  const match = entry.level;
+                                  let tmp;
+                                  switch (match) {
+                                    case 1 :
+                                      tmp = css.tocLevel1;
+                                      break;
+                                    case 3 :
+                                      tmp = css.tocLevel3;
+                                      break;
+                                    default:
+                                      tmp = css.tocLevel2;
+                                  }
+                                  return JsxRuntime.jsx(ListItem, {
+                                    children: JsxRuntime.jsx(ListItemButton, {
+                                      children: JsxRuntime.jsx(ListItemText, {
+                                        primary: entry.title
+                                      }),
+                                      className: tmp,
+                                      onClick: (function (param) {
+                                        let id = entry.id;
+                                        const match = document.getElementById(id);
+                                        const match$1 = grammar_note_ref.current;
+                                        if (match == null) {
+                                          return;
+                                        }
+                                        if (match$1 == null) {
+                                          return;
+                                        }
+                                        const target_top = match$1.scrollTop + match.getBoundingClientRect().top - match$1.getBoundingClientRect().top - 140.0;
+                                        match$1.scrollTo({
+                                          top: Math.max(0.0, target_top),
+                                          behavior: "smooth"
+                                        });
+                                      })
+                                    }),
+                                    disablePadding: true
+                                  }, Key);
+                                }), toc_entries),
+                                dense: true,
+                                disablePadding: true
+                              })
+                            ],
+                            "aria-label": "Table of contents",
+                            className: css.grammarNoteToc
+                          }) : null,
+                        JsxRuntime.jsx(ReactMarkdown, {
+                          children: match$22[1],
+                          rehypePlugins: toc_entries.length !== 0 ? [
+                              Bindings__React_markdown.rehypeCuneiform,
+                              Bindings__React_markdown.make_rehype_heading_ids(toc_entries_js)
+                            ] : [Bindings__React_markdown.rehypeCuneiform],
+                          remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
+                        })
+                      ]
+                    }) : (
+                      markdown_error !== undefined ? JsxRuntime.jsx("p", {
+                          children: markdown_error
+                        }) : JsxRuntime.jsx("p", {
+                          children: "Loading grammar note..."
+                        })
+                    ),
+                  className: css.grammarNoteMarkdown
+                })
+              ],
+              className: css.grammarNoteContent,
+              onMouseUp: (function ($$event) {
+                const match = window.getSelection();
+                if (match == null) {
+                  return;
+                }
+                if (current_user === undefined) {
+                  return;
+                }
+                if (!(match.rangeCount > 0 && !match.isCollapsed)) {
+                  return;
+                }
+                const text = match.toString();
+                const range = match.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                const content_element = $$event.currentTarget;
+                const left = Math.round(rect.left + rect.width / 2) | 0;
+                const top = Math.round(rect.top) | 0;
+                Curry._1(set_bookmark_popover_pos, (function (param) {
+                  return {
+                    left,
+                    top
+                  };
+                }));
+                Curry._1(set_bookmark_popover_open, (function (param) {
+                  return true;
+                }));
+                Curry._1(set_bookmark_text, (function (param) {
+                  return text;
+                }));
+                const match$1 = get_bookmark_context(range, content_element);
+                if (match$1 !== undefined) {
+                  const suffix_context = match$1[1];
+                  const prefix_context = match$1[0];
+                  Curry._1(set_bookmark_prefix_context, (function (param) {
+                    return prefix_context;
+                  }));
+                  return Curry._1(set_bookmark_suffix_context, (function (param) {
+                    return suffix_context;
+                  }));
+                }
+                Curry._1(set_bookmark_prefix_context, (function (param) {
+                  return "";
+                }));
+                Curry._1(set_bookmark_suffix_context, (function (param) {
+                  return "";
+                }));
+              }),
+              ref: grammar_note_content_ref
+            })
+          ],
+          className: css.grammarNote,
+          style: {
+            position: "relative"
+          },
+          onScroll: handle_scroll
+        })
+      ]
+    });
+  } else if (index_error !== undefined) {
+    tmp = JsxRuntime.jsx("p", {
+      children: index_error
+    });
+  } else {
+    const render_category = function (label, category, first_index) {
+      const notes = grammar_notes.filter(function (note) {
+        if (note.category === category) {
+          return note.visible;
+        } else {
+          return false;
+        }
+      });
+      if (notes.length === 0) {
+        return null;
+      } else {
+        return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+          children: [
+            JsxRuntime.jsx("h2", {
+              children: label,
+              className: css.hubSection
+            }),
+            JsxRuntime.jsx("div", {
+              children: Stdlib__Array.mapi((function (index, note) {
+                const Key = note.slug;
+                return JsxRuntime.jsxs("article", {
+                  children: [
+                    JsxRuntime.jsx("img", {
+                      className: css.topicBanner,
+                      alt: "",
+                      src: note.banner
+                    }),
+                    JsxRuntime.jsx("h2", {
+                      children: note.title
+                    }),
+                    JsxRuntime.jsx("p", {
+                      children: note.summary
+                    }),
+                    JsxRuntime.jsx("div", {
+                      children: JsxRuntime.jsx(Button, {
+                        "aria-label": "Open " + note.title,
+                        children: "Open",
+                        className: css.pill + (" " + css.pillPrimary),
+                        onClick: (function (param) {
+                          ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
+                        }),
+                        variant: "contained"
+                      }),
+                      className: css.topicFooter
+                    })
+                  ],
+                  className: css.topic,
+                  style: {
+                    animationDelay: String(250 + Math.imul(first_index + index | 0, 120) | 0) + "ms"
+                  }
+                }, Key);
+              }), notes),
+              className: css.topics
+            })
+          ]
+        });
+      }
+    };
+    const nouns_count = grammar_notes.filter(function (note) {
+      if (note.category === "nouns") {
+        return note.visible;
+      } else {
+        return false;
+      }
+    }).length;
+    tmp = JsxRuntime.jsxs("div", {
+      children: [
+        JsxRuntime.jsxs("header", {
+          children: [
+            JsxRuntime.jsx(Button, {
+              children: "Learn",
+              className: css.pill + (" " + (css.pillSecondary + (" " + css.hubBack))),
+              onClick: (function (param) {
+                ReasonReactRouter.push("/learn");
+              }),
+              startIcon: JsxRuntime.jsx(IconsReact.IconChevronLeft, {}),
+              variant: "outlined"
+            }),
+            JsxRuntime.jsx("p", {
+              children: "Grammar Notes",
+              className: css.hubLabel
+            }),
+            JsxRuntime.jsx("h1", {
+              children: "Understand how Sumerian works"
+            }),
+            JsxRuntime.jsx("p", {
+              children: "Detailed explanations and examples, one topic at a time. Pick a note to start reading.",
+              className: css.hubIntro
+            })
+          ],
+          className: css.hubHero
+        }),
+        render_category("Nouns", "nouns", 0),
+        render_category("Verbs", "verbs", nouns_count)
+      ],
+      className: css.hub
+    });
+  }
+  let tmp$1;
   if (bookmark_notification !== undefined) {
     switch (bookmark_notification) {
       case /* BookmarkSaved */ 0 :
-        tmp = JsxRuntime.jsx(Alert, {
+        tmp$1 = JsxRuntime.jsx(Alert, {
           children: "Bookmark saved.",
           severity: "success",
           sx: {
@@ -966,7 +1478,7 @@ function Learn_grammar_notes(Props) {
         });
         break;
       case /* NoBookmarkTextSelected */ 1 :
-        tmp = JsxRuntime.jsx(Alert, {
+        tmp$1 = JsxRuntime.jsx(Alert, {
           children: "No text was selected.",
           severity: "warning",
           sx: {
@@ -976,7 +1488,7 @@ function Learn_grammar_notes(Props) {
         });
         break;
       case /* BookmarkSaveFailed */ 2 :
-        tmp = JsxRuntime.jsx(Alert, {
+        tmp$1 = JsxRuntime.jsx(Alert, {
           children: "The bookmark could not be saved.",
           severity: "error",
           sx: {
@@ -986,7 +1498,7 @@ function Learn_grammar_notes(Props) {
         });
         break;
       case /* BookmarkRemoved */ 3 :
-        tmp = JsxRuntime.jsx(Alert, {
+        tmp$1 = JsxRuntime.jsx(Alert, {
           children: "Bookmark removed.",
           severity: "success",
           sx: {
@@ -996,7 +1508,7 @@ function Learn_grammar_notes(Props) {
         });
         break;
       case /* BookmarkRemoveFailed */ 4 :
-        tmp = JsxRuntime.jsx(Alert, {
+        tmp$1 = JsxRuntime.jsx(Alert, {
           children: "The bookmark could not be removed.",
           severity: "error",
           sx: {
@@ -1006,7 +1518,7 @@ function Learn_grammar_notes(Props) {
         });
         break;
       case /* BookmarkAuthenticationRequired */ 5 :
-        tmp = JsxRuntime.jsx(Alert, {
+        tmp$1 = JsxRuntime.jsx(Alert, {
           children: "You must be logged in to remove a bookmark.",
           severity: "warning",
           sx: {
@@ -1017,498 +1529,13 @@ function Learn_grammar_notes(Props) {
         break;
     }
   } else {
-    tmp = null;
+    tmp$1 = null;
   }
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
       JsxRuntime.jsxs(Grid, {
         children: [
-          selected_note !== undefined ? JsxRuntime.jsxs(JsxRuntime.Fragment, {
-              children: [
-                JsxRuntime.jsxs(Box, {
-                  children: [
-                    JsxRuntime.jsx(CircularProgress, {
-                      enableTrackSlot: true,
-                      value: scroll_percentage,
-                      variant: "determinate"
-                    }),
-                    JsxRuntime.jsx(Box, {
-                      children: JsxRuntime.jsx(Typography, {
-                        children: Stdlib__Int.to_string(scroll_percentage) + "%",
-                        component: "div",
-                        variant: Bindings__Material_ui.Typography.Variant.caption,
-                        sx: {
-                          color: "text.secondary"
-                        }
-                      }),
-                      sx: {
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        position: "absolute",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }
-                    })
-                  ],
-                  className: css.readProgress
-                }),
-                JsxRuntime.jsxs("div", {
-                  ref: grammar_note_ref,
-                  children: [
-                    JsxRuntime.jsx(Box, {
-                      children: JsxRuntime.jsx(Typography, {
-                        align: "center",
-                        children: selected_note.title,
-                        className: css.grammarNoteTitle,
-                        variant: Bindings__Material_ui.Typography.Variant.h3,
-                        sx: {
-                          padding: "20px",
-                          backgroundColor: Bindings__Config.colors.whiteSmoke,
-                          opacity: is_banner_visible ? 0.0 : 1.0,
-                          transform: is_banner_visible ? "translateY(-100%)" : "translateY(0)",
-                          transition: "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 900ms ease"
-                        }
-                      }),
-                      sx: {
-                        position: "sticky",
-                        top: "0",
-                        zIndex: 2,
-                        height: "0",
-                        overflow: "visible",
-                        pointerEvents: "none"
-                      }
-                    }),
-                    JsxRuntime.jsx("img", {
-                      ref: banner_ref,
-                      style: {
-                        marginBottom: "20px",
-                        width: "100%"
-                      },
-                      alt: selected_note.title,
-                      src: selected_note.banner
-                    }),
-                    JsxRuntime.jsxs(Container, {
-                      children: [
-                        is_mobile ? null : Stdlib__Array.map((function (marker) {
-                            const Key = marker.id;
-                            return JsxRuntime.jsx(IconButton, {
-                              "aria-label": "Saved bookmark",
-                              children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                color: bookmark_marker_color(marker.bookmark_type)
-                              }),
-                              className: css.bookmarkMarker,
-                              onClick: (function ($$event) {
-                                Curry._1(set_bookmark_menu_anchor, (function (param) {
-                                  return $$event.currentTarget;
-                                }));
-                                Curry._1(set_selected_bookmark_id, (function (param) {
-                                  return marker.id;
-                                }));
-                              }),
-                              size: "small",
-                              sx: {
-                                top: marker.top
-                              }
-                            }, Key);
-                          }), match$19[0]),
-                        JsxRuntime.jsx(Menu, {
-                          anchorOrigin: {
-                            vertical: "center",
-                            horizontal: "right"
-                          },
-                          children: JsxRuntime.jsxs(MenuItem, {
-                            children: [
-                              JsxRuntime.jsx(ListItemIcon, {
-                                children: JsxRuntime.jsx(IconsReact.IconTrash, {})
-                              }),
-                              JsxRuntime.jsx(ListItemText, {
-                                children: "Remove"
-                              })
-                            ],
-                            dense: true,
-                            onClick: (function (_event) {
-                              if (current_user !== undefined) {
-                                if (selected_bookmark_id !== undefined) {
-                                  Bindings__Supabase.client.from("bookmarks").delete().eq("user_id", Caml_option.valFromOption(current_user).id).eq("id", selected_bookmark_id).then(function (response) {
-                                    const error = response.error;
-                                    if (error == null) {
-                                      show_bookmark_notification(/* BookmarkRemoved */ 3);
-                                      Curry._1(set_bookmark_highlight_revision, (function (revision) {
-                                        return revision + 1 | 0;
-                                      }));
-                                    } else {
-                                      console.log("Unable to remove the bookmark:", error.message);
-                                      show_bookmark_notification(/* BookmarkRemoveFailed */ 4);
-                                    }
-                                    close_bookmark_menu();
-                                    return Promise.resolve();
-                                  }).catch(function (error) {
-                                    console.log("Unable to remove the bookmark:", error);
-                                    show_bookmark_notification(/* BookmarkRemoveFailed */ 4);
-                                    close_bookmark_menu();
-                                    return Promise.resolve();
-                                  });
-                                  return;
-                                } else {
-                                  return close_bookmark_menu();
-                                }
-                              } else {
-                                show_bookmark_notification(/* BookmarkAuthenticationRequired */ 5);
-                                return close_bookmark_menu();
-                              }
-                            })
-                          }),
-                          anchorEl: bookmark_menu_anchor,
-                          onClose: (function (_event) {
-                            close_bookmark_menu();
-                          }),
-                          open: bookmark_menu_open
-                        }),
-                        JsxRuntime.jsx(Popover, {
-                          anchorPosition: match$10[0],
-                          anchorReference: "anchorPosition",
-                          children: current_user !== undefined ? (
-                              saving_bookmark !== undefined ? JsxRuntime.jsxs(Stack, {
-                                  children: [
-                                    saving_bookmark !== 0 ? JsxRuntime.jsx(IconButton, {
-                                        children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                          color: Bindings__Config.bookmarkColors.pink
-                                        }),
-                                        disabled: true,
-                                        size: "small"
-                                      }) : JsxRuntime.jsx(CircularProgress, {
-                                        size: 24
-                                      }),
-                                    saving_bookmark !== 1 ? JsxRuntime.jsx(IconButton, {
-                                        children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                          color: Bindings__Config.bookmarkColors.salmon
-                                        }),
-                                        disabled: true,
-                                        size: "small"
-                                      }) : JsxRuntime.jsx(CircularProgress, {
-                                        size: 24
-                                      }),
-                                    saving_bookmark !== 2 ? JsxRuntime.jsx(IconButton, {
-                                        children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                          color: Bindings__Config.bookmarkColors.teal
-                                        }),
-                                        disabled: true,
-                                        size: "small"
-                                      }) : JsxRuntime.jsx(CircularProgress, {
-                                        size: 24
-                                      }),
-                                    saving_bookmark !== 3 ? JsxRuntime.jsx(IconButton, {
-                                        children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                          color: Bindings__Config.bookmarkColors.blue
-                                        }),
-                                        disabled: true,
-                                        size: "small"
-                                      }) : JsxRuntime.jsx(CircularProgress, {
-                                        size: 24
-                                      })
-                                  ],
-                                  direction: "row",
-                                  sx: {
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                  }
-                                }) : JsxRuntime.jsxs(Stack, {
-                                  children: [
-                                    JsxRuntime.jsx(IconButton, {
-                                      children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                        color: Bindings__Config.bookmarkColors.pink
-                                      }),
-                                      onClick: (function (param) {
-                                        save_bookmark(Bindings__Config.get_bookmark_number(/* Pink */ 0));
-                                      }),
-                                      size: "small"
-                                    }),
-                                    JsxRuntime.jsx(IconButton, {
-                                      children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                        color: Bindings__Config.bookmarkColors.salmon
-                                      }),
-                                      onClick: (function (param) {
-                                        save_bookmark(Bindings__Config.get_bookmark_number(/* Salmon */ 1));
-                                      }),
-                                      size: "small"
-                                    }),
-                                    JsxRuntime.jsx(IconButton, {
-                                      children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                        color: Bindings__Config.bookmarkColors.teal
-                                      }),
-                                      onClick: (function (param) {
-                                        save_bookmark(Bindings__Config.get_bookmark_number(/* Teal */ 2));
-                                      }),
-                                      size: "small"
-                                    }),
-                                    JsxRuntime.jsx(IconButton, {
-                                      children: JsxRuntime.jsx(IconsReact.IconBookmarkFilled, {
-                                        color: Bindings__Config.bookmarkColors.blue
-                                      }),
-                                      onClick: (function (param) {
-                                        save_bookmark(Bindings__Config.get_bookmark_number(/* Blue */ 3));
-                                      }),
-                                      size: "small"
-                                    })
-                                  ],
-                                  direction: "row",
-                                  sx: {
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                  }
-                                })
-                            ) : JsxRuntime.jsx("div", {
-                              children: "You must be logged in to bookmark notes."
-                            }),
-                          disableAutoFocus: true,
-                          onClose: (function (_event) {
-                            close_bookmark_popover();
-                          }),
-                          open: match$9[0],
-                          sx: {
-                            padding: "16px 8px"
-                          },
-                          transformOrigin: {
-                            vertical: "bottom",
-                            horizontal: "center"
-                          }
-                        }),
-                        JsxRuntime.jsx("div", {
-                          children: markdown !== undefined ? JsxRuntime.jsxs(JsxRuntime.Fragment, {
-                              children: [
-                                toc_entries.length !== 0 ? JsxRuntime.jsxs("nav", {
-                                    children: [
-                                      JsxRuntime.jsx(Typography, {
-                                        children: "Table of contents",
-                                        className: css.grammarNoteTocTitle,
-                                        component: "div",
-                                        variant: Bindings__Material_ui.Typography.Variant.subtitle2
-                                      }),
-                                      JsxRuntime.jsx(List, {
-                                        children: Stdlib__Array.map((function (entry) {
-                                          const Key = entry.id;
-                                          const match = entry.level;
-                                          let tmp;
-                                          switch (match) {
-                                            case 1 :
-                                              tmp = css.tocLevel1;
-                                              break;
-                                            case 3 :
-                                              tmp = css.tocLevel3;
-                                              break;
-                                            default:
-                                              tmp = css.tocLevel2;
-                                          }
-                                          return JsxRuntime.jsx(ListItem, {
-                                            children: JsxRuntime.jsx(ListItemButton, {
-                                              children: JsxRuntime.jsx(ListItemText, {
-                                                primary: entry.title
-                                              }),
-                                              className: tmp,
-                                              onClick: (function (param) {
-                                                let id = entry.id;
-                                                const match = document.getElementById(id);
-                                                const match$1 = grammar_note_ref.current;
-                                                if (match == null) {
-                                                  return;
-                                                }
-                                                if (match$1 == null) {
-                                                  return;
-                                                }
-                                                const target_top = match$1.scrollTop + match.getBoundingClientRect().top - match$1.getBoundingClientRect().top - 140.0;
-                                                match$1.scrollTo({
-                                                  top: Math.max(0.0, target_top),
-                                                  behavior: "smooth"
-                                                });
-                                              })
-                                            }),
-                                            disablePadding: true
-                                          }, Key);
-                                        }), toc_entries),
-                                        dense: true,
-                                        disablePadding: true
-                                      })
-                                    ],
-                                    "aria-label": "Table of contents",
-                                    className: css.grammarNoteToc
-                                  }) : null,
-                                JsxRuntime.jsx(ReactMarkdown, {
-                                  children: match$22[1],
-                                  rehypePlugins: toc_entries.length !== 0 ? [
-                                      Bindings__React_markdown.rehypeCuneiform,
-                                      Bindings__React_markdown.make_rehype_heading_ids(toc_entries_js)
-                                    ] : [Bindings__React_markdown.rehypeCuneiform],
-                                  remarkPlugins: [Bindings__React_markdown.remarkGfmWithoutSingleTilde]
-                                })
-                              ]
-                            }) : (
-                              markdown_error !== undefined ? JsxRuntime.jsx("p", {
-                                  children: markdown_error
-                                }) : JsxRuntime.jsx("p", {
-                                  children: "Loading grammar note..."
-                                })
-                            ),
-                          className: css.grammarNoteMarkdown
-                        })
-                      ],
-                      className: css.grammarNoteContent,
-                      onMouseUp: (function ($$event) {
-                        const match = window.getSelection();
-                        if (match == null) {
-                          return;
-                        }
-                        if (current_user === undefined) {
-                          return;
-                        }
-                        if (!(match.rangeCount > 0 && !match.isCollapsed)) {
-                          return;
-                        }
-                        const text = match.toString();
-                        const range = match.getRangeAt(0);
-                        const rect = range.getBoundingClientRect();
-                        const content_element = $$event.currentTarget;
-                        const left = Math.round(rect.left + rect.width / 2) | 0;
-                        const top = Math.round(rect.top) | 0;
-                        Curry._1(set_bookmark_popover_pos, (function (param) {
-                          return {
-                            left,
-                            top
-                          };
-                        }));
-                        Curry._1(set_bookmark_popover_open, (function (param) {
-                          return true;
-                        }));
-                        Curry._1(set_bookmark_text, (function (param) {
-                          return text;
-                        }));
-                        const match$1 = get_bookmark_context(range, content_element);
-                        if (match$1 !== undefined) {
-                          const suffix_context = match$1[1];
-                          const prefix_context = match$1[0];
-                          Curry._1(set_bookmark_prefix_context, (function (param) {
-                            return prefix_context;
-                          }));
-                          return Curry._1(set_bookmark_suffix_context, (function (param) {
-                            return suffix_context;
-                          }));
-                        }
-                        Curry._1(set_bookmark_prefix_context, (function (param) {
-                          return "";
-                        }));
-                        Curry._1(set_bookmark_suffix_context, (function (param) {
-                          return "";
-                        }));
-                      }),
-                      ref: grammar_note_content_ref
-                    })
-                  ],
-                  className: css.grammarNote,
-                  style: {
-                    position: "relative"
-                  },
-                  onScroll: handle_scroll
-                })
-              ]
-            }) : (
-              index_error !== undefined ? JsxRuntime.jsx("p", {
-                  children: index_error
-                }) : JsxRuntime.jsxs(Container, {
-                  children: [
-                    JsxRuntime.jsx(Typography, {
-                      children: "Grammar Notes",
-                      variant: Bindings__Material_ui.Typography.Variant.h4
-                    }),
-                    JsxRuntime.jsxs(List, {
-                      children: [
-                        JsxRuntime.jsx(ListSubheader, {
-                          children: "Nouns",
-                          sx: {
-                            backgroundColor: Bindings__Config.colors.whiteSmoke
-                          }
-                        }),
-                        Stdlib__Array.map((function (note) {
-                          const Key = note.slug;
-                          return JsxRuntime.jsx(ListItem, {
-                            children: JsxRuntime.jsxs(ListItemButton, {
-                              children: [
-                                JsxRuntime.jsx(ListItemIcon, {
-                                  children: JsxRuntime.jsx(IconsReact.IconNote, {})
-                                }),
-                                JsxRuntime.jsx(ListItemText, {
-                                  primary: note.title
-                                })
-                              ],
-                              onClick: (function (param) {
-                                ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
-                              })
-                            }),
-                            disablePadding: true
-                          }, Key);
-                        }), Stdlib__Array.fold_left((function (acc, note) {
-                          if (note.category === "nouns" && note.visible) {
-                            return Caml_array.concat({
-                              hd: acc,
-                              tl: {
-                                hd: [note],
-                                tl: /* [] */ 0
-                              }
-                            });
-                          } else {
-                            return acc;
-                          }
-                        }), [], grammar_notes)),
-                        JsxRuntime.jsx(ListSubheader, {
-                          children: "Verbs",
-                          sx: {
-                            backgroundColor: Bindings__Config.colors.whiteSmoke
-                          }
-                        }),
-                        Stdlib__Array.map((function (note) {
-                          const Key = note.slug;
-                          return JsxRuntime.jsx(ListItem, {
-                            children: JsxRuntime.jsxs(ListItemButton, {
-                              children: [
-                                JsxRuntime.jsx(ListItemIcon, {
-                                  children: JsxRuntime.jsx(IconsReact.IconNote, {})
-                                }),
-                                JsxRuntime.jsx(ListItemText, {
-                                  primary: note.title
-                                })
-                              ],
-                              onClick: (function (param) {
-                                ReasonReactRouter.push("/learn/grammar_notes/" + note.slug);
-                              })
-                            }),
-                            disablePadding: true
-                          }, Key);
-                        }), Stdlib__Array.fold_left((function (acc, note) {
-                          if (note.category === "verbs" && note.visible) {
-                            return Caml_array.concat({
-                              hd: acc,
-                              tl: {
-                                hd: [note],
-                                tl: /* [] */ 0
-                              }
-                            });
-                          } else {
-                            return acc;
-                          }
-                        }), [], grammar_notes))
-                      ]
-                    })
-                  ],
-                  sx: {
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    padding: "40px 20px"
-                  }
-                })
-            ),
+          tmp,
           slug !== undefined ? JsxRuntime.jsxs(Stack, {
               children: [
                 JsxRuntime.jsx(Tooltip, {
@@ -1581,7 +1608,7 @@ function Learn_grammar_notes(Props) {
           horizontal: "right"
         },
         autoHideDuration: 3000,
-        children: tmp,
+        children: tmp$1,
         onClose: (function (param) {
           Curry._1(set_bookmark_snackbar_open, (function (param) {
             return false;
